@@ -12,7 +12,6 @@ use meridian_types::{Clock, FixedClock, SystemClock};
 use secrecy::SecretString;
 
 use crate::core::{CoreConfigFfi, SecretSource, read_provider_settings};
-use crate::error::CoreResult;
 
 pub(crate) struct Built {
     pub providers: Vec<Arc<dyn Provider>>,
@@ -24,7 +23,7 @@ fn secret(secrets: &dyn SecretSource, provider: &str, field: &str) -> Option<Sec
     secrets.secret(provider.into(), field.into()).filter(|s| !s.trim().is_empty()).map(|s| SecretString::from(s.trim().to_owned()))
 }
 
-pub(crate) fn build(config: &CoreConfigFfi, econf: &EngineConfig, secrets: &dyn SecretSource) -> CoreResult<Built> {
+pub(crate) fn build(config: &CoreConfigFfi, econf: &EngineConfig, secrets: &dyn SecretSource) -> Built {
     let clock: Arc<dyn Clock> = match econf.fixed_clock {
         Some(t) => Arc::new(FixedClock(t)),
         None => Arc::new(SystemClock),
@@ -41,7 +40,7 @@ pub(crate) fn build(config: &CoreConfigFfi, econf: &EngineConfig, secrets: &dyn 
     };
     let anthropic = secret(secrets, "anthropic", "api_key").and_then(|k| AnthropicClient::new(k).ok()).map(Arc::new);
     let ai: Option<Arc<dyn AiService>> = anthropic.clone().map(|c| Arc::new(meridian_engine::ask_tools::ClaudeAi::new(c)) as Arc<dyn AiService>);
-    Ok(Built { providers, ai, anthropic })
+    Built { providers, ai, anthropic }
 }
 
 fn push<P: Provider>(out: &mut Vec<Arc<dyn Provider>>, r: meridian_provider::ProviderResult<P>, name: &str) {

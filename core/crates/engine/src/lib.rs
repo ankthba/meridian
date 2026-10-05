@@ -2,6 +2,10 @@
 //! hub, stores, and alerts, and builds every function screen as a generic
 //! [`screen::Screen`]. The FFI crate is a thin facade over this crate.
 
+// Tool failures are values returned to the model, not exceptional paths;
+// `Fetched::fetched_at` reads better than a renamed field.
+#![allow(clippy::result_large_err, clippy::struct_field_names)]
+
 pub mod ask_tools;
 mod cache;
 mod config;

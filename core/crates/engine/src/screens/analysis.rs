@@ -325,14 +325,13 @@ pub(crate) async fn rv(engine: Arc<Engine>, req: ScreenRequest) -> Screen {
 
 pub(crate) async fn corr(engine: Arc<Engine>, req: ScreenRequest) -> Screen {
     let range = req.arg("range").unwrap_or("1Y").to_owned();
-    let list: Vec<SecurityKey> = match req.arg("securities").filter(|s| !s.trim().is_empty()) {
-        Some(txt) => txt.split(',').filter_map(|x| x.trim().parse().ok()).collect(),
-        None => {
-            let mut v: Vec<SecurityKey> = req.security.iter().cloned().collect();
-            v.extend(DEFAULT_WATCHLIST.iter().filter_map(|s| s.parse::<SecurityKey>().ok()).filter(|k| k.sector == MarketSector::Equity).take(8));
-            v.dedup();
-            v
-        }
+    let list: Vec<SecurityKey> = if let Some(txt) = req.arg("securities").filter(|s| !s.trim().is_empty()) {
+        txt.split(',').filter_map(|x| x.trim().parse().ok()).collect()
+    } else {
+        let mut v: Vec<SecurityKey> = req.security.iter().cloned().collect();
+        v.extend(DEFAULT_WATCHLIST.iter().filter_map(|s| s.parse::<SecurityKey>().ok()).filter(|k| k.sector == MarketSector::Equity).take(8));
+        v.dedup();
+        v
     };
     let mut s = Screen::new("CORR", "Correlation Matrix", req.security.as_ref().map(ToString::to_string));
     s.push(Block::Inputs {
@@ -423,7 +422,7 @@ fn positions(txs: &[Transaction]) -> Vec<(String, Position)> {
             p.cost += t.quantity * t.price + t.fees;
             p.qty += t.quantity;
         } else {
-            let avg = if p.qty != 0.0 { p.cost / p.qty } else { 0.0 };
+            let avg = if p.qty == 0.0 { 0.0 } else { p.cost / p.qty };
             let sold = (-t.quantity).min(p.qty);
             p.realized += sold * (t.price - avg) - t.fees;
             p.cost -= sold * avg;

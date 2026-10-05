@@ -9,7 +9,10 @@ use meridian_types::SecurityKey;
 
 use crate::error::{CoreError, CoreResult};
 use crate::providers;
-use crate::types::*;
+use crate::types::{
+    AskToolFfi, AskTurnFfi, CapabilityRowFfi, ChartDataFfi, ChartStudyFfi, CoreEventFfi, DataSourceFfi, FunctionInfoFfi, KeyValue,
+    LayoutFieldFfi, ParsedCommandFfi, PollResultFfi, ScreenFfi, SuggestionFfi, SuggestionKindFfi, WatchlistFfi, WorkspaceSummaryFfi, from_kv,
+};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, uniffi::Enum)]
 pub enum DataModeFfi {
@@ -149,7 +152,7 @@ impl Core {
             fixed_clock: config.fixed_clock_ns,
             worker_threads: 4,
         };
-        let built = providers::build(&config, &econf, secrets.as_ref())?;
+        let built = providers::build(&config, &econf, secrets.as_ref());
         let engine = Engine::new(&econf, built.providers, Arc::new(EventBridge(events)))?;
         if let Some(ai) = built.ai {
             engine.set_ai(Some(ai));

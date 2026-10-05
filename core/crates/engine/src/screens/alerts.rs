@@ -43,10 +43,10 @@ fn build_rule(req: &ScreenRequest) -> Result<Option<AlertRule>, String> {
 
 pub(crate) async fn alrt(engine: Arc<Engine>, req: ScreenRequest) -> Screen {
     let mut s = Screen::new("ALRT", TITLE, req.security.as_ref().map(ToString::to_string));
-    if let Some(id) = req.arg("delete").and_then(|x| x.parse::<i64>().ok()) {
-        if let Err(e) = engine.delete_alert(id) {
-            s.push(Block::Notice { level: NoticeLevel::Error, text: e.user_message() });
-        }
+    if let Some(id) = req.arg("delete").and_then(|x| x.parse::<i64>().ok())
+        && let Err(e) = engine.delete_alert(id)
+    {
+        s.push(Block::Notice { level: NoticeLevel::Error, text: e.user_message() });
     }
     if let Some(id) = req.arg("toggle").and_then(|x| x.parse::<i64>().ok())
         && let Some(mut r) = engine.alert_rules().into_iter().find(|r| r.id == id)

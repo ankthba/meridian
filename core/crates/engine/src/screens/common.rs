@@ -70,14 +70,13 @@ pub fn parse_range(range: &str, now: UnixNanos) -> (Option<UnixNanos>, UnixNanos
         "3M" => days(92),
         "6M" => days(183),
         "YTD" => NaiveDate::from_ymd_opt(today.year(), 1, 1).map(date_to_nanos),
-        "1Y" => days(366),
         "2Y" => days(731),
         "3Y" => days(1_096),
         "5Y" => days(1_827),
         "10Y" => days(3_653),
         "20Y" => days(7_306),
         "MAX" => None,
-        _ => days(366),
+        _ => days(366), // 1Y and unrecognized presets
     };
     (from, now + NANOS_PER_DAY)
 }
