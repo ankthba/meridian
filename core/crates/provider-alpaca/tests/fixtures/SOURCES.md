@@ -1,0 +1,17 @@
+# Fixture sources
+
+All fixtures were taken from Alpaca's official documentation on 2026-10-05. None came from a live API call (we have no keys). The API reference pages embed an OpenAPI definition (licensed CC-BY-SA-4.0 per its `info.license`); the example responses below are copied from it unchanged, apart from JSON re-indentation.
+
+| File | Source | How |
+|---|---|---|
+| `stock_snapshots.json` | <https://docs.alpaca.markets/us/reference/stocksnapshots-1> (`GET /v2/stocks/snapshots`, 200 example "snapshots") | Copied verbatim |
+| `stock_bars_single.json` | <https://docs.alpaca.markets/us/reference/stockbarsingle-1> (`GET /v2/stocks/{symbol}/bars`, 200 example "bars") | Copied verbatim |
+| `stock_bars_single_last_page.json` | <https://docs.alpaca.markets/us/docs/market-data-faq> ("What's the difference between IEX and SIP data?", second `curl … feed=iex` response, with `"next_page_token": null`) | Copied verbatim |
+| `option_chain.json` | <https://docs.alpaca.markets/us/reference/optionchain> (`GET /v1beta1/options/snapshots/{underlying_symbol}`, 200 example "snapshots") | Copied verbatim |
+| `option_chain_constructed.json` | Schema `option_snapshots_resp` on <https://docs.alpaca.markets/us/reference/optionchain> | **Hand-built** to the documented schema with obviously-test symbols (`TEST…`, `X…`) and values, to cover a snapshot with zero bid/ask and no greeks, one with IV but no greeks plus a `dailyBar`, a `null` entry, and a `null` page token. Not real data |
+| `news.json` | <https://docs.alpaca.markets/us/reference/news-3> (`GET /v1beta1/news`, 200 example "news-response-example") | Copied verbatim |
+| `ws_session.txt` | <https://docs.alpaca.markets/us/docs/real-time-stock-pricing-data> ("Example" section, the `wscat` session against `v2/sip`) | Server frames copied verbatim, one per line (client frames omitted) |
+| `ws_errors.txt` | <https://docs.alpaca.markets/us/docs/streaming-market-data> ("Connection limit" callout and "Errors" table) | Line 1 copied verbatim. Lines 2–4 **constructed** in the same documented format (`[{"T":"error","code":…,"msg":…}]`) from the code/message pairs in the errors table (402 "auth failed", 405 "symbol limit exceeded", 409 "insufficient subscription") |
+| `ws_other_messages.txt` | <https://docs.alpaca.markets/us/docs/real-time-stock-pricing-data> (Bars, Trade Corrections, Trade Cancels/Errors, Trading Status examples) | Each example object copied verbatim, minified, and wrapped in a one-element array as the stream sends it |
+
+The 403 body used in `src/tests.rs` (`{"code":42210000,"message":"subscription does not permit querying recent SIP data"}`) is copied from the Market Data FAQ example above.

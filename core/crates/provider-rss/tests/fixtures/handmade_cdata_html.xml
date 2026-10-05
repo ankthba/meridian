@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- HAND-MADE test fixture: not captured from any publisher. Exercises CDATA
+     HTML descriptions, HTML entities, numeric character references, links,
+     tables, a long description (truncation), a plain-text description, an
+     item with a guid but no link, an item with a non-http link, and an item
+     whose only content is markup. -->
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Hand-made CDATA Wire</title>
+    <link>https://example.com/</link>
+    <description>Test channel</description>
+    <item>
+      <title><![CDATA[Gamma &amp; Co. <em>Announces</em> Buyback]]></title>
+      <link>https://example.com/news/gamma-buyback</link>
+      <guid isPermaLink="true">https://example.com/news/gamma-buyback</guid>
+      <pubDate>Mon, 05 Oct 2026 14:00:00 -0400</pubDate>
+      <description><![CDATA[<p>NEW YORK&nbsp;&ndash; <strong>Gamma &amp; Co.</strong> (NYSE:&nbsp;GAMA) today said its board approved a <a href="https://example.com/buyback">$500&#160;million</a> buyback.</p><br/><table><tr><td>Shares</td><td>10m</td></tr></table>]]></description>
+      <category>Share Buybacks</category>
+      <category>FIN</category>
+      <dc:subject>Corporate Action</dc:subject>
+    </item>
+    <item>
+      <title>Delta Ltd. Files Annual Report &#8212; Plain Text</title>
+      <guid isPermaLink="false">delta-annual-2026</guid>
+      <pubDate>Mon, 05 Oct 2026 13:00:00 GMT</pubDate>
+      <description>Delta Ltd. (OTCQX: DLTAF) filed its annual report. Revenue rose 4%   year over year.</description>
+    </item>
+    <item>
+      <title>Epsilon Long Release</title>
+      <link>https://example.com/news/epsilon-long</link>
+      <pubDate>Mon, 05 Oct 2026 12:00:00 GMT</pubDate>
+      <content:encoded><![CDATA[<p>LONGTEXT_PLACEHOLDER</p>]]></content:encoded>
+    </item>
+    <item>
+      <title>Zeta Script Link</title>
+      <link>javascript:alert(1)</link>
+      <guid>zeta-1</guid>
+      <pubDate>Mon, 05 Oct 2026 11:00:00 GMT</pubDate>
+      <description><![CDATA[<img src="https://example.com/logo.png">]]></description>
+    </item>
+  </channel>
+</rss>

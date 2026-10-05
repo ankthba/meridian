@@ -1,0 +1,4 @@
+[{"T":"error","code":406,"msg":"connection limit exceeded"}]
+[{"T":"error","code":402,"msg":"auth failed"}]
+[{"T":"error","code":405,"msg":"symbol limit exceeded"}]
+[{"T":"error","code":409,"msg":"insufficient subscription"}]

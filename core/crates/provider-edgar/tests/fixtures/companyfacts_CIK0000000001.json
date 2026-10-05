@@ -1,0 +1,176 @@
+{
+  "cik": 1,
+  "entityName": "Example Corp",
+  "facts": {
+    "dei": {
+      "EntityCommonStockSharesOutstanding": {
+        "label": "Entity Common Stock, Shares Outstanding",
+        "description": "Test fixture value.",
+        "units": {
+          "shares": [
+            {"end": "2025-11-01", "val": 100, "accn": "0000000001-25-000010", "fy": 2025, "fp": "FY", "form": "10-K", "filed": "2025-11-14"}
+          ]
+        }
+      }
+    },
+    "us-gaap": {
+      "OtherAssetsNoncurrent": {
+        "label": "Other Assets, Noncurrent",
+        "description": "Unmapped concept; must be skipped.",
+        "units": {
+          "USD": [
+            {"end": "2025-09-30", "val": 1, "accn": "0000000001-25-000010", "fy": 2025, "fp": "FY", "form": "10-K", "filed": "2025-11-14"}
+          ]
+        }
+      },
+      "Revenues": {
+        "label": "Revenues",
+        "description": "Test fixture values.",
+        "units": {
+          "USD": [
+            {"start": "2023-10-01", "end": "2024-09-30", "val": 4000, "accn": "0000000001-24-000010", "fy": 2024, "fp": "FY", "form": "10-K", "filed": "2024-11-15"},
+            {"start": "2022-10-01", "end": "2023-09-30", "val": 3600, "accn": "0000000001-24-000010", "fy": 2024, "fp": "FY", "form": "10-K", "filed": "2024-11-15"},
+            {"start": "2024-10-01", "end": "2024-12-31", "val": 1000, "accn": "0000000001-25-000001", "fy": 2025, "fp": "Q1", "form": "10-Q", "filed": "2025-02-05", "frame": "CY2024Q4"},
+            {"start": "2023-10-01", "end": "2023-12-31", "val": 900, "accn": "0000000001-25-000001", "fy": 2025, "fp": "Q1", "form": "10-Q", "filed": "2025-02-05"},
+            {"start": "2025-01-01", "end": "2025-03-31", "val": 1100, "accn": "0000000001-25-000004", "fy": 2025, "fp": "Q2", "form": "10-Q", "filed": "2025-05-05"},
+            {"start": "2024-10-01", "end": "2025-03-31", "val": 2100, "accn": "0000000001-25-000004", "fy": 2025, "fp": "Q2", "form": "10-Q", "filed": "2025-05-05"},
+            {"start": "2024-01-01", "end": "2024-03-31", "val": 950, "accn": "0000000001-25-000004", "fy": 2025, "fp": "Q2", "form": "10-Q", "filed": "2025-05-05"},
+            {"start": "2023-10-01", "end": "2024-03-31", "val": 1850, "accn": "0000000001-25-000004", "fy": 2025, "fp": "Q2", "form": "10-Q", "filed": "2025-05-05"},
+            {"start": "2025-04-01", "end": "2025-06-30", "val": 1200, "accn": "0000000001-25-000006", "fy": 2025, "fp": "Q3", "form": "10-Q", "filed": "2025-08-05"},
+            {"start": "2024-10-01", "end": "2025-06-30", "val": 3300, "accn": "0000000001-25-000006", "fy": 2025, "fp": "Q3", "form": "10-Q", "filed": "2025-08-05"},
+            {"start": "2024-04-01", "end": "2024-06-30", "val": 1000, "accn": "0000000001-25-000006", "fy": 2025, "fp": "Q3", "form": "10-Q", "filed": "2025-08-05"},
+            {"start": "2023-10-01", "end": "2024-06-30", "val": 2850, "accn": "0000000001-25-000006", "fy": 2025, "fp": "Q3", "form": "10-Q", "filed": "2025-08-05"},
+            {"start": "2024-10-01", "end": "2025-09-30", "val": 9999, "accn": "0000000001-25-000009", "fy": 2025, "fp": "FY", "form": "8-K", "filed": "2025-11-13"},
+            {"start": "2024-10-01", "end": "2025-09-30", "val": 4600, "accn": "0000000001-25-000010", "fy": 2025, "fp": "FY", "form": "10-K", "filed": "2025-11-14"},
+            {"start": "2023-10-01", "end": "2024-09-30", "val": 4000, "accn": "0000000001-25-000010", "fy": 2025, "fp": "FY", "form": "10-K", "filed": "2025-11-14"},
+            {"start": "2022-10-01", "end": "2023-09-30", "val": 3600, "accn": "0000000001-25-000010", "fy": 2025, "fp": "FY", "form": "10-K", "filed": "2025-11-14"},
+            {"start": "2025-10-01", "end": "2025-12-31", "val": 1250, "accn": "0000000001-26-000002", "fy": 2026, "fp": "Q1", "form": "10-Q", "filed": "2026-02-05"},
+            {"start": "2024-10-01", "end": "2024-12-31", "val": 1000, "accn": "0000000001-26-000002", "fy": 2026, "fp": "Q1", "form": "10-Q", "filed": "2026-02-05"}
+          ],
+          "EUR": [
+            {"start": "2024-10-01", "end": "2025-09-30", "val": 4200, "accn": "0000000001-25-000010", "fy": 2025, "fp": "FY", "form": "10-K", "filed": "2025-11-14"}
+          ]
+        }
+      },
+      "NetIncomeLoss": {
+        "label": "Net Income (Loss) Attributable to Parent",
+        "description": "Test fixture values. FY2024 is restated from 400 to 380 in the FY2025 10-K.",
+        "units": {
+          "USD": [
+            {"start": "2023-10-01", "end": "2024-09-30", "val": 400, "accn": "0000000001-24-000010", "fy": 2024, "fp": "FY", "form": "10-K", "filed": "2024-11-15"},
+            {"start": "2022-10-01", "end": "2023-09-30", "val": 350, "accn": "0000000001-24-000010", "fy": 2024, "fp": "FY", "form": "10-K", "filed": "2024-11-15"},
+            {"start": "2024-10-01", "end": "2024-12-31", "val": 100, "accn": "0000000001-25-000001", "fy": 2025, "fp": "Q1", "form": "10-Q", "filed": "2025-02-05"},
+            {"start": "2025-01-01", "end": "2025-03-31", "val": 110, "accn": "0000000001-25-000004", "fy": 2025, "fp": "Q2", "form": "10-Q", "filed": "2025-05-05"},
+            {"start": "2025-04-01", "end": "2025-06-30", "val": 120, "accn": "0000000001-25-000006", "fy": 2025, "fp": "Q3", "form": "10-Q", "filed": "2025-08-05"},
+            {"start": "2024-10-01", "end": "2025-09-30", "val": 460, "accn": "0000000001-25-000010", "fy": 2025, "fp": "FY", "form": "10-K", "filed": "2025-11-14"},
+            {"start": "2023-10-01", "end": "2024-09-30", "val": 380, "accn": "0000000001-25-000010", "fy": 2025, "fp": "FY", "form": "10-K", "filed": "2025-11-14"},
+            {"start": "2022-10-01", "end": "2023-09-30", "val": 350, "accn": "0000000001-25-000010", "fy": 2025, "fp": "FY", "form": "10-K", "filed": "2025-11-14"},
+            {"start": "2025-10-01", "end": "2025-12-31", "val": 125, "accn": "0000000001-26-000002", "fy": 2026, "fp": "Q1", "form": "10-Q", "filed": "2026-02-05"}
+          ]
+        }
+      },
+      "OperatingIncomeLoss": {
+        "label": "Operating Income (Loss)",
+        "description": "Test fixture values.",
+        "units": {
+          "USD": [
+            {"start": "2024-10-01", "end": "2025-09-30", "val": 600, "accn": "0000000001-25-000010", "fy": 2025, "fp": "FY", "form": "10-K", "filed": "2025-11-14"},
+            {"start": "2023-10-01", "end": "2024-09-30", "val": 520, "accn": "0000000001-25-000010", "fy": 2025, "fp": "FY", "form": "10-K", "filed": "2025-11-14"}
+          ]
+        }
+      },
+      "DepreciationDepreciationAndAmortization": {
+        "label": "Depreciation, Depletion and Amortization",
+        "description": "Test fixture values.",
+        "units": {
+          "USD": [
+            {"start": "2024-10-01", "end": "2025-09-30", "val": 100, "accn": "0000000001-25-000010", "fy": 2025, "fp": "FY", "form": "10-K", "filed": "2025-11-14"},
+            {"start": "2023-10-01", "end": "2024-09-30", "val": 90, "accn": "0000000001-25-000010", "fy": 2025, "fp": "FY", "form": "10-K", "filed": "2025-11-14"}
+          ]
+        }
+      },
+      "EarningsPerShareDiluted": {
+        "label": "Earnings Per Share, Diluted",
+        "description": "Test fixture values.",
+        "units": {
+          "USD/shares": [
+            {"start": "2023-10-01", "end": "2024-09-30", "val": 4.0, "accn": "0000000001-24-000010", "fy": 2024, "fp": "FY", "form": "10-K", "filed": "2024-11-15"},
+            {"start": "2024-10-01", "end": "2024-12-31", "val": 1.0, "accn": "0000000001-25-000001", "fy": 2025, "fp": "Q1", "form": "10-Q", "filed": "2025-02-05"},
+            {"start": "2025-01-01", "end": "2025-03-31", "val": 1.1, "accn": "0000000001-25-000004", "fy": 2025, "fp": "Q2", "form": "10-Q", "filed": "2025-05-05"},
+            {"start": "2025-04-01", "end": "2025-06-30", "val": 1.2, "accn": "0000000001-25-000006", "fy": 2025, "fp": "Q3", "form": "10-Q", "filed": "2025-08-05"},
+            {"start": "2024-10-01", "end": "2025-09-30", "val": 4.6, "accn": "0000000001-25-000010", "fy": 2025, "fp": "FY", "form": "10-K", "filed": "2025-11-14"},
+            {"start": "2023-10-01", "end": "2024-09-30", "val": 4.0, "accn": "0000000001-25-000010", "fy": 2025, "fp": "FY", "form": "10-K", "filed": "2025-11-14"},
+            {"start": "2025-10-01", "end": "2025-12-31", "val": 1.25, "accn": "0000000001-26-000002", "fy": 2026, "fp": "Q1", "form": "10-Q", "filed": "2026-02-05"}
+          ]
+        }
+      },
+      "WeightedAverageNumberOfDilutedSharesOutstanding": {
+        "label": "Weighted Average Number of Shares Outstanding, Diluted",
+        "description": "Test fixture values.",
+        "units": {
+          "shares": [
+            {"start": "2024-10-01", "end": "2024-12-31", "val": 100, "accn": "0000000001-25-000001", "fy": 2025, "fp": "Q1", "form": "10-Q", "filed": "2025-02-05"},
+            {"start": "2024-10-01", "end": "2025-09-30", "val": 100, "accn": "0000000001-25-000010", "fy": 2025, "fp": "FY", "form": "10-K", "filed": "2025-11-14"}
+          ]
+        }
+      },
+      "NetCashProvidedByUsedInOperatingActivities": {
+        "label": "Net Cash Provided by (Used in) Operating Activities",
+        "description": "Test fixture values. 10-Qs report year-to-date only.",
+        "units": {
+          "USD": [
+            {"start": "2023-10-01", "end": "2024-09-30", "val": 640, "accn": "0000000001-24-000010", "fy": 2024, "fp": "FY", "form": "10-K", "filed": "2024-11-15"},
+            {"start": "2022-10-01", "end": "2023-09-30", "val": 600, "accn": "0000000001-24-000010", "fy": 2024, "fp": "FY", "form": "10-K", "filed": "2024-11-15"},
+            {"start": "2024-10-01", "end": "2024-12-31", "val": 150, "accn": "0000000001-25-000001", "fy": 2025, "fp": "Q1", "form": "10-Q", "filed": "2025-02-05"},
+            {"start": "2024-10-01", "end": "2025-03-31", "val": 320, "accn": "0000000001-25-000004", "fy": 2025, "fp": "Q2", "form": "10-Q", "filed": "2025-05-05"},
+            {"start": "2024-10-01", "end": "2025-06-30", "val": 500, "accn": "0000000001-25-000006", "fy": 2025, "fp": "Q3", "form": "10-Q", "filed": "2025-08-05"},
+            {"start": "2024-10-01", "end": "2025-09-30", "val": 700, "accn": "0000000001-25-000010", "fy": 2025, "fp": "FY", "form": "10-K", "filed": "2025-11-14"},
+            {"start": "2023-10-01", "end": "2024-09-30", "val": 640, "accn": "0000000001-25-000010", "fy": 2025, "fp": "FY", "form": "10-K", "filed": "2025-11-14"},
+            {"start": "2025-10-01", "end": "2025-12-31", "val": 160, "accn": "0000000001-26-000002", "fy": 2026, "fp": "Q1", "form": "10-Q", "filed": "2026-02-05"},
+            {"start": "2024-10-01", "end": "2024-12-31", "val": 150, "accn": "0000000001-26-000002", "fy": 2026, "fp": "Q1", "form": "10-Q", "filed": "2026-02-05"}
+          ]
+        }
+      },
+      "PaymentsToAcquirePropertyPlantAndEquipment": {
+        "label": "Payments to Acquire Property, Plant, and Equipment",
+        "description": "Test fixture values (reported as a positive payment).",
+        "units": {
+          "USD": [
+            {"start": "2024-10-01", "end": "2025-09-30", "val": 200, "accn": "0000000001-25-000010", "fy": 2025, "fp": "FY", "form": "10-K", "filed": "2025-11-14"},
+            {"start": "2023-10-01", "end": "2024-09-30", "val": 180, "accn": "0000000001-25-000010", "fy": 2025, "fp": "FY", "form": "10-K", "filed": "2025-11-14"}
+          ]
+        }
+      },
+      "Assets": {
+        "label": "Assets",
+        "description": "Test fixture values.",
+        "units": {
+          "USD": [
+            {"end": "2024-09-30", "val": 10000, "accn": "0000000001-24-000010", "fy": 2024, "fp": "FY", "form": "10-K", "filed": "2024-11-15"},
+            {"end": "2023-09-30", "val": 9000, "accn": "0000000001-24-000010", "fy": 2024, "fp": "FY", "form": "10-K", "filed": "2024-11-15"},
+            {"end": "2024-12-31", "val": 10100, "accn": "0000000001-25-000001", "fy": 2025, "fp": "Q1", "form": "10-Q", "filed": "2025-02-05"},
+            {"end": "2024-09-30", "val": 10000, "accn": "0000000001-25-000001", "fy": 2025, "fp": "Q1", "form": "10-Q", "filed": "2025-02-05"},
+            {"end": "2025-03-31", "val": 10200, "accn": "0000000001-25-000004", "fy": 2025, "fp": "Q2", "form": "10-Q", "filed": "2025-05-05"},
+            {"end": "2025-06-30", "val": 10300, "accn": "0000000001-25-000006", "fy": 2025, "fp": "Q3", "form": "10-Q", "filed": "2025-08-05"},
+            {"end": "2025-09-30", "val": 10400, "accn": "0000000001-25-000010", "fy": 2025, "fp": "FY", "form": "10-K", "filed": "2025-11-14"},
+            {"end": "2024-09-30", "val": 10000, "accn": "0000000001-25-000010", "fy": 2025, "fp": "FY", "form": "10-K", "filed": "2025-11-14"},
+            {"end": "2025-12-31", "val": 10500, "accn": "0000000001-26-000002", "fy": 2026, "fp": "Q1", "form": "10-Q", "filed": "2026-02-05"},
+            {"end": "2025-09-30", "val": 10400, "accn": "0000000001-26-000002", "fy": 2026, "fp": "Q1", "form": "10-Q", "filed": "2026-02-05"}
+          ]
+        }
+      },
+      "CashAndCashEquivalentsAtCarryingValue": {
+        "label": "Cash and Cash Equivalents, at Carrying Value",
+        "description": "Test fixture values (fiscal year ends only).",
+        "units": {
+          "USD": [
+            {"end": "2024-09-30", "val": 450, "accn": "0000000001-24-000010", "fy": 2024, "fp": "FY", "form": "10-K", "filed": "2024-11-15"},
+            {"end": "2023-09-30", "val": 400, "accn": "0000000001-24-000010", "fy": 2024, "fp": "FY", "form": "10-K", "filed": "2024-11-15"},
+            {"end": "2025-09-30", "val": 500, "accn": "0000000001-25-000010", "fy": 2025, "fp": "FY", "form": "10-K", "filed": "2025-11-14"},
+            {"end": "2024-09-30", "val": 450, "accn": "0000000001-25-000010", "fy": 2025, "fp": "FY", "form": "10-K", "filed": "2025-11-14"}
+          ]
+        }
+      }
+    }
+  }
+}

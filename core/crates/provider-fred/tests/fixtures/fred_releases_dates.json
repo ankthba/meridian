@@ -1,0 +1,111 @@
+{
+    "realtime_start": "2013-01-01",
+    "realtime_end": "9999-12-31",
+    "order_by": "release_date",
+    "sort_order": "desc",
+    "count": 1129,
+    "offset": 0,
+    "limit": 1000,
+    "release_dates": [
+        {
+            "release_id": 9,
+            "release_name": "Advance Monthly Sales for Retail and Food Services",
+            "date": "2013-08-13"
+        },
+        {
+            "release_id": 262,
+            "release_name": "Failures and Assistance Transactions",
+            "date": "2013-08-13"
+        },
+        {
+            "release_id": 25,
+            "release_name": "Manufacturing and Trade Inventories and Sales",
+            "date": "2013-08-13"
+        },
+        {
+            "release_id": 92,
+            "release_name": "Selected Real Retail Sales Series",
+            "date": "2013-08-13"
+        },
+        {
+            "release_id": 188,
+            "release_name": "U.S. Import and Export Price Indexes",
+            "date": "2013-08-13"
+        },
+        {
+            "release_id": 183,
+            "release_name": "Gasoline and Diesel Fuel Update",
+            "date": "2013-08-12"
+        },
+        {
+            "release_id": 18,
+            "release_name": "H.15 Selected Interest Rates",
+            "date": "2013-08-12"
+        },
+        {
+            "release_id": 269,
+            "release_name": "National Accounts of Japan",
+            "date": "2013-08-12"
+        },
+        {
+            "release_id": 71,
+            "release_name": "Weekly Treasury Inflation-Indexed Securities",
+            "date": "2013-08-12"
+        },
+        {
+            "release_id": 122,
+            "release_name": "H.4.1 Factors Affecting Reserve Balances (data not included in press release)",
+            "date": "2013-08-09"
+        },
+        {
+            "release_id": 22,
+            "release_name": "H.8 Assets and Liabilities of Commercial Banks in the United States",
+            "date": "2013-08-09"
+        },
+        {
+            "release_id": 63,
+            "release_name": "M2 Related Series",
+            "date": "2013-08-09"
+        },
+        {
+            "release_id": 61,
+            "release_name": "Money Zero Maturity (MZM)",
+            "date": "2013-08-09"
+        },
+        {
+            "release_id": 236,
+            "release_name": "Monthly Housing Affordability Index",
+            "date": "2013-08-09"
+        },
+        {
+            "release_id": 78,
+            "release_name": "St. Louis Monthly Reserves and Monetary Base",
+            "date": "2013-08-09"
+        },
+        {
+            "release_id": 105,
+            "release_name": "St. Louis Weekly Reserves and Monetary Base",
+            "date": "2013-08-09"
+        },
+        {
+            "release_id": 255,
+            "release_name": "Bank Rate Monitor's Weekly Survey",
+            "date": "2013-08-08"
+        },
+        {
+            "release_id": 53,
+            "release_name": "Gross Domestic Product",
+            "date": "2013-08-08"
+        },
+        {
+            "release_id": 19,
+            "release_name": "H.3 Aggregate Reserves of Depository Institutions and the Monetary Base",
+            "date": "2013-08-08"
+        },
+        {
+            "release_id": 283,
+            "release_name": "H.3 Aggregate Reserves of Depository Institutions and the Monetary Base  (data not included in press release)",
+            "date": "2013-08-08"
+        }
+    ]
+}

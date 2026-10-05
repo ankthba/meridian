@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- HAND-MADE test fixture: not captured from any publisher. Exercises Atom
+     parsing: link rel selection, escaped-HTML title/summary, xhtml content,
+     `updated` fallback, category term/label, and an undated entry. -->
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Example Atom Wire</title>
+  <id>urn:example:feed</id>
+  <updated>2026-10-05T12:00:00Z</updated>
+  <entry>
+    <title type="html">Acme &lt;b&gt;Reports&lt;/b&gt; Third Quarter Results</title>
+    <link rel="self" href="https://example.com/self/acme-q3"/>
+    <link rel="alternate" type="text/html" href="https://example.com/news/acme-q3"/>
+    <id>urn:example:acme-q3</id>
+    <published>2026-10-05T08:30:00-04:00</published>
+    <updated>2026-10-05T09:00:00Z</updated>
+    <summary type="html">&lt;p&gt;Acme Corp. (NYSE: ACME) reported revenue of $1.2&amp;nbsp;billion.&lt;/p&gt;</summary>
+    <category term="earnings" label="Earnings"/>
+    <category term="1234"/>
+  </entry>
+  <entry>
+    <title>Beta Inc. Declares Quarterly Dividend</title>
+    <link href="https://example.com/news/beta-dividend"/>
+    <id>urn:example:beta-dividend</id>
+    <updated>2026-10-04T20:15:00Z</updated>
+    <content type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><p>Beta Inc. (Nasdaq: BETA)</p><p>declared a dividend.</p></div></content>
+  </entry>
+  <entry>
+    <title>Undated entry is skipped</title>
+    <link href="https://example.com/news/undated"/>
+    <id>urn:example:undated</id>
+  </entry>
+</feed>

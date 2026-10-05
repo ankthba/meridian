@@ -1,0 +1,20 @@
+[
+  {
+    "buy": 24,
+    "hold": 7,
+    "period": "2025-03-01",
+    "sell": 0,
+    "strongBuy": 13,
+    "strongSell": 0,
+    "symbol": "AAPL"
+  },
+  {
+    "buy": 17,
+    "hold": 13,
+    "period": "2025-02-01",
+    "sell": 5,
+    "strongBuy": 13,
+    "strongSell": 0,
+    "symbol": "AAPL"
+  }
+]

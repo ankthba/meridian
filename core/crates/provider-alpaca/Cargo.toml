@@ -1,5 +1,6 @@
 [package]
 name = "meridian-provider-alpaca"
+description = "Alpaca Market Data API (stocks, options, news; REST + WebSocket)."
 version.workspace = true
 edition.workspace = true
 rust-version.workspace = true
@@ -8,6 +9,22 @@ publish.workspace = true
 
 [dependencies]
 meridian-types.workspace = true
+meridian-provider.workspace = true
+async-trait.workspace = true
+chrono.workspace = true
+futures-util.workspace = true
+parking_lot.workspace = true
+rand.workspace = true
+reqwest.workspace = true
+secrecy.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+tokio.workspace = true
+tokio-tungstenite.workspace = true
+tracing.workspace = true
+
+[dev-dependencies]
+tokio = { workspace = true, features = ["test-util"] }
 
 [lints]
 workspace = true

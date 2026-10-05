@@ -1,0 +1,62 @@
+[
+ {
+  "id": "BTC",
+  "name": "Bitcoin",
+  "min_size": "0.00000001",
+  "status": "online",
+  "message": "",
+  "max_precision": "0.00000001",
+  "default_network": "bitcoin",
+  "display_name": "BTC"
+ },
+ {
+  "id": "ETH",
+  "name": "Ether",
+  "min_size": "0.00000001",
+  "status": "online",
+  "message": "",
+  "max_precision": "0.00000001",
+  "default_network": "ethereum",
+  "display_name": "ETH"
+ },
+ {
+  "id": "EUR",
+  "name": "Euro",
+  "min_size": "0.01",
+  "status": "online",
+  "message": "",
+  "max_precision": "0.01",
+  "default_network": "",
+  "display_name": "EUR"
+ },
+ {
+  "id": "USD",
+  "name": "United States Dollar",
+  "min_size": "0.01",
+  "status": "online",
+  "message": "",
+  "max_precision": "0.01",
+  "default_network": "",
+  "display_name": "USD"
+ },
+ {
+  "id": "USDC",
+  "name": "USDC",
+  "min_size": "0.000001",
+  "status": "online",
+  "message": "",
+  "max_precision": "0.000001",
+  "default_network": "ethereum",
+  "display_name": "USDC"
+ },
+ {
+  "id": "USDT",
+  "name": "Tether",
+  "min_size": "0.000001",
+  "status": "online",
+  "message": "",
+  "max_precision": "0.000001",
+  "default_network": "ethereum",
+  "display_name": "USDT"
+ }
+]

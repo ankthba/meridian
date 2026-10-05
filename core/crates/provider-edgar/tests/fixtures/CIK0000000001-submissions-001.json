@@ -1,0 +1,16 @@
+{
+  "accessionNumber": ["0000000001-23-000010", "0000000001-23-000006"],
+  "filingDate": ["2023-11-15", "2023-08-04"],
+  "reportDate": ["2023-09-30", "2023-06-30"],
+  "acceptanceDateTime": ["2023-11-15T16:00:00.000Z", "2023-08-04T16:00:00.000Z"],
+  "act": ["34", "34"],
+  "form": ["10-K", "10-Q"],
+  "fileNumber": ["000-00001", "000-00001"],
+  "filmNumber": ["00000007", "00000008"],
+  "items": ["", ""],
+  "size": [110000, 80000],
+  "isXBRL": [1, 1],
+  "isInlineXBRL": [1, 1],
+  "primaryDocument": ["exmp-20230930.htm", "exmp-20230630.htm"],
+  "primaryDocDescription": ["10-K", "10-Q"]
+}
