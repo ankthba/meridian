@@ -26,6 +26,13 @@ pub trait Provider: Send + Sync + 'static {
     fn id(&self) -> ProviderId;
     fn capabilities(&self) -> &Capabilities;
 
+    /// Whether this provider can serve `key` at all (e.g. a crypto venue
+    /// covers only the pairs it lists). Checked before routing and stream
+    /// subscription; defaults to true.
+    fn covers(&self, _key: &SecurityKey) -> bool {
+        true
+    }
+
     async fn search(&self, _q: &InstrumentQuery) -> ProviderResult<Vec<Instrument>> {
         unsupported(Capability::Search)
     }

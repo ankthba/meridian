@@ -77,8 +77,7 @@ impl FeedSource {
     pub fn label(&self) -> String {
         match self {
             FeedSource::Consolidated => "CONSOL".into(),
-            FeedSource::SingleVenue(v) => v.to_ascii_uppercase(),
-            FeedSource::Exchange(v) => v.to_ascii_uppercase(),
+            FeedSource::SingleVenue(v) | FeedSource::Exchange(v) => v.to_ascii_uppercase(),
             FeedSource::Aggregated => "AGG".into(),
             FeedSource::Official => "OFFICIAL".into(),
             FeedSource::Modelled => "MODEL".into(),

@@ -68,7 +68,7 @@ impl OptionContract {
     #[must_use]
     pub fn mid(&self) -> Option<f64> {
         match (self.bid, self.ask) {
-            (Some(b), Some(a)) if a >= b && a > 0.0 => Some((a + b) / 2.0),
+            (Some(b), Some(a)) if a >= b && a > 0.0 => Some(f64::midpoint(a, b)),
             _ => self.last,
         }
     }

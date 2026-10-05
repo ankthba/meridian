@@ -85,7 +85,7 @@ impl Quote {
 
     #[must_use]
     pub fn mid(&self) -> Option<f64> {
-        Some((self.bid? + self.ask?) / 2.0)
+        Some(f64::midpoint(self.bid?, self.ask?))
     }
 }
 
@@ -112,6 +112,9 @@ pub struct QuoteUpdate {
 }
 
 /// Events emitted by streaming providers, already normalized.
+// Quote events dominate the stream; boxing them would add an allocation per
+// tick for no benefit.
+#[allow(clippy::large_enum_variant)]
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub enum StreamEvent {
     Quote { key: SecurityKey, update: QuoteUpdate },

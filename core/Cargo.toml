@@ -91,7 +91,7 @@ bytes = "1.12"
 chrono = { version = "0.4.45", default-features = false, features = ["std", "clock", "serde"] }
 criterion = { version = "0.8.2", default-features = false, features = ["cargo_bench_support"] }
 crossbeam-channel = "0.5.17"
-duckdb = { version = "1.10506.0", features = ["bundled", "parquet"] }
+duckdb = { version = "1.10506.0", features = ["bundled", "parquet", "json"] }
 futures-util = { version = "0.3.34", default-features = false, features = ["std", "sink"] }
 html2text = "0.17.1"
 parking_lot = "0.12.5"

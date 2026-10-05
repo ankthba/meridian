@@ -46,11 +46,6 @@ pub fn asset_hint(key: &SecurityKey) -> &'static [AssetClass] {
     }
 }
 
-/// Covers-check a provider may refine; the router asks before calling.
-pub trait Coverage {
-    fn covers(&self, key: &SecurityKey) -> bool;
-}
-
 #[derive(Debug, Default)]
 struct Breaker {
     consecutive_failures: u32,
@@ -132,7 +127,7 @@ impl ProviderRouter {
                 let caps = r.provider.capabilities();
                 match key {
                     None => caps.supports(cap, None),
-                    Some(k) => asset_hint(k).iter().any(|a| caps.supports(cap, Some(*a))),
+                    Some(k) => r.provider.covers(k) && asset_hint(k).iter().any(|a| caps.supports(cap, Some(*a))),
                 }
             })
             .collect()
@@ -230,7 +225,9 @@ impl ProviderRouter {
             let caps = reg.provider.capabilities();
             let (mine, rest): (Vec<_>, Vec<_>) = remaining
                 .into_iter()
-                .partition(|k| asset_hint(k).iter().any(|a| caps.supports(Capability::Quotes, Some(*a))));
+                .partition(|k| {
+                    reg.provider.covers(k) && asset_hint(k).iter().any(|a| caps.supports(Capability::Quotes, Some(*a)))
+                });
             remaining = rest;
             if mine.is_empty() || reg.is_open() {
                 remaining.extend(mine);
