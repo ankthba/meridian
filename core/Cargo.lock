@@ -1172,6 +1172,7 @@ dependencies = [
  "async-trait",
  "chrono",
  "meridian-alerts",
+ "meridian-command",
  "meridian-provider",
  "meridian-store",
  "meridian-stream",

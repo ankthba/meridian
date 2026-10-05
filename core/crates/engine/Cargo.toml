@@ -1,5 +1,6 @@
 [package]
 name = "meridian-engine"
+description = "Orchestration: providers by data mode, caching, stream hub, stores, and function screen models."
 version.workspace = true
 edition.workspace = true
 rust-version.workspace = true
@@ -8,6 +9,24 @@ publish.workspace = true
 
 [dependencies]
 meridian-types.workspace = true
+meridian-provider.workspace = true
+meridian-stream.workspace = true
+meridian-store.workspace = true
+meridian-alerts.workspace = true
+meridian-command.workspace = true
+async-trait.workspace = true
+chrono.workspace = true
+parking_lot.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+similar.workspace = true
+thiserror.workspace = true
+tokio.workspace = true
+tokio-util.workspace = true
+tracing.workspace = true
+
+[dev-dependencies]
+tokio = { workspace = true, features = ["test-util"] }
 
 [lints]
 workspace = true
