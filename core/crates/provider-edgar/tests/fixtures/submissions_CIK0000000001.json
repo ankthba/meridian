@@ -1,0 +1,82 @@
+{
+  "cik": "1",
+  "entityType": "operating",
+  "sic": "7372",
+  "sicDescription": "Services-Prepackaged Software",
+  "name": "Example Corp",
+  "tickers": ["EXMP"],
+  "exchanges": ["Nasdaq"],
+  "website": "",
+  "fiscalYearEnd": "0930",
+  "stateOfIncorporation": "DE",
+  "addresses": {
+    "mailing": {
+      "street1": "1 EXAMPLE WAY",
+      "street2": null,
+      "city": "ANYTOWN",
+      "stateOrCountry": "CA",
+      "zipCode": "00000",
+      "stateOrCountryDescription": "CA"
+    },
+    "business": {
+      "street1": "1 EXAMPLE WAY",
+      "street2": null,
+      "city": "ANYTOWN",
+      "stateOrCountry": "CA",
+      "zipCode": "00000",
+      "stateOrCountryDescription": "CA"
+    }
+  },
+  "phone": "555-0100",
+  "formerNames": [],
+  "filings": {
+    "recent": {
+      "accessionNumber": [
+        "0000000001-25-000010",
+        "0000000001-26-000002",
+        "0000000001-25-000009",
+        "0000000002-25-000003",
+        "0000000001-25-000006",
+        "0000000001-25-000002",
+        "0000000001-24-000010"
+      ],
+      "filingDate": ["2025-11-14", "2026-02-05", "2025-11-13", "2025-09-02", "2025-08-05", "2025-01-20", "2024-11-15"],
+      "reportDate": ["2025-09-30", "2025-12-31", "2025-11-13", "", "2025-06-30", "2024-09-30", "2024-09-30"],
+      "acceptanceDateTime": [
+        "2025-11-14T16:05:00.000Z",
+        "2026-02-05T16:10:00.000Z",
+        "2025-11-13T16:30:00.000Z",
+        "2025-09-02T18:00:00.000Z",
+        "2025-08-05T16:02:00.000Z",
+        "2025-01-20T09:00:00.000Z",
+        "2024-11-15T16:01:00.000Z"
+      ],
+      "act": ["34", "34", "34", "", "34", "34", "34"],
+      "form": ["10-K", "10-Q", "8-K", "4", "10-Q", "10-K/A", "10-K"],
+      "fileNumber": ["000-00001", "000-00001", "000-00001", "", "000-00001", "000-00001", "000-00001"],
+      "filmNumber": ["00000001", "00000002", "00000003", "", "00000004", "00000005", "00000006"],
+      "items": ["", "", "2.02,9.01", "", "", "", ""],
+      "size": [123456, 98765, 4567, 3210, 87654, 2345, 120000],
+      "isXBRL": [1, 1, 1, 0, 1, 1, 1],
+      "isInlineXBRL": [1, 1, 1, 0, 1, 1, 1],
+      "primaryDocument": [
+        "exmp-20250930.htm",
+        "exmp-20251231.htm",
+        "exmp-8k_20251113.htm",
+        "xslF345X05/form4.xml",
+        "exmp-20250630.htm",
+        "exmp-10ka_20250120.htm",
+        "exmp-20240930.htm"
+      ],
+      "primaryDocDescription": ["10-K", "10-Q", "8-K", "", "10-Q", "10-K/A", "10-K"]
+    },
+    "files": [
+      {
+        "name": "CIK0000000001-submissions-001.json",
+        "filingCount": 2,
+        "filingFrom": "2023-08-04",
+        "filingTo": "2023-11-15"
+      }
+    ]
+  }
+}
