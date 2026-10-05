@@ -41,6 +41,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             AppModel.shared.start()
             KeyRouter.install()
             if SnapshotMode.enabled { SnapshotMode.run() }
+            if PerfHarness.enabled { PerfHarness.run() }
         }
     }
 

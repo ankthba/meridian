@@ -57,7 +57,7 @@ final class AskModel {
                 turns[idx].tools = turn.tools
                 turns[idx].error = turn.error
             } catch {
-                turns[idx].error = "\(error)"
+                turns[idx].error = error.userMessage
             }
             turns[idx].running = false
         }

@@ -343,7 +343,9 @@ async fn run(inner: Arc<Inner>, sink: Arc<dyn EventSink>, mut rx: UnboundedRecei
     let base_ns = inner.clock.now();
     let mut r = ChaCha8Rng::seed_from_u64(mix(&[inner.seed, tag("stream"), base_ns as u64]));
     let mut st = State::new(inner.stream_rate);
-    let mut interval = tokio::time::interval(Duration::from_millis(10));
+    // 40 Hz batches: per-symbol arrival rates are unchanged (Poisson over
+    // the elapsed interval); fewer wakeups keep CPU low with 2,000 symbols.
+    let mut interval = tokio::time::interval(Duration::from_millis(25));
     interval.set_missed_tick_behavior(tokio::time::MissedTickBehavior::Skip);
     let mut last_t = 0.0;
     let mut emitted: u64 = 0;

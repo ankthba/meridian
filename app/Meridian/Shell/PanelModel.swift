@@ -191,7 +191,7 @@ final class PanelModel: Identifiable {
             } catch {
                 guard let self, gen == self.generation else { return }
                 self.loading = false
-                self.message = "\(error)"
+                self.message = error.userMessage
             }
         }
     }

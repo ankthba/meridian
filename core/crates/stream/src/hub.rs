@@ -337,8 +337,11 @@ fn apply_loop(
             }
         }
     };
+    // Overflow is only filled while the channel is full, so queued messages
+    // always wake this loop before pending updates could be stranded; the
+    // timeout is a backstop, kept long so an idle hub doesn't spin.
     loop {
-        match rx.recv_timeout(Duration::from_millis(10)) {
+        match rx.recv_timeout(Duration::from_millis(100)) {
             Ok(Msg::Event(idx, ev)) => {
                 handle(idx, ev);
                 // Drain whatever else is queued without sleeping.

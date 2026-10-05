@@ -498,11 +498,13 @@ final class PriceChartNSView: NSView {
 
     /// Benchmark hook: renders `frames` frames while zooming/panning.
     func benchmarkFrames(_ frames: Int) -> [CFTimeInterval] {
+        guard let rep = bitmapImageRepForCachingDisplay(in: bounds) else { return [] }
         var times: [CFTimeInterval] = []
         for f in 0..<frames {
-            if f % 2 == 0 { zoom(by: f % 4 == 0 ? 0.9 : 1.1) } else { pan(by: 0.02) }
+            // Alternate zoom in/out and pans across the whole series.
+            if f % 2 == 0 { zoom(by: f % 4 == 0 ? 0.9 : 1.1) } else { pan(by: f % 8 < 4 ? 0.02 : -0.02) }
             let t = CACurrentMediaTime()
-            display()
+            cacheDisplay(in: bounds, to: rep) // renders draw(_:) for real
             times.append(CACurrentMediaTime() - t)
         }
         return times
@@ -560,7 +562,7 @@ struct ChartBlockView: View {
             series = ChartSeries(d)
             error = d.stale ? "OFFLINE — cached" : nil
         } catch {
-            self.error = "\(error)"
+            self.error = error.userMessage
         }
     }
 }

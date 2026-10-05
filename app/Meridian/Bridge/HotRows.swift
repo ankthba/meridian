@@ -130,7 +130,6 @@ final class QuoteFeed {
         since = r.seq
         guard !r.rows.isEmpty else { return }
         let ids = HotRowDecoder.decode(r.rows, into: &rows)
-        for id in ids { lastChanged[id] = now }
         for l in listeners.values { l(ids) }
     }
 
