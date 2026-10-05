@@ -1,5 +1,6 @@
 [package]
 name = "meridian-ask"
+description = "ASK analyst: Messages API client (raw HTTP + SSE), manual tool-use loop, audit records, number verifier."
 version.workspace = true
 edition.workspace = true
 rust-version.workspace = true
@@ -8,6 +9,22 @@ publish.workspace = true
 
 [dependencies]
 meridian-types.workspace = true
+async-trait.workspace = true
+bytes.workspace = true
+chrono.workspace = true
+futures-util.workspace = true
+regex.workspace = true
+reqwest.workspace = true
+secrecy.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+tokio.workspace = true
+tracing.workspace = true
+
+[dev-dependencies]
+proptest.workspace = true
+tokio = { workspace = true, features = ["test-util"] }
 
 [lints]
 workspace = true
