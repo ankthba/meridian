@@ -1,5 +1,6 @@
 [package]
 name = "meridian-provider-mock"
+description = "MockProvider: deterministic, seeded synthetic data for every capability. Everything it returns is labeled synthetic."
 version.workspace = true
 edition.workspace = true
 rust-version.workspace = true
@@ -8,6 +9,24 @@ publish.workspace = true
 
 [dependencies]
 meridian-types.workspace = true
+meridian-provider.workspace = true
+async-trait.workspace = true
+chrono.workspace = true
+parking_lot.workspace = true
+rand.workspace = true
+rand_chacha.workspace = true
+rand_distr.workspace = true
+serde.workspace = true
+tokio.workspace = true
+tracing.workspace = true
+
+[dev-dependencies]
+criterion.workspace = true
+tokio = { workspace = true, features = ["test-util"] }
+
+[[bench]]
+name = "mock"
+harness = false
 
 [lints]
 workspace = true

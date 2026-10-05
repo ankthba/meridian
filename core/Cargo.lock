@@ -1987,7 +1987,18 @@ dependencies = [
 name = "meridian-provider-mock"
 version = "0.1.0"
 dependencies = [
+ "async-trait",
+ "chrono",
+ "criterion",
+ "meridian-provider",
  "meridian-types",
+ "parking_lot",
+ "rand 0.9.5",
+ "rand_chacha",
+ "rand_distr",
+ "serde",
+ "tokio",
+ "tracing",
 ]
 
 [[package]]
