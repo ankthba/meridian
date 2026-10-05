@@ -12,14 +12,14 @@ use crate::screen::{Block, Cell, Column, Field, Format, Input, InputKind, Row, S
 const TITLE: &str = "Historical Prices";
 
 #[derive(Clone, Copy, PartialEq, Eq)]
-enum Period {
+pub(crate) enum Period {
     Daily,
     Weekly,
     Monthly,
 }
 
 /// Aggregates daily bars into calendar weeks (ISO) or months.
-fn aggregate(series: &BarSeries, period: Period) -> Vec<Bar> {
+pub(crate) fn aggregate(series: &BarSeries, period: Period) -> Vec<Bar> {
     let mut out: Vec<Bar> = Vec::new();
     let mut last_bucket: Option<(i32, u32)> = None;
     for i in 0..series.len() {

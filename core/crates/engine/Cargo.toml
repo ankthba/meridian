@@ -13,6 +13,7 @@ meridian-provider.workspace = true
 meridian-stream.workspace = true
 meridian-store.workspace = true
 meridian-alerts.workspace = true
+meridian-analytics.workspace = true
 meridian-command.workspace = true
 async-trait.workspace = true
 chrono.workspace = true

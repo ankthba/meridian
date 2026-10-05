@@ -2,6 +2,8 @@
 //! mnemonics; [`Engine::screen`] dispatches.
 
 mod alerts;
+mod analysis;
+pub mod chart;
 mod common;
 mod company;
 mod des;
@@ -10,6 +12,7 @@ mod hp;
 mod macro_eco;
 mod monitors;
 mod news;
+mod options;
 mod secf;
 
 use std::sync::Arc;
@@ -118,6 +121,17 @@ pub(crate) fn suggest_hook(engine: &Engine) {
 }
 
 /// Screens backed by the analytics crate (charts, options, analytics).
-pub(crate) fn analytics_builder_for(_function: &str) -> Option<Builder> {
-    None
+pub(crate) fn analytics_builder_for(function: &str) -> Option<Builder> {
+    Some(match function {
+        "GP" | "GIP" => builder!(chart::gp),
+        "OMON" => builder!(options::omon),
+        "OVDV" => builder!(options::ovdv),
+        "OVME" => builder!(options::ovme),
+        "EQS" => builder!(analysis::eqs),
+        "RV" => builder!(analysis::rv),
+        "CORR" => builder!(analysis::corr),
+        "PORT" => builder!(analysis::port),
+        "BTST" => builder!(analysis::btst),
+        _ => return None,
+    })
 }
