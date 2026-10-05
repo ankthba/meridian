@@ -351,8 +351,13 @@ impl ProviderRouter {
         }
         let mut items = Vec::new();
         let mut errors = Vec::new();
+        // Whether any provider handles this query's scope; if none does the
+        // answer is "not available", not an empty feed.
+        let mut supported = false;
         for reg in candidates {
             if reg.is_open() {
+                supported = true;
+                errors.push(ProviderError::Upstream(format!("{} temporarily disabled after repeated failures", reg.provider.id())));
                 continue;
             }
             if let Some(b) = &reg.bucket {
@@ -360,15 +365,20 @@ impl ProviderRouter {
             }
             match reg.provider.news(&q).await {
                 Ok(mut page) => {
+                    supported = true;
                     reg.record(true);
                     items.append(&mut page.items);
                 }
                 Err(ProviderError::Unsupported { .. }) => {}
                 Err(e) => {
+                    supported = true;
                     reg.record(!e.is_retryable());
                     errors.push(e);
                 }
             }
+        }
+        if !supported && errors.is_empty() && items.is_empty() {
+            return Err(ProviderError::Unsupported { capability: Capability::News });
         }
         if items.is_empty()
             && let Some(e) = errors.into_iter().next()
@@ -501,6 +511,23 @@ mod tests {
         let r = ProviderRouter::new(vec![Arc::new(Fake::new("a", None))]);
         let err = r.profile(&SecurityKey::currency("EURUSD")).await.unwrap_err();
         assert!(matches!(err, ProviderError::Unsupported { capability: Capability::Profile }));
+    }
+
+    #[tokio::test(start_paused = true)]
+    async fn news_unsupported_by_every_provider_is_not_an_empty_feed() {
+        // Advertises News but rejects this scope (trait default).
+        let mut a = Fake::new("a", None);
+        a.caps.entries.push(CapabilityEntry {
+            capability: Capability::News,
+            asset_classes: vec![AssetClass::Equity],
+            delay: DataDelay::RealTime,
+            source: FeedSource::Official,
+            history: None,
+        });
+        let r = ProviderRouter::new(vec![Arc::new(a)]);
+        let q = NewsQuery { scope: crate::request::NewsScope::Top, keys: vec![], text: None, from: None, to: None, limit: 10 };
+        let err = r.news(q).await.unwrap_err();
+        assert!(matches!(err, ProviderError::Unsupported { capability: Capability::News }));
     }
 
     #[tokio::test(start_paused = true)]

@@ -456,8 +456,13 @@ impl Screen {
 
     pub fn source(&mut self, p: &meridian_types::Provenance) {
         let b = SourceBadge::from_provenance(p);
-        if !self.sources.contains(&b) {
-            self.sources.push(b);
+        // One badge per provider/delay/feed; items fetched at different
+        // times share it, showing the latest as-of.
+        match self.sources.iter_mut().find(|s| {
+            s.provider == b.provider && s.delay == b.delay && s.source == b.source && s.synthetic == b.synthetic
+        }) {
+            Some(existing) => existing.as_of = existing.as_of.max(b.as_of),
+            None => self.sources.push(b),
         }
     }
 

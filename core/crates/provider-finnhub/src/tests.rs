@@ -386,10 +386,8 @@ async fn missing_key_is_unauthorized_without_http() {
 async fn unsupported_scopes_and_uncovered_keys_make_no_http() {
     let server = TestServer::start(|_| (200, "[]".into())).await;
     let p = provider(&server.base, Some(TEST_KEY));
-    for scope in [NewsScope::Top, NewsScope::PressReleases] {
-        let err = p.news(&query(scope, &[])).await.unwrap_err();
-        assert_eq!(err, ProviderError::Unsupported { capability: Capability::News });
-    }
+    let err = p.news(&query(NewsScope::PressReleases, &[])).await.unwrap_err();
+    assert_eq!(err, ProviderError::Unsupported { capability: Capability::News });
     let vod: SecurityKey = "VOD LN Equity".parse().unwrap();
     assert!(matches!(p.profile(&vod).await, Err(ProviderError::NotFound(_))));
     let mut q = query(NewsScope::Company, &[]);

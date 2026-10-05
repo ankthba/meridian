@@ -429,12 +429,12 @@ async fn news_company_scope_and_text_filter() {
 async fn news_scopes_without_http() {
     let server = TestServer::start(Vec::new()).await;
     let p = provider(AlpacaFeed::Iex, &server.base);
-    for scope in [NewsScope::Top, NewsScope::PressReleases] {
-        assert_eq!(
-            p.news(&news_q(scope, Vec::new(), None, 10)).await.unwrap_err(),
-            ProviderError::Unsupported { capability: Capability::News }
-        );
-    }
+    assert_eq!(
+        p.news(&news_q(NewsScope::PressReleases, Vec::new(), None, 10)).await.unwrap_err(),
+        ProviderError::Unsupported { capability: Capability::News }
+    );
+    let page = p.news(&news_q(NewsScope::Top, Vec::new(), None, 0)).await.unwrap();
+    assert!(page.items.is_empty());
     let page = p.news(&news_q(NewsScope::Company, vec![SecurityKey::currency("EURUSD")], None, 10)).await.unwrap();
     assert!(page.items.is_empty());
     let page = p.news(&news_q(NewsScope::Market, Vec::new(), None, 0)).await.unwrap();

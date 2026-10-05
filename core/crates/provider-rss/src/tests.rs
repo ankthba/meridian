@@ -890,6 +890,30 @@ async fn news_company_scope_filters_by_ticker() {
 }
 
 #[tokio::test]
+async fn a_stalled_feed_does_not_hold_up_the_others() {
+    let (base, _) = serve(vec![("/bw", 200, BW.to_owned())]).await;
+    // Accepts connections and never answers.
+    let stall = TcpListener::bind("127.0.0.1:0").await.unwrap();
+    let stall_base = format!("http://{}", stall.local_addr().unwrap());
+    tokio::spawn(async move {
+        let mut held = Vec::new();
+        while let Ok((sock, _)) = stall.accept().await {
+            held.push(sock);
+        }
+    });
+    let feeds = vec![
+        RssFeed::new("Stalled", format!("{stall_base}/feed")),
+        RssFeed::new("Business Wire", format!("{base}/bw")),
+    ];
+    let p = RssProvider::new(RssConfig { feeds }).unwrap().with_clock(Arc::new(FixedClock(FETCHED)));
+    let started = std::time::Instant::now();
+    let page = p.news(&query(NewsScope::PressReleases, vec![])).await.unwrap();
+    assert!(started.elapsed() < crate::RESPONSE_DEADLINE + std::time::Duration::from_secs(1), "{:?}", started.elapsed());
+    assert_eq!(page.items.len(), 6);
+    assert!(page.items.iter().all(|i| i.source == "Business Wire"));
+}
+
+#[tokio::test]
 async fn news_tolerates_some_failed_feeds() {
     let (base, _) = serve(vec![
         ("/bw", 200, BW.to_owned()),

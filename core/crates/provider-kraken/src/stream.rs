@@ -287,6 +287,9 @@ async fn run(inner: Arc<Inner>, sink: StreamSink, mut rx: UnboundedReceiver<Cmd>
     let mut desired: BTreeSet<SecurityKey> = BTreeSet::new();
     let mut backoff = Backoff::default();
     let mut catalog_tried = false;
+    // The socket opens only once something is subscribed; say so rather
+    // than leaving the feed looking stuck at "connecting".
+    rep.status(false, "idle: no subscriptions".to_owned());
     loop {
         if desired.is_empty() {
             let keep_going = rx.recv().await.is_some_and(|cmd| apply(&mut desired, cmd));
@@ -808,7 +811,9 @@ mod tests {
             statuses_of(ev).iter().filter(|c| **c).count() >= 3
         })
         .await;
-        assert_eq!(sink.statuses(), vec![true, true, false, true]);
+        // Initial "idle" (nothing subscribed yet), connected, system status,
+        // dropped, reconnected.
+        assert_eq!(sink.statuses(), vec![false, true, true, false, true]);
 
         handle.subscribe(&[
             SecurityKey::currency("ETHUSD"),

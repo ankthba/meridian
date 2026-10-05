@@ -26,7 +26,6 @@ use meridian_types::{
 };
 use serde::{Deserialize, Serialize};
 use tokio::sync::Mutex;
-use tokio::task::JoinSet;
 use tokio::time::Instant;
 
 /// Stable provider id.
@@ -40,6 +39,9 @@ pub const FEED_CACHE_TTL: Duration = Duration::from_secs(60);
 
 /// Attempts per feed download (first try plus retries) for transient errors.
 const FETCH_ATTEMPTS: u32 = 3;
+/// How long a news request waits for feeds before answering with those that
+/// have arrived.
+const RESPONSE_DEADLINE: Duration = Duration::from_secs(4);
 /// Base delay between attempts; attempt `n` waits `n × RETRY_DELAY`.
 const RETRY_DELAY: Duration = Duration::from_millis(250);
 
@@ -249,31 +251,37 @@ impl RssProvider {
     }
 
     /// Reads every feed concurrently. Returns the items of the feeds that
-    /// worked; fails only if every feed failed (with the first feed's error,
-    /// in configuration order).
+    /// answered within [`RESPONSE_DEADLINE`]; fails only if none did (with
+    /// the first feed's error, in configuration order). A feed still loading
+    /// at the deadline keeps going in the background and fills its cache for
+    /// the next request, so one slow publisher never stalls the screen.
     async fn fetch_all(&self) -> ProviderResult<Vec<NewsItem>> {
-        let mut set = JoinSet::new();
+        let (tx, mut rx) = tokio::sync::mpsc::channel(self.slots.len().max(1));
         for (idx, slot) in self.slots.iter().enumerate() {
-            let (client, slot, clock) = (
+            let (client, slot, clock, tx) = (
                 self.client.clone(),
                 Arc::clone(slot),
                 Arc::clone(&self.clock),
+                tx.clone(),
             );
-            set.spawn(async move { (idx, load_feed(&client, &slot, clock.as_ref()).await) });
+            tokio::spawn(async move {
+                let res = load_feed(&client, &slot, clock.as_ref()).await;
+                let _ = tx.send((idx, res)).await;
+            });
         }
+        drop(tx);
         let mut results: Vec<Option<ProviderResult<Arc<Vec<NewsItem>>>>> =
             vec![None; self.slots.len()];
-        while let Some(joined) = set.join_next().await {
-            match joined {
-                Ok((idx, res)) => results[idx] = Some(res),
-                Err(e) => tracing::warn!(error = %e, "RSS feed task failed"),
-            }
+        let deadline = Instant::now() + RESPONSE_DEADLINE;
+        while let Ok(Some((idx, res))) = tokio::time::timeout_at(deadline, rx.recv()).await {
+            results[idx] = Some(res);
         }
         merge_feed_results(self.slots.iter().zip(results).map(|(slot, r)| {
             let r = r.unwrap_or_else(|| {
                 Err(ProviderError::Upstream(format!(
-                    "{}: feed task failed",
-                    slot.feed.name
+                    "{}: no response within {} s",
+                    slot.feed.name,
+                    RESPONSE_DEADLINE.as_secs()
                 )))
             });
             (slot.feed.name.as_str(), r)

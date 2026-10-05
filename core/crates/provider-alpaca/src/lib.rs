@@ -524,8 +524,10 @@ impl Provider for AlpacaProvider {
                 }
                 Some(s)
             }
-            NewsScope::Market => None,
-            NewsScope::Top | NewsScope::PressReleases => {
+            // No free source curates "top" stories; TOP shows the latest
+            // market-wide headlines.
+            NewsScope::Market | NewsScope::Top => None,
+            NewsScope::PressReleases => {
                 return Err(ProviderError::Unsupported { capability: Capability::News });
             }
         };

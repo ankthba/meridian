@@ -227,8 +227,10 @@ impl Provider for FinnhubProvider {
     async fn news(&self, q: &NewsQuery) -> ProviderResult<NewsPage> {
         match q.scope {
             NewsScope::Company => self.company_news(q).await,
-            NewsScope::Market => self.market_news(q).await,
-            NewsScope::Top | NewsScope::PressReleases => {
+            // No free source curates "top" stories; TOP shows Finnhub's
+            // general market headlines.
+            NewsScope::Market | NewsScope::Top => self.market_news(q).await,
+            NewsScope::PressReleases => {
                 Err(ProviderError::Unsupported { capability: Capability::News })
             }
         }

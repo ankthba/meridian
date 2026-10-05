@@ -1801,6 +1801,7 @@ dependencies = [
  "meridian-command",
  "meridian-provider",
  "meridian-provider-mock",
+ "meridian-provider-rss",
  "meridian-store",
  "meridian-stream",
  "meridian-types",
