@@ -1,0 +1,1 @@
+{"method":"subscribe","req_id":1,"result":{"channel":"ticker","event_trigger":"trades","snapshot":true,"symbol":"BTC/USD"},"success":true,"time_in":"2026-10-05T18:29:10.188678Z","time_out":"2026-10-05T18:29:10.188755Z"}

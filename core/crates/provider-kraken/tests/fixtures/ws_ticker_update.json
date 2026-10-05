@@ -1,0 +1,1 @@
+{"channel":"ticker","type":"update","data":[{"symbol":"ETH/USD","bid":2710.29,"bid_qty":6.50711102,"ask":2710.30,"ask_qty":0.01600000,"last":2710.30,"volume":35458.99562640,"vwap":2713.34,"low":2678.88,"high":2738.82,"change":9.46,"change_pct":0.35,"trades":49091,"timestamp":"2026-10-05T18:29:10.625062Z"}]}
