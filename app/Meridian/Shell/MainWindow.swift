@@ -65,7 +65,6 @@ struct StatusBar: View {
     @Bindable var app = AppModel.shared
     @Environment(\.openSettings) private var openSettings
     @State private var now = Date()
-    @State private var missing = 0
     private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     private static let clock: DateFormatter = {
         let f = DateFormatter()
@@ -88,9 +87,9 @@ struct StatusBar: View {
                         Text("RESTART TO APPLY KEYS").font(Theme.swiftFont(11, weight: .bold)).foregroundStyle(Theme.warning.swiftUI)
                     }
                     .buttonStyle(.plain)
-                } else if missing > 0 {
+                } else if app.missingSetup > 0 {
                     Button { openSettings() } label: {
-                        Text("SETUP: \(missing) SOURCE\(missing == 1 ? "" : "S") NOT SET").font(Theme.swiftFont(11, weight: .bold)).foregroundStyle(Theme.warning.swiftUI)
+                        Text("SETUP: \(app.missingSetup) SOURCE\(app.missingSetup == 1 ? "" : "S") NOT SET").font(Theme.swiftFont(11, weight: .bold)).foregroundStyle(Theme.warning.swiftUI)
                     }
                     .buttonStyle(.plain)
                     .help("Open Settings → Setup (⌘,)")
@@ -119,7 +118,6 @@ struct StatusBar: View {
         .background(Color.black)
         .overlay(alignment: .bottom) { Rectangle().fill(Theme.grid.swiftUI).frame(height: 1) }
         .onReceive(timer) { now = $0 }
-        .onAppear { if app.mode == .live { missing = SetupItem.missingCount } }
     }
 }
 

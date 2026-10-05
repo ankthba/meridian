@@ -55,8 +55,12 @@ impl EngineError {
         matches!(
             self,
             EngineError::NotAvailable { .. }
+                | EngineError::NotFound(_)
                 | EngineError::Provider(
-                    ProviderError::Unsupported { .. } | ProviderError::NotEntitled { .. } | ProviderError::Unauthorized(_)
+                    ProviderError::Unsupported { .. }
+                        | ProviderError::NotEntitled { .. }
+                        | ProviderError::Unauthorized(_)
+                        | ProviderError::NotFound(_)
                 )
         )
     }

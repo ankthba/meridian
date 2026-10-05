@@ -42,6 +42,9 @@ final class AppModel {
     /// Credentials changed in Setup since launch (providers are built at
     /// startup).
     var restartNeeded = false
+    /// Live sources without credentials (status bar); computed once the core
+    /// is up, since the EDGAR contact lives in the core's settings store.
+    var missingSetup = 0
 
     func start() {
         guard core == nil else { return }
@@ -71,6 +74,7 @@ final class AppModel {
             try c.start()
             core = c
             self.mode = (try? c.dataMode()) ?? mode
+            if self.mode == .live { missingSetup = SetupItem.missingCount }
             workspace.restore(core: c)
         } catch {
             startupError = "Core failed to start: \(error)"

@@ -160,6 +160,7 @@ struct SetupView: View {
 
     private func changed() {
         app.restartNeeded = true
+        app.missingSetup = SetupItem.missingCount
         refresh += 1
     }
 }

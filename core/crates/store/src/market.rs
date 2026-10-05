@@ -435,6 +435,17 @@ impl MarketStore {
         Ok(())
     }
 
+    /// One cached story by id.
+    pub fn news_by_id(&self, id: &str) -> StoreResult<Option<NewsItem>> {
+        let conn = self.reader()?;
+        let mut stmt = conn.prepare("SELECT json FROM news WHERE id = ? LIMIT 1")?;
+        let mut rows = stmt.query_map([id], |r| r.get::<_, String>(0))?;
+        match rows.next() {
+            Some(j) => Ok(Some(serde_json::from_str(&j?)?)),
+            None => Ok(None),
+        }
+    }
+
     /// Cached news, newest first, optionally filtered by ticker and text.
     pub fn search_news(&self, tickers: &[String], text: Option<&str>, limit: usize) -> StoreResult<Vec<NewsItem>> {
         let conn = self.reader()?;

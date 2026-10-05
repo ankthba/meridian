@@ -41,6 +41,10 @@ pub struct Engine {
     universe: RwLock<Vec<Instrument>>,
     ai: RwLock<Option<Arc<dyn AiService>>>,
     instruments: RwLock<HashMap<SecurityKey, Instrument>>,
+    /// Stories shown this session, by id, so opening one never depends on
+    /// re-fetching the feed. In memory only (some providers forbid storing
+    /// news on disk).
+    pub(crate) recent_news: Mutex<HashMap<String, meridian_types::NewsItem>>,
     cancel: CancellationToken,
 }
 
@@ -85,6 +89,7 @@ impl Engine {
             universe: RwLock::new(Vec::new()),
             ai: RwLock::new(None),
             instruments: RwLock::new(HashMap::new()),
+            recent_news: Mutex::new(HashMap::new()),
             cancel: CancellationToken::new(),
         });
         engine.reload_alerts()?;

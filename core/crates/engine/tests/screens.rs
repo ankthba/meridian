@@ -125,6 +125,28 @@ fn every_function_screen_matches_snapshot() {
 }
 
 #[test]
+fn a_listed_story_opens_and_an_unknown_one_says_so() {
+    use meridian_engine::screen::Block;
+    let rt = tokio::runtime::Builder::new_multi_thread().enable_all().build().expect("rt");
+    let engine = engine();
+    let top = rt.block_on(engine.screen(req("TOP", None, &[])));
+    let action = top
+        .blocks
+        .iter()
+        .find_map(|b| match b {
+            Block::Table(t) => t.rows.first().and_then(|r| r.action.clone()),
+            _ => None,
+        })
+        .expect("a story row");
+    let args: Vec<(&str, &str)> = action.args.iter().map(|(k, v)| (k.as_str(), v.as_str())).collect();
+    let story = rt.block_on(engine.screen(req(&action.function, None, &args)));
+    assert!(matches!(story.status, ScreenStatus::Ok), "{:?}", story.status);
+    let gone = rt.block_on(engine.screen(req("TOP", None, &[("story", "no-such-story")])));
+    assert!(matches!(gone.status, ScreenStatus::NotAvailable { .. }), "{:?}", gone.status);
+    engine.shutdown();
+}
+
+#[test]
 fn unknown_function_is_not_available() {
     let rt = tokio::runtime::Builder::new_multi_thread().enable_all().build().expect("rt");
     let engine = engine();

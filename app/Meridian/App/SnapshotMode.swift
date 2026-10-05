@@ -10,6 +10,7 @@ import SwiftUI
 ///   MERIDIAN_SNAPSHOT_SIZE=960x600   panel size (default 960x600)
 ///   MERIDIAN_SNAPSHOT_MAIN=1         also render the whole main window
 ///   MERIDIAN_SNAPSHOT_SETUP=1        also render Settings → Setup
+///   MERIDIAN_SNAPSHOT_WAIT=10        seconds to wait for each screen
 ///
 /// Use with MERIDIAN_MODE=mock, MERIDIAN_IN_MEMORY=1 and
 /// MERIDIAN_FIXED_CLOCK_NS for deterministic output.
@@ -58,11 +59,15 @@ enum SnapshotMode {
             for (i, spec) in specs.enumerated() {
                 let panel = PanelModel(index: 900 + i)
                 panel.run(ActionFfi(function: spec.function, security: spec.security, args: spec.args), push: false)
+                // MERIDIAN_SNAPSHOT_WAIT: seconds to wait for a screen (default 10).
+                let limit = Int((Double(env["MERIDIAN_SNAPSHOT_WAIT"] ?? "") ?? 10) * 20)
                 var waited = 0
-                while (panel.loading || (panel.screen == nil && panel.special == .none)) && waited < 200 {
+                let started = Date()
+                while (panel.loading || (panel.screen == nil && panel.special == .none)) && waited < limit {
                     try? await Task.sleep(nanoseconds: 50_000_000)
                     waited += 1
                 }
+                print("\(spec.function): \(panel.loading ? "still loading" : "loaded") after \(String(format: "%.1f", Date().timeIntervalSince(started))) s")
                 // Charts load asynchronously inside the view.
                 try? await Task.sleep(nanoseconds: 700_000_000)
                 let view = PanelView(panel: panel, focused: false, focusToken: 0)

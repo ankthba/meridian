@@ -16,6 +16,15 @@ impl Engine {
     pub async fn news_items(&self, q: NewsQuery) -> EngineResult<Vec<NewsItem>> {
         match self.router().news(q.clone()).await {
             Ok(page) => {
+                {
+                    let mut recent = self.recent_news.lock();
+                    if recent.len() > MAX_RECENT_STORIES {
+                        recent.clear();
+                    }
+                    for n in &page.items {
+                        recent.insert(n.id.clone(), n.clone());
+                    }
+                }
                 let caps = self.router().capabilities();
                 let storable: Vec<NewsItem> = page
                     .items
@@ -52,9 +61,28 @@ fn title_for(function: &str) -> &'static str {
     }
 }
 
+/// Bound on the in-memory story index (cleared when exceeded).
+const MAX_RECENT_STORIES: usize = 5_000;
+
+/// A story seen this session, else one in the local cache.
+fn known_story(engine: &Engine, id: &str) -> Option<NewsItem> {
+    if let Some(n) = engine.recent_news.lock().get(id) {
+        return Some(n.clone());
+    }
+    engine.stores().market.news_by_id(id).ok().flatten()
+}
+
 pub(crate) async fn news(engine: Arc<Engine>, req: ScreenRequest) -> Screen {
     let function = req.function.clone();
     let title = title_for(&function);
+    // Opening a story uses what was already shown; the feed is re-fetched
+    // only for stories this session hasn't seen.
+    if let Some(id) = req.arg("story")
+        && let Some(it) = known_story(&engine, id)
+    {
+        let sec = req.security.as_ref().map(ToString::to_string);
+        return story(&function, sec, std::slice::from_ref(&it), id);
+    }
     let scope = match function.as_str() {
         "TOP" => NewsScope::Top,
         "CN" => NewsScope::Company,

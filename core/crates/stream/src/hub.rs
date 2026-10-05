@@ -152,7 +152,7 @@ impl StreamHub {
         let mut map = self.feed_index.lock();
         let next = FeedIndex::try_from(map.len()).unwrap_or(NO_FEED - 1);
         map.entry(provider.clone()).or_insert(next);
-        self.statuses.lock().push(FeedStatus { provider: provider.clone(), connected: false, message: "connecting".into() });
+        self.statuses.lock().push(FeedStatus { provider: provider.clone(), connected: false, message: "idle: no subscriptions yet".into() });
         Arc::new(HubSink {
             tx: self.tx.clone(),
             overflow: self.overflow.clone(),
