@@ -1,0 +1,14 @@
+# Rust
+core/target/
+# Xcode
+app/*.xcodeproj/
+app/build/
+DerivedData/
+*.xcuserstate
+xcuserdata/
+# Generated FFI
+app/Packages/MeridianCore/Sources/MeridianCoreFFI/
+*.xcframework/
+# Local data and benches
+bench/results/*.local.json
+.DS_Store
