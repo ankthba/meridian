@@ -34,7 +34,8 @@ pub(crate) fn build(config: &CoreConfigFfi, econf: &EngineConfig, secrets: &dyn 
             seed: config.mock_seed,
             clock,
             extra_symbols: config.mock_extra_symbols as usize,
-            updates_per_symbol_per_sec: if config.mock_update_rate > 0.0 { config.mock_update_rate } else { 2.0 },
+            // 0 disables ticks (deterministic snapshots); negative = default.
+            updates_per_symbol_per_sec: if config.mock_update_rate >= 0.0 { config.mock_update_rate } else { 2.0 },
         }))],
         DataMode::Live => live(econf, secrets),
     };

@@ -782,7 +782,7 @@ pub(crate) async fn btst(engine: Arc<Engine>, req: ScreenRequest) -> Screen {
             return s;
         }
     };
-    let wins = res.trades.iter().filter(|t| t.pnl > 0.0).count();
+    let wins = res.trades.iter().filter(|t| !t.is_open && t.pnl > 0.0).count();
     s.push(Block::Fields {
         title: Some("Results".into()),
         columns: 3,
@@ -844,7 +844,7 @@ pub(crate) async fn btst(engine: Arc<Engine>, req: ScreenRequest) -> Screen {
         })
         .collect();
     s.push(Block::Table(Table {
-        title: Some(format!("Trades ({wins} winners)")),
+        title: Some(format!("Trades ({wins} closed winners)")),
         columns: vec![
             Column::text("Entry", 9),
             Column::text("Exit", 9),

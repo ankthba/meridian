@@ -288,7 +288,7 @@ final class PanelModel: Identifiable {
             }
         }
         if let item = screen?.menu.first(where: { Int($0.number) == n }) {
-            run(item.action)
+            runRowAction(item.action)
             return
         }
         message = "No item \(n)"
@@ -306,6 +306,12 @@ final class PanelModel: Identifiable {
     func runRowAction(_ a: ActionFfi) {
         if a.function == current?.function, a.security == current?.security, let cur = current {
             var merged = cur
+            // Typed-but-unapplied input cells travel with in-screen actions
+            // (e.g. PORT "Add Transaction", ALRT "Create Alert").
+            for (k, v) in pendingInputs {
+                merged.args.removeAll { $0.key == k }
+                merged.args.append(KeyValue(key: k, value: v))
+            }
             for kv in a.args {
                 merged.args.removeAll { $0.key == kv.key }
                 merged.args.append(kv)

@@ -548,8 +548,13 @@ struct ChartBlockView: View {
     @State private var reloadToken = 0
     private var drawingsKey: String { "drawings.\(spec.security)" }
 
+    /// Chart loads in flight (snapshot mode waits for zero).
+    nonisolated(unsafe) static var inFlight = 0
+
     private func load() async {
         guard let core = AppModel.shared.core else { return }
+        Self.inFlight += 1
+        defer { Self.inFlight -= 1 }
         do {
             let d = try await core.chartData(security: spec.security, interval: spec.interval, range: spec.range, studies: spec.indicators)
             series = ChartSeries(d)

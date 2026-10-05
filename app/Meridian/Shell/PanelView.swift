@@ -79,7 +79,7 @@ struct PanelView: View {
                             .foregroundStyle(m.selected ? Theme.functionBar.swiftUI : Color.white)
                             .padding(.horizontal, m.selected ? 3 : 0)
                             .background(m.selected ? Color.white : Color.clear)
-                            .onTapGesture { panel.run(m.action) }
+                            .onTapGesture { panel.runRowAction(m.action) }
                         }
                     }
                 }

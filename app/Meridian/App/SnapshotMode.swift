@@ -87,10 +87,18 @@ enum SnapshotMode {
         let window = NSWindow(contentRect: host.frame, styleMask: [.borderless], backing: .buffered, defer: false)
         window.appearance = NSAppearance(named: .darkAqua)
         window.contentView = host
+        // SwiftUI only draws its layers for ordered-in windows.
+        window.orderFrontRegardless()
         host.layoutSubtreeIfNeeded()
         host.displayIfNeeded()
-        // One more pass so AppKit-backed subviews (grids, charts) draw.
-        RunLoop.main.run(until: Date().addingTimeInterval(0.3))
+        RunLoop.main.run(until: Date().addingTimeInterval(0.4))
+        // Wait for async chart data (network in LIVE mode), up to 15 s.
+        var waited = 0.0
+        while ChartBlockView.inFlight > 0 && waited < 15 {
+            RunLoop.main.run(until: Date().addingTimeInterval(0.1))
+            waited += 0.1
+        }
+        RunLoop.main.run(until: Date().addingTimeInterval(0.5))
         host.layoutSubtreeIfNeeded()
         writePNG(host, to: url)
         window.orderOut(nil)

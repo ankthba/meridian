@@ -210,6 +210,10 @@ struct TableBlockView: NSViewRepresentable {
     }
 
     func sizeThatFits(_ proposal: ProposedViewSize, nsView: TerminalGridView, context: Context) -> CGSize? {
-        CGSize(width: proposal.width ?? nsView.intrinsicContentSize.width, height: nsView.contentHeight)
+        // Fill the panel, but never narrower than the columns need (the
+        // enclosing horizontal ScrollView pans wide tables).
+        let natural = nsView.intrinsicContentSize.width
+        let w = max(natural, proposal.width.flatMap { $0.isFinite ? $0 : nil } ?? natural)
+        return CGSize(width: w, height: nsView.contentHeight)
     }
 }

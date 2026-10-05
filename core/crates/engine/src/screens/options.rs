@@ -270,20 +270,20 @@ pub(crate) async fn omon(engine: Arc<Engine>, req: ScreenRequest) -> Screen {
     });
     let half = |side: &str| -> Vec<Column> {
         vec![
-            Column::num("Bid", Format::Number { decimals: 2 }, 7),
-            Column::num("Ask", Format::Number { decimals: 2 }, 7),
-            Column::num("Last", Format::Number { decimals: 2 }, 7),
-            Column::num(&format!("{side} IV"), Format::Number { decimals: 1 }, 7),
-            Column::num("Delta", Format::Number { decimals: 2 }, 6),
-            Column::num("Gamma", Format::Number { decimals: 3 }, 6),
-            Column::num("Theta", Format::Number { decimals: 3 }, 7),
-            Column::num("Vega", Format::Number { decimals: 3 }, 6),
-            Column::num("Volm", Format::Large { decimals: 1 }, 6),
-            Column::num("OI", Format::Large { decimals: 1 }, 6),
+            Column::num("Bid", Format::Number { decimals: 2 }, 6),
+            Column::num("Ask", Format::Number { decimals: 2 }, 6),
+            Column::num("Last", Format::Number { decimals: 2 }, 6),
+            Column::num(&format!("{side}IV"), Format::Number { decimals: 1 }, 5),
+            Column::num("Dlt", Format::Number { decimals: 2 }, 5),
+            Column::num("Gam", Format::Number { decimals: 3 }, 5),
+            Column::num("Tht", Format::Number { decimals: 2 }, 5),
+            Column::num("Vga", Format::Number { decimals: 2 }, 4),
+            Column::num("Volm", Format::Large { decimals: 0 }, 5),
+            Column::num("OI", Format::Large { decimals: 0 }, 5),
         ]
     };
     let mut columns = half("C");
-    columns.push(Column::num("Strike", Format::Number { decimals: 2 }, 8));
+    columns.push(Column::num("Strike", Format::Number { decimals: 2 }, 7));
     columns.extend(half("P"));
     s.push(Block::Table(Table { title: Some(format!("Calls | Strike | Puts — {}", expiry_label(expiry, today))), columns, rows, page_size: Some(40), numbered: false }));
     s

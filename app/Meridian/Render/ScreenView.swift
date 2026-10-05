@@ -117,9 +117,12 @@ struct BlockView: View {
                 if let t = table.title {
                     SectionTitle(text: t)
                 }
-                TableBlockView(table: table, page: panel.pages[index] ?? 0, feed: feed) { row in
-                    if let a = table.rows[row].action { panel.runRowAction(a) }
+                ScrollView(.horizontal) {
+                    TableBlockView(table: table, page: panel.pages[index] ?? 0, feed: feed) { row in
+                        if let a = table.rows[row].action { panel.runRowAction(a) }
+                    }
                 }
+                .scrollIndicators(.never)
             }
         case let .text(title, body):
             VStack(alignment: .leading, spacing: 2) {
@@ -172,8 +175,20 @@ struct FieldsView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 1) {
             if let title { SectionTitle(text: title) }
-            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 14, alignment: .leading), count: max(columns, 1)), alignment: .leading, spacing: 1) {
-                ForEach(Array(fields.enumerated()), id: \.offset) { _, f in
+            Grid(alignment: .leading, horizontalSpacing: 14, verticalSpacing: 1) {
+                ForEach(Array(stride(from: 0, to: fields.count, by: max(columns, 1))), id: \.self) { start in
+                    GridRow {
+                        ForEach(start..<min(start + max(columns, 1), fields.count), id: \.self) { i in
+                            fieldCell(fields[i])
+                        }
+                    }
+                }
+            }
+            .padding(.horizontal, 6)
+        }
+    }
+
+    private func fieldCell(_ f: FieldFfi) -> some View {
                     HStack(spacing: 6) {
                         Text(f.label)
                             .font(Theme.swiftFont())
@@ -187,10 +202,7 @@ struct FieldsView: View {
                             .textSelection(.enabled)
                     }
                     .overlay(alignment: .bottom) { Rectangle().fill(Color(white: 0.11)).frame(height: 1) }
-                }
-            }
-            .padding(.horizontal, 6)
-        }
+                    .frame(maxWidth: .infinity)
     }
 
     private func valueText(_ f: FieldFfi) -> String {
@@ -355,6 +367,7 @@ struct XyChartView: View {
             .chartXAxis { AxisMarks { _ in AxisGridLine().foregroundStyle(Theme.grid.swiftUI); AxisValueLabel().font(Theme.swiftFont(10)).foregroundStyle(Theme.amber.swiftUI) } }
             .chartYAxis { AxisMarks(position: .trailing) { _ in AxisGridLine().foregroundStyle(Theme.grid.swiftUI); AxisValueLabel().font(Theme.swiftFont(10)).foregroundStyle(Theme.amber.swiftUI) } }
             .chartLegend(.hidden)
+            .modifier(XDomain(chart: chart, isTime: isTime))
             .frame(height: CGFloat(max(chart.heightRows, 6)) * Theme.rowHeight)
             .padding(.horizontal, 6)
             if chart.series.contains(where: \.bars), chart.xLabel.contains("|") {
@@ -366,8 +379,23 @@ struct XyChartView: View {
     private func color(_ i: Int, _ s: XySeriesFfi) -> NSColor {
         switch s.style {
         case .muted: Theme.muted
-        case .emphasis: i == 0 ? Theme.amber : Theme.white
-        default: s.style.color
+        case .up, .down: s.style.color
+        default: Theme.series[i % Theme.series.count]
+        }
+    }
+}
+
+/// Fits the x axis to the data (Swift Charts otherwise includes zero).
+private struct XDomain: ViewModifier {
+    let chart: XyChartFfi
+    let isTime: Bool
+
+    func body(content: Content) -> some View {
+        let xs = chart.series.filter { !$0.bars }.flatMap(\.x).filter(\.isFinite)
+        if !isTime, let lo = xs.min(), let hi = xs.max(), hi > lo {
+            content.chartXScale(domain: lo...hi)
+        } else {
+            content
         }
     }
 }
