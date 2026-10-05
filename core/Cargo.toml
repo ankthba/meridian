@@ -1,0 +1,132 @@
+[workspace]
+resolver = "3"
+members = [
+    "crates/types",
+    "crates/provider",
+    "crates/provider-mock",
+    "crates/provider-coinbase",
+    "crates/provider-kraken",
+    "crates/provider-edgar",
+    "crates/provider-fred",
+    "crates/provider-treasury",
+    "crates/provider-frankfurter",
+    "crates/provider-alpaca",
+    "crates/provider-finnhub",
+    "crates/provider-rss",
+    "crates/stream",
+    "crates/store",
+    "crates/analytics",
+    "crates/command",
+    "crates/ask",
+    "crates/alerts",
+    "crates/engine",
+    "crates/ffi",
+    "crates/bench",
+    "xtask",
+    "uniffi-bindgen-swift",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.89"
+license = "UNLICENSED"
+publish = false
+
+[workspace.lints.rust]
+unsafe_code = "deny"
+unused_must_use = "deny"
+
+[workspace.lints.clippy]
+all = { level = "warn", priority = -1 }
+pedantic = { level = "warn", priority = -1 }
+# Pedantic lints that fight numeric code more than they help.
+cast_precision_loss = "allow"
+cast_possible_truncation = "allow"
+cast_sign_loss = "allow"
+cast_possible_wrap = "allow"
+cast_lossless = "allow"
+similar_names = "allow"
+many_single_char_names = "allow"
+module_name_repetitions = "allow"
+missing_errors_doc = "allow"
+missing_panics_doc = "allow"
+must_use_candidate = "allow"
+too_many_lines = "allow"
+float_cmp = "allow"
+doc_markdown = "allow"
+struct_excessive_bools = "allow"
+needless_pass_by_value = "allow"
+return_self_not_must_use = "allow"
+unreadable_literal = "allow"
+items_after_statements = "allow"
+too_many_arguments = "allow"
+
+[workspace.dependencies]
+# Internal
+meridian-types = { path = "crates/types" }
+meridian-provider = { path = "crates/provider" }
+meridian-provider-mock = { path = "crates/provider-mock" }
+meridian-provider-coinbase = { path = "crates/provider-coinbase" }
+meridian-provider-kraken = { path = "crates/provider-kraken" }
+meridian-provider-edgar = { path = "crates/provider-edgar" }
+meridian-provider-fred = { path = "crates/provider-fred" }
+meridian-provider-treasury = { path = "crates/provider-treasury" }
+meridian-provider-frankfurter = { path = "crates/provider-frankfurter" }
+meridian-provider-alpaca = { path = "crates/provider-alpaca" }
+meridian-provider-finnhub = { path = "crates/provider-finnhub" }
+meridian-provider-rss = { path = "crates/provider-rss" }
+meridian-stream = { path = "crates/stream" }
+meridian-store = { path = "crates/store" }
+meridian-analytics = { path = "crates/analytics" }
+meridian-command = { path = "crates/command" }
+meridian-ask = { path = "crates/ask" }
+meridian-alerts = { path = "crates/alerts" }
+meridian-engine = { path = "crates/engine" }
+
+# External (versions verified 2026-10-05)
+anyhow = "1.0.104"
+async-trait = "0.1.92"
+bytes = "1.12"
+chrono = { version = "0.4.45", default-features = false, features = ["std", "clock", "serde"] }
+criterion = { version = "0.8.2", default-features = false, features = ["cargo_bench_support"] }
+crossbeam-channel = "0.5.17"
+duckdb = { version = "1.10506.0", features = ["bundled", "parquet"] }
+futures-util = { version = "0.3.34", default-features = false, features = ["std", "sink"] }
+html2text = "0.17.1"
+parking_lot = "0.12.5"
+proptest = "1.11"
+quick-xml = { version = "0.42.0", features = ["serialize"] }
+rand = "0.9"
+rand_chacha = "0.9"
+rand_distr = "0.5"
+rayon = "1.12"
+regex = "1.13"
+reqwest = { version = "0.13.5", default-features = false, features = ["rustls", "json", "query", "gzip", "stream", "http2", "charset"] }
+rusqlite = { version = "0.40.2", features = ["bundled"] }
+secrecy = "0.10.3"
+serde = { version = "1.0.229", features = ["derive"] }
+serde_json = "1.0.151"
+similar = "3.2"
+thiserror = "2.0.21"
+tokio = { version = "~1.53", features = ["rt-multi-thread", "macros", "sync", "time", "net", "io-util"] }
+tokio-tungstenite = { version = "0.30.0", features = ["rustls-tls-native-roots"] }
+tokio-util = "0.7.19"
+tracing = "0.1.44"
+tracing-oslog = "0.3.0"
+tracing-subscriber = { version = "0.3.23", features = ["env-filter", "fmt"] }
+uniffi = { version = "0.32.2", features = ["tokio"] }
+url = "2.5.8"
+
+[profile.release]
+debug = "line-tables-only"
+lto = "thin"
+codegen-units = 4
+panic = "unwind"
+
+[profile.bench]
+debug = "line-tables-only"
+
+# DuckDB's C++ build is slow in debug; optimize it even in dev builds.
+[profile.dev.package.libduckdb-sys]
+opt-level = 2

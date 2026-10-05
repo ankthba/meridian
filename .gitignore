@@ -12,3 +12,4 @@ app/Packages/MeridianCore/Sources/MeridianCoreFFI/
 # Local data and benches
 bench/results/*.local.json
 .DS_Store
+core/target/
