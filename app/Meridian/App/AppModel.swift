@@ -99,6 +99,11 @@ final class AppModel {
             instrumentsLoaded = n
         case let .status(message):
             statusMessage = message
+        case let .show(function, security, args):
+            // ASK pushes a function into the panel after the focused one.
+            let ws = workspace
+            let target = ws.panels[(ws.focused + 1) % ws.panels.count]
+            target.run(ActionFfi(function: function, security: security, args: args))
         }
     }
 

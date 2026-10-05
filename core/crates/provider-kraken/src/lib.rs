@@ -18,7 +18,7 @@ use std::time::{Duration, Instant};
 
 use async_trait::async_trait;
 use meridian_provider::{
-    AiPolicy, BarsRequest, CachePolicy, Capabilities, Capability, CapabilityEntry, Coverage,
+    AiPolicy, BarsRequest, CachePolicy, Capabilities, Capability, CapabilityEntry,
     InstrumentQuery, Provider, ProviderError, ProviderResult, RateLimit, StreamHandle, StreamSink,
     StreamingProvider, TokenBucket,
 };
@@ -268,14 +268,12 @@ impl KrakenProvider {
     }
 }
 
-impl Coverage for KrakenProvider {
+#[async_trait]
+impl Provider for KrakenProvider {
     fn covers(&self, key: &SecurityKey) -> bool {
         KrakenProvider::covers(self, key)
     }
-}
 
-#[async_trait]
-impl Provider for KrakenProvider {
     fn id(&self) -> ProviderId {
         ProviderId::new(PROVIDER_ID)
     }
@@ -482,7 +480,7 @@ mod tests {
         assert!(!p.covers(&SecurityKey::equity("AAPL")));
         load_fixture_catalog(&p);
         assert!(p.covers(&SecurityKey::currency("BTCUSD")));
-        assert!(Coverage::covers(&p, &SecurityKey::currency("USDCUSD")));
+        assert!(Provider::covers(&p, &SecurityKey::currency("USDCUSD")));
         // Not in the (trimmed) fixture list.
         assert!(!p.covers(&SecurityKey::currency("SOLUSD")));
     }

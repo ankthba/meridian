@@ -1,0 +1,50 @@
+name: CI
+on:
+  push:
+  pull_request:
+
+jobs:
+  core:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy
+          targets: aarch64-apple-darwin
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: core
+      - name: Brand-name lint
+        run: scripts/check-names.sh
+      - name: Clippy
+        run: cargo clippy --manifest-path core/Cargo.toml --workspace --all-targets -- -D warnings
+      - name: Tests
+        run: cargo test --manifest-path core/Cargo.toml --workspace
+
+  app:
+    runs-on: macos-latest
+    needs: core
+    steps:
+      - uses: actions/checkout@v4
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-apple-darwin
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: core
+      - name: Tools
+        run: brew install xcodegen
+      - name: Fonts
+        run: scripts/fetch-fonts.sh
+      - name: Core XCFramework + bindings
+        run: scripts/build-core.sh
+      - name: Generate project
+        run: cd app && xcodegen generate --spec project.yml
+      - name: Build and test (unsigned)
+        run: |
+          cd app && xcodebuild -project Meridian.xcodeproj -scheme Meridian -destination 'platform=macOS,arch=arm64' \
+            -derivedDataPath build/DerivedData CODE_SIGNING_ALLOWED=NO CODE_SIGN_IDENTITY="" build test

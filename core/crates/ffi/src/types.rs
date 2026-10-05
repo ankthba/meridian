@@ -547,6 +547,8 @@ pub enum CoreEventFfi {
     AlertFired { rule_id: i64, security: String, message: String, at: i64 },
     UniverseLoaded { instruments: u64 },
     Status { message: String },
+    /// ASK asked to show a function in another panel.
+    Show { function: String, security: Option<String>, args: Vec<KeyValue> },
 }
 
 // --- hot rows -----------------------------------------------------------------
@@ -604,4 +606,92 @@ pub struct ChartDataFfi {
     pub price_decimals: u8,
     pub sources: Vec<SourceBadgeFfi>,
     pub stale: bool,
+}
+
+// --- ASK ------------------------------------------------------------------
+
+#[derive(Debug, Clone, uniffi::Record)]
+pub struct AskToolFfi {
+    pub tool_use_id: String,
+    pub tool: String,
+    pub input_json: String,
+    pub sql: Option<String>,
+    /// `provider (MOCK|RT…)` per source.
+    pub sources: Vec<String>,
+    pub rows: Option<u64>,
+    pub duration_ms: u64,
+    pub is_error: bool,
+}
+
+impl From<&meridian_ask::ToolAudit> for AskToolFfi {
+    fn from(a: &meridian_ask::ToolAudit) -> Self {
+        Self {
+            tool_use_id: a.tool_use_id.clone(),
+            tool: a.tool.clone(),
+            input_json: a.input_json.clone(),
+            sql: a.sql.clone(),
+            sources: a.sources.iter().map(|s| format!("{}{}", s.provider, if s.synthetic { " (MOCK)" } else { "" })).collect(),
+            rows: a.rows,
+            duration_ms: a.duration_ms,
+            is_error: a.is_error,
+        }
+    }
+}
+
+#[derive(Debug, Clone, uniffi::Record)]
+pub struct NumberCheckFfi {
+    pub text: String,
+    /// UTF-16 offsets into `answer` (for NSString/AttributedString ranges).
+    pub start: u32,
+    pub end: u32,
+    pub verified: bool,
+    pub tool_use_id: Option<String>,
+}
+
+#[derive(Debug, Clone, uniffi::Record)]
+pub struct AskTurnFfi {
+    pub question: String,
+    pub answer: String,
+    pub tools: Vec<AskToolFfi>,
+    pub checks: Vec<NumberCheckFfi>,
+    pub model: String,
+    pub served_by_fallback: bool,
+    pub stop_reason: Option<String>,
+    pub error: Option<String>,
+    pub input_tokens: u64,
+    pub output_tokens: u64,
+    pub cache_read_tokens: u64,
+}
+
+impl From<&meridian_ask::AskTurn> for AskTurnFfi {
+    fn from(t: &meridian_ask::AskTurn) -> Self {
+        let utf16 = |byte: usize| -> u32 {
+            let b = byte.min(t.answer.len());
+            let b = (0..=b).rev().find(|i| t.answer.is_char_boundary(*i)).unwrap_or(0);
+            t.answer[..b].encode_utf16().count() as u32
+        };
+        Self {
+            question: t.question.clone(),
+            answer: t.answer.clone(),
+            tools: t.tool_calls.iter().map(Into::into).collect(),
+            checks: t
+                .number_checks
+                .iter()
+                .map(|c| NumberCheckFfi {
+                    text: c.text.clone(),
+                    start: utf16(c.span.0),
+                    end: utf16(c.span.1),
+                    verified: c.verified,
+                    tool_use_id: c.matched_tool_call.clone(),
+                })
+                .collect(),
+            model: t.model.clone(),
+            served_by_fallback: t.served_by_fallback,
+            stop_reason: t.stop_reason.clone(),
+            error: t.error.clone(),
+            input_tokens: t.usage.input_tokens,
+            output_tokens: t.usage.output_tokens,
+            cache_read_tokens: t.usage.cache_read_input_tokens,
+        }
+    }
 }

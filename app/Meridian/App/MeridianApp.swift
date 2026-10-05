@@ -40,6 +40,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             NSApp.appearance = NSAppearance(named: .darkAqua)
             AppModel.shared.start()
             KeyRouter.install()
+            if SnapshotMode.enabled { SnapshotMode.run() }
         }
     }
 

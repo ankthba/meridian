@@ -110,6 +110,10 @@ impl FrankfurterProvider {
 
 #[async_trait]
 impl Provider for FrankfurterProvider {
+    fn covers(&self, key: &SecurityKey) -> bool {
+        FrankfurterProvider::covers(self, key)
+    }
+
     fn id(&self) -> ProviderId {
         ProviderId::new(PROVIDER_ID)
     }

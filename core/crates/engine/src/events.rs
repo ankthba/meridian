@@ -16,6 +16,8 @@ pub enum EngineEvent {
     UniverseLoaded { instruments: u64 },
     /// Free-form log line for the status bar.
     Status { message: String },
+    /// ASK asked to display a function in another panel.
+    Show { function: String, security: Option<String>, args: Vec<(String, String)> },
 }
 
 /// Discards events (tests).

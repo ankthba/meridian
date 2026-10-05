@@ -19,7 +19,7 @@ use std::time::{Duration, Instant};
 
 use async_trait::async_trait;
 use meridian_provider::{
-    AiPolicy, BarsRequest, CachePolicy, Capabilities, Capability, CapabilityEntry, Coverage,
+    AiPolicy, BarsRequest, CachePolicy, Capabilities, Capability, CapabilityEntry,
     InstrumentQuery, Provider, ProviderError, ProviderResult, RateLimit, StreamHandle, StreamSink,
     StreamingProvider, TokenBucket,
 };
@@ -261,14 +261,12 @@ impl CoinbaseProvider {
     }
 }
 
-impl Coverage for CoinbaseProvider {
+#[async_trait]
+impl Provider for CoinbaseProvider {
     fn covers(&self, key: &SecurityKey) -> bool {
         CoinbaseProvider::covers(self, key)
     }
-}
 
-#[async_trait]
-impl Provider for CoinbaseProvider {
     fn id(&self) -> ProviderId {
         ProviderId::new(PROVIDER_ID)
     }
@@ -453,7 +451,7 @@ mod tests {
             at: Instant::now(),
         });
         assert!(p.covers(&SecurityKey::currency("BTCUSD")));
-        assert!(Coverage::covers(&p, &SecurityKey::currency("BTCUSDT")));
+        assert!(Provider::covers(&p, &SecurityKey::currency("BTCUSDT")));
         // Not a Coinbase Exchange product once the list is known.
         assert!(!p.covers(&SecurityKey::currency("USDCUSD")));
         assert!(!p.covers(&SecurityKey::currency("DNTUSDC")));

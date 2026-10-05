@@ -1,21 +1,185 @@
 import MeridianCore
+import Observation
 import SwiftUI
 
-/// ASK — the AI analyst. The Rust side (tool loop, audit, number verifier)
-/// is wired through `AskService`; this view streams the answer and shows
-/// numbered sources and unverified numbers.
+/// Bridges streamed ASK callbacks (Rust threads) to the main actor.
+nonisolated final class AskStream: AskObserverFfi, @unchecked Sendable {
+    let onText: @Sendable (String) -> Void
+    let onCall: @Sendable (String, String, String) -> Void
+    let onResult: @Sendable (AskToolFfi) -> Void
+
+    init(onText: @escaping @Sendable (String) -> Void, onCall: @escaping @Sendable (String, String, String) -> Void, onResult: @escaping @Sendable (AskToolFfi) -> Void) {
+        self.onText = onText
+        self.onCall = onCall
+        self.onResult = onResult
+    }
+
+    func onText(delta: String) { onText(delta) }
+    func onToolCall(id: String, name: String, inputJson: String) { onCall(id, name, inputJson) }
+    func onToolResult(tool: AskToolFfi) { onResult(tool) }
+}
+
+@MainActor
+@Observable
+final class AskModel {
+    struct Turn: Identifiable {
+        let id = UUID()
+        var question: String
+        var answer = ""
+        var calls: [(id: String, name: String, input: String)] = []
+        var tools: [AskToolFfi] = []
+        var final: AskTurnFfi?
+        var error: String?
+        var running = true
+    }
+
+    var turns: [Turn] = []
+    var draft = ""
+    let sessionId = UUID().uuidString
+    var available: Bool { (try? AppModel.shared.core?.askAvailable()) ?? false }
+
+    func send(security: String?) {
+        let q = draft.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !q.isEmpty, let core = AppModel.shared.core, !(turns.last?.running ?? false) else { return }
+        draft = ""
+        turns.append(Turn(question: q))
+        let idx = turns.count - 1
+        let stream = AskStream(
+            onText: { d in Task { @MainActor in self.turns[idx].answer += d } },
+            onCall: { id, name, input in Task { @MainActor in self.turns[idx].calls.append((id, name, input)) } },
+            onResult: { t in Task { @MainActor in self.turns[idx].tools.append(t) } }
+        )
+        Task {
+            do {
+                let turn = try await core.ask(sessionId: sessionId, question: q, security: security, observer: stream)
+                turns[idx].final = turn
+                turns[idx].answer = turn.answer
+                turns[idx].tools = turn.tools
+                turns[idx].error = turn.error
+            } catch {
+                turns[idx].error = "\(error)"
+            }
+            turns[idx].running = false
+        }
+    }
+
+    func cancel() {
+        try? AppModel.shared.core?.askCancel(sessionId: sessionId)
+    }
+}
+
+/// ASK — answers with tool use over local data, shows every source, and
+/// flags any number not found in a tool result.
 struct AskView: View {
     @Bindable var panel: PanelModel
+    @State private var model = AskModel()
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            Text("ASK — AI Analyst").font(Theme.swiftFont(weight: .bold)).foregroundStyle(Theme.white.swiftUI)
-            Text("ASK is connected in Phase 8 of the build. It needs an Anthropic API key (Settings → API Keys).")
-                .font(Theme.swiftFont())
-                .foregroundStyle(Theme.amber.swiftUI)
-            Spacer()
+        VStack(alignment: .leading, spacing: 4) {
+            HStack {
+                Text("ASK — AI Analyst").font(Theme.swiftFont(weight: .bold)).foregroundStyle(Theme.white.swiftUI)
+                Spacer()
+                Text(AppModel.shared.mode == .mock ? "answers use MOCK data" : "answers use LIVE data where terms allow")
+                    .font(Theme.swiftFont(11)).foregroundStyle(Theme.muted.swiftUI)
+            }
+            .padding(.horizontal, 6)
+            if !model.available {
+                Text("NOT AVAILABLE — add an Anthropic API key in Settings (⌘,) → API Keys, then restart Meridian.")
+                    .font(Theme.swiftFont()).foregroundStyle(Theme.down.swiftUI).padding(6)
+            }
+            ScrollViewReader { proxy in
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 10) {
+                        ForEach(model.turns) { t in
+                            TurnView(turn: t).id(t.id)
+                        }
+                    }
+                    .padding(6)
+                }
+                .onChange(of: model.turns.last?.answer) { _, _ in
+                    if let id = model.turns.last?.id { proxy.scrollTo(id, anchor: .bottom) }
+                }
+            }
+            HStack(spacing: 6) {
+                Text("ASK>").font(Theme.swiftFont(weight: .bold)).foregroundStyle(Theme.yellow.swiftUI)
+                TextField("Ask about \(panel.security ?? "markets") — e.g. “How has it performed vs SPY this year?”", text: $model.draft)
+                    .textFieldStyle(.plain)
+                    .font(Theme.swiftFont())
+                    .foregroundStyle(Theme.yellow.swiftUI)
+                    .onSubmit { model.send(security: panel.security) }
+                if model.turns.last?.running == true {
+                    Text("Stop").font(Theme.swiftFont()).foregroundStyle(Theme.down.swiftUI).onTapGesture { model.cancel() }
+                }
+            }
+            .padding(6)
+            .background(Theme.commandBackground.swiftUI)
         }
-        .padding(6)
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+    }
+}
+
+private struct TurnView: View {
+    let turn: AskModel.Turn
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text("Q: \(turn.question)").font(Theme.swiftFont(weight: .bold)).foregroundStyle(Theme.white.swiftUI)
+            if turn.running && turn.answer.isEmpty {
+                Text(turn.calls.isEmpty ? "Thinking…" : "Running \(turn.calls.last!.name)…")
+                    .font(Theme.swiftFont()).foregroundStyle(Theme.muted.swiftUI)
+            }
+            Text(attributed)
+                .font(Theme.swiftFont())
+                .textSelection(.enabled)
+                .fixedSize(horizontal: false, vertical: true)
+            if let f = turn.final {
+                let unverified = f.checks.filter { !$0.verified }.count
+                HStack(spacing: 12) {
+                    Text(unverified == 0 ? "All \(f.checks.count) numbers verified against tool results" : "\(unverified) UNVERIFIED number(s) highlighted in red")
+                        .foregroundStyle((unverified == 0 ? Theme.up : Theme.down).swiftUI)
+                    Text("\(f.model)\(f.servedByFallback ? " (fallback)" : "") · in \(f.inputTokens) / out \(f.outputTokens) · cache \(f.cacheReadTokens)")
+                        .foregroundStyle(Theme.muted.swiftUI)
+                }
+                .font(Theme.swiftFont(11))
+            }
+            if let e = turn.error {
+                Text("ERROR — \(e)").font(Theme.swiftFont()).foregroundStyle(Theme.down.swiftUI)
+            }
+            if !turn.tools.isEmpty {
+                Text("SOURCES").font(Theme.swiftFont(11, weight: .bold)).foregroundStyle(Theme.white.swiftUI).padding(.top, 2)
+                ForEach(Array(turn.tools.enumerated()), id: \.offset) { i, t in
+                    VStack(alignment: .leading, spacing: 0) {
+                        Text("[\(i + 1)] \(t.tool)  \(t.inputJson)")
+                            .foregroundStyle((t.isError ? Theme.down : Theme.amber).swiftUI)
+                            .lineLimit(2)
+                        HStack(spacing: 10) {
+                            if !t.sources.isEmpty { Text(t.sources.joined(separator: ", ")) }
+                            if let r = t.rows { Text("\(r) rows") }
+                            Text("\(t.durationMs) ms")
+                        }
+                        .foregroundStyle(Theme.muted.swiftUI)
+                        if let sql = t.sql {
+                            Text(sql).foregroundStyle(Theme.white.swiftUI).textSelection(.enabled)
+                        }
+                    }
+                    .font(Theme.swiftFont(11))
+                }
+            }
+        }
+    }
+
+    /// Answer text with unverified numbers marked red-on-dark.
+    private var attributed: AttributedString {
+        var a = AttributedString(turn.answer)
+        a.foregroundColor = Theme.amber.swiftUI
+        guard let f = turn.final else { return a }
+        let ns = turn.answer as NSString
+        for c in f.checks where !c.verified {
+            let r = NSRange(location: Int(c.start), length: Int(c.end) - Int(c.start))
+            guard r.location + r.length <= ns.length, let range = Range(r, in: turn.answer), let ar = Range(range, in: a) else { continue }
+            a[ar].foregroundColor = Theme.down.swiftUI
+            a[ar].backgroundColor = Theme.flashDown.swiftUI
+            a[ar].underlineStyle = .single
+        }
+        return a
     }
 }

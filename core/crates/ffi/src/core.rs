@@ -57,6 +57,11 @@ impl EngineEvents for EventBridge {
             }
             EngineEvent::UniverseLoaded { instruments } => CoreEventFfi::UniverseLoaded { instruments },
             EngineEvent::Status { message } => CoreEventFfi::Status { message },
+            EngineEvent::Show { function, security, args } => CoreEventFfi::Show {
+                function,
+                security,
+                args: args.into_iter().map(|(k, v)| KeyValue { key: k, value: v }).collect(),
+            },
         };
         self.0.on_event(e);
     }
@@ -86,9 +91,34 @@ pub(crate) fn write_crash_report(text: &str) {
     }
 }
 
+/// Streams ASK progress to Swift. Called on Rust threads.
+#[uniffi::export(foreign)]
+pub trait AskObserverFfi: Send + Sync + std::fmt::Debug {
+    fn on_text(&self, delta: String);
+    fn on_tool_call(&self, id: String, name: String, input_json: String);
+    fn on_tool_result(&self, tool: AskToolFfi);
+}
+
+struct AskObserverBridge(Arc<dyn AskObserverFfi>);
+
+impl meridian_ask::AskObserver for AskObserverBridge {
+    fn on_text_delta(&self, text: &str) {
+        self.0.on_text(text.to_owned());
+    }
+    fn on_tool_call(&self, id: &str, name: &str, input_json: &str) {
+        self.0.on_tool_call(id.to_owned(), name.to_owned(), input_json.to_owned());
+    }
+    fn on_tool_result(&self, _id: &str, audit: &meridian_ask::ToolAudit, _is_error: bool) {
+        self.0.on_tool_result(audit.into());
+    }
+    fn on_done(&self, _outcome: meridian_ask::AskOutcome) {}
+    fn on_error(&self, _error: meridian_ask::AskError) {}
+}
+
 #[derive(uniffi::Object)]
 pub struct Core {
     engine: Arc<Engine>,
+    ask: Option<Arc<meridian_engine::ask_tools::AskService>>,
 }
 
 fn parse_key(s: &str) -> CoreResult<SecurityKey> {
@@ -124,7 +154,8 @@ impl Core {
         if let Some(ai) = built.ai {
             engine.set_ai(Some(ai));
         }
-        Ok(Arc::new(Self { engine }))
+        let ask = built.anthropic.map(|c| Arc::new(meridian_engine::ask_tools::AskService::new(engine.clone(), c)));
+        Ok(Arc::new(Self { engine, ask }))
     }
 
     /// Connects feeds and starts background loops; returns immediately.
@@ -230,6 +261,37 @@ impl Core {
             sources: data.sources.into_iter().map(Into::into).collect(),
             stale: data.stale,
         })
+    }
+
+    // --- ASK ------------------------------------------------------------
+
+    /// Whether an Anthropic API key is configured.
+    pub fn ask_available(&self) -> CoreResult<bool> {
+        Ok(self.ask.is_some())
+    }
+
+    /// Answers a question with tool use over local data. Streams through
+    /// `observer`; returns the finished turn (answer, sources, number checks).
+    pub async fn ask(&self, session_id: String, question: String, security: Option<String>, observer: Arc<dyn AskObserverFfi>) -> CoreResult<AskTurnFfi> {
+        let Some(svc) = self.ask.clone() else {
+            return Err(CoreError::NotAvailable { reason: "add an Anthropic API key in Settings → API Keys, then restart".into() });
+        };
+        let security = security.as_deref().map(parse_key).transpose()?;
+        let obs: Arc<dyn meridian_ask::AskObserver> = Arc::new(AskObserverBridge(observer));
+        let sid = session_id.clone();
+        let svc2 = svc.clone();
+        let outcome = self.on_runtime(async move { svc2.ask(&sid, &question, security, obs).await }).await?;
+        match outcome {
+            Ok(o) => Ok((&o.turn).into()),
+            Err(e) => Err(CoreError::Provider { message: e.user_message() }),
+        }
+    }
+
+    pub fn ask_cancel(&self, session_id: String) -> CoreResult<()> {
+        if let Some(s) = &self.ask {
+            s.cancel(&session_id);
+        }
+        Ok(())
     }
 
     // --- streaming ------------------------------------------------------

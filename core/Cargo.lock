@@ -1797,6 +1797,7 @@ dependencies = [
  "chrono",
  "meridian-alerts",
  "meridian-analytics",
+ "meridian-ask",
  "meridian-command",
  "meridian-provider",
  "meridian-store",

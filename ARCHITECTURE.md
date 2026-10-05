@@ -1,6 +1,6 @@
 # Meridian — Architecture
 
-Status: **pre-code design**, research-verified 2026-10-05 (see `docs/research/`). Items marked **[DECIDE]** need a decision before or during the named phase; items marked **[VERIFY]** must be confirmed against current docs or by measurement during implementation.
+Status: **implemented through the phases listed in CLAUDE.md**; research-verified 2026-10-05 (see `docs/research/`). Items marked **[DECIDE]** need a decision before or during the named phase; items marked **[VERIFY]** must be confirmed against current docs or by measurement during implementation.
 
 Meridian is a personal-use native macOS financial terminal. The UI is SwiftUI + AppKit, the core is a Rust library exposed to Swift through UniFFI, analytics and history live in DuckDB and Parquet, and app state lives in SQLite.
 
@@ -34,14 +34,14 @@ Meridian is a personal-use native macOS financial terminal. The UI is SwiftUI + 
 │   │   ├── types/            Normalized domain types. No I/O dependencies.
 │   │   ├── provider/         Provider trait, capabilities, ProviderError, router, rate limiting
 │   │   ├── provider-mock/    MockProvider: seeded synthetic data for every capability
-│   │   ├── provider-<name>/  One crate per real source (edgar, fred, …), feature-gated
+│   │   ├── provider-<name>/  One crate per real source: coinbase, kraken, alpaca, finnhub, edgar, fred, treasury, frankfurter, rss
 │   │   ├── stream/           Subscription hub, market-state cells, hot-path buffers
 │   │   ├── store/            SQLite (app state), DuckDB (analytics), Parquet cache, migrations
 │   │   ├── analytics/        Indicators, pricing models, greeks/IV, risk, stats, backtester
 │   │   ├── command/          Command-line tokenizer/parser, function registry, autocomplete index
 │   │   ├── ask/              Anthropic Messages API client, tool registry, audit log, number verifier
 │   │   ├── alerts/           Alert rules engine
-│   │   ├── secrets/          SecretSource trait; keys come from Swift-side Keychain
+│   │   ├── engine/           Orchestration: providers by mode, cache, stream/alert loops, screen models, ASK tools
 │   │   ├── ffi/              UniFFI surface — the ONLY crate Swift links against
 │   │   └── bench/            Load generators and cross-crate benches
 │   └── xtask/                Build orchestration: bindings, XCFramework
@@ -103,8 +103,9 @@ Dependency rules (enforced by crate dependencies, so violations fail to compile)
 | `stream` | `types`, `provider` | `store` (persistence of ticks goes through a sink trait) |
 | `analytics` | `types` | I/O of any kind. Pure functions over slices/arrays. |
 | `command` | `types` | I/O. Pure parser plus an in-memory index. |
-| `ask` | `types`, `provider`, `store`, `analytics` | `ffi` |
-| `ffi` | everything above | — (nothing depends on `ffi`) |
+| `ask` | `types` | `ffi`, `engine` (the engine supplies tools through the `ToolExecutor` trait) |
+| `engine` | everything except `ffi` and concrete `provider-*` crates | `ffi` |
+| `ffi` | everything above, incl. concrete providers (composition root) | — (nothing depends on `ffi`) |
 
 On the Swift side:
 - `Functions/*` may use `Shell`, `Design`, `Render`, `Bridge`. A function never imports another function.
@@ -217,8 +218,7 @@ All in `core/crates/types`. Each type is `serde`-serializable for storage and te
 | Type | Representation | Notes |
 |---|---|---|
 | `UnixNanos` | `i64` ns since Unix epoch, UTC | All timestamps. Exchange-local time is derived from the instrument's exchange calendar. |
-| `Price` | `i64` fixed point, scale 1e-9 | Exact decimal display; max ≈ 9.2e9. Analytics converts to `f64`. |
-| `Qty` | `i64` fixed point, scale 1e-6 | Handles fractional shares and crypto sizes. |
+| Prices, sizes | `f64` | Changed from the fixed-point draft: every source delivers binary floats or short decimal strings that `f64` represents exactly to display precision; display rounds to the instrument's `price_decimals`. Avoids conversions on every path. |
 | `InstrumentId` | `u32` | Process-local interned handle. Never persisted. |
 | `SecurityKey` | `{ symbol, exchange: Option<ExchangeCode>, sector: MarketSector }` | User-facing key, e.g. `AAPL US Equity`. Persisted. |
 | `MarketSector` | enum | `Govt, Corp, Mtge, MMkt, Muni, Pfd, Equity, Cmdty, Index, Curncy` |
@@ -320,32 +320,22 @@ Swift display link (per window, ≤ 120 Hz) ── subscription.poll(since_seq) 
 
 - **Subscription**: a Swift view (monitor, panel) creates a `QuoteSubscription` with its instrument IDs. `poll(since)` walks those IDs and copies cells whose `version > since` into a packed buffer. With 2,000 IDs this is an atomic load per ID plus a copy per changed cell, in the low microseconds.
 - **Coalescing is automatic**: 50 ticks between two frames produce one row with the latest values.
-- **Buffer layout** is a `#[repr(C)]` row struct defined once in a C header (`meridian_hot.h`) that both sides compile against, so field offsets cannot drift. A Rust test asserts `size_of` and every offset.
-
-```c
-// meridian_hot.h — version 1. Little-endian. 96 bytes per row.
-typedef struct {
-    uint32_t instrument;   // InstrumentId
-    uint32_t changed;      // bitmask of fields changed since `since`
-    int64_t  ts_event;     // UnixNanos
-    int64_t  bid, ask, last, open, high, low, prev_close; // Price (1e-9)
-    uint64_t volume;
-    uint32_t bid_size, ask_size, last_size;
-    uint32_t flags;        // stale | halted | delayed | synthetic | tick_up | tick_down
-} MQuoteRowV1;
-```
+- **Buffer layout** (`core/crates/stream/src/row.rs`): 128 bytes per row, little-endian — `instrument u32, changed u32, ts_event i64`, then `bid ask last open high low prev_close volume bid_size ask_size last_size net_change pct_change` as `f64` (NaN = missing), then `flags u32`. Rust exports the offsets (`hot_row_layout()`); Swift verifies them at startup and in a unit test, so the sides cannot drift silently. `changed` carries per-field change bits since the poll's `since` (used to flash cells).
 
 - **Backpressure**: the ingest channel is bounded. On overflow the apply thread conflates (keeps latest per instrument) rather than dropping or blocking the socket reader. The overflow count is a metric.
 - **Rendering**: the quote monitor uses a custom layer-backed `NSView` grid (`Render/TerminalGridView`) that redraws only visible dirty cells with Core Text and cached glyph runs. `NSTableView` and SwiftUI `List` are not used for streaming grids. If Core Text cannot hold the budget, the fallback is a Metal glyph-atlas renderer.
 
 ### 7.4 Hot path: chart series
 
-- `MarketService.bar_series(...)` returns a `SeriesBuffer`: columnar `f32` arrays (OHLC relative to an `f64` price origin to keep precision, volume, bar index) ready to `memcpy` into an `MTLBuffer`.
-- Rust also returns a **min/max decimation pyramid** (level k = bucket of 2^k bars) so each frame draws at most ~2× the pixel width in primitives regardless of series length. Pan and zoom change only uniforms and the selected LOD level.
-- Indicators are computed in `analytics` and returned as additional `f32` columns aligned to bar index.
+- `Core.chart_data(...)` returns packed columns: `ts i64[n]`, OHLC as `f32` relative to an `f64` origin (precision), volume `f32`, plus study lines (`f32`, overlays relative to origin, lower panes absolute) computed in `analytics`.
+- The renderer (`Render/ChartView.swift`) decimates per pixel column at draw time (min/max of each bucket), so primitives per frame stay ≈ 2× the pixel width regardless of series length; pan and zoom only change the visible index window.
 - **Renderer decision [DECIDE Phase 3]**: Phase 3 begins with a short spike measuring Swift Charts (vectorized `LinePlot`/`RectanglePlot`, macOS 15+) against a minimal Metal renderer on the 1M-bar pan/zoom budget. The result is recorded as an ADR. Apple publishes no throughput figures for Swift Charts, and a DTS forum case shows ~2,900 scrolling points saturating a core, so the expected outcome is Metal for GP/GIP. Swift Charts or Core Graphics remain options for small static charts (ERN, payoff diagrams).
 
 ---
+
+### 7.5 Screen model
+
+Function screens are built in Rust (`engine/src/screens/*`) as a generic `Screen`: a title, numbered menu (`Action`s), source badges, a status (`Ok` / `NotAvailable{reason}` / `Error`), and blocks — `Fields`, `Table` (columns may bind to a live hot-row field), `Text`, `Inputs` (editable amber cells; changing one re-requests the screen with that argument), `Notice`, `Chart` (spec; Swift fetches `chart_data`), `Xy` (small embedded charts), `Heat`, and `Diff`. Swift renders every function with one renderer (`Render/ScreenView.swift`, `TerminalGridView`), so screens get consistent look and keyboard behavior and all logic stays testable in Rust. Swift-native views exist only where interaction demands it: the price chart, ASK, and Launchpad.
 
 ## 8. Threading model
 
@@ -402,8 +392,8 @@ Key routing is an `NSEvent` local monitor in `Shell` that translates physical ke
 
 ## 10. Secrets
 
-- API keys live in the macOS **data protection keychain** (`kSecUseDataProtectionKeychain`) as generic-password items (service `meridian.provider.<id>`). They are never stored in SQLite, config files, logs, environment variables, or the repo.
-- **Swift owns Keychain I/O** (`Bridge/Keychain.swift`, `SecItem*`). Entitlements and keychain prompts are app-level concerns, and in-process Rust would get the same access anyway (TN3137). Rust asks for a key through a foreign trait, `SecretSource.get(provider)`, which Swift implements. Rust calls it lazily when a provider starts. The `secrets` crate is a thin wrapper around that trait.
+- API keys live in the macOS **login keychain** as generic-password items (service `meridian.provider.<id>`, account = field). The data-protection keychain was the first plan, but its access group requires a provisioning profile; the login keychain does not, and with stable signing its ACL survives rebuilds. Keys are never stored in SQLite, config files, logs, environment variables, or the repo.
+- **Swift owns Keychain I/O** (`Bridge/Keychain.swift`, `SecItem*`). Rust asks for a key through the `SecretSource` foreign trait when the composition root builds providers (`ffi/src/providers.rs`).
 - In Rust memory, keys are held as `secrecy::SecretString` (zeroized on drop, redacted `Debug`).
 - **Signing:** the app is signed with a stable Apple Development identity from Phase 1. Ad-hoc signing changes the designated requirement on every build, which would re-prompt for keychain access on every rebuild (TN3127).
 - **No App Sandbox** for this personal build (it is only required for the Mac App Store). On macOS 27 a sandbox container would block CLI inspection of the DuckDB/Parquet files. Hardened Runtime stays on.
@@ -512,7 +502,7 @@ pub enum CoreError {
 
 - Theme tokens (colors, font sizes, row heights, grid metrics) live in `Design/Theme.swift`, generated from `Design/tokens.json`.
 - **Colors are not chosen by eye.** `scripts/palette` samples reference PNGs and emits candidate hex values with pixel counts. Tokens are filled from that output once references exist.
-- Font: **Iosevka** (SIL OFL 1.1, no Reserved Font Name), Fixed or Term spacing, no ligatures, bundled with its license notice. It is the only freely licensed monospace that is natively narrow (0.500 em vs the usual 0.600) and can be built narrower. It covers box-drawing, block, and Braille glyphs, which are useful for grids and sparklines. Phase 2 starts from the prebuilt family and makes a custom narrower build (renamed family) only if the references call for it. Fallback: IBM Plex Mono. The incumbent's font is proprietary and is not used. Research: `docs/research/tech-stack.md`.
+- Font: **Iosevka Fixed, SS08 stylistic set** (SIL OFL 1.1, no Reserved Font Name), fetched by `scripts/fetch-fonts.sh` from the official release (not committed, size) and bundled with its license notice. It is the only freely licensed monospace that is natively narrow (0.500 em vs the usual 0.600) and can be built narrower. It covers box-drawing, block, and Braille glyphs, which are useful for grids and sparklines. Phase 2 starts from the prebuilt family and makes a custom narrower build (renamed family) only if the references call for it. Fallback: IBM Plex Mono. The incumbent's font is proprietary and is not used. Research: `docs/research/tech-stack.md`.
 - Panels have no rounded corners, shadows, translucency, or SF-style controls. Editable fields use a distinct input-cell style taken from the references.
 - `scripts/check-names` fails CI if the forbidden brand name appears anywhere under `app/`, `core/`, or bundled assets.
 

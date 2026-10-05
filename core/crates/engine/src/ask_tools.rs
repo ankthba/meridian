@@ -395,16 +395,9 @@ impl EngineTools {
                 let i = parse_in!(SeriesIn, input);
                 let f = e.economic_series(&i.id).await.map_err(err)?;
                 self.guard(&f.value.provenance)?;
-                let obs: Vec<Value> = f
-                    .value
-                    .observations
-                    .iter()
-                    .filter(|o| o.value.is_some())
-                    .rev()
-                    .take(i.last_n.clamp(1, 240) as usize)
-                    .rev()
-                    .map(|o| json!([o.date.to_string(), o.value]))
-                    .collect();
+                let valid: Vec<_> = f.value.observations.iter().filter(|o| o.value.is_some()).collect();
+                let n = (i.last_n.clamp(1, 240) as usize).min(valid.len());
+                let obs: Vec<Value> = valid[valid.len() - n..].iter().map(|o| json!([o.date.to_string(), o.value])).collect();
                 let v = json!({"id": f.value.id, "title": f.value.title, "units": f.value.units, "frequency": f.value.frequency, "observations": obs, "synthetic": f.value.provenance.synthetic});
                 Ok(ToolOutcome::json(&v, audit(name, input, &[&f.value.provenance], Some(obs.len() as u64))))
             }
