@@ -1,5 +1,6 @@
 [package]
 name = "meridian-alerts"
+description = "Alert rules and edge-triggered evaluation over quotes and news."
 version.workspace = true
 edition.workspace = true
 rust-version.workspace = true
@@ -8,6 +9,8 @@ publish.workspace = true
 
 [dependencies]
 meridian-types.workspace = true
+serde.workspace = true
+serde_json.workspace = true
 
 [lints]
 workspace = true

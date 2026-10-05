@@ -13,3 +13,4 @@ app/Packages/MeridianCore/Sources/MeridianCoreFFI/
 bench/results/*.local.json
 .DS_Store
 core/target/
+.claude/worktrees/
