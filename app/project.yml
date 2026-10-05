@@ -49,6 +49,7 @@ targets:
         ENABLE_APP_SANDBOX: NO
         CODE_SIGN_ENTITLEMENTS: Meridian/Meridian.entitlements
         COMBINE_HIDPI_IMAGES: YES
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
   MeridianTests:
     type: bundle.unit-test
     platform: macOS

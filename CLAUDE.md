@@ -93,6 +93,12 @@ UPDATE_SNAPSHOTS=1 cargo test --manifest-path core/Cargo.toml -p meridian-engine
 scripts/capture.sh "DES|AAPL US Equity;W" [out_dir] [WxH]
 scripts/compare.sh                     # needs reference/<FUNCTION>/*.png
 
+# Install to ~/Applications (stable Dock/Spotlight path); --build, --dock
+scripts/install-app.sh --build
+
+# App icon (renders app/Meridian/Assets.xcassets/AppIcon.appiconset)
+swift scripts/make-icon.swift
+
 # App budgets (release build): writes bench/results/app-<date>.json
 scripts/perf-app.sh
 

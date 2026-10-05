@@ -64,18 +64,26 @@ struct SecretRow: View {
 
     var body: some View {
         HStack {
+            // Return saves too, and so does closing Settings with text
+            // still in the field, so a pasted key is never silently lost.
             SecureField(label, text: $value)
-            Button("Save") {
-                saved = Keychain.write(provider: provider, field: field, value: value.trimmingCharacters(in: .whitespacesAndNewlines))
-                value = ""
-                onChange()
-            }
-            .disabled(value.isEmpty)
+                .onSubmit(save)
+            Button("Save", action: save)
+                .disabled(value.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
             Button("Remove") { Keychain.delete(provider: provider, field: field); saved = false; onChange() }
             Text(Keychain.read(provider: provider, field: field) != nil || saved ? "set" : "not set")
                 .foregroundStyle(.secondary)
                 .frame(width: 50)
         }
+        .onDisappear(perform: save)
+    }
+
+    private func save() {
+        let v = value.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !v.isEmpty else { return }
+        saved = Keychain.write(provider: provider, field: field, value: v)
+        value = ""
+        onChange()
     }
 }
 

@@ -69,11 +69,11 @@ enum SnapshotMode {
                     .frame(width: size.width, height: size.height)
                     .background(Color.black)
                     .environment(\.colorScheme, .dark)
-                render(view, size: size, to: out.appendingPathComponent(spec.fileName))
+                await render(view, size: size, to: out.appendingPathComponent(spec.fileName))
             }
             if env["MERIDIAN_SNAPSHOT_SETUP"] == "1" {
                 let setup = SetupView().padding(14).frame(width: 900, height: 1180).background(Color(nsColor: .windowBackgroundColor))
-                render(setup, size: CGSize(width: 900, height: 1180), to: out.appendingPathComponent("settings-setup.png"))
+                await render(setup, size: CGSize(width: 900, height: 1180), to: out.appendingPathComponent("settings-setup.png"))
             }
             if env["MERIDIAN_SNAPSHOT_MAIN"] == "1" {
                 try? await Task.sleep(nanoseconds: 1_500_000_000)
@@ -86,7 +86,10 @@ enum SnapshotMode {
         }
     }
 
-    static func render<V: View>(_ view: V, size: CGSize, to url: URL) {
+    /// Waits by suspending (never by spinning the run loop inside this
+    /// main-actor task): chart loads resume on the main actor, and a blocked
+    /// actor would leave them in flight until the timeout.
+    static func render<V: View>(_ view: V, size: CGSize, to url: URL) async {
         let host = NSHostingView(rootView: view)
         host.frame = CGRect(origin: .zero, size: size)
         let window = NSWindow(contentRect: host.frame, styleMask: [.borderless], backing: .buffered, defer: false)
@@ -96,14 +99,14 @@ enum SnapshotMode {
         window.orderFrontRegardless()
         host.layoutSubtreeIfNeeded()
         host.displayIfNeeded()
-        RunLoop.main.run(until: Date().addingTimeInterval(0.4))
+        try? await Task.sleep(nanoseconds: 400_000_000)
         // Wait for async chart data (network in LIVE mode), up to 15 s.
         var waited = 0.0
         while ChartBlockView.inFlight > 0 && waited < 15 {
-            RunLoop.main.run(until: Date().addingTimeInterval(0.1))
+            try? await Task.sleep(nanoseconds: 100_000_000)
             waited += 0.1
         }
-        RunLoop.main.run(until: Date().addingTimeInterval(0.5))
+        try? await Task.sleep(nanoseconds: 500_000_000)
         host.layoutSubtreeIfNeeded()
         writePNG(host, to: url)
         window.orderOut(nil)

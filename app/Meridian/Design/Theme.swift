@@ -50,11 +50,12 @@ enum Theme {
     }
 
     static func font(_ size: CGFloat = baseSize, weight: NSFont.Weight = .regular) -> NSFont {
+        // PostScript names inside the bundled TTFs (not the file names).
         let name: String
         switch weight {
-        case .bold, .heavy, .black, .semibold: name = "IosevkaFixedSS08-Bold"
-        case .medium: name = "IosevkaFixedSS08-Medium"
-        default: name = "IosevkaFixedSS08-Regular"
+        case .bold, .heavy, .black, .semibold: name = "Iosevka-Fixed-SS08-Bold"
+        case .medium: name = "Iosevka-Fixed-SS08-Medium"
+        default: name = "Iosevka-Fixed-SS08"
         }
         return NSFont(name: name, size: size) ?? NSFont.monospacedSystemFont(ofSize: size, weight: weight)
     }
