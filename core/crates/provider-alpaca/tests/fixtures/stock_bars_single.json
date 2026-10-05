@@ -1,0 +1,16 @@
+{
+  "bars": [
+    {
+      "c": 178.21,
+      "h": 178.26,
+      "l": 178.21,
+      "n": 65,
+      "o": 178.26,
+      "t": "2022-01-03T09:00:00Z",
+      "v": 1118,
+      "vw": 178.235733
+    }
+  ],
+  "next_page_token": "QUFQTHxNfDIwMjItMDEtMDNUMDk6MDA6MDAuMDAwMDAwMDAwWg==",
+  "symbol": "AAPL"
+}
