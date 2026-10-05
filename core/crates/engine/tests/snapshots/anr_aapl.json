@@ -1,0 +1,651 @@
+{
+  "args": [],
+  "blocks": [
+    {
+      "Fields": {
+        "columns": 3,
+        "fields": [
+          {
+            "format": {
+              "Number": {
+                "decimals": 2
+              }
+            },
+            "label": "Consensus (1 Sell–5 Buy)",
+            "style": "Emphasis",
+            "text": null,
+            "value": 3.431818
+          },
+          {
+            "format": "Integer",
+            "label": "Analysts",
+            "style": "Normal",
+            "text": null,
+            "value": 44.0
+          },
+          {
+            "format": "Text",
+            "label": "As of",
+            "style": "Normal",
+            "text": "10/05/2026",
+            "value": null
+          },
+          {
+            "format": {
+              "Number": {
+                "decimals": 2
+              }
+            },
+            "label": "Target Mean",
+            "style": "Normal",
+            "text": null,
+            "value": 327.16
+          },
+          {
+            "format": {
+              "Number": {
+                "decimals": 2
+              }
+            },
+            "label": "Target High",
+            "style": "Normal",
+            "text": null,
+            "value": 384.0
+          },
+          {
+            "format": {
+              "Number": {
+                "decimals": 2
+              }
+            },
+            "label": "Target Low",
+            "style": "Normal",
+            "text": null,
+            "value": 253.0
+          },
+          {
+            "format": {
+              "Number": {
+                "decimals": 2
+              }
+            },
+            "label": "Last Price",
+            "style": "Normal",
+            "text": null,
+            "value": 289.52
+          },
+          {
+            "format": {
+              "ChangePercent": {
+                "decimals": 1
+              }
+            },
+            "label": "Implied Return %",
+            "style": "Normal",
+            "text": null,
+            "value": 13.000829
+          }
+        ],
+        "title": null
+      }
+    },
+    {
+      "Xy": {
+        "height_rows": 6,
+        "series": [
+          {
+            "bars": true,
+            "name": "Count",
+            "style": "Emphasis",
+            "x": [
+              0.0,
+              1.0,
+              2.0,
+              3.0,
+              4.0
+            ],
+            "y": [
+              7.0,
+              13.0,
+              18.0,
+              4.0,
+              2.0
+            ]
+          }
+        ],
+        "title": "Rating Distribution",
+        "x_label": "Strong Buy | Buy | Hold | Sell | Strong Sell",
+        "x_marker": null,
+        "y_label": "Analysts"
+      }
+    },
+    {
+      "Table": {
+        "columns": [
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Firm",
+            "width": 28
+          },
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Analyst",
+            "width": 20
+          },
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Rating",
+            "width": 14
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 2
+              }
+            },
+            "live": null,
+            "title": "Target",
+            "width": 9
+          },
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Date",
+            "width": 9
+          }
+        ],
+        "numbered": false,
+        "page_size": 18,
+        "rows": [
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Ashford Lane Securities",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "L. Hartwell",
+                "value": null
+              },
+              {
+                "style": "Up",
+                "text": "Buy",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 337.0
+              },
+              {
+                "style": "Normal",
+                "text": "10/05/26",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Orchard Hill Partners II",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "C. Ashby",
+                "value": null
+              },
+              {
+                "style": "Up",
+                "text": "Strong Buy",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 357.0
+              },
+              {
+                "style": "Normal",
+                "text": "10/03/26",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Fairhaven Cross Research",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "L. Yardley",
+                "value": null
+              },
+              {
+                "style": "Down",
+                "text": "Underperform",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 302.0
+              },
+              {
+                "style": "Normal",
+                "text": "10/01/26",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Kestrel Point Capital Markets",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "C. Whitlock",
+                "value": null
+              },
+              {
+                "style": "Up",
+                "text": "Strong Buy",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 377.0
+              },
+              {
+                "style": "Normal",
+                "text": "09/28/26",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Orchard Hill Securities",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "D. Talbot",
+                "value": null
+              },
+              {
+                "style": "Up",
+                "text": "Strong Buy",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 352.0
+              },
+              {
+                "style": "Normal",
+                "text": "09/26/26",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Alderbrook & Co.",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "B. Northcott",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Sector Perform",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 352.0
+              },
+              {
+                "style": "Normal",
+                "text": "09/24/26",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Hawthorne Bay Research II",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "B. Merrick",
+                "value": null
+              },
+              {
+                "style": "Down",
+                "text": "Sell",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 266.0
+              },
+              {
+                "style": "Normal",
+                "text": "08/28/26",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Linden Row Advisors",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "R. Vance",
+                "value": null
+              },
+              {
+                "style": "Down",
+                "text": "Underweight",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 301.0
+              },
+              {
+                "style": "Normal",
+                "text": "08/28/26",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Whitcombe Advisors II",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "R. Merrick",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Market Perform",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 352.0
+              },
+              {
+                "style": "Normal",
+                "text": "08/25/26",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Tamsin Reed Capital Markets",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "R. Radcliffe",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Market Perform",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 280.0
+              },
+              {
+                "style": "Normal",
+                "text": "08/24/26",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Drummond Vale Advisors",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "T. Delacourt",
+                "value": null
+              },
+              {
+                "style": "Up",
+                "text": "Positive",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 383.0
+              },
+              {
+                "style": "Normal",
+                "text": "08/15/26",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Kestrel Point Equity Research II",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "L. Calloway",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Neutral",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 311.0
+              },
+              {
+                "style": "Normal",
+                "text": "08/13/26",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Alderbrook Securities II",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "T. Ashby",
+                "value": null
+              },
+              {
+                "style": "Up",
+                "text": "Positive",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 335.0
+              },
+              {
+                "style": "Normal",
+                "text": "08/10/26",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Whitcombe Research",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "R. Northcott",
+                "value": null
+              },
+              {
+                "style": "Up",
+                "text": "Strong Buy",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 328.0
+              },
+              {
+                "style": "Normal",
+                "text": "08/05/26",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          }
+        ],
+        "title": "Broker Ratings"
+      }
+    }
+  ],
+  "function": "ANR",
+  "menu": [],
+  "refresh_ms": null,
+  "security": "AAPL US Equity",
+  "sources": [
+    {
+      "as_of": 1791216000000000000,
+      "attribution": null,
+      "delay": "MOCK",
+      "provider": "mock",
+      "source": "MOCK",
+      "synthetic": true
+    }
+  ],
+  "status": "Ok",
+  "title": "AAPL US Equity — Analyst Recommendations"
+}

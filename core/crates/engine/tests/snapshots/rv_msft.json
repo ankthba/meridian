@@ -1,0 +1,918 @@
+{
+  "args": [],
+  "blocks": [
+    {
+      "Fields": {
+        "columns": 3,
+        "fields": [
+          {
+            "format": "Text",
+            "label": "Sector",
+            "style": "Normal",
+            "text": "Information Technology",
+            "value": null
+          },
+          {
+            "format": "Text",
+            "label": "Industry",
+            "style": "Normal",
+            "text": "Systems Software",
+            "value": null
+          },
+          {
+            "format": {
+              "ChangePercent": {
+                "decimals": 1
+              }
+            },
+            "label": "P/E vs Median",
+            "style": "Normal",
+            "text": null,
+            "value": -32.588048
+          }
+        ],
+        "title": null
+      }
+    },
+    {
+      "Table": {
+        "columns": [
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Security",
+            "width": 16
+          },
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Name",
+            "width": 24
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Large": {
+                "decimals": 2
+              }
+            },
+            "live": null,
+            "title": "Mkt Cap",
+            "width": 9
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 1
+              }
+            },
+            "live": null,
+            "title": "P/E",
+            "width": 7
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 1
+              }
+            },
+            "live": null,
+            "title": "P/S",
+            "width": 6
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 1
+              }
+            },
+            "live": null,
+            "title": "Net Mgn %",
+            "width": 9
+          },
+          {
+            "align": "Right",
+            "format": {
+              "ChangePercent": {
+                "decimals": 1
+              }
+            },
+            "live": null,
+            "title": "Rev Gr %",
+            "width": 9
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 1
+              }
+            },
+            "live": null,
+            "title": "ROE %",
+            "width": 7
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 2
+              }
+            },
+            "live": null,
+            "title": "Div Yld %",
+            "width": 9
+          },
+          {
+            "align": "Right",
+            "format": {
+              "ChangePercent": {
+                "decimals": 1
+              }
+            },
+            "live": null,
+            "title": "1Y Ret %",
+            "width": 9
+          }
+        ],
+        "numbered": false,
+        "page_size": null,
+        "rows": [
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "MSFT US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "MSFT US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Microsoft Corporation",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 3956798232000.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 30.248159
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 7.518856
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 24.859857
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 14.685897
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 26.380635
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.604024
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 22.127416
+              }
+            ],
+            "depth": 0,
+            "emphasis": true,
+            "security": "MSFT US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "NVDA US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "NVDA US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "NVIDIA Corporation",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 5319731604000.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 43.257937
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 10.983669
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 25.402875
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 14.09527
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 30.183874
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.015076
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 66.783966
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "NVDA US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "AAPL US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Apple Inc.",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 4340512791999.9995
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 48.173045
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 16.205195
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 33.63562
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 16.035472
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 35.532102
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.319225
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 18.152138
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "AAPL US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "AVGO US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "AVGO US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Broadcom Inc.",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 3305255280000.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 77.614782
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 27.631062
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 35.593249
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 28.63718
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 40.287845
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.262673
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 119.766631
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "AVGO US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "ORCL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "ORCL US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Oracle Corporation",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 735807445000.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 60.692488
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 11.554584
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 19.026083
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 9.53798
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 33.050547
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.440604
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 58.931645
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "ORCL US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "AMD US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "AMD US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Advanced Micro Devices, Inc.",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 598848904000.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 44.870617
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 15.193041
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 33.864421
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 24.99128
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 29.91886
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.0
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 97.782752
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "AMD US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "CSCO US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "CSCO US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Cisco Systems, Inc.",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 413822472000.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 29.430168
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 9.440889
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 32.117355
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -3.521669
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 20.057274
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.341155
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 45.565073
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "CSCO US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "CRM US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "CRM US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Salesforce, Inc.",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 230260020000.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 28.240566
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 9.874776
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 34.947251
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 2.740571
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 23.954261
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.662295
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -0.29975
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "CRM US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "INTC US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "INTC US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Intel Corporation",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 226447908000.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 57.285714
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 12.004236
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 21.024173
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 8.12174
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 16.209588
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.0
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 5.019642
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "INTC US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "NOW US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "NOW US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "ServiceNow, Inc.",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 222854774000.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 38.751165
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 13.929294
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 35.939746
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 30.359325
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 38.69969
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.0
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 58.610214
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "NOW US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "PANW US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "PANW US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Palo Alto Networks, Inc.",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 201417029000.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 75.848718
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 19.062751
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 25.127768
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 24.218199
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 27.083546
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.0
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 52.731309
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "PANW US Equity"
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "Median",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "11 companies",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 598848904000.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 44.870617
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 12.004236
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 32.117355
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 14.685897
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 29.91886
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.262673
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 52.731309
+              }
+            ],
+            "depth": 0,
+            "emphasis": true,
+            "security": null
+          }
+        ],
+        "title": "Peers"
+      }
+    }
+  ],
+  "function": "RV",
+  "menu": [
+    {
+      "action": {
+        "args": [],
+        "function": "CORR",
+        "security": "MSFT US Equity"
+      },
+      "label": "Correlation",
+      "number": 1,
+      "selected": false
+    }
+  ],
+  "refresh_ms": null,
+  "security": "MSFT US Equity",
+  "sources": [
+    {
+      "as_of": 1791216000000000000,
+      "attribution": null,
+      "delay": "MOCK",
+      "provider": "mock",
+      "source": "MOCK",
+      "synthetic": true
+    }
+  ],
+  "status": "Ok",
+  "title": "MSFT US Equity — Relative Valuation"
+}

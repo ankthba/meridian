@@ -1,0 +1,1116 @@
+{
+  "args": [],
+  "blocks": [
+    {
+      "Inputs": {
+        "inputs": [
+          {
+            "id": "add",
+            "kind": "Text",
+            "label": "Add Security",
+            "options": [],
+            "value": ""
+          },
+          {
+            "id": "new",
+            "kind": "Text",
+            "label": "New List",
+            "options": [],
+            "value": ""
+          }
+        ],
+        "title": null
+      }
+    },
+    {
+      "Table": {
+        "columns": [
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Security",
+            "width": 20
+          },
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Name",
+            "width": 24
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Price": {
+                "decimals": 2
+              }
+            },
+            "live": "Last",
+            "title": "Last",
+            "width": 11
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Change": {
+                "decimals": 2
+              }
+            },
+            "live": "NetChange",
+            "title": "Net Chg",
+            "width": 9
+          },
+          {
+            "align": "Right",
+            "format": {
+              "ChangePercent": {
+                "decimals": 2
+              }
+            },
+            "live": "PctChange",
+            "title": "% Chg",
+            "width": 8
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Price": {
+                "decimals": 2
+              }
+            },
+            "live": "Bid",
+            "title": "Bid",
+            "width": 10
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Price": {
+                "decimals": 2
+              }
+            },
+            "live": "Ask",
+            "title": "Ask",
+            "width": 10
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Price": {
+                "decimals": 2
+              }
+            },
+            "live": "High",
+            "title": "High",
+            "width": 10
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Price": {
+                "decimals": 2
+              }
+            },
+            "live": "Low",
+            "title": "Low",
+            "width": 10
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Large": {
+                "decimals": 2
+              }
+            },
+            "live": "Volume",
+            "title": "Volume",
+            "width": 9
+          },
+          {
+            "align": "Right",
+            "format": "Time",
+            "live": "Time",
+            "title": "Time",
+            "width": 8
+          }
+        ],
+        "numbered": true,
+        "page_size": 30,
+        "rows": [
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "AAPL US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Apple Inc.",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "AAPL US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "MSFT US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "MSFT US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Microsoft Corporation",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "MSFT US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "NVDA US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "NVDA US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "NVIDIA Corporation",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "NVDA US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "AMZN US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "AMZN US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Amazon.com, Inc.",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "AMZN US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "GOOGL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "GOOGL US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Alphabet Inc. Class A",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "GOOGL US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "META US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "META US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Meta Platforms, Inc. Class A",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "META US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "TSLA US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "TSLA US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Tesla, Inc.",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "TSLA US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "JPM US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "JPM US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "JPMorgan Chase & Co.",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "JPM US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "XOM US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "XOM US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Exxon Mobil Corporation",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "XOM US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "SPY US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "SPY US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "SPDR S&P 500 ETF Trust",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "SPY US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "QQQ US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "QQQ US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Invesco QQQ Trust, Series 1",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "QQQ US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "BTCUSD Curncy"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "BTCUSD Curncy",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Bitcoin",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "BTCUSD Curncy"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "ETHUSD Curncy"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "ETHUSD Curncy",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Ethereum",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "ETHUSD Curncy"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "EURUSD Curncy"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "EURUSD Curncy",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Euro / US Dollar",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "EURUSD Curncy"
+          }
+        ],
+        "title": null
+      }
+    }
+  ],
+  "function": "W",
+  "menu": [
+    {
+      "action": {
+        "args": [
+          [
+            "list",
+            "1"
+          ]
+        ],
+        "function": "W",
+        "security": null
+      },
+      "label": "Default",
+      "number": 1,
+      "selected": true
+    }
+  ],
+  "refresh_ms": null,
+  "security": null,
+  "sources": [
+    {
+      "as_of": 1791216000000000000,
+      "attribution": null,
+      "delay": "MOCK",
+      "provider": "mock",
+      "source": "MOCK",
+      "synthetic": true
+    }
+  ],
+  "status": "Ok",
+  "title": "Worksheet — Default"
+}

@@ -1,0 +1,3280 @@
+{
+  "args": [],
+  "blocks": [
+    {
+      "Table": {
+        "columns": [
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Security",
+            "width": 18
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Price": {
+                "decimals": 2
+              }
+            },
+            "live": "Last",
+            "title": "Last",
+            "width": 11
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Change": {
+                "decimals": 2
+              }
+            },
+            "live": "NetChange",
+            "title": "Net Chg",
+            "width": 9
+          },
+          {
+            "align": "Right",
+            "format": {
+              "ChangePercent": {
+                "decimals": 2
+              }
+            },
+            "live": "PctChange",
+            "title": "% Chg",
+            "width": 8
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Price": {
+                "decimals": 2
+              }
+            },
+            "live": "Bid",
+            "title": "Bid",
+            "width": 10
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Price": {
+                "decimals": 2
+              }
+            },
+            "live": "Ask",
+            "title": "Ask",
+            "width": 10
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Price": {
+                "decimals": 2
+              }
+            },
+            "live": "High",
+            "title": "High",
+            "width": 10
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Price": {
+                "decimals": 2
+              }
+            },
+            "live": "Low",
+            "title": "Low",
+            "width": 10
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Large": {
+                "decimals": 2
+              }
+            },
+            "live": "Volume",
+            "title": "Volume",
+            "width": 9
+          },
+          {
+            "align": "Right",
+            "format": "Time",
+            "live": "Time",
+            "title": "Time",
+            "width": 8
+          }
+        ],
+        "numbered": true,
+        "page_size": 25,
+        "rows": [
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "NVDA US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "NVDA US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "NVDA US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "AAPL US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "AAPL US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "AMZN US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "AMZN US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "AMZN US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "QQQ US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "QQQ US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "QQQ US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "GOOGL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "GOOGL US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "GOOGL US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "SPY US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "SPY US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "SPY US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "BAC US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "BAC US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "BAC US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "MSFT US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "MSFT US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "MSFT US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "TLT US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "TLT US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "TLT US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "PLTR US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "PLTR US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "PLTR US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "INTC US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "INTC US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "INTC US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "XLF US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "XLF US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "XLF US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "EEM US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "EEM US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "EEM US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "IWM US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "IWM US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "IWM US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "TSLA US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "TSLA US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "TSLA US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "NFLX US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "NFLX US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "NFLX US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "XLE US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "XLE US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "XLE US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "AVGO US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "AVGO US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "AVGO US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "ORCL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "ORCL US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "ORCL US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "F US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "F US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "F US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "CMCSA US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "CMCSA US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "CMCSA US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "XOM US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "XOM US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "XOM US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "WMT US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "WMT US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "WMT US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "SLB US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "SLB US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "SLB US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "META US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "META US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "META US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "PFE US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "PFE US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "PFE US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "LRCX US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "LRCX US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "LRCX US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "UBER US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "UBER US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "UBER US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "CSCO US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "CSCO US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "CSCO US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "DIS US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "DIS US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "DIS US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "T US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "T US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "T US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "SCHW US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "SCHW US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "SCHW US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "EWJ US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "EWJ US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "EWJ US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "JPM US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "JPM US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "JPM US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "AMD US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "AMD US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "AMD US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "ABBV US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "ABBV US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "ABBV US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "MU US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "MU US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "MU US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "WFC US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "WFC US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "WFC US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "CRM US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "CRM US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "CRM US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "FCX US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "FCX US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "FCX US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "NKE US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "NKE US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "NKE US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "VZ US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "VZ US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "VZ US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "GLD US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "GLD US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "GLD US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "PM US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "PM US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "PM US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "C US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "C US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "C US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "UNH US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "UNH US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "UNH US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "CVX US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "CVX US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "CVX US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "KO US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "KO US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "KO US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "EWG US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "EWG US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "EWG US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "XLK US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "XLK US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "XLK US Equity"
+          }
+        ],
+        "title": null
+      }
+    }
+  ],
+  "function": "MOST",
+  "menu": [
+    {
+      "action": {
+        "args": [
+          [
+            "by",
+            "Volume"
+          ]
+        ],
+        "function": "MOST",
+        "security": null
+      },
+      "label": "Volume",
+      "number": 1,
+      "selected": true
+    },
+    {
+      "action": {
+        "args": [
+          [
+            "by",
+            "Gainers"
+          ]
+        ],
+        "function": "MOST",
+        "security": null
+      },
+      "label": "Gainers",
+      "number": 2,
+      "selected": false
+    },
+    {
+      "action": {
+        "args": [
+          [
+            "by",
+            "Losers"
+          ]
+        ],
+        "function": "MOST",
+        "security": null
+      },
+      "label": "Losers",
+      "number": 3,
+      "selected": false
+    }
+  ],
+  "refresh_ms": null,
+  "security": null,
+  "sources": [
+    {
+      "as_of": 1791216000000000000,
+      "attribution": null,
+      "delay": "MOCK",
+      "provider": "mock",
+      "source": "MOCK",
+      "synthetic": true
+    }
+  ],
+  "status": "Ok",
+  "title": "Most Active"
+}

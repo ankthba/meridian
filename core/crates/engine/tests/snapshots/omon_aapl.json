@@ -1,0 +1,2938 @@
+{
+  "args": [],
+  "blocks": [
+    {
+      "Inputs": {
+        "inputs": [
+          {
+            "id": "expiry",
+            "kind": "Choice",
+            "label": "Expiry",
+            "options": [
+              "10/09/26 (4d)",
+              "10/16/26 (11d)",
+              "10/23/26 (18d)",
+              "10/30/26 (25d)",
+              "11/06/26 (32d)",
+              "11/13/26 (39d)",
+              "11/20/26 (46d)",
+              "12/18/26 (74d)",
+              "01/15/27 (102d)",
+              "02/19/27 (137d)",
+              "03/19/27 (165d)",
+              "04/16/27 (193d)",
+              "05/21/27 (228d)",
+              "06/17/27 (255d)",
+              "07/16/27 (284d)",
+              "08/20/27 (319d)",
+              "09/17/27 (347d)"
+            ],
+            "value": "10/09/26 (4d)"
+          },
+          {
+            "id": "strikes",
+            "kind": "Choice",
+            "label": "Strikes",
+            "options": [
+              "10",
+              "20",
+              "40",
+              "200"
+            ],
+            "value": "20"
+          }
+        ],
+        "title": null
+      }
+    },
+    {
+      "Fields": {
+        "columns": 4,
+        "fields": [
+          {
+            "format": {
+              "Price": {
+                "decimals": 2
+              }
+            },
+            "label": "Underlying",
+            "style": "Emphasis",
+            "text": null,
+            "value": 289.52
+          },
+          {
+            "format": {
+              "ChangePercent": {
+                "decimals": 2
+              }
+            },
+            "label": "% Chg",
+            "style": "Normal",
+            "text": null,
+            "value": 1.768076
+          },
+          {
+            "format": {
+              "Number": {
+                "decimals": 2
+              }
+            },
+            "label": "ATM IV %",
+            "style": "Normal",
+            "text": null,
+            "value": 28.05
+          },
+          {
+            "format": {
+              "Number": {
+                "decimals": 2
+              }
+            },
+            "label": "30D HV %",
+            "style": "Normal",
+            "text": null,
+            "value": 31.912993
+          },
+          {
+            "format": "Integer",
+            "label": "Days to Exp",
+            "style": "Normal",
+            "text": null,
+            "value": 4.0
+          },
+          {
+            "format": {
+              "Number": {
+                "decimals": 2
+              }
+            },
+            "label": "Put/Call OI",
+            "style": "Normal",
+            "text": null,
+            "value": 1.02934
+          },
+          {
+            "format": "Text",
+            "label": "Rate",
+            "style": "Normal",
+            "text": "UST 3M 5.36%",
+            "value": null
+          },
+          {
+            "format": "Text",
+            "label": "Div Yield",
+            "style": "Normal",
+            "text": "TTM 0.35%",
+            "value": null
+          }
+        ],
+        "title": null
+      }
+    },
+    {
+      "Notice": {
+        "level": "Info",
+        "text": "IV and Greeks computed by Meridian (Black-Scholes from bid/ask mid). Theta per day, vega per vol point."
+      }
+    },
+    {
+      "Table": {
+        "columns": [
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 2
+              }
+            },
+            "live": null,
+            "title": "Bid",
+            "width": 6
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 2
+              }
+            },
+            "live": null,
+            "title": "Ask",
+            "width": 6
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 2
+              }
+            },
+            "live": null,
+            "title": "Last",
+            "width": 6
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 1
+              }
+            },
+            "live": null,
+            "title": "CIV",
+            "width": 5
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 2
+              }
+            },
+            "live": null,
+            "title": "Dlt",
+            "width": 5
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 3
+              }
+            },
+            "live": null,
+            "title": "Gam",
+            "width": 5
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 2
+              }
+            },
+            "live": null,
+            "title": "Tht",
+            "width": 5
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 2
+              }
+            },
+            "live": null,
+            "title": "Vga",
+            "width": 4
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Large": {
+                "decimals": 0
+              }
+            },
+            "live": null,
+            "title": "Volm",
+            "width": 5
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Large": {
+                "decimals": 0
+              }
+            },
+            "live": null,
+            "title": "OI",
+            "width": 5
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 2
+              }
+            },
+            "live": null,
+            "title": "Strike",
+            "width": 7
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 2
+              }
+            },
+            "live": null,
+            "title": "Bid",
+            "width": 6
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 2
+              }
+            },
+            "live": null,
+            "title": "Ask",
+            "width": 6
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 2
+              }
+            },
+            "live": null,
+            "title": "Last",
+            "width": 6
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 1
+              }
+            },
+            "live": null,
+            "title": "PIV",
+            "width": 5
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 2
+              }
+            },
+            "live": null,
+            "title": "Dlt",
+            "width": 5
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 3
+              }
+            },
+            "live": null,
+            "title": "Gam",
+            "width": 5
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 2
+              }
+            },
+            "live": null,
+            "title": "Tht",
+            "width": 5
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 2
+              }
+            },
+            "live": null,
+            "title": "Vga",
+            "width": 4
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Large": {
+                "decimals": 0
+              }
+            },
+            "live": null,
+            "title": "Volm",
+            "width": 5
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Large": {
+                "decimals": 0
+              }
+            },
+            "live": null,
+            "title": "OI",
+            "width": 5
+          }
+        ],
+        "numbered": false,
+        "page_size": 40,
+        "rows": [
+          {
+            "action": {
+              "args": [
+                [
+                  "k1",
+                  "265"
+                ],
+                [
+                  "expiry",
+                  "10/09/2026"
+                ]
+              ],
+              "function": "OVME",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 24.4
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 25.4
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 24.9
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 47.5
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 0.9625
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 0.005565
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": -0.1773
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 0.0253
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 7273.0
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 25751.0
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 265.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.21
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.23
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.22
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 47.5
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": -0.0375
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.005565
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": -0.1427
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.0253
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 12951.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 24880.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "k1",
+                  "267.5"
+                ],
+                [
+                  "expiry",
+                  "10/09/2026"
+                ]
+              ],
+              "function": "OVME",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 22.0
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 22.9
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 21.8
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 45.68
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 0.9512
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 0.007157
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": -0.2045
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 0.0313
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 8571.0
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 28284.0
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 267.5
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.28
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.3
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.3
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 45.68
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": -0.0488
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.007157
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": -0.1696
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.0313
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 9234.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 33094.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "k1",
+                  "270"
+                ],
+                [
+                  "expiry",
+                  "10/09/2026"
+                ]
+              ],
+              "function": "OVME",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 19.65
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 20.45
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 19.5
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 43.82
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 0.9365
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 0.009183
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": -0.2353
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 0.0385
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 16943.0
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 50966.0
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 270.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.37
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.39
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.38
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 43.82
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": -0.0635
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.009183
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": -0.2
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.0385
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 7763.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 29019.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "k1",
+                  "272.5"
+                ],
+                [
+                  "expiry",
+                  "10/09/2026"
+                ]
+              ],
+              "function": "OVME",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 17.35
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 18.0
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 17.45
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 41.92
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 0.9174
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 0.011748
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": -0.2694
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 0.0471
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 13386.0
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 43678.0
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 272.5
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.48
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.51
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.49
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 41.92
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": -0.0826
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.011748
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": -0.2338
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.0471
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 6600.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 20301.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "k1",
+                  "275"
+                ],
+                [
+                  "expiry",
+                  "10/09/2026"
+                ]
+              ],
+              "function": "OVME",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 15.05
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 15.6
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 15.15
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 39.96
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 0.8924
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 0.014971
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": -0.3063
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 0.0572
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 10082.0
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 27987.0
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 275.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.63
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.67
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.64
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 39.96
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": -0.1075
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.014971
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": -0.2703
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.0572
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 18955.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 36963.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "k1",
+                  "277.5"
+                ],
+                [
+                  "expiry",
+                  "10/09/2026"
+                ]
+              ],
+              "function": "OVME",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 12.8
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 13.25
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 13.1
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 37.95
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 0.8598
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 0.018974
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": -0.3447
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 0.0689
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 11669.0
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 46908.0
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 277.5
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.84
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.87
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.84
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 37.95
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": -0.1401
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.018974
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": -0.3084
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.0689
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 5932.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 26435.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "k1",
+                  "280"
+                ],
+                [
+                  "expiry",
+                  "10/09/2026"
+                ]
+              ],
+              "function": "OVME",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 10.6
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 11.0
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 10.95
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 35.9
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 0.8173
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 0.02385
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": -0.3826
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 0.0819
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 18761.0
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 59822.0
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 280.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.1
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.15
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.14
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 35.9
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": -0.1826
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.02385
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": -0.3459
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.0819
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 35883.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 79560.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "k1",
+                  "282.5"
+                ],
+                [
+                  "expiry",
+                  "10/09/2026"
+                ]
+              ],
+              "function": "OVME",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 8.5
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 8.8
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 8.55
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 33.83
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 0.7619
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 0.029585
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": -0.4165
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 0.0957
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 10216.0
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 27787.0
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 282.5
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.46
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.51
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.43
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 33.83
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": -0.238
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.029585
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": -0.3795
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.0957
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 10040.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 52288.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "k1",
+                  "285"
+                ],
+                [
+                  "expiry",
+                  "10/09/2026"
+                ]
+              ],
+              "function": "OVME",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 6.55
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 6.75
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 6.5
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 31.77
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 0.6903
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 0.035896
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": -0.4412
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 0.109
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 19603.0
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 39658.0
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 285.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.96
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 2.02
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 2.05
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 31.77
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": -0.3096
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.035896
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": -0.4038
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.109
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 24621.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 58180.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "k1",
+                  "287.5"
+                ],
+                [
+                  "expiry",
+                  "10/09/2026"
+                ]
+              ],
+              "function": "OVME",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 4.75
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 4.95
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 4.8
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 29.79
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 0.5999
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 0.041938
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": -0.4495
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 0.1195
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 27824.0
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 58941.0
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 287.5
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 2.64
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 2.71
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 2.61
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 29.79
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": -0.4001
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.041938
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": -0.4118
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.1195
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 9674.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 34715.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "k1",
+                  "290"
+                ],
+                [
+                  "expiry",
+                  "10/09/2026"
+                ]
+              ],
+              "function": "OVME",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 3.25
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 3.35
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 3.25
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 28.05
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.4912
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.045983
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": -0.4336
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.1233
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 21278.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 58099.0
+              },
+              {
+                "style": "Warning",
+                "text": null,
+                "value": 290.0
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 3.55
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 3.7
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 3.55
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 28.05
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": -0.5088
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 0.045983
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": -0.3955
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 0.1233
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 28872.0
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 79526.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": true,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "k1",
+                  "292.5"
+                ],
+                [
+                  "expiry",
+                  "10/09/2026"
+                ]
+              ],
+              "function": "OVME",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 2.06
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 2.12
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 2.11
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 26.74
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.3725
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.045762
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": -0.3896
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.117
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 18721.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 37197.0
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 292.5
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 4.85
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 5.0
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 4.95
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 26.74
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": -0.6274
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 0.045762
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": -0.3511
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 0.117
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 14899.0
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 39860.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "k1",
+                  "295"
+                ],
+                [
+                  "expiry",
+                  "10/09/2026"
+                ]
+              ],
+              "function": "OVME",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.23
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.27
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.28
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 26.03
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.2608
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.040362
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": -0.3237
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.1005
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 19800.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 45665.0
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 295.0
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 6.45
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 6.7
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 6.6
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 26.03
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": -0.7392
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 0.040362
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": -0.2849
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 0.1005
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 14945.0
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 53354.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "k1",
+                  "297.5"
+                ],
+                [
+                  "expiry",
+                  "10/09/2026"
+                ]
+              ],
+              "function": "OVME",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.71
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.74
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.73
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 25.92
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.1714
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.031741
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": -0.2512
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.0787
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 16683.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 50306.0
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 297.5
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 8.4
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 8.7
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 8.8
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 25.92
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": -0.8286
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 0.031741
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": -0.212
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 0.0787
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 17483.0
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 37513.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "k1",
+                  "300"
+                ],
+                [
+                  "expiry",
+                  "10/09/2026"
+                ]
+              ],
+              "function": "OVME",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.41
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.43
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.42
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 26.25
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.1085
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.022932
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": -0.1855
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.0576
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 11791.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 49190.0
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 300.0
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 10.55
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 10.9
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 10.85
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 26.25
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": -0.8915
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 0.022932
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": -0.146
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 0.0576
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 13793.0
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 58038.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "k1",
+                  "302.5"
+                ],
+                [
+                  "expiry",
+                  "10/09/2026"
+                ]
+              ],
+              "function": "OVME",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.23
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.25
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.25
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 26.86
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.0675
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.015707
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": -0.1327
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.0403
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 13338.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 53631.0
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 302.5
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 12.85
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 13.3
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 12.75
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 26.86
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": -0.9325
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 0.015707
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": -0.0928
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 0.0403
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 10235.0
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 54479.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "k1",
+                  "305"
+                ],
+                [
+                  "expiry",
+                  "10/09/2026"
+                ]
+              ],
+              "function": "OVME",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.13
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.15
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.14
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 27.64
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.0417
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.010429
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": -0.093
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.0276
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 12883.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 30083.0
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 305.0
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 15.2
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 15.75
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 15.4
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 27.64
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": -0.9583
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 0.010429
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": -0.0528
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 0.0276
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 13927.0
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 37454.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "k1",
+                  "307.5"
+                ],
+                [
+                  "expiry",
+                  "10/09/2026"
+                ]
+              ],
+              "function": "OVME",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.08
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.1
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.09
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 28.49
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.0258
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.006805
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": -0.0644
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.0185
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 22360.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 43289.0
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 307.5
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 17.55
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 18.2
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 18.2
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 28.49
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": -0.9742
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 0.006805
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": -0.0238
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 0.0185
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 13453.0
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 32525.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "k1",
+                  "310"
+                ],
+                [
+                  "expiry",
+                  "10/09/2026"
+                ]
+              ],
+              "function": "OVME",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.04
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.06
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.05
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 29.38
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.016
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.0044
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": -0.0442
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.0124
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 15987.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 49683.0
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 310.0
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 20.0
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 20.75
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 19.95
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 29.38
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": -0.984
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 0.0044
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": -0.0032
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 0.0124
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 23219.0
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 54782.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "k1",
+                  "312.5"
+                ],
+                [
+                  "expiry",
+                  "10/09/2026"
+                ]
+              ],
+              "function": "OVME",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.02
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.04
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.03
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 30.28
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.0099
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.002832
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": -0.0302
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.0082
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 9598.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 20539.0
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 312.5
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 22.4
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 23.3
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 22.6
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 30.28
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": -0.99
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 0.002832
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 0.0112
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 0.0082
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 7088.0
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 29363.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          }
+        ],
+        "title": "Calls | Strike | Puts — 10/09/26 (4d)"
+      }
+    }
+  ],
+  "function": "OMON",
+  "menu": [
+    {
+      "action": {
+        "args": [],
+        "function": "OVDV",
+        "security": "AAPL US Equity"
+      },
+      "label": "Vol Surface",
+      "number": 1,
+      "selected": false
+    },
+    {
+      "action": {
+        "args": [],
+        "function": "OVME",
+        "security": "AAPL US Equity"
+      },
+      "label": "Option Valuation",
+      "number": 2,
+      "selected": false
+    }
+  ],
+  "refresh_ms": null,
+  "security": "AAPL US Equity",
+  "sources": [
+    {
+      "as_of": 1791216000000000000,
+      "attribution": null,
+      "delay": "MOCK",
+      "provider": "mock",
+      "source": "MOCK",
+      "synthetic": true
+    }
+  ],
+  "status": "Ok",
+  "title": "AAPL US Equity — Option Monitor"
+}

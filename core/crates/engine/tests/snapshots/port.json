@@ -1,0 +1,104 @@
+{
+  "args": [],
+  "blocks": [
+    {
+      "Inputs": {
+        "inputs": [
+          {
+            "id": "security",
+            "kind": "Text",
+            "label": "Security",
+            "options": [],
+            "value": ""
+          },
+          {
+            "id": "date",
+            "kind": "Date",
+            "label": "Trade Date",
+            "options": [],
+            "value": "10/05/2026"
+          },
+          {
+            "id": "qty",
+            "kind": "Number",
+            "label": "Quantity",
+            "options": [],
+            "value": ""
+          },
+          {
+            "id": "price",
+            "kind": "Number",
+            "label": "Price",
+            "options": [],
+            "value": ""
+          },
+          {
+            "id": "fees",
+            "kind": "Number",
+            "label": "Fees",
+            "options": [],
+            "value": "0"
+          }
+        ],
+        "title": "Add Transaction (negative quantity = sell)"
+      }
+    },
+    {
+      "Notice": {
+        "level": "Info",
+        "text": "No positions. Add a transaction above, then select Add Transaction."
+      }
+    }
+  ],
+  "function": "PORT",
+  "menu": [
+    {
+      "action": {
+        "args": [
+          [
+            "portfolio",
+            "1"
+          ]
+        ],
+        "function": "PORT",
+        "security": null
+      },
+      "label": "Main",
+      "number": 1,
+      "selected": true
+    },
+    {
+      "action": {
+        "args": [
+          [
+            "portfolio",
+            "1"
+          ],
+          [
+            "add",
+            "1"
+          ]
+        ],
+        "function": "PORT",
+        "security": null
+      },
+      "label": "Add Transaction",
+      "number": 2,
+      "selected": false
+    }
+  ],
+  "refresh_ms": null,
+  "security": null,
+  "sources": [
+    {
+      "as_of": 1791216000000000000,
+      "attribution": null,
+      "delay": "MOCK",
+      "provider": "mock",
+      "source": "MOCK",
+      "synthetic": true
+    }
+  ],
+  "status": "Ok",
+  "title": "Portfolio & Risk"
+}

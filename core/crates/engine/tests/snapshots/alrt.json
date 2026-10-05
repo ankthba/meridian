@@ -1,0 +1,96 @@
+{
+  "args": [],
+  "blocks": [
+    {
+      "Inputs": {
+        "inputs": [
+          {
+            "id": "security",
+            "kind": "Text",
+            "label": "Security",
+            "options": [],
+            "value": ""
+          },
+          {
+            "id": "condition",
+            "kind": "Choice",
+            "label": "Condition",
+            "options": [
+              "Price Above",
+              "Price Below",
+              "% Chg Above",
+              "% Chg Below",
+              "Volume Above",
+              "News Keyword"
+            ],
+            "value": "Price Above"
+          },
+          {
+            "id": "value",
+            "kind": "Text",
+            "label": "Value",
+            "options": [],
+            "value": ""
+          },
+          {
+            "id": "repeat",
+            "kind": "Choice",
+            "label": "Repeat",
+            "options": [
+              "Once",
+              "Every Cross",
+              "Every 15 Min"
+            ],
+            "value": "Once"
+          },
+          {
+            "id": "note",
+            "kind": "Text",
+            "label": "Note",
+            "options": [],
+            "value": ""
+          }
+        ],
+        "title": "New Alert"
+      }
+    },
+    {
+      "Notice": {
+        "level": "Info",
+        "text": "No alerts yet. Fill in New Alert, then select Create Alert."
+      }
+    }
+  ],
+  "function": "ALRT",
+  "menu": [
+    {
+      "action": {
+        "args": [
+          [
+            "create",
+            "1"
+          ]
+        ],
+        "function": "ALRT",
+        "security": null
+      },
+      "label": "Create Alert",
+      "number": 1,
+      "selected": false
+    }
+  ],
+  "refresh_ms": null,
+  "security": null,
+  "sources": [
+    {
+      "as_of": 1791216000000000000,
+      "attribution": null,
+      "delay": "MOCK",
+      "provider": "mock",
+      "source": "MOCK",
+      "synthetic": true
+    }
+  ],
+  "status": "Ok",
+  "title": "Alerts"
+}

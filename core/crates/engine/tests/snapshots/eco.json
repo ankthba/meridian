@@ -1,0 +1,532 @@
+{
+  "args": [],
+  "blocks": [
+    {
+      "Inputs": {
+        "inputs": [
+          {
+            "id": "from",
+            "kind": "Date",
+            "label": "From",
+            "options": [],
+            "value": "10/02/2026"
+          },
+          {
+            "id": "to",
+            "kind": "Date",
+            "label": "To",
+            "options": [],
+            "value": "10/12/2026"
+          },
+          {
+            "id": "importance",
+            "kind": "Choice",
+            "label": "Importance",
+            "options": [
+              "All",
+              "Medium",
+              "High"
+            ],
+            "value": "All"
+          }
+        ],
+        "title": null
+      }
+    },
+    {
+      "Table": {
+        "columns": [
+          {
+            "align": "Right",
+            "format": "DateTime",
+            "live": null,
+            "title": "Date Time",
+            "width": 16
+          },
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Ctry",
+            "width": 4
+          },
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Event",
+            "width": 34
+          },
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Period",
+            "width": 7
+          },
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Imp",
+            "width": 4
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 2
+              }
+            },
+            "live": null,
+            "title": "Actual",
+            "width": 9
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 2
+              }
+            },
+            "live": null,
+            "title": "Survey",
+            "width": 9
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 2
+              }
+            },
+            "live": null,
+            "title": "Prior",
+            "width": 9
+          },
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Unit",
+            "width": 6
+          }
+        ],
+        "numbered": true,
+        "page_size": 24,
+        "rows": [
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.7912088e+18
+              },
+              {
+                "style": "Normal",
+                "text": "US",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "ISM Services Index",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Sep",
+                "value": null
+              },
+              {
+                "style": "Warning",
+                "text": "●● ",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 54.4
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 54.4
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 53.3
+              },
+              {
+                "style": "Muted",
+                "text": "",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "series",
+                  "ICSA"
+                ]
+              ],
+              "function": "ECO",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.7914626e+18
+              },
+              {
+                "style": "Normal",
+                "text": "US",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Initial Jobless Claims",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Oct 3",
+                "value": null
+              },
+              {
+                "style": "Warning",
+                "text": "●● ",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 217.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 214.0
+              },
+              {
+                "style": "Muted",
+                "text": "K",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.7915094e+18
+              },
+              {
+                "style": "Normal",
+                "text": "CN",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "China CPI YoY",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Sep",
+                "value": null
+              },
+              {
+                "style": "Warning",
+                "text": "●● ",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.4
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.2
+              },
+              {
+                "style": "Muted",
+                "text": "%",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "series",
+                  "PAYEMS"
+                ]
+              ],
+              "function": "ECO",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.791549e+18
+              },
+              {
+                "style": "Normal",
+                "text": "US",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Change in Nonfarm Payrolls",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Sep",
+                "value": null
+              },
+              {
+                "style": "Down",
+                "text": "●●●",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 278.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 90.0
+              },
+              {
+                "style": "Muted",
+                "text": "K",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "series",
+                  "UNRATE"
+                ]
+              ],
+              "function": "ECO",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.791549e+18
+              },
+              {
+                "style": "Normal",
+                "text": "US",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Unemployment Rate",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Sep",
+                "value": null
+              },
+              {
+                "style": "Down",
+                "text": "●●●",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 4.2
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 4.4
+              },
+              {
+                "style": "Muted",
+                "text": "%",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          }
+        ],
+        "title": null
+      }
+    }
+  ],
+  "function": "ECO",
+  "menu": [
+    {
+      "action": {
+        "args": [],
+        "function": "ECO",
+        "security": null
+      },
+      "label": "Calendar",
+      "number": 1,
+      "selected": true
+    },
+    {
+      "action": {
+        "args": [
+          [
+            "view",
+            "curve"
+          ]
+        ],
+        "function": "ECO",
+        "security": null
+      },
+      "label": "US Treasury Curve",
+      "number": 2,
+      "selected": false
+    },
+    {
+      "action": {
+        "args": [
+          [
+            "series",
+            "CPIAUCSL"
+          ]
+        ],
+        "function": "ECO",
+        "security": null
+      },
+      "label": "CPI",
+      "number": 3,
+      "selected": false
+    },
+    {
+      "action": {
+        "args": [
+          [
+            "series",
+            "UNRATE"
+          ]
+        ],
+        "function": "ECO",
+        "security": null
+      },
+      "label": "Unemployment",
+      "number": 4,
+      "selected": false
+    },
+    {
+      "action": {
+        "args": [
+          [
+            "series",
+            "PAYEMS"
+          ]
+        ],
+        "function": "ECO",
+        "security": null
+      },
+      "label": "Payrolls",
+      "number": 5,
+      "selected": false
+    },
+    {
+      "action": {
+        "args": [
+          [
+            "series",
+            "FEDFUNDS"
+          ]
+        ],
+        "function": "ECO",
+        "security": null
+      },
+      "label": "Fed Funds",
+      "number": 6,
+      "selected": false
+    },
+    {
+      "action": {
+        "args": [
+          [
+            "series",
+            "DGS10"
+          ]
+        ],
+        "function": "ECO",
+        "security": null
+      },
+      "label": "10Y Yield",
+      "number": 7,
+      "selected": false
+    }
+  ],
+  "refresh_ms": null,
+  "security": null,
+  "sources": [
+    {
+      "as_of": 1791216000000000000,
+      "attribution": null,
+      "delay": "MOCK",
+      "provider": "mock",
+      "source": "MOCK",
+      "synthetic": true
+    }
+  ],
+  "status": "Ok",
+  "title": "Economic Calendar"
+}

@@ -33,6 +33,8 @@ pub trait Provider: Send + Sync + 'static {
         true
     }
 
+    /// Instruments matching `q.text`. An empty text lists the provider's
+    /// universe (up to `q.limit`); the engine loads reference data this way.
     async fn search(&self, _q: &InstrumentQuery) -> ProviderResult<Vec<Instrument>> {
         unsupported(Capability::Search)
     }

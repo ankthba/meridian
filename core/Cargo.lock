@@ -1800,6 +1800,7 @@ dependencies = [
  "meridian-ask",
  "meridian-command",
  "meridian-provider",
+ "meridian-provider-mock",
  "meridian-store",
  "meridian-stream",
  "meridian-types",

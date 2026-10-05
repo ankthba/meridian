@@ -1,0 +1,2790 @@
+{
+  "args": [
+    [
+      "series",
+      "CPIAUCSL"
+    ]
+  ],
+  "blocks": [
+    {
+      "Fields": {
+        "columns": 3,
+        "fields": [
+          {
+            "format": "Text",
+            "label": "Units",
+            "style": "Normal",
+            "text": "Index 1982-1984=100",
+            "value": null
+          },
+          {
+            "format": "Text",
+            "label": "Frequency",
+            "style": "Normal",
+            "text": "Monthly",
+            "value": null
+          },
+          {
+            "format": "Text",
+            "label": "Seasonal Adj",
+            "style": "Normal",
+            "text": "Seasonally Adjusted",
+            "value": null
+          },
+          {
+            "format": {
+              "Number": {
+                "decimals": 2
+              }
+            },
+            "label": "Latest",
+            "style": "Emphasis",
+            "text": null,
+            "value": 330.911
+          },
+          {
+            "format": "Text",
+            "label": "Date",
+            "style": "Normal",
+            "text": "08/01/2026",
+            "value": null
+          },
+          {
+            "format": {
+              "Change": {
+                "decimals": 2
+              }
+            },
+            "label": "Change",
+            "style": "Normal",
+            "text": null,
+            "value": 1.536
+          }
+        ],
+        "title": null
+      }
+    },
+    {
+      "Xy": {
+        "height_rows": 12,
+        "series": [
+          {
+            "bars": false,
+            "name": "CPIAUCSL",
+            "style": "Emphasis",
+            "x": [
+              1.1570688e+18,
+              1.1596608e+18,
+              1.1623392e+18,
+              1.1649312e+18,
+              1.1676096e+18,
+              1.170288e+18,
+              1.1727072e+18,
+              1.1753856e+18,
+              1.1779776e+18,
+              1.180656e+18,
+              1.183248e+18,
+              1.1859264e+18,
+              1.1886048e+18,
+              1.1911968e+18,
+              1.1938752e+18,
+              1.1964672e+18,
+              1.1991456e+18,
+              1.201824e+18,
+              1.2043296e+18,
+              1.207008e+18,
+              1.2096e+18,
+              1.2122784e+18,
+              1.2148704e+18,
+              1.2175488e+18,
+              1.2202272e+18,
+              1.2228192e+18,
+              1.2254976e+18,
+              1.2280896e+18,
+              1.230768e+18,
+              1.2334464e+18,
+              1.2358655999999997e+18,
+              1.238544e+18,
+              1.241136e+18,
+              1.2438144e+18,
+              1.2464064e+18,
+              1.2490848e+18,
+              1.2517632e+18,
+              1.2543552e+18,
+              1.2570336e+18,
+              1.2596256e+18,
+              1.262304e+18,
+              1.2649824e+18,
+              1.2674016e+18,
+              1.27008e+18,
+              1.272672e+18,
+              1.2753503999999997e+18,
+              1.2779424e+18,
+              1.2806208e+18,
+              1.2832992e+18,
+              1.2858912e+18,
+              1.2885696e+18,
+              1.2911615999999997e+18,
+              1.29384e+18,
+              1.2965184e+18,
+              1.2989376e+18,
+              1.301616e+18,
+              1.304208e+18,
+              1.3068864e+18,
+              1.3094784e+18,
+              1.3121568e+18,
+              1.3148352e+18,
+              1.3174272e+18,
+              1.3201056e+18,
+              1.3226976e+18,
+              1.325376e+18,
+              1.3280544e+18,
+              1.33056e+18,
+              1.3332384e+18,
+              1.3358304e+18,
+              1.3385088e+18,
+              1.3411008e+18,
+              1.3437792e+18,
+              1.3464575999999997e+18,
+              1.3490496e+18,
+              1.351728e+18,
+              1.35432e+18,
+              1.3569984e+18,
+              1.3596768e+18,
+              1.362096e+18,
+              1.3647744e+18,
+              1.3673664e+18,
+              1.3700448e+18,
+              1.3726368e+18,
+              1.3753152e+18,
+              1.3779936e+18,
+              1.3805856e+18,
+              1.383264e+18,
+              1.385856e+18,
+              1.3885344e+18,
+              1.3912128e+18,
+              1.393632e+18,
+              1.3963104e+18,
+              1.3989024e+18,
+              1.4015808e+18,
+              1.4041728e+18,
+              1.4068512e+18,
+              1.4095296e+18,
+              1.4121216e+18,
+              1.4148e+18,
+              1.417392e+18,
+              1.4200704e+18,
+              1.4227488e+18,
+              1.425168e+18,
+              1.4278464e+18,
+              1.4304384e+18,
+              1.4331168e+18,
+              1.4357087999999997e+18,
+              1.4383872e+18,
+              1.4410656e+18,
+              1.4436576e+18,
+              1.446336e+18,
+              1.448928e+18,
+              1.4516064e+18,
+              1.4542848e+18,
+              1.4567904e+18,
+              1.4594688e+18,
+              1.4620608e+18,
+              1.4647392e+18,
+              1.4673312000000003e+18,
+              1.4700096e+18,
+              1.472688e+18,
+              1.47528e+18,
+              1.4779584e+18,
+              1.4805504e+18,
+              1.4832288e+18,
+              1.4859072e+18,
+              1.4883264e+18,
+              1.4910047999999997e+18,
+              1.4935968e+18,
+              1.4962752e+18,
+              1.4988672e+18,
+              1.5015456e+18,
+              1.504224e+18,
+              1.5068160000000003e+18,
+              1.5094944e+18,
+              1.5120864e+18,
+              1.5147648e+18,
+              1.5174432e+18,
+              1.5198624e+18,
+              1.5225408e+18,
+              1.5251328e+18,
+              1.5278112e+18,
+              1.5304032e+18,
+              1.5330816e+18,
+              1.53576e+18,
+              1.538352e+18,
+              1.5410304e+18,
+              1.5436224e+18,
+              1.5463007999999997e+18,
+              1.5489792e+18,
+              1.5513984e+18,
+              1.5540768e+18,
+              1.5566688e+18,
+              1.5593472e+18,
+              1.5619392e+18,
+              1.5646176e+18,
+              1.567296e+18,
+              1.569888e+18,
+              1.5725664e+18,
+              1.5751584e+18,
+              1.5778368e+18,
+              1.5805152e+18,
+              1.5830208e+18,
+              1.5856992e+18,
+              1.5882912e+18,
+              1.5909696e+18,
+              1.5935616e+18,
+              1.59624e+18,
+              1.5989184e+18,
+              1.6015104e+18,
+              1.6041888e+18,
+              1.6067808e+18,
+              1.6094592e+18,
+              1.6121376e+18,
+              1.6145568e+18,
+              1.6172352e+18,
+              1.6198272e+18,
+              1.6225056e+18,
+              1.6250976e+18,
+              1.627776e+18,
+              1.6304544e+18,
+              1.6330464e+18,
+              1.6357248e+18,
+              1.6383168e+18,
+              1.6409952e+18,
+              1.6436736e+18,
+              1.6460928e+18,
+              1.6487712e+18,
+              1.6513631999999997e+18,
+              1.6540416e+18,
+              1.6566336e+18,
+              1.659312e+18,
+              1.6619904e+18,
+              1.6645824e+18,
+              1.6672608e+18,
+              1.6698528e+18,
+              1.6725312e+18,
+              1.6752096e+18,
+              1.6776288e+18,
+              1.6803072e+18,
+              1.6828992e+18,
+              1.6855776e+18,
+              1.6881696e+18,
+              1.690848e+18,
+              1.6935264e+18,
+              1.6961184e+18,
+              1.6987968e+18,
+              1.7013888e+18,
+              1.7040672e+18,
+              1.7067456e+18,
+              1.7092512e+18,
+              1.7119296e+18,
+              1.7145216e+18,
+              1.7172e+18,
+              1.719792e+18,
+              1.7224703999999997e+18,
+              1.7251488e+18,
+              1.7277408e+18,
+              1.7304192e+18,
+              1.7330112e+18,
+              1.7356896e+18,
+              1.738368e+18,
+              1.7407872e+18,
+              1.7434656e+18,
+              1.7460576e+18,
+              1.748736e+18,
+              1.751328e+18,
+              1.7540064e+18,
+              1.7566848e+18,
+              1.7592768e+18,
+              1.7619551999999997e+18,
+              1.7645472e+18,
+              1.7672256e+18,
+              1.769904e+18,
+              1.7723232e+18,
+              1.7750016e+18,
+              1.7775936e+18,
+              1.780272e+18,
+              1.782864e+18,
+              1.7855424e+18
+            ],
+            "y": [
+              189.049,
+              189.26,
+              189.407,
+              189.185,
+              189.087,
+              188.661,
+              188.986,
+              189.904,
+              190.331,
+              190.592,
+              190.717,
+              191.169,
+              191.215,
+              190.999,
+              190.775,
+              190.748,
+              190.545,
+              190.807,
+              191.372,
+              191.772,
+              191.619,
+              191.373,
+              191.183,
+              191.206,
+              191.075,
+              191.188,
+              191.284,
+              191.384,
+              191.717,
+              192.214,
+              192.494,
+              193.017,
+              192.877,
+              193.058,
+              192.761,
+              193.141,
+              193.618,
+              194.131,
+              194.952,
+              196.539,
+              197.459,
+              198.674,
+              199.399,
+              199.959,
+              201.085,
+              202.083,
+              202.837,
+              203.98,
+              204.952,
+              206.098,
+              207.244,
+              207.899,
+              208.239,
+              208.299,
+              207.978,
+              208.023,
+              207.784,
+              208.133,
+              208.772,
+              210.169,
+              211.165,
+              211.557,
+              211.489,
+              212.266,
+              212.73,
+              213.542,
+              214.193,
+              213.874,
+              213.241,
+              213.369,
+              214.374,
+              215.336,
+              215.484,
+              215.771,
+              215.944,
+              216.094,
+              216.737,
+              216.77,
+              216.964,
+              218.239,
+              219.064,
+              219.827,
+              220.645,
+              221.362,
+              221.97,
+              222.425,
+              223.545,
+              224.14,
+              224.768,
+              225.027,
+              225.587,
+              225.682,
+              226.316,
+              227.772,
+              228.156,
+              229.112,
+              229.948,
+              230.299,
+              230.835,
+              231.167,
+              231.784,
+              231.855,
+              232.15,
+              232.658,
+              233.019,
+              233.808,
+              233.692,
+              234.126,
+              234.643,
+              236.239,
+              238.393,
+              240.125,
+              241.693,
+              243.395,
+              245.057,
+              246.173,
+              247.835,
+              248.841,
+              249.871,
+              251.282,
+              252.197,
+              253.767,
+              255.461,
+              256.905,
+              258.736,
+              260.62,
+              262.532,
+              264.744,
+              266.104,
+              267.816,
+              269.132,
+              270.837,
+              271.552,
+              272.832,
+              273.423,
+              274.531,
+              275.506,
+              276.966,
+              276.876,
+              276.17,
+              275.516,
+              274.913,
+              274.82,
+              273.996,
+              273.866,
+              273.802,
+              273.785,
+              273.935,
+              273.662,
+              272.86,
+              272.076,
+              272.71,
+              273.087,
+              273.354,
+              273.496,
+              273.661,
+              274.013,
+              274.155,
+              274.317,
+              274.748,
+              275.064,
+              275.654,
+              275.644,
+              274.938,
+              275.032,
+              275.429,
+              274.985,
+              274.214,
+              273.702,
+              274.297,
+              273.835,
+              274.141,
+              274.278,
+              275.263,
+              276.193,
+              276.193,
+              276.963,
+              277.613,
+              277.998,
+              279.195,
+              280.295,
+              281.161,
+              282.111,
+              282.331,
+              282.511,
+              282.544,
+              282.343,
+              283.267,
+              284.906,
+              285.896,
+              286.911,
+              287.649,
+              288.413,
+              288.607,
+              288.261,
+              289.502,
+              289.807,
+              290.65,
+              292.04,
+              293.15,
+              293.336,
+              293.624,
+              294.106,
+              295.413,
+              297.027,
+              298.064,
+              298.643,
+              299.601,
+              300.592,
+              301.924,
+              303.783,
+              304.88,
+              306.639,
+              307.925,
+              308.681,
+              310.108,
+              311.311,
+              311.384,
+              312.237,
+              312.494,
+              313.705,
+              314.479,
+              316.745,
+              318.003,
+              319.263,
+              320.2,
+              320.251,
+              320.825,
+              321.922,
+              322.829,
+              324.127,
+              325.0,
+              324.957,
+              324.426,
+              324.291,
+              324.769,
+              325.885,
+              328.121,
+              329.375,
+              330.911
+            ]
+          }
+        ],
+        "title": "Consumer Price Index for All Urban Consumers: All Items in U.S. City Average",
+        "x_label": "Date",
+        "x_marker": null,
+        "y_label": "Index 1982-1984=100"
+      }
+    },
+    {
+      "Text": {
+        "body": "SYNTHETIC — MOCK DATA. Generated locally; not the published series.",
+        "title": "Notes"
+      }
+    },
+    {
+      "Table": {
+        "columns": [
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Date",
+            "width": 12
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 3
+              }
+            },
+            "live": null,
+            "title": "Value",
+            "width": 12
+          }
+        ],
+        "numbered": false,
+        "page_size": 20,
+        "rows": [
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "08/01/2026",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 330.911
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "07/01/2026",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 329.375
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "06/01/2026",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 328.121
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "05/01/2026",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 325.885
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "04/01/2026",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 324.769
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "03/01/2026",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 324.291
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "02/01/2026",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 324.426
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "01/01/2026",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 324.957
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "12/01/2025",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 325.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "11/01/2025",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 324.127
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "10/01/2025",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 322.829
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "09/01/2025",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 321.922
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "08/01/2025",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 320.825
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "07/01/2025",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 320.251
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "06/01/2025",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 320.2
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "05/01/2025",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 319.263
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "04/01/2025",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 318.003
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "03/01/2025",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 316.745
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "02/01/2025",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 314.479
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "01/01/2025",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 313.705
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "12/01/2024",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 312.494
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "11/01/2024",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 312.237
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "10/01/2024",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 311.384
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "09/01/2024",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 311.311
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "08/01/2024",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 310.108
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "07/01/2024",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 308.681
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "06/01/2024",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 307.925
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "05/01/2024",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 306.639
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "04/01/2024",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 304.88
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "03/01/2024",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 303.783
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "02/01/2024",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 301.924
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "01/01/2024",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 300.592
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "12/01/2023",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 299.601
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "11/01/2023",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 298.643
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "10/01/2023",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 298.064
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "09/01/2023",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 297.027
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "08/01/2023",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 295.413
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "07/01/2023",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 294.106
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "06/01/2023",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 293.624
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "05/01/2023",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 293.336
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "04/01/2023",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 293.15
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "03/01/2023",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 292.04
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "02/01/2023",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 290.65
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "01/01/2023",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 289.807
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "12/01/2022",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 289.502
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "11/01/2022",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 288.261
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "10/01/2022",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 288.607
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "09/01/2022",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 288.413
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "08/01/2022",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 287.649
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "07/01/2022",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 286.911
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "06/01/2022",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 285.896
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "05/01/2022",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 284.906
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "04/01/2022",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 283.267
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "03/01/2022",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 282.343
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "02/01/2022",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 282.544
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "01/01/2022",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 282.511
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "12/01/2021",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 282.331
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "11/01/2021",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 282.111
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "10/01/2021",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 281.161
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "09/01/2021",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 280.295
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "08/01/2021",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 279.195
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "07/01/2021",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 277.998
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "06/01/2021",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 277.613
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "05/01/2021",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 276.963
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "04/01/2021",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 276.193
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "03/01/2021",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 276.193
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "02/01/2021",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 275.263
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "01/01/2021",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 274.278
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "12/01/2020",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 274.141
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "11/01/2020",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 273.835
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "10/01/2020",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 274.297
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "09/01/2020",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 273.702
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "08/01/2020",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 274.214
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "07/01/2020",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 274.985
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "06/01/2020",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 275.429
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "05/01/2020",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 275.032
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "04/01/2020",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 274.938
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "03/01/2020",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 275.644
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "02/01/2020",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 275.654
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "01/01/2020",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 275.064
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "12/01/2019",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 274.748
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "11/01/2019",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 274.317
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "10/01/2019",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 274.155
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "09/01/2019",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 274.013
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "08/01/2019",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 273.661
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "07/01/2019",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 273.496
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "06/01/2019",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 273.354
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "05/01/2019",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 273.087
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "04/01/2019",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 272.71
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "03/01/2019",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 272.076
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "02/01/2019",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 272.86
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "01/01/2019",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 273.662
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "12/01/2018",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 273.935
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "11/01/2018",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 273.785
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "10/01/2018",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 273.802
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "09/01/2018",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 273.866
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "08/01/2018",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 273.996
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "07/01/2018",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 274.82
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "06/01/2018",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 274.913
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "05/01/2018",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 275.516
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "04/01/2018",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 276.17
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "03/01/2018",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 276.876
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "02/01/2018",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 276.966
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "01/01/2018",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 275.506
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "12/01/2017",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 274.531
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "11/01/2017",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 273.423
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "10/01/2017",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 272.832
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "09/01/2017",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 271.552
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "08/01/2017",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 270.837
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "07/01/2017",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 269.132
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "06/01/2017",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 267.816
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "05/01/2017",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 266.104
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "04/01/2017",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 264.744
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "03/01/2017",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 262.532
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "02/01/2017",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 260.62
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "01/01/2017",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 258.736
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "12/01/2016",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 256.905
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "11/01/2016",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 255.461
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "10/01/2016",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 253.767
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "09/01/2016",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 252.197
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          }
+        ],
+        "title": "Observations"
+      }
+    }
+  ],
+  "function": "ECO",
+  "menu": [
+    {
+      "action": {
+        "args": [],
+        "function": "ECO",
+        "security": null
+      },
+      "label": "Calendar",
+      "number": 1,
+      "selected": false
+    }
+  ],
+  "refresh_ms": null,
+  "security": null,
+  "sources": [
+    {
+      "as_of": 1791216000000000000,
+      "attribution": null,
+      "delay": "MOCK",
+      "provider": "mock",
+      "source": "MOCK",
+      "synthetic": true
+    }
+  ],
+  "status": "Ok",
+  "title": "Consumer Price Index for All Urban Consumers: All Items in U.S. City Average (CPIAUCSL)"
+}

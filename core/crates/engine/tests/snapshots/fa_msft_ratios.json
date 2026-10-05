@@ -1,0 +1,862 @@
+{
+  "args": [
+    [
+      "stmt",
+      "RATIOS"
+    ]
+  ],
+  "blocks": [
+    {
+      "Inputs": {
+        "inputs": [
+          {
+            "id": "per",
+            "kind": "Choice",
+            "label": "Periodicity",
+            "options": [
+              "Annual",
+              "Quarterly"
+            ],
+            "value": "Annual"
+          }
+        ],
+        "title": null
+      }
+    },
+    {
+      "Table": {
+        "columns": [
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Ratios",
+            "width": 30
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 2
+              }
+            },
+            "live": null,
+            "title": "FY 2017",
+            "width": 11
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 2
+              }
+            },
+            "live": null,
+            "title": "FY 2018",
+            "width": 11
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 2
+              }
+            },
+            "live": null,
+            "title": "FY 2019",
+            "width": 11
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 2
+              }
+            },
+            "live": null,
+            "title": "FY 2020",
+            "width": 11
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 2
+              }
+            },
+            "live": null,
+            "title": "FY 2021",
+            "width": 11
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 2
+              }
+            },
+            "live": null,
+            "title": "FY 2022",
+            "width": 11
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 2
+              }
+            },
+            "live": null,
+            "title": "FY 2023",
+            "width": 11
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 2
+              }
+            },
+            "live": null,
+            "title": "FY 2024",
+            "width": 11
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 2
+              }
+            },
+            "live": null,
+            "title": "FY 2025",
+            "width": 11
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 2
+              }
+            },
+            "live": null,
+            "title": "FY 2026",
+            "width": 11
+          }
+        ],
+        "numbered": false,
+        "page_size": null,
+        "rows": [
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Gross Margin %",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 60.405005
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 60.135773
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 58.932024
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 61.369464
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 62.458133
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 62.057787
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 61.340982
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 60.303385
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 58.005021
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 59.032209
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Operating Margin %",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 33.098592
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 32.577128
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 31.491844
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 33.931341
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 35.141937
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 34.734371
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 33.930641
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 33.025875
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 30.411104
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 31.289311
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Net Margin %",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 26.325938
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 25.916753
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 24.992957
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 26.966439
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 28.003254
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 27.675984
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 27.048102
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 26.33308
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 24.129477
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 24.859857
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Revenue Growth % (YoY)",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 15.934836
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 7.338718
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 7.411132
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 18.414186
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 14.388503
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 19.543196
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 21.571787
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 5.415483
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 14.685897
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "EPS Growth % (YoY)",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 16.530612
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 5.779335
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 18.211921
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 25.35014
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 15.418994
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 19.167473
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 20.714866
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": -1.345895
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 20.395634
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Return on Equity %",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 22.326633
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 24.028928
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 22.791533
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 24.808824
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 27.886369
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 28.19193
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 29.068436
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 29.687982
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 25.766177
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 27.852262
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Return on Assets %",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 16.46522
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 16.663649
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 16.162644
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 17.518722
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 19.008905
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 19.103477
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 19.271685
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 19.341226
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 17.530379
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 18.344488
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Debt / Equity %",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 17.540487
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 17.829
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 18.583527
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 19.125562
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 19.302556
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 19.678185
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 19.900527
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 20.211531
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 21.317541
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 21.640086
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Current Ratio",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 5.50663
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 5.576552
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 5.690405
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 5.753947
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 5.712471
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 5.649706
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 5.588166
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 5.495695
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 5.651537
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 5.538096
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "FCF Margin %",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 28.237321
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 27.50859
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 26.805301
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 29.120897
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 30.610561
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 29.934962
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 28.222795
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 27.791421
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 25.628402
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 27.107458
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          }
+        ],
+        "title": "Key Ratios (computed from reported statements)"
+      }
+    }
+  ],
+  "function": "FA",
+  "menu": [
+    {
+      "action": {
+        "args": [
+          [
+            "stmt",
+            "IS"
+          ]
+        ],
+        "function": "FA",
+        "security": "MSFT US Equity"
+      },
+      "label": "Income Statement",
+      "number": 1,
+      "selected": false
+    },
+    {
+      "action": {
+        "args": [
+          [
+            "stmt",
+            "BS"
+          ]
+        ],
+        "function": "FA",
+        "security": "MSFT US Equity"
+      },
+      "label": "Balance Sheet",
+      "number": 2,
+      "selected": false
+    },
+    {
+      "action": {
+        "args": [
+          [
+            "stmt",
+            "CF"
+          ]
+        ],
+        "function": "FA",
+        "security": "MSFT US Equity"
+      },
+      "label": "Cash Flow",
+      "number": 3,
+      "selected": false
+    },
+    {
+      "action": {
+        "args": [
+          [
+            "stmt",
+            "RATIOS"
+          ]
+        ],
+        "function": "FA",
+        "security": "MSFT US Equity"
+      },
+      "label": "Ratios",
+      "number": 4,
+      "selected": true
+    }
+  ],
+  "refresh_ms": null,
+  "security": "MSFT US Equity",
+  "sources": [
+    {
+      "as_of": 1791216000000000000,
+      "attribution": null,
+      "delay": "MOCK",
+      "provider": "mock",
+      "source": "MOCK",
+      "synthetic": true
+    }
+  ],
+  "status": "Ok",
+  "title": "MSFT US Equity — Financial Analysis"
+}

@@ -1,0 +1,1146 @@
+{
+  "args": [],
+  "blocks": [
+    {
+      "Table": {
+        "columns": [
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Asset",
+            "width": 16
+          },
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Pair",
+            "width": 10
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Price": {
+                "decimals": 2
+              }
+            },
+            "live": "Last",
+            "title": "Last",
+            "width": 11
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Change": {
+                "decimals": 2
+              }
+            },
+            "live": "NetChange",
+            "title": "Net Chg",
+            "width": 9
+          },
+          {
+            "align": "Right",
+            "format": {
+              "ChangePercent": {
+                "decimals": 2
+              }
+            },
+            "live": "PctChange",
+            "title": "% Chg",
+            "width": 8
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Price": {
+                "decimals": 2
+              }
+            },
+            "live": "Bid",
+            "title": "Bid",
+            "width": 10
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Price": {
+                "decimals": 2
+              }
+            },
+            "live": "Ask",
+            "title": "Ask",
+            "width": 10
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Price": {
+                "decimals": 2
+              }
+            },
+            "live": "High",
+            "title": "High",
+            "width": 10
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Price": {
+                "decimals": 2
+              }
+            },
+            "live": "Low",
+            "title": "Low",
+            "width": 10
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Large": {
+                "decimals": 2
+              }
+            },
+            "live": "Volume",
+            "title": "Volume",
+            "width": 9
+          },
+          {
+            "align": "Right",
+            "format": "Time",
+            "live": "Time",
+            "title": "Time",
+            "width": 8
+          }
+        ],
+        "numbered": true,
+        "page_size": null,
+        "rows": [
+          {
+            "action": {
+              "args": [],
+              "function": "GP",
+              "security": "BTCUSD Curncy"
+            },
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "Bitcoin",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "BTCUSD",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "BTCUSD Curncy"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "GP",
+              "security": "ETHUSD Curncy"
+            },
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "Ethereum",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "ETHUSD",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "ETHUSD Curncy"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "GP",
+              "security": "SOLUSD Curncy"
+            },
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "Solana",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "SOLUSD",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "SOLUSD Curncy"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "GP",
+              "security": "XRPUSD Curncy"
+            },
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "XRP",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "XRPUSD",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "XRPUSD Curncy"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "GP",
+              "security": "ADAUSD Curncy"
+            },
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "Cardano",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "ADAUSD",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "ADAUSD Curncy"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "GP",
+              "security": "DOGEUSD Curncy"
+            },
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "Dogecoin",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "DOGEUSD",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "DOGEUSD Curncy"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "GP",
+              "security": "AVAXUSD Curncy"
+            },
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "Avalanche",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "AVAXUSD",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "AVAXUSD Curncy"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "GP",
+              "security": "LINKUSD Curncy"
+            },
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "Chainlink",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "LINKUSD",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "LINKUSD Curncy"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "GP",
+              "security": "DOTUSD Curncy"
+            },
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "Polkadot",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "DOTUSD",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "DOTUSD Curncy"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "GP",
+              "security": "LTCUSD Curncy"
+            },
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "Litecoin",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "LTCUSD",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "LTCUSD Curncy"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "GP",
+              "security": "BCHUSD Curncy"
+            },
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "Bitcoin Cash",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "BCHUSD",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "BCHUSD Curncy"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "GP",
+              "security": "XLMUSD Curncy"
+            },
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "Stellar",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "XLMUSD",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "XLMUSD Curncy"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "GP",
+              "security": "UNIUSD Curncy"
+            },
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "Uniswap",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "UNIUSD",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "UNIUSD Curncy"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "GP",
+              "security": "ATOMUSD Curncy"
+            },
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "Cosmos",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "ATOMUSD",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "ATOMUSD Curncy"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "GP",
+              "security": "AAVEUSD Curncy"
+            },
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "Aave",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "AAVEUSD",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "AAVEUSD Curncy"
+          }
+        ],
+        "title": null
+      }
+    }
+  ],
+  "function": "CRYP",
+  "menu": [],
+  "refresh_ms": null,
+  "security": null,
+  "sources": [
+    {
+      "as_of": 1791216000000000000,
+      "attribution": null,
+      "delay": "MOCK",
+      "provider": "mock",
+      "source": "MOCK",
+      "synthetic": true
+    }
+  ],
+  "status": "Ok",
+  "title": "Crypto Monitor"
+}

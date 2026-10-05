@@ -1,0 +1,402 @@
+{
+  "args": [
+    [
+      "view",
+      "curve"
+    ]
+  ],
+  "blocks": [
+    {
+      "Xy": {
+        "height_rows": 12,
+        "series": [
+          {
+            "bars": false,
+            "name": "UST",
+            "style": "Emphasis",
+            "x": [
+              0.083333,
+              0.166667,
+              0.25,
+              0.333333,
+              0.5,
+              1.0,
+              2.0,
+              3.0,
+              5.0,
+              7.0,
+              10.0,
+              20.0,
+              30.0
+            ],
+            "y": [
+              5.35,
+              5.36,
+              5.36,
+              5.37,
+              5.38,
+              5.41,
+              5.48,
+              5.54,
+              5.63,
+              5.69,
+              5.75,
+              5.83,
+              5.85
+            ]
+          }
+        ],
+        "title": "Yield (%) by Tenor (years)",
+        "x_label": "Years",
+        "x_marker": null,
+        "y_label": "%"
+      }
+    },
+    {
+      "Fields": {
+        "columns": 3,
+        "fields": [
+          {
+            "format": {
+              "Change": {
+                "decimals": 1
+              }
+            },
+            "label": "2s10s",
+            "style": "Normal",
+            "text": null,
+            "value": 27.0
+          },
+          {
+            "format": {
+              "Change": {
+                "decimals": 1
+              }
+            },
+            "label": "3m10y",
+            "style": "Normal",
+            "text": null,
+            "value": 39.0
+          },
+          {
+            "format": {
+              "Change": {
+                "decimals": 1
+              }
+            },
+            "label": "5s30s",
+            "style": "Normal",
+            "text": null,
+            "value": 22.0
+          }
+        ],
+        "title": "Spreads (bp)"
+      }
+    },
+    {
+      "Table": {
+        "columns": [
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Tenor",
+            "width": 8
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 3
+              }
+            },
+            "live": null,
+            "title": "Yield %",
+            "width": 9
+          }
+        ],
+        "numbered": false,
+        "page_size": null,
+        "rows": [
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "1 Mo",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 5.35
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "2 Mo",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 5.36
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "3 Mo",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 5.36
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "4 Mo",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 5.37
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "6 Mo",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 5.38
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "1 Yr",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 5.41
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "2 Yr",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 5.48
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "3 Yr",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 5.54
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "5 Yr",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 5.63
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "7 Yr",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 5.69
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "10 Yr",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 5.75
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "20 Yr",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 5.83
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "30 Yr",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 5.85
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          }
+        ],
+        "title": null
+      }
+    }
+  ],
+  "function": "ECO",
+  "menu": [
+    {
+      "action": {
+        "args": [],
+        "function": "ECO",
+        "security": null
+      },
+      "label": "Calendar",
+      "number": 1,
+      "selected": false
+    },
+    {
+      "action": {
+        "args": [
+          [
+            "view",
+            "curve"
+          ]
+        ],
+        "function": "ECO",
+        "security": null
+      },
+      "label": "US Treasury Curve",
+      "number": 2,
+      "selected": true
+    }
+  ],
+  "refresh_ms": null,
+  "security": null,
+  "sources": [
+    {
+      "as_of": 1791216000000000000,
+      "attribution": null,
+      "delay": "MOCK",
+      "provider": "mock",
+      "source": "MOCK",
+      "synthetic": true
+    }
+  ],
+  "status": "Ok",
+  "title": "US Treasury Par Yield Curve — 10/02/2026"
+}

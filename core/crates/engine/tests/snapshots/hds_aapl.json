@@ -1,0 +1,1474 @@
+{
+  "args": [],
+  "blocks": [
+    {
+      "Fields": {
+        "columns": 2,
+        "fields": [
+          {
+            "format": "Integer",
+            "label": "Holders Shown",
+            "style": "Normal",
+            "text": null,
+            "value": 30.0
+          },
+          {
+            "format": {
+              "Percent": {
+                "decimals": 2
+              }
+            },
+            "label": "% Out (shown)",
+            "style": "Normal",
+            "text": null,
+            "value": 38.8167
+          }
+        ],
+        "title": null
+      }
+    },
+    {
+      "Table": {
+        "columns": [
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Holder",
+            "width": 34
+          },
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Type",
+            "width": 7
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Large": {
+                "decimals": 2
+              }
+            },
+            "live": null,
+            "title": "Shares",
+            "width": 10
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Percent": {
+                "decimals": 2
+              }
+            },
+            "live": null,
+            "title": "% Out",
+            "width": 7
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Large": {
+                "decimals": 2
+              }
+            },
+            "live": null,
+            "title": "Mkt Val",
+            "width": 10
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Large": {
+                "decimals": 2
+              }
+            },
+            "live": null,
+            "title": "Chg",
+            "width": 10
+          },
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Filed",
+            "width": 9
+          }
+        ],
+        "numbered": true,
+        "page_size": 20,
+        "rows": [
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Thornbury Investors",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Inst",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1051359358.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 7.1
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 304389561328.0
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -15401013.0
+              },
+              {
+                "style": "Normal",
+                "text": "08/14/26",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Cedar Point Lane Global Advisors",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Inst",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 882103466.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 5.96
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 255386595476.0
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 8760374.0
+              },
+              {
+                "style": "Normal",
+                "text": "08/11/26",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Ironwood Row Investors",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Inst",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 786465751.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 5.31
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 227697564230.0
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 22194446.0
+              },
+              {
+                "style": "Normal",
+                "text": "08/12/26",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Copperleaf Blue Chip Fund",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Fund",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 624675167.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 4.22
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 180855954350.0
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -9881226.0
+              },
+              {
+                "style": "Normal",
+                "text": "08/06/26",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Harbor Ridge Investors",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Inst",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 511739888.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 3.46
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 148158932374.0
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 3642967.0
+              },
+              {
+                "style": "Normal",
+                "text": "08/06/26",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Granite Peak Global Advisors",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Inst",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 383177220.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 2.59
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 110937468734.0
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 5119522.0
+              },
+              {
+                "style": "Normal",
+                "text": "08/05/26",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Stonecrop Investors",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Inst",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 296761344.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 2.01
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 85918344315.0
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -15879514.0
+              },
+              {
+                "style": "Normal",
+                "text": "08/04/26",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Silverbirch Global Advisors",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Inst",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 226203220.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.53
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 65490356254.0
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 4704611.0
+              },
+              {
+                "style": "Normal",
+                "text": "08/09/26",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Kingsmere Equity Opportunities Fund",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Fund",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 163717991.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.11
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 47399632754.0
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -3600220.0
+              },
+              {
+                "style": "Normal",
+                "text": "08/09/26",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Bluewater Crest Global Advisors",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Inst",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 142004005.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.96
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 41112999528.0
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 861344.0
+              },
+              {
+                "style": "Normal",
+                "text": "08/07/26",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Meadowbrook Investors",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Inst",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 120868054.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.82
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 34993718994.0
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -538996.0
+              },
+              {
+                "style": "Normal",
+                "text": "08/05/26",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Lakeshore Fiduciary Global Advisors",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Inst",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 106190491.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.72
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 30744270954.0
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -9933331.0
+              },
+              {
+                "style": "Normal",
+                "text": "08/10/26",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Redstone Harbor Investors",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Inst",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 78962913.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.53
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 22861342572.0
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 181200.0
+              },
+              {
+                "style": "Normal",
+                "text": "08/11/26",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Halcyon Ridge 500 Index Portfolio",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Fund",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 64768771.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.44
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 18751854580.0
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 438884.0
+              },
+              {
+                "style": "Normal",
+                "text": "08/10/26",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Pinecrest Vale Investors",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Inst",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 49981920.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.34
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 14470765478.0
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 2768467.0
+              },
+              {
+                "style": "Normal",
+                "text": "08/14/26",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Brightwater Lane Global Advisors",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Inst",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 40619409.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.27
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 11760131294.0
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 3044765.0
+              },
+              {
+                "style": "Normal",
+                "text": "08/09/26",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Oakmere Investors",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Inst",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 35585457.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.24
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 10302701511.0
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 1559357.0
+              },
+              {
+                "style": "Normal",
+                "text": "08/14/26",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Aldergrove Global Advisors",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Inst",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 27661245.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.19
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 8008483652.0
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -388670.0
+              },
+              {
+                "style": "Normal",
+                "text": "08/09/26",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Fernhill Core Equity Trust",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Fund",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 23071644.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.16
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 6679702371.0
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 856106.0
+              },
+              {
+                "style": "Normal",
+                "text": "08/08/26",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Westmarch Global Advisors",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Inst",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 18732404.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.13
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 5423405606.0
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 162905.0
+              },
+              {
+                "style": "Normal",
+                "text": "08/06/26",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Harper Everhart",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Insider",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 17198273.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.1162
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 4979243999.0
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -1174447.0
+              },
+              {
+                "style": "Normal",
+                "text": "05/14/26",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Taylor Ellery",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Insider",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 15398526.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.104
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 4458181248.0
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -393504.0
+              },
+              {
+                "style": "Normal",
+                "text": "06/06/26",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Jordan Vance",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Insider",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 14787953.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.0999
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 4281408153.0
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -965825.0
+              },
+              {
+                "style": "Normal",
+                "text": "04/10/26",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Harper Wexley",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Insider",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 12295363.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.0831
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 3559753496.0
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -404037.0
+              },
+              {
+                "style": "Normal",
+                "text": "03/21/26",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Reese Everhart",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Insider",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 12246227.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.0827
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 3545527641.0
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -367992.0
+              },
+              {
+                "style": "Normal",
+                "text": "09/23/26",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Avery Langford",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Insider",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 12198179.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.0824
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 3531616784.0
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -461834.0
+              },
+              {
+                "style": "Normal",
+                "text": "06/16/26",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Emerson Everhart",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Insider",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 11926324.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.0806
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 3452909324.0
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -505458.0
+              },
+              {
+                "style": "Normal",
+                "text": "03/27/26",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Harper Castellan",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Insider",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 6736948.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.0455
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1950481185.0
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -207445.0
+              },
+              {
+                "style": "Normal",
+                "text": "06/07/26",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Quinn Pendleton",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Insider",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 2454927.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.0166
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 710750465.0
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -74070.0
+              },
+              {
+                "style": "Normal",
+                "text": "06/10/26",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Harper Wexley",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Insider",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 2322562.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.0157
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 672428150.0
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -108356.0
+              },
+              {
+                "style": "Normal",
+                "text": "04/12/26",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          }
+        ],
+        "title": null
+      }
+    }
+  ],
+  "function": "HDS",
+  "menu": [
+    {
+      "action": {
+        "args": [
+          [
+            "type",
+            "All"
+          ]
+        ],
+        "function": "HDS",
+        "security": "AAPL US Equity"
+      },
+      "label": "All",
+      "number": 1,
+      "selected": true
+    },
+    {
+      "action": {
+        "args": [
+          [
+            "type",
+            "Institutions"
+          ]
+        ],
+        "function": "HDS",
+        "security": "AAPL US Equity"
+      },
+      "label": "Institutions",
+      "number": 2,
+      "selected": false
+    },
+    {
+      "action": {
+        "args": [
+          [
+            "type",
+            "Funds"
+          ]
+        ],
+        "function": "HDS",
+        "security": "AAPL US Equity"
+      },
+      "label": "Funds",
+      "number": 3,
+      "selected": false
+    },
+    {
+      "action": {
+        "args": [
+          [
+            "type",
+            "Insiders"
+          ]
+        ],
+        "function": "HDS",
+        "security": "AAPL US Equity"
+      },
+      "label": "Insiders",
+      "number": 4,
+      "selected": false
+    }
+  ],
+  "refresh_ms": null,
+  "security": "AAPL US Equity",
+  "sources": [
+    {
+      "as_of": 1791216000000000000,
+      "attribution": null,
+      "delay": "MOCK",
+      "provider": "mock",
+      "source": "MOCK",
+      "synthetic": true
+    }
+  ],
+  "status": "Ok",
+  "title": "AAPL US Equity — Holders"
+}

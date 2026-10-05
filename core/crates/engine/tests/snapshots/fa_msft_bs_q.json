@@ -1,0 +1,1661 @@
+{
+  "args": [
+    [
+      "stmt",
+      "BS"
+    ],
+    [
+      "per",
+      "Quarterly"
+    ]
+  ],
+  "blocks": [
+    {
+      "Inputs": {
+        "inputs": [
+          {
+            "id": "per",
+            "kind": "Choice",
+            "label": "Periodicity",
+            "options": [
+              "Annual",
+              "Quarterly"
+            ],
+            "value": "Quarterly"
+          }
+        ],
+        "title": null
+      }
+    },
+    {
+      "Table": {
+        "columns": [
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "In Millions of USD except per share",
+            "width": 34
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 1
+              }
+            },
+            "live": null,
+            "title": "Q1 24",
+            "width": 11
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 1
+              }
+            },
+            "live": null,
+            "title": "Q2 24",
+            "width": 11
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 1
+              }
+            },
+            "live": null,
+            "title": "Q3 24",
+            "width": 11
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 1
+              }
+            },
+            "live": null,
+            "title": "Q4 24",
+            "width": 11
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 1
+              }
+            },
+            "live": null,
+            "title": "Q1 25",
+            "width": 11
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 1
+              }
+            },
+            "live": null,
+            "title": "Q2 25",
+            "width": 11
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 1
+              }
+            },
+            "live": null,
+            "title": "Q3 25",
+            "width": 11
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 1
+              }
+            },
+            "live": null,
+            "title": "Q4 25",
+            "width": 11
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 1
+              }
+            },
+            "live": null,
+            "title": "Q1 26",
+            "width": 11
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 1
+              }
+            },
+            "live": null,
+            "title": "Q2 26",
+            "width": 11
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 1
+              }
+            },
+            "live": null,
+            "title": "Q3 26",
+            "width": 11
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 1
+              }
+            },
+            "live": null,
+            "title": "Q4 26",
+            "width": 11
+          }
+        ],
+        "numbered": false,
+        "page_size": 30,
+        "rows": [
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Cash & Equivalents",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 213564.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 224148.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 239138.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 247360.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 254458.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 260712.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 269595.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 269397.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 271162.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 282304.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 299817.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 304341.0
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Short-Term Investments",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 60623.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 68472.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 64647.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 67432.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 67039.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 74704.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 66167.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 67406.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 74997.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 84049.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 77487.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 79217.0
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Accounts Receivable",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 55363.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 62532.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 59038.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 61581.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 61223.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 68223.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 60427.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 61558.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 68490.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 76757.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 70764.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 72345.0
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Inventories",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 15293.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 17417.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 16228.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 17339.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 17902.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 20155.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 17988.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 17867.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 20290.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 21586.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 19822.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 20995.0
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Other Current Assets",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 12125.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 13694.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 12929.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 13486.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 13408.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 14941.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 13233.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 13481.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 14999.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 16810.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 15497.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 15843.0
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Total Current Assets",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 356968.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 386263.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 391980.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 407198.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 414030.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 438735.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 427410.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 429709.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 449938.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 481506.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 483387.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 492741.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Property, Plant & Equipment, Net",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 106297.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 110429.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 114116.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 118133.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 122472.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 126974.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 131599.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 134579.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 138991.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 142881.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 145133.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 149172.0
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Goodwill & Intangibles",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 44838.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 44838.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 44838.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 44838.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 44838.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 44838.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 44838.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 44838.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 44838.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 44838.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 44838.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 44838.0
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Other Non-Current Assets",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 20208.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 22824.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 21549.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 22477.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 22346.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 24901.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 22056.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 22469.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 24999.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 28016.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 25829.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 26406.0
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Total Assets",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 528311.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 564354.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 572483.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 592646.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 603686.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 635448.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 625903.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 631595.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 658766.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 697241.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 699187.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 713157.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": true,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Accounts Payable",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 26217.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 29858.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 27820.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 29724.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 30690.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 34551.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 30836.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 30629.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 34784.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 37004.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 33980.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 35992.0
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Short-Term Debt",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 7392.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 7794.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 8092.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 8406.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 8683.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 9060.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 9257.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 9455.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 9759.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 10184.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 10457.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 10732.0
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Other Current Liabilities",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 32332.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 36518.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 34478.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 35964.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 35754.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 39842.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 35289.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 35950.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 39998.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 44826.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 41326.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 42249.0
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Total Current Liabilities",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 65941.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 74170.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 70390.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 74094.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 75127.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 83453.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 75382.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 76034.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 84541.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 92014.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 85763.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 88973.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Long-Term Debt",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 66523.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 70142.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 72825.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 75658.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 78148.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 81539.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 83310.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 85090.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 87831.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 91655.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 94113.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 96584.0
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Other Non-Current Liabilities",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 24249.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 27389.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 25859.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 26973.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 26816.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 29882.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 26467.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 26963.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 29999.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 33619.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 30995.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 31687.0
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Total Liabilities",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 156713.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 171701.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 169074.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 176725.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 180091.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 194874.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 185159.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 188087.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 202371.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 217288.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 210871.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 217244.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": true,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Total Shareholders' Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 371598.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 392653.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 403409.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 415921.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 423595.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 440574.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 440744.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 443508.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 456395.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 479953.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 488316.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 495913.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": true,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Total Liabilities & Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 528311.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 564354.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 572483.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 592646.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 603686.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 635448.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 625903.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 631595.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 658766.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 697241.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 699187.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 713157.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          }
+        ],
+        "title": "Balance Sheet"
+      }
+    }
+  ],
+  "function": "FA",
+  "menu": [
+    {
+      "action": {
+        "args": [
+          [
+            "per",
+            "Quarterly"
+          ],
+          [
+            "stmt",
+            "IS"
+          ]
+        ],
+        "function": "FA",
+        "security": "MSFT US Equity"
+      },
+      "label": "Income Statement",
+      "number": 1,
+      "selected": false
+    },
+    {
+      "action": {
+        "args": [
+          [
+            "per",
+            "Quarterly"
+          ],
+          [
+            "stmt",
+            "BS"
+          ]
+        ],
+        "function": "FA",
+        "security": "MSFT US Equity"
+      },
+      "label": "Balance Sheet",
+      "number": 2,
+      "selected": true
+    },
+    {
+      "action": {
+        "args": [
+          [
+            "per",
+            "Quarterly"
+          ],
+          [
+            "stmt",
+            "CF"
+          ]
+        ],
+        "function": "FA",
+        "security": "MSFT US Equity"
+      },
+      "label": "Cash Flow",
+      "number": 3,
+      "selected": false
+    },
+    {
+      "action": {
+        "args": [
+          [
+            "per",
+            "Quarterly"
+          ],
+          [
+            "stmt",
+            "RATIOS"
+          ]
+        ],
+        "function": "FA",
+        "security": "MSFT US Equity"
+      },
+      "label": "Ratios",
+      "number": 4,
+      "selected": false
+    }
+  ],
+  "refresh_ms": null,
+  "security": "MSFT US Equity",
+  "sources": [
+    {
+      "as_of": 1791216000000000000,
+      "attribution": null,
+      "delay": "MOCK",
+      "provider": "mock",
+      "source": "MOCK",
+      "synthetic": true
+    }
+  ],
+  "status": "Ok",
+  "title": "MSFT US Equity — Financial Analysis"
+}

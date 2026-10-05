@@ -1,0 +1,580 @@
+{
+  "args": [],
+  "blocks": [
+    {
+      "Fields": {
+        "columns": 3,
+        "fields": [
+          {
+            "format": {
+              "Price": {
+                "decimals": 2
+              }
+            },
+            "label": "Last",
+            "style": "Emphasis",
+            "text": null,
+            "value": 289.52
+          },
+          {
+            "format": {
+              "Change": {
+                "decimals": 2
+              }
+            },
+            "label": "Net Chg",
+            "style": "Normal",
+            "text": null,
+            "value": 5.03
+          },
+          {
+            "format": {
+              "ChangePercent": {
+                "decimals": 2
+              }
+            },
+            "label": "% Chg",
+            "style": "Normal",
+            "text": null,
+            "value": 1.768076
+          }
+        ],
+        "title": null
+      }
+    },
+    {
+      "Table": {
+        "columns": [
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Function",
+            "width": 9
+          },
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Title",
+            "width": 28
+          },
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Description",
+            "width": 60
+          }
+        ],
+        "numbered": true,
+        "page_size": 24,
+        "rows": [
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "DES",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Security Description",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Profile of the security: business summary, key statistics, and identifiers.",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "GP",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "GP",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Historical Price Graph",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Historical price chart with technical indicators and drawing tools.",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "GIP",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "GIP",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Intraday Price Graph",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Intraday chart of the current or a recent trading session.",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "HP",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "HP",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Historical Prices",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Table of historical open, high, low, close, and volume.",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "CN",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "CN",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Company News",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "News for the loaded security, or general market news when none is loaded.",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "FA",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "FA",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Financial Analysis",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Financial statements and ratios: income statement, balance sheet, and cash flow.",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "EE",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "EE",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Earnings Estimates",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Consensus analyst estimates for EPS, revenue, and other metrics.",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "ERN",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "ERN",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Earnings History",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Reported earnings against consensus, with surprises and price reaction.",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "ANR",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "ANR",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Analyst Recommendations",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Analyst ratings, price targets, and the consensus recommendation.",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "HDS",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "HDS",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Holders",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Institutional and insider holders of the security.",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DVD",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "DVD",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Dividends and Splits",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Dividend history and projections, and stock splits.",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "CF",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "CF",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Company Filings",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Regulatory filings such as 10-K, 10-Q, and 8-K, with summaries and changes from the prior filing.",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "OMON",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "OMON",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Option Monitor",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Option chain with prices, implied volatility, and Greeks.",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "OVDV",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "OVDV",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Volatility Surface",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Implied volatility surface and skew across strikes and expiries.",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "OVME",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "OVME",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Option Valuation",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Value options and multi-leg strategies, with payoff and scenario analysis.",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "RV",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "RV",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Relative Valuation",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Compare the security with its peers on valuation and performance.",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "CORR",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "CORR",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Correlation Matrix",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Correlation of returns across a set of securities.",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "BTST",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "BTST",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Backtester",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Backtest a trading strategy on the security's price history.",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          }
+        ],
+        "title": "Functions"
+      }
+    }
+  ],
+  "function": "MENU",
+  "menu": [],
+  "refresh_ms": null,
+  "security": "AAPL US Equity",
+  "sources": [
+    {
+      "as_of": 1791216000000000000,
+      "attribution": null,
+      "delay": "MOCK",
+      "provider": "mock",
+      "source": "MOCK",
+      "synthetic": true
+    }
+  ],
+  "status": "Ok",
+  "title": "AAPL US Equity — Apple Inc."
+}

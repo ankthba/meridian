@@ -1,0 +1,850 @@
+{
+  "args": [],
+  "blocks": [
+    {
+      "Fields": {
+        "columns": 3,
+        "fields": [
+          {
+            "format": "Integer",
+            "label": "Quarters",
+            "style": "Normal",
+            "text": null,
+            "value": 13.0
+          },
+          {
+            "format": "Integer",
+            "label": "EPS Beats",
+            "style": "Normal",
+            "text": null,
+            "value": 8.0
+          },
+          {
+            "format": {
+              "Percent": {
+                "decimals": 0
+              }
+            },
+            "label": "Beat Rate %",
+            "style": "Normal",
+            "text": null,
+            "value": 66.666667
+          }
+        ],
+        "title": null
+      }
+    },
+    {
+      "Xy": {
+        "height_rows": 8,
+        "series": [
+          {
+            "bars": true,
+            "name": "Estimate",
+            "style": "Muted",
+            "x": [
+              0.0,
+              1.0,
+              2.0,
+              3.0,
+              4.0,
+              5.0,
+              6.0,
+              7.0,
+              8.0,
+              9.0,
+              10.0,
+              11.0,
+              12.0
+            ],
+            "y": [
+              0.85,
+              0.81,
+              1.04,
+              1.11,
+              1.22,
+              1.06,
+              1.14,
+              1.12,
+              1.3,
+              1.39,
+              1.33,
+              1.61,
+              1.88
+            ]
+          },
+          {
+            "bars": true,
+            "name": "Actual",
+            "style": "Emphasis",
+            "x": [
+              0.0,
+              1.0,
+              2.0,
+              3.0,
+              4.0,
+              5.0,
+              6.0,
+              7.0,
+              8.0,
+              9.0,
+              10.0,
+              11.0,
+              12.0
+            ],
+            "y": [
+              0.91,
+              0.85,
+              0.97,
+              1.09,
+              1.21,
+              1.11,
+              1.15,
+              1.21,
+              1.38,
+              1.3,
+              1.48,
+              1.73,
+              null
+            ]
+          }
+        ],
+        "title": "EPS: Actual vs Estimate",
+        "x_label": "Quarter",
+        "x_marker": null,
+        "y_label": "EPS"
+      }
+    },
+    {
+      "Table": {
+        "columns": [
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Period",
+            "width": 10
+          },
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Announce",
+            "width": 9
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 2
+              }
+            },
+            "live": null,
+            "title": "EPS Est",
+            "width": 9
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 2
+              }
+            },
+            "live": null,
+            "title": "EPS Act",
+            "width": 9
+          },
+          {
+            "align": "Right",
+            "format": {
+              "ChangePercent": {
+                "decimals": 1
+              }
+            },
+            "live": null,
+            "title": "Surp %",
+            "width": 8
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 0
+              }
+            },
+            "live": null,
+            "title": "Rev Est (M)",
+            "width": 12
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 0
+              }
+            },
+            "live": null,
+            "title": "Rev Act (M)",
+            "width": 12
+          },
+          {
+            "align": "Right",
+            "format": {
+              "ChangePercent": {
+                "decimals": 1
+              }
+            },
+            "live": null,
+            "title": "Surp %",
+            "width": 8
+          }
+        ],
+        "numbered": false,
+        "page_size": 20,
+        "rows": [
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "Q3 27",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "12/01/26",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.88
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 162704.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "Q2 27",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "09/03/26",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.61
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.73
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 7.453416
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 147107.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 148842.0
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 1.179414
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "Q1 27",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "05/26/26",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.33
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.48
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 11.278195
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 133246.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 134458.0
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 0.909596
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "Q4 26",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "03/03/26",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.39
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.3
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -6.47482
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 123258.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 122030.0
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -0.996284
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "Q3 26",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "12/02/25",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.3
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.38
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 6.153846
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 127724.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 130538.0
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 2.203188
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "Q2 26",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "08/26/25",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.12
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.21
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 8.035714
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 118019.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 119837.0
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 1.54043
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "Q1 26",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "05/27/25",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.14
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.15
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 0.877193
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 109122.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 111926.0
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 2.569601
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "Q4 25",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "03/12/25",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.06
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.11
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 4.716981
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 108933.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 111334.0
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 2.204107
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "Q3 25",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "11/26/24",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.22
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.21
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -0.819672
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 117193.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 116867.0
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -0.278174
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "Q2 25",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "09/03/24",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.11
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.09
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -1.801802
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 101813.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 102108.0
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 0.289747
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "Q1 25",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "05/30/24",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.04
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.97
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -6.730769
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 94555.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 94188.0
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -0.388134
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "Q4 24",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "03/12/24",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.81
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.85
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 4.938272
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 85586.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 85826.0
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 0.28042
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "Q3 24",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "11/22/23",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.85
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.91
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 7.058824
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 89344.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 91314.0
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 2.204961
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          }
+        ],
+        "title": null
+      }
+    }
+  ],
+  "function": "ERN",
+  "menu": [],
+  "refresh_ms": null,
+  "security": "NVDA US Equity",
+  "sources": [
+    {
+      "as_of": 1791216000000000000,
+      "attribution": null,
+      "delay": "MOCK",
+      "provider": "mock",
+      "source": "MOCK",
+      "synthetic": true
+    }
+  ],
+  "status": "Ok",
+  "title": "NVDA US Equity — Earnings History"
+}

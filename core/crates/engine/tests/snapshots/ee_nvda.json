@@ -1,0 +1,442 @@
+{
+  "args": [],
+  "blocks": [
+    {
+      "Table": {
+        "columns": [
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Period",
+            "width": 10
+          },
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "End",
+            "width": 8
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 2
+              }
+            },
+            "live": null,
+            "title": "Mean",
+            "width": 11
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 2
+              }
+            },
+            "live": null,
+            "title": "Median",
+            "width": 11
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 2
+              }
+            },
+            "live": null,
+            "title": "High",
+            "width": 11
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 2
+              }
+            },
+            "live": null,
+            "title": "Low",
+            "width": 11
+          },
+          {
+            "align": "Right",
+            "format": "Integer",
+            "live": null,
+            "title": "# Est",
+            "width": 6
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 2
+              }
+            },
+            "live": null,
+            "title": "Actual",
+            "width": 11
+          }
+        ],
+        "numbered": false,
+        "page_size": null,
+        "rows": [
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "Q3 27",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "10/2026",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.88
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.87
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.98
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.81
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 36.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "Q4 27",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "01/2027",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.81
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.81
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.93
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.66
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 43.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "Q1 28",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "04/2027",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.64
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.64
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.76
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.47
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 46.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "Q2 28",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "07/2027",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.69
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.7
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.9
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.49
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 38.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "FY 27",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "01/2027",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 6.9
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 6.92
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 7.51
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 6.16
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 43.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "FY 28",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "01/2028",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 6.75
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 6.86
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 7.84
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 5.96
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 37.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          }
+        ],
+        "title": "EPS Adj — Consensus"
+      }
+    }
+  ],
+  "function": "EE",
+  "menu": [
+    {
+      "action": {
+        "args": [
+          [
+            "metric",
+            "EPS"
+          ]
+        ],
+        "function": "EE",
+        "security": "NVDA US Equity"
+      },
+      "label": "EPS",
+      "number": 1,
+      "selected": true
+    },
+    {
+      "action": {
+        "args": [
+          [
+            "metric",
+            "REV"
+          ]
+        ],
+        "function": "EE",
+        "security": "NVDA US Equity"
+      },
+      "label": "Revenue",
+      "number": 2,
+      "selected": false
+    },
+    {
+      "action": {
+        "args": [
+          [
+            "metric",
+            "EBITDA"
+          ]
+        ],
+        "function": "EE",
+        "security": "NVDA US Equity"
+      },
+      "label": "EBITDA",
+      "number": 3,
+      "selected": false
+    }
+  ],
+  "refresh_ms": null,
+  "security": "NVDA US Equity",
+  "sources": [
+    {
+      "as_of": 1791216000000000000,
+      "attribution": null,
+      "delay": "MOCK",
+      "provider": "mock",
+      "source": "MOCK",
+      "synthetic": true
+    }
+  ],
+  "status": "Ok",
+  "title": "NVDA US Equity — Earnings Estimates"
+}

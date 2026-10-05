@@ -1,0 +1,1982 @@
+{
+  "args": [],
+  "blocks": [
+    {
+      "Inputs": {
+        "inputs": [
+          {
+            "id": "form",
+            "kind": "Choice",
+            "label": "Form",
+            "options": [
+              "All",
+              "10-K",
+              "10-Q",
+              "8-K",
+              "Proxy",
+              "Ownership"
+            ],
+            "value": "All"
+          }
+        ],
+        "title": null
+      }
+    },
+    {
+      "Table": {
+        "columns": [
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Filed",
+            "width": 9
+          },
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Form",
+            "width": 9
+          },
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Description",
+            "width": 60
+          },
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Period",
+            "width": 9
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Large": {
+                "decimals": 1
+              }
+            },
+            "live": null,
+            "title": "Size",
+            "width": 8
+          }
+        ],
+        "numbered": true,
+        "page_size": 22,
+        "rows": [
+          {
+            "action": {
+              "args": [
+                [
+                  "doc",
+                  "0009999999-26-112441"
+                ]
+              ],
+              "function": "CF",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "09/15/26",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "4",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Statement of changes in beneficial ownership of securities (SYNTHETIC — MOCK DATA)",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "09/13/26",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 7705.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "doc",
+                  "0009999999-26-968734"
+                ]
+              ],
+              "function": "CF",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "07/30/26",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "10-Q",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Quarterly report [Sections 13 or 15(d)] (SYNTHETIC — MOCK DATA)",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "06/30/26",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 2630360.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "doc",
+                  "0009999999-26-248425"
+                ]
+              ],
+              "function": "CF",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "07/28/26",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "8-K",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Current report, items 2.02, 9.01 (SYNTHETIC — MOCK DATA)",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "07/28/26",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 170702.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "doc",
+                  "0009999999-26-010996"
+                ]
+              ],
+              "function": "CF",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "05/18/26",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "8-K",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Current report, items 7.01 (SYNTHETIC — MOCK DATA)",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "05/18/26",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 453124.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "doc",
+                  "0009999999-26-930403"
+                ]
+              ],
+              "function": "CF",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "05/07/26",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "8-K",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Current report, items 7.01 (SYNTHETIC — MOCK DATA)",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "05/07/26",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 325496.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "doc",
+                  "0009999999-26-454983"
+                ]
+              ],
+              "function": "CF",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "05/06/26",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "4",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Statement of changes in beneficial ownership of securities (SYNTHETIC — MOCK DATA)",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "05/04/26",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 7331.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "doc",
+                  "0009999999-26-475297"
+                ]
+              ],
+              "function": "CF",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "04/30/26",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "10-Q",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Quarterly report [Sections 13 or 15(d)] (SYNTHETIC — MOCK DATA)",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "03/31/26",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 4646640.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "doc",
+                  "0009999999-26-803266"
+                ]
+              ],
+              "function": "CF",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "04/28/26",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "8-K",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Current report, items 2.02, 9.01 (SYNTHETIC — MOCK DATA)",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "04/28/26",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 62454.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "doc",
+                  "0009999999-26-520775"
+                ]
+              ],
+              "function": "CF",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "04/09/26",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "4",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Statement of changes in beneficial ownership of securities (SYNTHETIC — MOCK DATA)",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "04/07/26",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 13998.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "doc",
+                  "0009999999-26-604545"
+                ]
+              ],
+              "function": "CF",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "03/02/26",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "8-K",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Current report, items 5.07 (SYNTHETIC — MOCK DATA)",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "03/02/26",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 485440.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "doc",
+                  "0009999999-26-587995"
+                ]
+              ],
+              "function": "CF",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "02/03/26",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "8-K",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Current report, items 2.02, 9.01 (SYNTHETIC — MOCK DATA)",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "02/03/26",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 455265.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "doc",
+                  "0009999999-26-659097"
+                ]
+              ],
+              "function": "CF",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "02/03/26",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "10-Q",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Quarterly report [Sections 13 or 15(d)] (SYNTHETIC — MOCK DATA)",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "12/31/25",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 4972985.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "doc",
+                  "0009999999-26-344226"
+                ]
+              ],
+              "function": "CF",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "01/20/26",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "4",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Statement of changes in beneficial ownership of securities (SYNTHETIC — MOCK DATA)",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "01/18/26",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 10804.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "doc",
+                  "0009999999-26-475814"
+                ]
+              ],
+              "function": "CF",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "01/13/26",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "DEF 14A",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Other definitive proxy statements (SYNTHETIC — MOCK DATA)",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1835792.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "doc",
+                  "0009999999-25-045093"
+                ]
+              ],
+              "function": "CF",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "11/11/25",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "10-K",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Annual report [Section 13 and 15(d), not S-K Item 405] (SYNTHETIC — MOCK DATA)",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "09/30/25",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 11575697.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "doc",
+                  "0009999999-25-395225"
+                ]
+              ],
+              "function": "CF",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "11/06/25",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "8-K",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Current report, items 2.02, 9.01 (SYNTHETIC — MOCK DATA)",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "11/06/25",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 169183.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "doc",
+                  "0009999999-25-457147"
+                ]
+              ],
+              "function": "CF",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "07/29/25",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "8-K",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Current report, items 2.02, 9.01 (SYNTHETIC — MOCK DATA)",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "07/29/25",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 231497.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "doc",
+                  "0009999999-25-900441"
+                ]
+              ],
+              "function": "CF",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "07/29/25",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "10-Q",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Quarterly report [Sections 13 or 15(d)] (SYNTHETIC — MOCK DATA)",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "06/30/25",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 4737793.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "doc",
+                  "0009999999-25-624095"
+                ]
+              ],
+              "function": "CF",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "06/09/25",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "4",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Statement of changes in beneficial ownership of securities (SYNTHETIC — MOCK DATA)",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "06/07/25",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 7279.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "doc",
+                  "0009999999-25-848098"
+                ]
+              ],
+              "function": "CF",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "05/06/25",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "8-K",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Current report, items 2.02, 9.01 (SYNTHETIC — MOCK DATA)",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "05/06/25",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 496091.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "doc",
+                  "0009999999-25-717972"
+                ]
+              ],
+              "function": "CF",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "05/06/25",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "10-Q",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Quarterly report [Sections 13 or 15(d)] (SYNTHETIC — MOCK DATA)",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "03/31/25",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1478952.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "doc",
+                  "0009999999-25-520527"
+                ]
+              ],
+              "function": "CF",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "02/11/25",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "8-K",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Current report, items 8.01 (SYNTHETIC — MOCK DATA)",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "02/11/25",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 433650.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "doc",
+                  "0009999999-25-082068"
+                ]
+              ],
+              "function": "CF",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "02/07/25",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "10-Q",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Quarterly report [Sections 13 or 15(d)] (SYNTHETIC — MOCK DATA)",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "12/31/24",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 956742.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "doc",
+                  "0009999999-25-729755"
+                ]
+              ],
+              "function": "CF",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "02/04/25",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "8-K",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Current report, items 2.02, 9.01 (SYNTHETIC — MOCK DATA)",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "02/04/25",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 374088.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "doc",
+                  "0009999999-25-682714"
+                ]
+              ],
+              "function": "CF",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "01/14/25",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "DEF 14A",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Other definitive proxy statements (SYNTHETIC — MOCK DATA)",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 2432067.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "doc",
+                  "0009999999-24-706229"
+                ]
+              ],
+              "function": "CF",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "12/18/24",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "8-K",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Current report, items 5.02 (SYNTHETIC — MOCK DATA)",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "12/18/24",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 322538.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "doc",
+                  "0009999999-24-017985"
+                ]
+              ],
+              "function": "CF",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "11/20/24",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "4",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Statement of changes in beneficial ownership of securities (SYNTHETIC — MOCK DATA)",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "11/18/24",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 9587.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "doc",
+                  "0009999999-24-574021"
+                ]
+              ],
+              "function": "CF",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "11/14/24",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "10-K",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Annual report [Section 13 and 15(d), not S-K Item 405] (SYNTHETIC — MOCK DATA)",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "09/30/24",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 6741917.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "doc",
+                  "0009999999-24-798938"
+                ]
+              ],
+              "function": "CF",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "11/06/24",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "8-K",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Current report, items 2.02, 9.01 (SYNTHETIC — MOCK DATA)",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "11/06/24",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 167887.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "doc",
+                  "0009999999-24-018842"
+                ]
+              ],
+              "function": "CF",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "09/16/24",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "4",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Statement of changes in beneficial ownership of securities (SYNTHETIC — MOCK DATA)",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "09/14/24",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 6907.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "doc",
+                  "0009999999-24-010000"
+                ]
+              ],
+              "function": "CF",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "08/06/24",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "8-K",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Current report, items 2.02, 9.01 (SYNTHETIC — MOCK DATA)",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "08/06/24",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 187374.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "doc",
+                  "0009999999-24-608914"
+                ]
+              ],
+              "function": "CF",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "08/06/24",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "10-Q",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Quarterly report [Sections 13 or 15(d)] (SYNTHETIC — MOCK DATA)",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "06/30/24",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 2328124.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "doc",
+                  "0009999999-24-392060"
+                ]
+              ],
+              "function": "CF",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "05/22/24",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "4",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Statement of changes in beneficial ownership of securities (SYNTHETIC — MOCK DATA)",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "05/20/24",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 12296.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "doc",
+                  "0009999999-24-873064"
+                ]
+              ],
+              "function": "CF",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "05/10/24",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "10-Q",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Quarterly report [Sections 13 or 15(d)] (SYNTHETIC — MOCK DATA)",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "03/31/24",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 3985056.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "doc",
+                  "0009999999-24-826122"
+                ]
+              ],
+              "function": "CF",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "05/07/24",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "8-K",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Current report, items 2.02, 9.01 (SYNTHETIC — MOCK DATA)",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "05/07/24",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 384058.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "doc",
+                  "0009999999-24-341760"
+                ]
+              ],
+              "function": "CF",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "02/23/24",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "8-K",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Current report, items 7.01 (SYNTHETIC — MOCK DATA)",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "02/23/24",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 233232.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "doc",
+                  "0009999999-24-498459"
+                ]
+              ],
+              "function": "CF",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "02/07/24",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "10-Q",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Quarterly report [Sections 13 or 15(d)] (SYNTHETIC — MOCK DATA)",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "12/31/23",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1884324.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "doc",
+                  "0009999999-24-853898"
+                ]
+              ],
+              "function": "CF",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "02/06/24",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "8-K",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Current report, items 2.02, 9.01 (SYNTHETIC — MOCK DATA)",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "02/06/24",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 440314.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "doc",
+                  "0009999999-24-169467"
+                ]
+              ],
+              "function": "CF",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "02/05/24",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "4",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Statement of changes in beneficial ownership of securities (SYNTHETIC — MOCK DATA)",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "02/03/24",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 12871.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "doc",
+                  "0009999999-24-898600"
+                ]
+              ],
+              "function": "CF",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "01/08/24",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "DEF 14A",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Other definitive proxy statements (SYNTHETIC — MOCK DATA)",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1809316.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "doc",
+                  "0009999999-23-783129"
+                ]
+              ],
+              "function": "CF",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "11/10/23",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "4",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Statement of changes in beneficial ownership of securities (SYNTHETIC — MOCK DATA)",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "11/08/23",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 12576.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "doc",
+                  "0009999999-23-876299"
+                ]
+              ],
+              "function": "CF",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "11/06/23",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "10-K",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Annual report [Section 13 and 15(d), not S-K Item 405] (SYNTHETIC — MOCK DATA)",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "09/30/23",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1509366.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "doc",
+                  "0009999999-23-047780"
+                ]
+              ],
+              "function": "CF",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "10/31/23",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "8-K",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Current report, items 2.02, 9.01 (SYNTHETIC — MOCK DATA)",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "10/31/23",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 379059.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "doc",
+                  "0009999999-23-388516"
+                ]
+              ],
+              "function": "CF",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "10/25/23",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "4",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Statement of changes in beneficial ownership of securities (SYNTHETIC — MOCK DATA)",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "10/23/23",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 8921.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "doc",
+                  "0009999999-23-693914"
+                ]
+              ],
+              "function": "CF",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "09/06/23",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "4",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Statement of changes in beneficial ownership of securities (SYNTHETIC — MOCK DATA)",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "09/04/23",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 6548.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          }
+        ],
+        "title": null
+      }
+    }
+  ],
+  "function": "CF",
+  "menu": [],
+  "refresh_ms": null,
+  "security": "AAPL US Equity",
+  "sources": [
+    {
+      "as_of": 1791216000000000000,
+      "attribution": null,
+      "delay": "MOCK",
+      "provider": "mock",
+      "source": "MOCK",
+      "synthetic": true
+    }
+  ],
+  "status": "Ok",
+  "title": "AAPL US Equity — Company Filings"
+}

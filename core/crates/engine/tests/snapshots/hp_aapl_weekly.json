@@ -1,0 +1,2792 @@
+{
+  "args": [
+    [
+      "period",
+      "Weekly"
+    ]
+  ],
+  "blocks": [
+    {
+      "Inputs": {
+        "inputs": [
+          {
+            "id": "start",
+            "kind": "Date",
+            "label": "Range",
+            "options": [],
+            "value": "10/04/2025"
+          },
+          {
+            "id": "end",
+            "kind": "Date",
+            "label": "–",
+            "options": [],
+            "value": "10/05/2026"
+          },
+          {
+            "id": "period",
+            "kind": "Choice",
+            "label": "Period",
+            "options": [
+              "Daily",
+              "Weekly",
+              "Monthly"
+            ],
+            "value": "Weekly"
+          }
+        ],
+        "title": null
+      }
+    },
+    {
+      "Fields": {
+        "columns": 3,
+        "fields": [
+          {
+            "format": {
+              "Price": {
+                "decimals": 2
+              }
+            },
+            "label": "High",
+            "style": "Normal",
+            "text": null,
+            "value": 372.14
+          },
+          {
+            "format": "Text",
+            "label": "on",
+            "style": "Normal",
+            "text": "07/10/26",
+            "value": null
+          },
+          {
+            "format": {
+              "Price": {
+                "decimals": 2
+              }
+            },
+            "label": "Average",
+            "style": "Normal",
+            "text": null,
+            "value": 281.676226
+          },
+          {
+            "format": {
+              "Price": {
+                "decimals": 2
+              }
+            },
+            "label": "Low",
+            "style": "Normal",
+            "text": null,
+            "value": 221.2
+          },
+          {
+            "format": "Text",
+            "label": "on",
+            "style": "Normal",
+            "text": "02/20/26",
+            "value": null
+          },
+          {
+            "format": {
+              "Large": {
+                "decimals": 2
+              }
+            },
+            "label": "Avg Volume",
+            "style": "Normal",
+            "text": null,
+            "value": 243081015.90566
+          },
+          {
+            "format": {
+              "Change": {
+                "decimals": 2
+              }
+            },
+            "label": "Net Chg",
+            "style": "Normal",
+            "text": null,
+            "value": 43.82
+          },
+          {
+            "format": {
+              "ChangePercent": {
+                "decimals": 2
+              }
+            },
+            "label": "% Chg",
+            "style": "Normal",
+            "text": null,
+            "value": 17.834758
+          },
+          {
+            "format": "Integer",
+            "label": "Observations",
+            "style": "Normal",
+            "text": null,
+            "value": 53.0
+          }
+        ],
+        "title": null
+      }
+    },
+    {
+      "Table": {
+        "columns": [
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Date",
+            "width": 14
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Price": {
+                "decimals": 2
+              }
+            },
+            "live": null,
+            "title": "Open",
+            "width": 10
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Price": {
+                "decimals": 2
+              }
+            },
+            "live": null,
+            "title": "High",
+            "width": 10
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Price": {
+                "decimals": 2
+              }
+            },
+            "live": null,
+            "title": "Low",
+            "width": 10
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Price": {
+                "decimals": 2
+              }
+            },
+            "live": null,
+            "title": "Last Px",
+            "width": 10
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Change": {
+                "decimals": 2
+              }
+            },
+            "live": null,
+            "title": "Net Chg",
+            "width": 9
+          },
+          {
+            "align": "Right",
+            "format": {
+              "ChangePercent": {
+                "decimals": 2
+              }
+            },
+            "live": null,
+            "title": "% Chg",
+            "width": 8
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Large": {
+                "decimals": 2
+              }
+            },
+            "live": null,
+            "title": "Volume",
+            "width": 10
+          }
+        ],
+        "numbered": false,
+        "page_size": 25,
+        "rows": [
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Mon 10/05/26",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 283.96
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 290.55
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 281.88
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 289.52
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 5.03
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 1.768076
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 29324831.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Fri 10/02/26",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 282.84
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 288.4
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 274.3
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 284.49
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 2.68
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 0.950995
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 251555285.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Fri 09/25/26",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 284.24
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 299.05
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 278.47
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 281.81
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -2.26
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -0.795579
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 269062510.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Fri 09/18/26",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 298.84
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 303.3
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 282.68
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 284.07
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -13.06
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -4.395382
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 261205133.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Fri 09/11/26",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 299.19
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 305.9
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 284.18
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 297.13
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -2.75
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -0.917033
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 274133016.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Fri 09/04/26",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 309.19
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 315.04
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 299.58
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 299.88
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -8.12
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -2.636364
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 219070157.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Fri 08/28/26",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 318.82
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 319.65
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 306.89
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 308.0
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -11.91
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -3.722922
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 210327401.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Fri 08/21/26",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 319.48
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 327.14
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 312.04
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 319.91
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -0.3
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -0.093689
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 140584105.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Fri 08/14/26",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 322.08
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 332.6
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 318.29
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 320.21
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 1.49
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 0.467495
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 205196464.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Fri 08/07/26",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 327.52
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 329.88
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 312.71
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 318.72
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -9.84
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -2.994887
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 253164428.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Fri 07/31/26",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 339.92
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 342.48
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 323.69
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 328.56
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -12.97
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -3.797617
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 203942877.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Fri 07/24/26",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 353.31
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 356.47
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 335.02
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 341.53
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -12.46
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -3.519873
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 200501649.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Fri 07/17/26",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 359.78
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 365.63
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 347.75
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 353.99
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -5.47
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -1.521727
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 215091327.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Fri 07/10/26",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 358.91
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 372.14
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 352.54
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 359.46
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 2.53
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 0.708822
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 260233607.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Thu 07/02/26",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 349.48
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 370.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 347.5
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 356.93
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 5.7
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 1.622868
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 144079175.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Fri 06/26/26",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 353.14
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 360.33
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 338.88
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 351.23
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -4.3
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -1.209462
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 209156188.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Thu 06/18/26",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 328.38
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 357.93
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 322.82
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 355.53
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 29.96
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 9.202322
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 242315299.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Fri 06/12/26",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 314.82
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 342.8
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 312.79
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 325.57
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 11.07
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 3.519873
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 324781846.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Fri 06/05/26",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 301.47
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 319.58
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 298.53
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 314.5
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 19.17
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 6.491044
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 270209919.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Fri 05/29/26",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 280.81
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 299.09
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 275.89
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 295.33
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 10.53
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 3.697331
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 278735826.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Fri 05/22/26",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 295.05
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 297.4
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 273.74
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 284.8
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -14.38
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -4.806471
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 311654631.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Fri 05/15/26",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 291.52
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 304.23
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 290.53
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 299.18
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 7.91
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 2.715693
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 292082504.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Fri 05/08/26",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 272.47
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 293.17
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 271.53
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 291.27
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 19.18
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 7.049138
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 238193684.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Fri 05/01/26",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 282.72
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 287.87
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 271.26
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 272.09
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -11.38
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -4.014534
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 227813003.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Fri 04/24/26",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 286.94
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 289.21
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 279.93
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 283.47
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -3.73
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -1.298747
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 217208224.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Fri 04/17/26",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 288.41
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 298.93
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 284.09
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 287.2
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -4.33
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -1.485267
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 220986018.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Fri 04/10/26",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 291.89
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 300.86
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 286.7
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 291.53
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -1.19
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -0.406532
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 208970581.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Thu 04/02/26",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 285.74
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 294.05
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 281.39
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 292.72
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 8.77
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 3.088572
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 176068422.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Fri 03/27/26",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 284.5
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 288.81
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 273.35
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 283.95
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -0.91
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -0.319455
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 256271606.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Fri 03/20/26",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 274.06
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 294.11
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 270.69
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 284.86
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 14.65
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 5.421709
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 330608551.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Fri 03/13/26",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 238.21
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 272.62
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 237.34
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 270.21
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 33.85
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 14.321374
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 303172225.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Fri 03/06/26",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 230.5
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 238.63
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 227.27
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 236.36
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 6.16
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 2.675934
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 254111575.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Fri 02/27/26",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 228.75
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 240.8
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 226.72
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 230.2
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 3.23
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 1.423096
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 299981915.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Fri 02/20/26",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 228.24
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 229.66
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 221.2
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 226.97
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -1.37
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -0.599982
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 194648834.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Fri 02/13/26",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 237.1
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 237.2
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 225.7
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 228.34
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -10.73
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -4.488225
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 388640312.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Fri 02/06/26",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 230.22
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 239.29
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 224.0
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 239.07
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 8.11
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 3.511431
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 257215153.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Fri 01/30/26",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 251.64
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 251.69
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 229.12
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 230.96
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -22.16
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -8.754741
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 338965513.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Fri 01/23/26",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 253.45
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 257.26
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 251.51
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 253.12
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -2.16
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -0.84613
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 202939936.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Fri 01/16/26",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 255.35
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 258.45
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 251.76
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 255.28
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -1.38
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -0.537676
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 226174777.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Fri 01/09/26",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 255.87
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 262.88
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 252.39
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 256.66
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 1.66
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 0.65098
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 201310779.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Fri 01/02/26",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 260.3
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 268.87
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 253.16
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 255.0
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -5.99
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -2.295107
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 149437911.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Fri 12/26/25",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 258.7
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 262.18
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 253.69
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 260.99
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 2.88
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 1.115803
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 181845704.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Fri 12/19/25",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 252.75
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 266.51
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 250.79
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 258.11
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 5.41
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 2.140879
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 289195946.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Fri 12/12/25",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 241.57
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 254.98
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 237.18
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 252.7
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 12.87
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 5.366301
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 321805519.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Fri 12/05/25",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 232.79
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 240.83
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 232.2
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 239.83
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 6.99
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 3.002062
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 226465400.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Fri 11/28/25",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 239.43
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 240.27
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 232.14
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 232.84
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -8.0
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -3.321707
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 189744463.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Fri 11/21/25",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 243.81
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 250.11
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 237.27
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 240.84
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -3.15
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -1.291037
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 225999818.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Fri 11/14/25",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 246.14
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 248.37
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 241.86
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 243.99
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -0.78
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -0.318667
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 279645884.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Fri 11/07/25",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 255.01
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 256.84
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 240.37
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 244.77
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -9.69
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -3.808064
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 410870467.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Fri 10/31/25",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 256.01
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 257.74
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 250.69
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 254.46
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -5.3
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -2.040345
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 206210269.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Fri 10/24/25",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 254.53
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 261.98
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 250.81
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 259.76
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 4.52
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 1.770882
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 272969258.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Fri 10/17/25",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 244.59
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 255.38
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 240.96
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 255.24
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 9.54
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 3.882784
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 274254397.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Fri 10/10/25",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 243.53
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 251.83
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 236.4
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 245.7
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 245159521.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          }
+        ],
+        "title": null
+      }
+    }
+  ],
+  "function": "HP",
+  "menu": [],
+  "refresh_ms": null,
+  "security": "AAPL US Equity",
+  "sources": [
+    {
+      "as_of": 1791216000000000000,
+      "attribution": null,
+      "delay": "MOCK",
+      "provider": "mock",
+      "source": "MOCK",
+      "synthetic": true
+    }
+  ],
+  "status": "Ok",
+  "title": "AAPL US Equity — Historical Prices"
+}

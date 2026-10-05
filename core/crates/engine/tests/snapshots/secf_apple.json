@@ -1,0 +1,118 @@
+{
+  "args": [
+    [
+      "q",
+      "apple"
+    ]
+  ],
+  "blocks": [
+    {
+      "Inputs": {
+        "inputs": [
+          {
+            "id": "q",
+            "kind": "Text",
+            "label": "Name or Ticker",
+            "options": [],
+            "value": "apple"
+          },
+          {
+            "id": "sector",
+            "kind": "Choice",
+            "label": "Sector",
+            "options": [
+              "All",
+              "GOVT",
+              "CORP",
+              "MTGE",
+              "M-MKT",
+              "MUNI",
+              "PFD",
+              "EQUITY",
+              "CMDTY",
+              "INDEX",
+              "CRNCY"
+            ],
+            "value": "All"
+          }
+        ],
+        "title": null
+      }
+    },
+    {
+      "Table": {
+        "columns": [
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Security",
+            "width": 22
+          },
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Name",
+            "width": 44
+          },
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Sector",
+            "width": 8
+          }
+        ],
+        "numbered": true,
+        "page_size": 22,
+        "rows": [
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "AAPL US Equity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Apple Inc.",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "EQUITY",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          }
+        ],
+        "title": null
+      }
+    }
+  ],
+  "function": "SECF",
+  "menu": [],
+  "refresh_ms": null,
+  "security": null,
+  "sources": [
+    {
+      "as_of": 1791216000000000000,
+      "attribution": null,
+      "delay": "MOCK",
+      "provider": "mock",
+      "source": "MOCK",
+      "synthetic": true
+    }
+  ],
+  "status": "Ok",
+  "title": "Security Finder"
+}

@@ -1,0 +1,1172 @@
+{
+  "args": [],
+  "blocks": [
+    {
+      "Inputs": {
+        "inputs": [
+          {
+            "id": "per",
+            "kind": "Choice",
+            "label": "Periodicity",
+            "options": [
+              "Annual",
+              "Quarterly"
+            ],
+            "value": "Annual"
+          }
+        ],
+        "title": null
+      }
+    },
+    {
+      "Table": {
+        "columns": [
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "In Millions of USD except per share",
+            "width": 34
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 1
+              }
+            },
+            "live": null,
+            "title": "FY 2017",
+            "width": 11
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 1
+              }
+            },
+            "live": null,
+            "title": "FY 2018",
+            "width": 11
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 1
+              }
+            },
+            "live": null,
+            "title": "FY 2019",
+            "width": 11
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 1
+              }
+            },
+            "live": null,
+            "title": "FY 2020",
+            "width": 11
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 1
+              }
+            },
+            "live": null,
+            "title": "FY 2021",
+            "width": 11
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 1
+              }
+            },
+            "live": null,
+            "title": "FY 2022",
+            "width": 11
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 1
+              }
+            },
+            "live": null,
+            "title": "FY 2023",
+            "width": 11
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 1
+              }
+            },
+            "live": null,
+            "title": "FY 2024",
+            "width": 11
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 1
+              }
+            },
+            "live": null,
+            "title": "FY 2025",
+            "width": 11
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 1
+              }
+            },
+            "live": null,
+            "title": "FY 2026",
+            "width": 11
+          }
+        ],
+        "numbered": false,
+        "page_size": 30,
+        "rows": [
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Revenue",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 165430.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 191791.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 205866.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 221123.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 261841.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 299516.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 358051.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 435289.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 458862.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 526250.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": true,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Cost of Revenue",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 65502.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 76456.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 84545.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 85421.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 98300.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 113643.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 138419.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 172795.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 192699.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 215593.0
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Gross Profit",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 99928.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 115335.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 121321.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 135702.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 163541.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 185873.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 219632.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 262494.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 266163.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 310657.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": true,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Selling, General & Administrative",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 21885.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 25378.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 27374.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 29506.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 34693.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 39269.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 47446.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 57171.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 60937.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 72255.0
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Research & Development",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 23288.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 27477.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 29116.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 31166.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 36832.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 42569.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 50697.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 61565.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 65681.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 73742.0
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Operating Income",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 54755.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 62480.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 64831.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 75030.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 92016.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 104035.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 121489.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 143758.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 139545.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 164660.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": true,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Interest Expense",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1433.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1621.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1834.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 2023.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 2242.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 2543.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 2915.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 3417.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 3983.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 4484.0
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Pretax Income",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 53322.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 60859.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 62997.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 73007.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 89774.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 101492.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 118574.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 140341.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 135562.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 160176.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Income Tax Expense",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 9771.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 11153.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 11545.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 13378.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 16450.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 18598.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 21728.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 25716.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 24841.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 29351.0
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Net Income",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 43551.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 49706.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 51452.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 59629.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 73324.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 82894.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 96846.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 114625.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 110721.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 130825.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": true,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "EPS — Basic",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "4.95",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "5.77",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "6.10",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "7.21",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "9.05",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "10.43",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "12.43",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "15.01",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "14.81",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "17.83",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "EPS — Diluted",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "4.90",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "5.71",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "6.04",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "7.14",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "8.95",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "10.33",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "12.31",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "14.86",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "14.66",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "17.65",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Weighted Avg Shares — Basic",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 8793.9
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 8611.1
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 8432.3
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 8273.5
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 8106.5
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 7943.9
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 7788.2
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 7638.5
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 7477.6
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 7337.2
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Weighted Avg Shares — Diluted",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 8882.7
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 8698.1
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 8517.5
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 8357.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 8188.3
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 8024.1
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 7866.9
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 7715.7
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 7553.1
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 7411.4
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "EBITDA",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 61220.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 69636.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 72806.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 83835.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 101601.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 114532.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 133225.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 157295.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 155144.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 182209.0
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          }
+        ],
+        "title": "Income Statement"
+      }
+    }
+  ],
+  "function": "FA",
+  "menu": [
+    {
+      "action": {
+        "args": [
+          [
+            "stmt",
+            "IS"
+          ]
+        ],
+        "function": "FA",
+        "security": "MSFT US Equity"
+      },
+      "label": "Income Statement",
+      "number": 1,
+      "selected": true
+    },
+    {
+      "action": {
+        "args": [
+          [
+            "stmt",
+            "BS"
+          ]
+        ],
+        "function": "FA",
+        "security": "MSFT US Equity"
+      },
+      "label": "Balance Sheet",
+      "number": 2,
+      "selected": false
+    },
+    {
+      "action": {
+        "args": [
+          [
+            "stmt",
+            "CF"
+          ]
+        ],
+        "function": "FA",
+        "security": "MSFT US Equity"
+      },
+      "label": "Cash Flow",
+      "number": 3,
+      "selected": false
+    },
+    {
+      "action": {
+        "args": [
+          [
+            "stmt",
+            "RATIOS"
+          ]
+        ],
+        "function": "FA",
+        "security": "MSFT US Equity"
+      },
+      "label": "Ratios",
+      "number": 4,
+      "selected": false
+    }
+  ],
+  "refresh_ms": null,
+  "security": "MSFT US Equity",
+  "sources": [
+    {
+      "as_of": 1791216000000000000,
+      "attribution": null,
+      "delay": "MOCK",
+      "provider": "mock",
+      "source": "MOCK",
+      "synthetic": true
+    }
+  ],
+  "status": "Ok",
+  "title": "MSFT US Equity — Financial Analysis"
+}

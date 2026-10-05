@@ -1,0 +1,1184 @@
+{
+  "args": [],
+  "blocks": [
+    {
+      "Inputs": {
+        "inputs": [
+          {
+            "id": "q",
+            "kind": "Text",
+            "label": "Search",
+            "options": [],
+            "value": ""
+          }
+        ],
+        "title": null
+      }
+    },
+    {
+      "Table": {
+        "columns": [
+          {
+            "align": "Right",
+            "format": "DateTime",
+            "live": null,
+            "title": "Time",
+            "width": 16
+          },
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Source",
+            "width": 14
+          },
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Headline",
+            "width": 80
+          },
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Tickers",
+            "width": 14
+          }
+        ],
+        "numbered": true,
+        "page_size": 20,
+        "rows": [
+          {
+            "action": {
+              "args": [
+                [
+                  "story",
+                  "mock-822fb5784240bfac"
+                ]
+              ],
+              "function": "CN",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.79120472e+18
+              },
+              {
+                "style": "Muted",
+                "text": "Mock PR Wire",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "[MOCK] Apple Inc. Prices $2 Billion Senior Notes Offering",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "AAPL",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "story",
+                  "mock-5b6be65a57503a7d"
+                ]
+              ],
+              "function": "CN",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.79120382e+18
+              },
+              {
+                "style": "Muted",
+                "text": "Mock Wire",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "[MOCK] Apple Names New Chief Technology Officer",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "AAPL",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "story",
+                  "mock-693a1de3c05be934"
+                ]
+              ],
+              "function": "CN",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.7912025e+18
+              },
+              {
+                "style": "Muted",
+                "text": "Mock Wire",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "[MOCK] Apple Edges Higher in Heavy Trading",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "AAPL",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "story",
+                  "mock-ed613594bb5b1601"
+                ]
+              ],
+              "function": "CN",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.79119902e+18
+              },
+              {
+                "style": "Muted",
+                "text": "Synthetic Newswire",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "[MOCK] Apple Said to Weigh Acquisition in Information Technology",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "AAPL",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "story",
+                  "mock-2754c8cfb469f90c"
+                ]
+              ],
+              "function": "CN",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.7911989e+18
+              },
+              {
+                "style": "Muted",
+                "text": "Mock Markets Desk",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "[MOCK] Ashford Lane Securities Upgrades Apple to Buy, PT $337",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "AAPL",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "story",
+                  "mock-957079247d91094d"
+                ]
+              ],
+              "function": "CN",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.7910261e+18
+              },
+              {
+                "style": "Muted",
+                "text": "Mock Markets Desk",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "[MOCK] Orchard Hill Partners II Upgrades Apple to Strong Buy, PT $357",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "AAPL",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "story",
+                  "mock-d854cb8f99e1e52d"
+                ]
+              ],
+              "function": "CN",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.79096694e+18
+              },
+              {
+                "style": "Muted",
+                "text": "Synthetic Newswire",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "[MOCK] Apple to Present at Investor Conference",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "AAPL",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "story",
+                  "mock-b0862e2432ad4faf"
+                ]
+              ],
+              "function": "CN",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.79096454e+18
+              },
+              {
+                "style": "Muted",
+                "text": "Synthetic Newswire",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "[MOCK] Apple Said to Weigh Acquisition in Information Technology",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "AAPL",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "story",
+                  "mock-bb840eb5c23358ce"
+                ]
+              ],
+              "function": "CN",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.79094336e+18
+              },
+              {
+                "style": "Muted",
+                "text": "Mock PR Wire",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "[MOCK] Apple Inc. Prices $7 Billion Senior Notes Offering",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "AAPL",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "story",
+                  "mock-c3cc154af60323f4"
+                ]
+              ],
+              "function": "CN",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.7909421e+18
+              },
+              {
+                "style": "Muted",
+                "text": "Synthetic Newswire",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "[MOCK] Apple Edges Lower in Heavy Trading",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "AAPL",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "story",
+                  "mock-e6de8e4df250abea"
+                ]
+              ],
+              "function": "CN",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.79093934e+18
+              },
+              {
+                "style": "Muted",
+                "text": "Mock Wire",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "[MOCK] Apple to Present at Investor Conference",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "AAPL",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "story",
+                  "mock-0a3e257ea21c8fea"
+                ]
+              ],
+              "function": "CN",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.7908859400000003e+18
+              },
+              {
+                "style": "Muted",
+                "text": "Synthetic Newswire",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "[MOCK] Apple Edges Higher in Heavy Trading",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "AAPL",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "story",
+                  "mock-af32fd4e09dd4287"
+                ]
+              ],
+              "function": "CN",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.7908701e+18
+              },
+              {
+                "style": "Muted",
+                "text": "Synthetic Newswire",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "[MOCK] Apple Names New Chief Technology Officer",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "AAPL",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "story",
+                  "mock-0c3f4a7143a5714a"
+                ]
+              ],
+              "function": "CN",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.7908566e+18
+              },
+              {
+                "style": "Muted",
+                "text": "Mock Wire",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "[MOCK] Options Traders Position for a Big Move in AAPL",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "AAPL",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "story",
+                  "mock-685803426a9d688a"
+                ]
+              ],
+              "function": "CN",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.79085336e+18
+              },
+              {
+                "style": "Muted",
+                "text": "Mock PR Wire",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "[MOCK] Apple Inc. Publishes Annual Sustainability Report",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "AAPL",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "story",
+                  "mock-91ff99d256794e1d"
+                ]
+              ],
+              "function": "CN",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.7908533e+18
+              },
+              {
+                "style": "Muted",
+                "text": "Mock Markets Desk",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "[MOCK] Fairhaven Cross Research Downgrades Apple to Underperform, PT $302",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "AAPL",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "story",
+                  "mock-50767ffea38205b4"
+                ]
+              ],
+              "function": "CN",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.79080194e+18
+              },
+              {
+                "style": "Muted",
+                "text": "Mock Wire",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "[MOCK] What to Watch in AAPL Ahead of Earnings",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "AAPL",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "story",
+                  "mock-42e125339fc1f2a9"
+                ]
+              ],
+              "function": "CN",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.79078382e+18
+              },
+              {
+                "style": "Muted",
+                "text": "Mock Wire",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "[MOCK] Apple Unveils Cost Program Targeting $4 Billion in Savings",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "AAPL",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "story",
+                  "mock-23c8d6788f78246d"
+                ]
+              ],
+              "function": "CN",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.79078274e+18
+              },
+              {
+                "style": "Muted",
+                "text": "Mock Wire",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "[MOCK] Options Traders Position for a Big Move in AAPL",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "AAPL",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "story",
+                  "mock-f4e0345367702246"
+                ]
+              ],
+              "function": "CN",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.79077764e+18
+              },
+              {
+                "style": "Muted",
+                "text": "Mock Wire",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "[MOCK] Apple Edges Higher in Light Trading",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "AAPL",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "story",
+                  "mock-0a22f5b49305ffbc"
+                ]
+              ],
+              "function": "CN",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.7907444e+18
+              },
+              {
+                "style": "Muted",
+                "text": "Synthetic Newswire",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "[MOCK] Apple Unveils Cost Program Targeting $9 Billion in Savings",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "AAPL",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "story",
+                  "mock-571ab17ca650ec8a"
+                ]
+              ],
+              "function": "CN",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.79070552e+18
+              },
+              {
+                "style": "Muted",
+                "text": "Synthetic Newswire",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "[MOCK] Apple to Present at Investor Conference",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "AAPL",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "story",
+                  "mock-e15b89cb16fea258"
+                ]
+              ],
+              "function": "CN",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.79069436e+18
+              },
+              {
+                "style": "Muted",
+                "text": "Synthetic Newswire",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "[MOCK] Options Traders Position for a Big Move in AAPL",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "AAPL",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "story",
+                  "mock-c434cd653e2873b4"
+                ]
+              ],
+              "function": "CN",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.79068878e+18
+              },
+              {
+                "style": "Muted",
+                "text": "Synthetic Newswire",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "[MOCK] Apple Said to Weigh Acquisition in Information Technology",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "AAPL",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "story",
+                  "mock-51db5abb6c0a8a21"
+                ]
+              ],
+              "function": "CN",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.79068722e+18
+              },
+              {
+                "style": "Muted",
+                "text": "Synthetic Newswire",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "[MOCK] Apple to Present at Investor Conference",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "AAPL",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "story",
+                  "mock-cc42e0c7f8c5ea50"
+                ]
+              ],
+              "function": "CN",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.79068692e+18
+              },
+              {
+                "style": "Muted",
+                "text": "Synthetic Newswire",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "[MOCK] Apple Said to Weigh Acquisition in Information Technology",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "AAPL",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "story",
+                  "mock-367bde269d4ad93f"
+                ]
+              ],
+              "function": "CN",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.79068026e+18
+              },
+              {
+                "style": "Muted",
+                "text": "Mock Wire",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "[MOCK] Apple Edges Lower in Light Trading",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "AAPL",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "story",
+                  "mock-62d8f05845739c37"
+                ]
+              ],
+              "function": "CN",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.79063298e+18
+              },
+              {
+                "style": "Muted",
+                "text": "Synthetic Newswire",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "[MOCK] What to Watch in AAPL Ahead of Earnings",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "AAPL",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "story",
+                  "mock-49b73b18e9eb6a50"
+                ]
+              ],
+              "function": "CN",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.79062602e+18
+              },
+              {
+                "style": "Muted",
+                "text": "Mock Wire",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "[MOCK] Apple Faces Lawsuit Over Patent Claims",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "AAPL",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "story",
+                  "mock-d9b382a7e5d13f70"
+                ]
+              ],
+              "function": "CN",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.79062014e+18
+              },
+              {
+                "style": "Muted",
+                "text": "Mock Wire",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "[MOCK] Options Traders Position for a Big Move in AAPL",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "AAPL",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          }
+        ],
+        "title": null
+      }
+    }
+  ],
+  "function": "CN",
+  "menu": [],
+  "refresh_ms": 60000,
+  "security": "AAPL US Equity",
+  "sources": [
+    {
+      "as_of": 1791216000000000000,
+      "attribution": null,
+      "delay": "MOCK",
+      "provider": "mock",
+      "source": "MOCK",
+      "synthetic": true
+    }
+  ],
+  "status": "Ok",
+  "title": "AAPL US Equity — Company News"
+}

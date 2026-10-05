@@ -1,0 +1,1355 @@
+{
+  "args": [],
+  "blocks": [
+    {
+      "Table": {
+        "columns": [
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "",
+            "width": 5
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 4
+              }
+            },
+            "live": null,
+            "title": "USD",
+            "width": 10
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 4
+              }
+            },
+            "live": null,
+            "title": "EUR",
+            "width": 10
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 4
+              }
+            },
+            "live": null,
+            "title": "JPY",
+            "width": 10
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 4
+              }
+            },
+            "live": null,
+            "title": "GBP",
+            "width": 10
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 4
+              }
+            },
+            "live": null,
+            "title": "CHF",
+            "width": 10
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 4
+              }
+            },
+            "live": null,
+            "title": "CAD",
+            "width": 10
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 4
+              }
+            },
+            "live": null,
+            "title": "AUD",
+            "width": 10
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 4
+              }
+            },
+            "live": null,
+            "title": "NZD",
+            "width": 10
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 4
+              }
+            },
+            "live": null,
+            "title": "CNH",
+            "width": 10
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 4
+              }
+            },
+            "live": null,
+            "title": "HKD",
+            "width": 10
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 4
+              }
+            },
+            "live": null,
+            "title": "SGD",
+            "width": 10
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 4
+              }
+            },
+            "live": null,
+            "title": "SEK",
+            "width": 10
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 4
+              }
+            },
+            "live": null,
+            "title": "NOK",
+            "width": 10
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 4
+              }
+            },
+            "live": null,
+            "title": "MXN",
+            "width": 10
+          }
+        ],
+        "numbered": false,
+        "page_size": null,
+        "rows": [
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "USD",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "—",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.822774
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 164.3
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.653766
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.7847
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.3364
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.42633
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.589825
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 6.5468
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 7.7573
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.236
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 8.4224
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 11.0463
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 16.7344
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "EUR",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.2154
+              },
+              {
+                "style": "Muted",
+                "text": "—",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 199.69022
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.794587
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.953724
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.624261
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.733562
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.932273
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 7.956981
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 9.428222
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.502234
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 10.236585
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 13.425673
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 20.33899
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "JPY",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.006086
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.005008
+              },
+              {
+                "style": "Muted",
+                "text": "—",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.003979
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.004776
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.008134
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.008681
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.009676
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.039847
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.047214
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.007523
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.051262
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.067233
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.101853
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "GBP",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.5296
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.258516
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 251.31328
+              },
+              {
+                "style": "Muted",
+                "text": "—",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.200277
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 2.044157
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 2.181714
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 2.431797
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 10.013985
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 11.865566
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.890586
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 12.882903
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 16.89642
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 25.596938
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "CHF",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.274372
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.048521
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 209.379381
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.833141
+              },
+              {
+                "style": "Muted",
+                "text": "—",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.703071
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.817676
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 2.026029
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 8.343061
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 9.885689
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.575124
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 10.733274
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 14.0771
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 21.325857
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "CAD",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.748279
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.615665
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 122.942233
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.489199
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.587174
+              },
+              {
+                "style": "Muted",
+                "text": "—",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.067293
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.189633
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 4.898833
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 5.804624
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.924873
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 6.302305
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 8.265714
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 12.521999
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "AUD",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.7011
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.576847
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 115.19073
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.458355
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.550153
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.93695
+              },
+              {
+                "style": "Muted",
+                "text": "—",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.114626
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 4.589961
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 5.438643
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.86656
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 5.904945
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 7.744561
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 11.732488
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "NZD",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.629
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.517525
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 103.3447
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.411219
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.493576
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.840596
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.897162
+              },
+              {
+                "style": "Muted",
+                "text": "—",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 4.117937
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 4.879342
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.777444
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 5.29769
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 6.948123
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 10.525938
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "CNH",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.152746
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.125676
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 25.09623
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.09986
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.11986
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.20413
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.217867
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.24284
+              },
+              {
+                "style": "Muted",
+                "text": "—",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.184899
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.188795
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.286491
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.687282
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 2.556119
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "HKD",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.128911
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.106065
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 21.18005
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.084277
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.101156
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.172276
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.183869
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.204946
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.843953
+              },
+              {
+                "style": "Muted",
+                "text": "—",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.159334
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.085739
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.423988
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 2.157245
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "SGD",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.809061
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.665675
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 132.928803
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.528937
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.634871
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.08123
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.153989
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.286266
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 5.296764
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 6.276133
+              },
+              {
+                "style": "Muted",
+                "text": "—",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 6.814239
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 8.937136
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 13.539159
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "SEK",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.118731
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.097689
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 19.507504
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.077622
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.093168
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.158672
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.16935
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.188762
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.777308
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.921032
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.146752
+              },
+              {
+                "style": "Muted",
+                "text": "—",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.311538
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.986892
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "NOK",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.090528
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.074484
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 14.873759
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.059184
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.071037
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.120982
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.129123
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.143924
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.592669
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.702253
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.111893
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.762463
+              },
+              {
+                "style": "Muted",
+                "text": "—",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.514933
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "MXN",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.059757
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.049167
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 9.818099
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.039067
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.046891
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.079859
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.085233
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.095003
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.391218
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.463554
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.07386
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.503299
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.660095
+              },
+              {
+                "style": "Muted",
+                "text": "—",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          }
+        ],
+        "title": "Units of column currency per 1 row currency"
+      }
+    }
+  ],
+  "function": "FXC",
+  "menu": [],
+  "refresh_ms": 5000,
+  "security": null,
+  "sources": [
+    {
+      "as_of": 1791216000000000000,
+      "attribution": null,
+      "delay": "MOCK",
+      "provider": "mock",
+      "source": "MOCK",
+      "synthetic": true
+    }
+  ],
+  "status": "Ok",
+  "title": "FX Cross Rates"
+}

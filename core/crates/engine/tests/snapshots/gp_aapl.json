@@ -1,0 +1,218 @@
+{
+  "args": [],
+  "blocks": [
+    {
+      "Inputs": {
+        "inputs": [
+          {
+            "id": "style",
+            "kind": "Choice",
+            "label": "Style",
+            "options": [
+              "Candles",
+              "Bars",
+              "Line",
+              "Mountain"
+            ],
+            "value": "Candles"
+          },
+          {
+            "id": "studies",
+            "kind": "Text",
+            "label": "Studies",
+            "options": [],
+            "value": "SMA:50,SMA:200"
+          },
+          {
+            "id": "interval",
+            "kind": "Text",
+            "label": "Interval",
+            "options": [],
+            "value": "1d"
+          }
+        ],
+        "title": null
+      }
+    },
+    {
+      "Chart": {
+        "height_rows": 0,
+        "indicators": [
+          "SMA:50",
+          "SMA:200"
+        ],
+        "interval": "1d",
+        "range": "1Y",
+        "security": "AAPL US Equity",
+        "style": "Candles"
+      }
+    }
+  ],
+  "function": "GP",
+  "menu": [
+    {
+      "action": {
+        "args": [
+          [
+            "range",
+            "1D"
+          ]
+        ],
+        "function": "GP",
+        "security": "AAPL US Equity"
+      },
+      "label": "1D",
+      "number": 1,
+      "selected": false
+    },
+    {
+      "action": {
+        "args": [
+          [
+            "range",
+            "5D"
+          ]
+        ],
+        "function": "GP",
+        "security": "AAPL US Equity"
+      },
+      "label": "5D",
+      "number": 2,
+      "selected": false
+    },
+    {
+      "action": {
+        "args": [
+          [
+            "range",
+            "1M"
+          ]
+        ],
+        "function": "GP",
+        "security": "AAPL US Equity"
+      },
+      "label": "1M",
+      "number": 3,
+      "selected": false
+    },
+    {
+      "action": {
+        "args": [
+          [
+            "range",
+            "3M"
+          ]
+        ],
+        "function": "GP",
+        "security": "AAPL US Equity"
+      },
+      "label": "3M",
+      "number": 4,
+      "selected": false
+    },
+    {
+      "action": {
+        "args": [
+          [
+            "range",
+            "6M"
+          ]
+        ],
+        "function": "GP",
+        "security": "AAPL US Equity"
+      },
+      "label": "6M",
+      "number": 5,
+      "selected": false
+    },
+    {
+      "action": {
+        "args": [
+          [
+            "range",
+            "YTD"
+          ]
+        ],
+        "function": "GP",
+        "security": "AAPL US Equity"
+      },
+      "label": "YTD",
+      "number": 6,
+      "selected": false
+    },
+    {
+      "action": {
+        "args": [
+          [
+            "range",
+            "1Y"
+          ]
+        ],
+        "function": "GP",
+        "security": "AAPL US Equity"
+      },
+      "label": "1Y",
+      "number": 7,
+      "selected": true
+    },
+    {
+      "action": {
+        "args": [
+          [
+            "range",
+            "5Y"
+          ]
+        ],
+        "function": "GP",
+        "security": "AAPL US Equity"
+      },
+      "label": "5Y",
+      "number": 8,
+      "selected": false
+    },
+    {
+      "action": {
+        "args": [
+          [
+            "range",
+            "10Y"
+          ]
+        ],
+        "function": "GP",
+        "security": "AAPL US Equity"
+      },
+      "label": "10Y",
+      "number": 9,
+      "selected": false
+    },
+    {
+      "action": {
+        "args": [
+          [
+            "range",
+            "MAX"
+          ]
+        ],
+        "function": "GP",
+        "security": "AAPL US Equity"
+      },
+      "label": "MAX",
+      "number": 10,
+      "selected": false
+    }
+  ],
+  "refresh_ms": null,
+  "security": "AAPL US Equity",
+  "sources": [
+    {
+      "as_of": 1791216000000000000,
+      "attribution": null,
+      "delay": "MOCK",
+      "provider": "mock",
+      "source": "MOCK",
+      "synthetic": true
+    }
+  ],
+  "status": "Ok",
+  "title": "AAPL US Equity — Historical Price Graph"
+}

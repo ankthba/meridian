@@ -1,0 +1,1438 @@
+{
+  "args": [
+    [
+      "strategy",
+      "Iron Condor"
+    ],
+    [
+      "model",
+      "Binomial"
+    ]
+  ],
+  "blocks": [
+    {
+      "Inputs": {
+        "inputs": [
+          {
+            "id": "strategy",
+            "kind": "Choice",
+            "label": "Strategy",
+            "options": [
+              "Long Call",
+              "Long Put",
+              "Covered Call",
+              "Bull Call Spread",
+              "Bear Put Spread",
+              "Straddle",
+              "Strangle",
+              "Iron Condor",
+              "Butterfly"
+            ],
+            "value": "Iron Condor"
+          },
+          {
+            "id": "spot",
+            "kind": "Number",
+            "label": "Underlying",
+            "options": [],
+            "value": "289.52"
+          },
+          {
+            "id": "expiry",
+            "kind": "Date",
+            "label": "Expiry",
+            "options": [],
+            "value": "11/04/2026"
+          },
+          {
+            "id": "k1",
+            "kind": "Number",
+            "label": "Strike 1",
+            "options": [],
+            "value": "290"
+          },
+          {
+            "id": "k2",
+            "kind": "Number",
+            "label": "Strike 2 (upper)",
+            "options": [],
+            "value": "305"
+          },
+          {
+            "id": "k3",
+            "kind": "Number",
+            "label": "Strike 3 (lower)",
+            "options": [],
+            "value": "275"
+          },
+          {
+            "id": "k4",
+            "kind": "Number",
+            "label": "Strike 4 (wing)",
+            "options": [],
+            "value": "320"
+          },
+          {
+            "id": "vol",
+            "kind": "Number",
+            "label": "Vol %",
+            "options": [],
+            "value": "31.91"
+          },
+          {
+            "id": "rate",
+            "kind": "Number",
+            "label": "Rate %",
+            "options": [],
+            "value": "5.221"
+          },
+          {
+            "id": "div",
+            "kind": "Number",
+            "label": "Div Yld %",
+            "options": [],
+            "value": "0.352"
+          },
+          {
+            "id": "qty",
+            "kind": "Number",
+            "label": "Quantity",
+            "options": [],
+            "value": "1"
+          },
+          {
+            "id": "model",
+            "kind": "Choice",
+            "label": "Model",
+            "options": [
+              "Black-Scholes",
+              "Binomial"
+            ],
+            "value": "Binomial"
+          }
+        ],
+        "title": "Inputs"
+      }
+    },
+    {
+      "Notice": {
+        "level": "Info",
+        "text": "Vol default: 30D realized 31.91%; rate default: UST 3M 5.36%; div default: TTM 0.35%. Prices per share; ×100 per contract."
+      }
+    },
+    {
+      "Table": {
+        "columns": [
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Side",
+            "width": 6
+          },
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Type",
+            "width": 6
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 2
+              }
+            },
+            "live": null,
+            "title": "Strike",
+            "width": 9
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 2
+              }
+            },
+            "live": null,
+            "title": "Qty",
+            "width": 6
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 4
+              }
+            },
+            "live": null,
+            "title": "Price",
+            "width": 9
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 3
+              }
+            },
+            "live": null,
+            "title": "Delta",
+            "width": 8
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 4
+              }
+            },
+            "live": null,
+            "title": "Gamma",
+            "width": 8
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 4
+              }
+            },
+            "live": null,
+            "title": "Theta",
+            "width": 8
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 4
+              }
+            },
+            "live": null,
+            "title": "Vega",
+            "width": 8
+          }
+        ],
+        "numbered": false,
+        "page_size": null,
+        "rows": [
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Up",
+                "text": "Long",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Put",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 260.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.405484
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": -0.106182
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.006852
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": -0.075762
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.152926
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Down",
+                "text": "Short",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Put",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 275.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": -1.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 4.420345
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.261459
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": -0.012203
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.132317
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": -0.277894
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Down",
+                "text": "Short",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Call",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 305.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": -1.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 5.267269
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": -0.318871
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": -0.013301
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.167438
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": -0.304944
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Up",
+                "text": "Long",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Call",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 320.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 2.180887
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.161684
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.009117
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": -0.112453
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.201619
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "Total",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": -6.101243
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": -0.00191
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": -0.009535
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": 0.11154
+              },
+              {
+                "style": "Emphasis",
+                "text": null,
+                "value": -0.228294
+              }
+            ],
+            "depth": 0,
+            "emphasis": true,
+            "security": null
+          }
+        ],
+        "title": "Iron Condor — Binomial (CRR, 300 steps) model"
+      }
+    },
+    {
+      "Fields": {
+        "columns": 3,
+        "fields": [
+          {
+            "format": {
+              "Number": {
+                "decimals": 4
+              }
+            },
+            "label": "Net Premium",
+            "style": "Normal",
+            "text": null,
+            "value": -6.101243
+          },
+          {
+            "format": "Text",
+            "label": "Max Profit",
+            "style": "Normal",
+            "text": "6.1012",
+            "value": null
+          },
+          {
+            "format": "Text",
+            "label": "Max Loss",
+            "style": "Normal",
+            "text": "-8.8988",
+            "value": null
+          },
+          {
+            "format": "Text",
+            "label": "Breakevens",
+            "style": "Normal",
+            "text": "268.90, 311.10",
+            "value": null
+          },
+          {
+            "format": "Integer",
+            "label": "Days",
+            "style": "Normal",
+            "text": null,
+            "value": 30.0
+          },
+          {
+            "format": {
+              "Number": {
+                "decimals": 2
+              }
+            },
+            "label": "Position Δ ($/1%)",
+            "style": "Normal",
+            "text": null,
+            "value": -0.552935
+          }
+        ],
+        "title": "Payoff"
+      }
+    },
+    {
+      "Xy": {
+        "height_rows": 12,
+        "series": [
+          {
+            "bars": false,
+            "name": "At expiry",
+            "style": "Emphasis",
+            "x": [
+              173.712,
+              175.642133,
+              177.572267,
+              179.5024,
+              181.432533,
+              183.362667,
+              185.2928,
+              187.222933,
+              189.153067,
+              191.0832,
+              193.013333,
+              194.943467,
+              196.8736,
+              198.803733,
+              200.733867,
+              202.664,
+              204.594133,
+              206.524267,
+              208.4544,
+              210.384533,
+              212.314667,
+              214.2448,
+              216.174933,
+              218.105067,
+              220.0352,
+              221.965333,
+              223.895467,
+              225.8256,
+              227.755733,
+              229.685867,
+              231.616,
+              233.546133,
+              235.476267,
+              237.4064,
+              239.336533,
+              241.266667,
+              243.1968,
+              245.126933,
+              247.057067,
+              248.9872,
+              250.917333,
+              252.847467,
+              254.7776,
+              256.707733,
+              258.637867,
+              260.568,
+              262.498133,
+              264.428267,
+              266.3584,
+              268.288533,
+              270.218667,
+              272.1488,
+              274.078933,
+              276.009067,
+              277.9392,
+              279.869333,
+              281.799467,
+              283.7296,
+              285.659733,
+              287.589867,
+              289.52,
+              291.450133,
+              293.380267,
+              295.3104,
+              297.240533,
+              299.170667,
+              301.1008,
+              303.030933,
+              304.961067,
+              306.8912,
+              308.821333,
+              310.751467,
+              312.6816,
+              314.611733,
+              316.541867,
+              318.472,
+              320.402133,
+              322.332267,
+              324.2624,
+              326.192533,
+              328.122667,
+              330.0528,
+              331.982933,
+              333.913067,
+              335.8432,
+              337.773333,
+              339.703467,
+              341.6336,
+              343.563733,
+              345.493867,
+              347.424,
+              349.354133,
+              351.284267,
+              353.2144,
+              355.144533,
+              357.074667,
+              359.0048,
+              360.934933,
+              362.865067,
+              364.7952,
+              366.725333,
+              368.655467,
+              370.5856,
+              372.515733,
+              374.445867,
+              376.376,
+              378.306133,
+              380.236267,
+              382.1664,
+              384.096533,
+              386.026667,
+              387.9568,
+              389.886933,
+              391.817067,
+              393.7472,
+              395.677333,
+              397.607467,
+              399.5376,
+              401.467733,
+              403.397867,
+              405.328
+            ],
+            "y": [
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.330757,
+              -6.400623,
+              -4.47049,
+              -2.540357,
+              -0.610223,
+              1.31991,
+              3.250043,
+              5.180177,
+              6.101243,
+              6.101243,
+              6.101243,
+              6.101243,
+              6.101243,
+              6.101243,
+              6.101243,
+              6.101243,
+              6.101243,
+              6.101243,
+              6.101243,
+              6.101243,
+              6.101243,
+              6.101243,
+              6.101243,
+              6.101243,
+              4.210043,
+              2.27991,
+              0.349777,
+              -1.580357,
+              -3.51049,
+              -5.440623,
+              -7.370757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757,
+              -8.898757
+            ]
+          },
+          {
+            "bars": false,
+            "name": "Today (model)",
+            "style": "Warning",
+            "x": [
+              173.712,
+              175.642133,
+              177.572267,
+              179.5024,
+              181.432533,
+              183.362667,
+              185.2928,
+              187.222933,
+              189.153067,
+              191.0832,
+              193.013333,
+              194.943467,
+              196.8736,
+              198.803733,
+              200.733867,
+              202.664,
+              204.594133,
+              206.524267,
+              208.4544,
+              210.384533,
+              212.314667,
+              214.2448,
+              216.174933,
+              218.105067,
+              220.0352,
+              221.965333,
+              223.895467,
+              225.8256,
+              227.755733,
+              229.685867,
+              231.616,
+              233.546133,
+              235.476267,
+              237.4064,
+              239.336533,
+              241.266667,
+              243.1968,
+              245.126933,
+              247.057067,
+              248.9872,
+              250.917333,
+              252.847467,
+              254.7776,
+              256.707733,
+              258.637867,
+              260.568,
+              262.498133,
+              264.428267,
+              266.3584,
+              268.288533,
+              270.218667,
+              272.1488,
+              274.078933,
+              276.009067,
+              277.9392,
+              279.869333,
+              281.799467,
+              283.7296,
+              285.659733,
+              287.589867,
+              289.52,
+              291.450133,
+              293.380267,
+              295.3104,
+              297.240533,
+              299.170667,
+              301.1008,
+              303.030933,
+              304.961067,
+              306.8912,
+              308.821333,
+              310.751467,
+              312.6816,
+              314.611733,
+              316.541867,
+              318.472,
+              320.402133,
+              322.332267,
+              324.2624,
+              326.192533,
+              328.122667,
+              330.0528,
+              331.982933,
+              333.913067,
+              335.8432,
+              337.773333,
+              339.703467,
+              341.6336,
+              343.563733,
+              345.493867,
+              347.424,
+              349.354133,
+              351.284267,
+              353.2144,
+              355.144533,
+              357.074667,
+              359.0048,
+              360.934933,
+              362.865067,
+              364.7952,
+              366.725333,
+              368.655467,
+              370.5856,
+              372.515733,
+              374.445867,
+              376.376,
+              378.306133,
+              380.236267,
+              382.1664,
+              384.096533,
+              386.026667,
+              387.9568,
+              389.886933,
+              391.817067,
+              393.7472,
+              395.677333,
+              397.607467,
+              399.5376,
+              401.467733,
+              403.397867,
+              405.328
+            ],
+            "y": [
+              -8.832995,
+              -8.832971,
+              -8.832932,
+              -8.832866,
+              -8.832762,
+              -8.832596,
+              -8.832339,
+              -8.831946,
+              -8.831357,
+              -8.830485,
+              -8.829218,
+              -8.827401,
+              -8.824837,
+              -8.821267,
+              -8.816369,
+              -8.809737,
+              -8.800877,
+              -8.789193,
+              -8.773977,
+              -8.754404,
+              -8.729526,
+              -8.698273,
+              -8.659456,
+              -8.61178,
+              -8.553857,
+              -8.48423,
+              -8.401401,
+              -8.303865,
+              -8.190154,
+              -8.058874,
+              -7.908759,
+              -7.738718,
+              -7.547884,
+              -7.335661,
+              -7.101768,
+              -6.846274,
+              -6.569631,
+              -6.272695,
+              -5.956735,
+              -5.623435,
+              -5.274884,
+              -4.913551,
+              -4.542258,
+              -4.16413,
+              -3.78255,
+              -3.401098,
+              -3.023487,
+              -2.653493,
+              -2.294891,
+              -1.951381,
+              -1.626521,
+              -1.323664,
+              -1.045901,
+              -0.796006,
+              -0.576396,
+              -0.389092,
+              -0.235694,
+              -0.117365,
+              -0.034821,
+              0.011665,
+              0.022256,
+              -0.002468,
+              -0.061535,
+              -0.153613,
+              -0.277042,
+              -0.429879,
+              -0.609935,
+              -0.814825,
+              -1.042011,
+              -1.288844,
+              -1.552613,
+              -1.830583,
+              -2.120036,
+              -2.418306,
+              -2.722812,
+              -3.031085,
+              -3.340796,
+              -3.64977,
+              -3.956007,
+              -4.257689,
+              -4.553192,
+              -4.841086,
+              -5.120138,
+              -5.389307,
+              -5.647741,
+              -5.894765,
+              -6.129876,
+              -6.352732,
+              -6.563132,
+              -6.761014,
+              -6.946432,
+              -7.119545,
+              -7.280607,
+              -7.429946,
+              -7.567959,
+              -7.695094,
+              -7.81184,
+              -7.918719,
+              -8.01627,
+              -8.105047,
+              -8.185609,
+              -8.258511,
+              -8.324301,
+              -8.383513,
+              -8.436664,
+              -8.484253,
+              -8.526753,
+              -8.564615,
+              -8.598262,
+              -8.628093,
+              -8.654479,
+              -8.677763,
+              -8.698264,
+              -8.716275,
+              -8.732063,
+              -8.745873,
+              -8.757928,
+              -8.768429,
+              -8.777558,
+              -8.785477,
+              -8.792335
+            ]
+          }
+        ],
+        "title": "P&L per share vs underlying",
+        "x_label": "Underlying",
+        "x_marker": 289.52,
+        "y_label": "P&L"
+      }
+    },
+    {
+      "Table": {
+        "columns": [
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Spot Move",
+            "width": 10
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Change": {
+                "decimals": 3
+              }
+            },
+            "live": null,
+            "title": "T+0d",
+            "width": 10
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Change": {
+                "decimals": 3
+              }
+            },
+            "live": null,
+            "title": "T+8d",
+            "width": 10
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Change": {
+                "decimals": 3
+              }
+            },
+            "live": null,
+            "title": "T+15d",
+            "width": 10
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Change": {
+                "decimals": 3
+              }
+            },
+            "live": null,
+            "title": "T+23d",
+            "width": 10
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Change": {
+                "decimals": 3
+              }
+            },
+            "live": null,
+            "title": "Expiry",
+            "width": 10
+          }
+        ],
+        "numbered": false,
+        "page_size": null,
+        "rows": [
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "-20% (231.62)",
+                "value": null
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -7.908759
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -8.266984
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -8.62159
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -8.858119
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -8.898757
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "-10% (260.57)",
+                "value": null
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -3.401098
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -3.447182
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -3.695512
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -4.432934
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -8.330757
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "-5% (275.04)",
+                "value": null
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -0.91731
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -0.255301
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 0.593006
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 1.769057
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 6.101243
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "+0% (289.52)",
+                "value": null
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 0.022256
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 1.010646
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 2.402907
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 4.449781
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 6.101243
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "+5% (304.00)",
+                "value": null
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -0.925795
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -0.267169
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 0.579737
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 1.772452
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 6.101243
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "+10% (318.47)",
+                "value": null
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -3.031085
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -2.992304
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -3.121223
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -3.679996
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -7.370757
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "+20% (347.42)",
+                "value": null
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -6.946432
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -7.41713
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -8.018983
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -8.671747
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -8.898757
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          }
+        ],
+        "title": "Scenario P&L per share"
+      }
+    }
+  ],
+  "function": "OVME",
+  "menu": [
+    {
+      "action": {
+        "args": [],
+        "function": "OMON",
+        "security": "AAPL US Equity"
+      },
+      "label": "Option Monitor",
+      "number": 1,
+      "selected": false
+    },
+    {
+      "action": {
+        "args": [],
+        "function": "OVDV",
+        "security": "AAPL US Equity"
+      },
+      "label": "Vol Surface",
+      "number": 2,
+      "selected": false
+    }
+  ],
+  "refresh_ms": null,
+  "security": "AAPL US Equity",
+  "sources": [
+    {
+      "as_of": 1791216000000000000,
+      "attribution": null,
+      "delay": "MOCK",
+      "provider": "mock",
+      "source": "MOCK",
+      "synthetic": true
+    }
+  ],
+  "status": "Ok",
+  "title": "AAPL US Equity — Option Valuation"
+}

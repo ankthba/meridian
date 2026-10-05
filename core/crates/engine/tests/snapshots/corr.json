@@ -1,0 +1,726 @@
+{
+  "args": [],
+  "blocks": [
+    {
+      "Inputs": {
+        "inputs": [
+          {
+            "id": "securities",
+            "kind": "Text",
+            "label": "Securities",
+            "options": [],
+            "value": "AAPL US Equity, MSFT US Equity, NVDA US Equity, AMZN US Equity, GOOGL US Equity, META US Equity, TSLA US Equity, JPM US Equity"
+          },
+          {
+            "id": "range",
+            "kind": "Choice",
+            "label": "Period",
+            "options": [
+              "3M",
+              "6M",
+              "1Y",
+              "3Y",
+              "5Y"
+            ],
+            "value": "1Y"
+          }
+        ],
+        "title": null
+      }
+    },
+    {
+      "Heat": {
+        "col_labels": [
+          "AAPL",
+          "MSFT",
+          "NVDA",
+          "AMZN",
+          "GOOGL",
+          "META",
+          "TSLA",
+          "JPM"
+        ],
+        "diverging": true,
+        "format": {
+          "Number": {
+            "decimals": 2
+          }
+        },
+        "row_labels": [
+          "AAPL",
+          "MSFT",
+          "NVDA",
+          "AMZN",
+          "GOOGL",
+          "META",
+          "TSLA",
+          "JPM"
+        ],
+        "title": "Daily log-return correlation, 250 common days",
+        "values": [
+          1.0,
+          0.451047,
+          0.262592,
+          0.48952,
+          0.413483,
+          0.353855,
+          0.276239,
+          0.438467,
+          0.451047,
+          1.0,
+          0.34738,
+          0.429956,
+          0.413108,
+          0.472013,
+          0.254433,
+          0.436445,
+          0.262592,
+          0.34738,
+          1.0,
+          0.337302,
+          0.392472,
+          0.279266,
+          0.19449,
+          0.234927,
+          0.48952,
+          0.429956,
+          0.337302,
+          1.0,
+          0.506338,
+          0.359687,
+          0.220551,
+          0.396585,
+          0.413483,
+          0.413108,
+          0.392472,
+          0.506338,
+          1.0,
+          0.361279,
+          0.31338,
+          0.364535,
+          0.353855,
+          0.472013,
+          0.279266,
+          0.359687,
+          0.361279,
+          1.0,
+          0.26827,
+          0.333759,
+          0.276239,
+          0.254433,
+          0.19449,
+          0.220551,
+          0.31338,
+          0.26827,
+          1.0,
+          0.225507,
+          0.438467,
+          0.436445,
+          0.234927,
+          0.396585,
+          0.364535,
+          0.333759,
+          0.225507,
+          1.0
+        ]
+      }
+    },
+    {
+      "Table": {
+        "columns": [
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "",
+            "width": 8
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 2
+              }
+            },
+            "live": null,
+            "title": "AAPL",
+            "width": 7
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 2
+              }
+            },
+            "live": null,
+            "title": "MSFT",
+            "width": 7
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 2
+              }
+            },
+            "live": null,
+            "title": "NVDA",
+            "width": 7
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 2
+              }
+            },
+            "live": null,
+            "title": "AMZN",
+            "width": 7
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 2
+              }
+            },
+            "live": null,
+            "title": "GOOGL",
+            "width": 7
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 2
+              }
+            },
+            "live": null,
+            "title": "META",
+            "width": 7
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 2
+              }
+            },
+            "live": null,
+            "title": "TSLA",
+            "width": 7
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 2
+              }
+            },
+            "live": null,
+            "title": "JPM",
+            "width": 7
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 1
+              }
+            },
+            "live": null,
+            "title": "Ann Vol %",
+            "width": 9
+          }
+        ],
+        "numbered": false,
+        "page_size": null,
+        "rows": [
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "AAPL",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": null,
+                "value": 1.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.451047
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.262592
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.48952
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.413483
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.353855
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.276239
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.438467
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 27.04565
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "MSFT",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.451047
+              },
+              {
+                "style": "Muted",
+                "text": null,
+                "value": 1.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.34738
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.429956
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.413108
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.472013
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.254433
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.436445
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 21.702539
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "NVDA",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.262592
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.34738
+              },
+              {
+                "style": "Muted",
+                "text": null,
+                "value": 1.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.337302
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.392472
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.279266
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.19449
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.234927
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 49.233914
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "AMZN",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.48952
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.429956
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.337302
+              },
+              {
+                "style": "Muted",
+                "text": null,
+                "value": 1.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.506338
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.359687
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.220551
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.396585
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 31.132119
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "GOOGL",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.413483
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.413108
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.392472
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.506338
+              },
+              {
+                "style": "Muted",
+                "text": null,
+                "value": 1.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.361279
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.31338
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.364535
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 26.878719
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "META",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.353855
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.472013
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.279266
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.359687
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.361279
+              },
+              {
+                "style": "Muted",
+                "text": null,
+                "value": 1.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.26827
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.333759
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 34.327983
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "TSLA",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.276239
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.254433
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.19449
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.220551
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.31338
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.26827
+              },
+              {
+                "style": "Muted",
+                "text": null,
+                "value": 1.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.225507
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 53.145179
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "JPM",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.438467
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.436445
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.234927
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.396585
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.364535
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.333759
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 0.225507
+              },
+              {
+                "style": "Muted",
+                "text": null,
+                "value": 1.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 26.05065
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          }
+        ],
+        "title": null
+      }
+    }
+  ],
+  "function": "CORR",
+  "menu": [],
+  "refresh_ms": null,
+  "security": null,
+  "sources": [
+    {
+      "as_of": 1791216000000000000,
+      "attribution": null,
+      "delay": "MOCK",
+      "provider": "mock",
+      "source": "MOCK",
+      "synthetic": true
+    }
+  ],
+  "status": "Ok",
+  "title": "Correlation Matrix"
+}

@@ -253,6 +253,11 @@ impl Engine {
 
     // --- reference data -------------------------------------------------
 
+    /// Loads reference data now (tests and snapshot rendering).
+    pub async fn refresh_universe(self: &Arc<Self>) {
+        self.clone().load_universe().await;
+    }
+
     async fn load_universe(self: Arc<Self>) {
         let q = InstrumentQuery { text: String::new(), sector: None, limit: 200_000 };
         match self.router.search(q).await {

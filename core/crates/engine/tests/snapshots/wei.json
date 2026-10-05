@@ -1,0 +1,1358 @@
+{
+  "args": [],
+  "blocks": [
+    {
+      "Table": {
+        "columns": [
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Index",
+            "width": 28
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Price": {
+                "decimals": 2
+              }
+            },
+            "live": "Last",
+            "title": "Last",
+            "width": 11
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Change": {
+                "decimals": 2
+              }
+            },
+            "live": "NetChange",
+            "title": "Net Chg",
+            "width": 9
+          },
+          {
+            "align": "Right",
+            "format": {
+              "ChangePercent": {
+                "decimals": 2
+              }
+            },
+            "live": "PctChange",
+            "title": "% Chg",
+            "width": 8
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Price": {
+                "decimals": 2
+              }
+            },
+            "live": "High",
+            "title": "High",
+            "width": 10
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Price": {
+                "decimals": 2
+              }
+            },
+            "live": "Low",
+            "title": "Low",
+            "width": 10
+          },
+          {
+            "align": "Right",
+            "format": "Time",
+            "live": "Time",
+            "title": "Time",
+            "width": 8
+          }
+        ],
+        "numbered": false,
+        "page_size": null,
+        "rows": [
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "Americas",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": true,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "GP",
+              "security": "INDU Index"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Dow Jones Industrial Average",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": "INDU Index"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "GP",
+              "security": "SPX Index"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "S&P 500",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": "SPX Index"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "GP",
+              "security": "CCMP Index"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Nasdaq Composite",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": "CCMP Index"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "GP",
+              "security": "NDX Index"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Nasdaq 100",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": "NDX Index"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "GP",
+              "security": "RTY Index"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Russell 2000",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": "RTY Index"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "GP",
+              "security": "SPTSX Index"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "S&P/TSX Composite",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": "SPTSX Index"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "GP",
+              "security": "MEXBOL Index"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "S&P/BMV IPC",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": "MEXBOL Index"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "GP",
+              "security": "IBOV Index"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Ibovespa",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": "IBOV Index"
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "EMEA",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": true,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "GP",
+              "security": "SX5E Index"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Euro Stoxx 50",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": "SX5E Index"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "GP",
+              "security": "UKX Index"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "FTSE 100",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": "UKX Index"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "GP",
+              "security": "CAC Index"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "CAC 40",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": "CAC Index"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "GP",
+              "security": "DAX Index"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "DAX",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": "DAX Index"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "GP",
+              "security": "IBEX Index"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "IBEX 35",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": "IBEX Index"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "GP",
+              "security": "FTSEMIB Index"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "FTSE MIB",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": "FTSEMIB Index"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "GP",
+              "security": "AEX Index"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "AEX",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": "AEX Index"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "GP",
+              "security": "SMI Index"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Swiss Market Index",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": "SMI Index"
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "Asia/Pacific",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": true,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "GP",
+              "security": "NKY Index"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Nikkei 225",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": "NKY Index"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "GP",
+              "security": "HSI Index"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Hang Seng",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": "HSI Index"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "GP",
+              "security": "SHCOMP Index"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Shanghai Composite",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": "SHCOMP Index"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "GP",
+              "security": "KOSPI Index"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "KOSPI",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": "KOSPI Index"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "GP",
+              "security": "AS51 Index"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "S&P/ASX 200",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": "AS51 Index"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "GP",
+              "security": "SENSEX Index"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "BSE Sensex",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": "SENSEX Index"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "GP",
+              "security": "TWSE Index"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Taiwan Weighted",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": "TWSE Index"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "GP",
+              "security": "STI Index"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Straits Times",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": "STI Index"
+          }
+        ],
+        "title": null
+      }
+    }
+  ],
+  "function": "WEI",
+  "menu": [],
+  "refresh_ms": null,
+  "security": null,
+  "sources": [
+    {
+      "as_of": 1791216000000000000,
+      "attribution": null,
+      "delay": "MOCK",
+      "provider": "mock",
+      "source": "MOCK",
+      "synthetic": true
+    }
+  ],
+  "status": "Ok",
+  "title": "World Equity Indices"
+}

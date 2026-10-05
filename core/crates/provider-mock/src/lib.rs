@@ -259,7 +259,17 @@ impl MockProvider {
         let text = q.text.trim().to_ascii_uppercase();
         let limit = if q.limit == 0 { 20 } else { q.limit };
         if text.is_empty() {
-            return Vec::new();
+            // Empty query lists the universe (the engine loads reference
+            // data this way for autocomplete).
+            return self
+                .inner
+                .universe
+                .instruments
+                .iter()
+                .filter(|i| q.sector.is_none_or(|s| s == i.key.sector))
+                .take(limit)
+                .cloned()
+                .collect();
         }
         let mut scored: Vec<(u32, &Instrument)> = Vec::new();
         if let Ok(key) = text.parse::<SecurityKey>()

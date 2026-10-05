@@ -1,0 +1,112 @@
+{
+  "args": [],
+  "blocks": [
+    {
+      "Inputs": {
+        "inputs": [
+          {
+            "id": "style",
+            "kind": "Choice",
+            "label": "Style",
+            "options": [
+              "Candles",
+              "Bars",
+              "Line",
+              "Mountain"
+            ],
+            "value": "Candles"
+          },
+          {
+            "id": "studies",
+            "kind": "Text",
+            "label": "Studies",
+            "options": [],
+            "value": "VWAP"
+          },
+          {
+            "id": "interval",
+            "kind": "Text",
+            "label": "Interval",
+            "options": [],
+            "value": "1m"
+          }
+        ],
+        "title": null
+      }
+    },
+    {
+      "Chart": {
+        "height_rows": 0,
+        "indicators": [
+          "VWAP"
+        ],
+        "interval": "1m",
+        "range": "1D",
+        "security": "AAPL US Equity",
+        "style": "Candles"
+      }
+    }
+  ],
+  "function": "GIP",
+  "menu": [
+    {
+      "action": {
+        "args": [
+          [
+            "range",
+            "1D"
+          ]
+        ],
+        "function": "GIP",
+        "security": "AAPL US Equity"
+      },
+      "label": "1D",
+      "number": 1,
+      "selected": true
+    },
+    {
+      "action": {
+        "args": [
+          [
+            "range",
+            "5D"
+          ]
+        ],
+        "function": "GIP",
+        "security": "AAPL US Equity"
+      },
+      "label": "5D",
+      "number": 2,
+      "selected": false
+    },
+    {
+      "action": {
+        "args": [
+          [
+            "range",
+            "1M"
+          ]
+        ],
+        "function": "GIP",
+        "security": "AAPL US Equity"
+      },
+      "label": "1M",
+      "number": 3,
+      "selected": false
+    }
+  ],
+  "refresh_ms": null,
+  "security": "AAPL US Equity",
+  "sources": [
+    {
+      "as_of": 1791216000000000000,
+      "attribution": null,
+      "delay": "MOCK",
+      "provider": "mock",
+      "source": "MOCK",
+      "synthetic": true
+    }
+  ],
+  "status": "Ok",
+  "title": "AAPL US Equity — Intraday Price Graph"
+}

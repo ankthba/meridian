@@ -1,0 +1,484 @@
+{
+  "args": [],
+  "blocks": [
+    {
+      "Fields": {
+        "columns": 2,
+        "fields": [
+          {
+            "format": "Text",
+            "label": "Name",
+            "style": "Emphasis",
+            "text": "Apple Inc.",
+            "value": null
+          },
+          {
+            "format": "Text",
+            "label": "Ticker",
+            "style": "Normal",
+            "text": "AAPL US Equity",
+            "value": null
+          },
+          {
+            "format": "Text",
+            "label": "Type",
+            "style": "Normal",
+            "text": "Common Stock",
+            "value": null
+          },
+          {
+            "format": "Text",
+            "label": "Currency",
+            "style": "Normal",
+            "text": "USD",
+            "value": null
+          },
+          {
+            "format": "Text",
+            "label": "Exchange",
+            "style": "Normal",
+            "text": "NASDAQ",
+            "value": null
+          },
+          {
+            "format": "Text",
+            "label": "Sector",
+            "style": "Normal",
+            "text": "Information Technology",
+            "value": null
+          },
+          {
+            "format": "Text",
+            "label": "Industry",
+            "style": "Normal",
+            "text": "Technology Hardware, Storage & Peripherals",
+            "value": null
+          },
+          {
+            "format": "Text",
+            "label": "Country",
+            "style": "Normal",
+            "text": "US",
+            "value": null
+          }
+        ],
+        "title": null
+      }
+    },
+    {
+      "Fields": {
+        "columns": 3,
+        "fields": [
+          {
+            "format": {
+              "Price": {
+                "decimals": 2
+              }
+            },
+            "label": "Last",
+            "style": "Emphasis",
+            "text": null,
+            "value": 289.52
+          },
+          {
+            "format": {
+              "Change": {
+                "decimals": 2
+              }
+            },
+            "label": "Net Chg",
+            "style": "Normal",
+            "text": null,
+            "value": 5.03
+          },
+          {
+            "format": {
+              "ChangePercent": {
+                "decimals": 2
+              }
+            },
+            "label": "% Chg",
+            "style": "Normal",
+            "text": null,
+            "value": 1.768076
+          },
+          {
+            "format": {
+              "Price": {
+                "decimals": 2
+              }
+            },
+            "label": "Bid",
+            "style": "Normal",
+            "text": null,
+            "value": 289.52
+          },
+          {
+            "format": {
+              "Price": {
+                "decimals": 2
+              }
+            },
+            "label": "Ask",
+            "style": "Normal",
+            "text": null,
+            "value": 289.53
+          },
+          {
+            "format": {
+              "Price": {
+                "decimals": 2
+              }
+            },
+            "label": "Open",
+            "style": "Normal",
+            "text": null,
+            "value": 283.96
+          },
+          {
+            "format": {
+              "Price": {
+                "decimals": 2
+              }
+            },
+            "label": "Day High",
+            "style": "Normal",
+            "text": null,
+            "value": 290.55
+          },
+          {
+            "format": {
+              "Price": {
+                "decimals": 2
+              }
+            },
+            "label": "Day Low",
+            "style": "Normal",
+            "text": null,
+            "value": 281.88
+          },
+          {
+            "format": {
+              "Price": {
+                "decimals": 2
+              }
+            },
+            "label": "Prev Close",
+            "style": "Normal",
+            "text": null,
+            "value": 284.49
+          },
+          {
+            "format": {
+              "Large": {
+                "decimals": 2
+              }
+            },
+            "label": "Volume",
+            "style": "Normal",
+            "text": null,
+            "value": 29324831.0
+          },
+          {
+            "format": {
+              "Price": {
+                "decimals": 2
+              }
+            },
+            "label": "52 Wk High",
+            "style": "Normal",
+            "text": null,
+            "value": 372.14
+          },
+          {
+            "format": {
+              "Price": {
+                "decimals": 2
+              }
+            },
+            "label": "52 Wk Low",
+            "style": "Normal",
+            "text": null,
+            "value": 221.2
+          },
+          {
+            "format": {
+              "ChangePercent": {
+                "decimals": 2
+              }
+            },
+            "label": "1 Yr Chg %",
+            "style": "Normal",
+            "text": null,
+            "value": 18.065411
+          },
+          {
+            "format": {
+              "Number": {
+                "decimals": 2
+              }
+            },
+            "label": "EPS (TTM)",
+            "style": "Normal",
+            "text": null,
+            "value": 6.6
+          },
+          {
+            "format": {
+              "Number": {
+                "decimals": 2
+              }
+            },
+            "label": "P/E (TTM)",
+            "style": "Normal",
+            "text": null,
+            "value": 43.866667
+          },
+          {
+            "format": {
+              "Large": {
+                "decimals": 2
+              }
+            },
+            "label": "Revenue (TTM)",
+            "style": "Normal",
+            "text": null,
+            "value": 296461000000.0
+          },
+          {
+            "format": {
+              "Large": {
+                "decimals": 2
+              }
+            },
+            "label": "Net Income (TTM)",
+            "style": "Normal",
+            "text": null,
+            "value": 97203000000.0
+          },
+          {
+            "format": {
+              "Percent": {
+                "decimals": 2
+              }
+            },
+            "label": "Net Margin %",
+            "style": "Normal",
+            "text": null,
+            "value": 32.787787
+          },
+          {
+            "format": {
+              "Large": {
+                "decimals": 2
+              }
+            },
+            "label": "Shares Out",
+            "style": "Normal",
+            "text": null,
+            "value": 14800000000.0
+          },
+          {
+            "format": {
+              "Large": {
+                "decimals": 2
+              }
+            },
+            "label": "Market Cap",
+            "style": "Normal",
+            "text": null,
+            "value": 4284895999999.9995
+          },
+          {
+            "format": {
+              "Number": {
+                "decimals": 2
+              }
+            },
+            "label": "Div (TTM)",
+            "style": "Normal",
+            "text": null,
+            "value": 1.0189
+          },
+          {
+            "format": {
+              "Percent": {
+                "decimals": 2
+              }
+            },
+            "label": "Div Yield %",
+            "style": "Normal",
+            "text": null,
+            "value": 0.351927
+          }
+        ],
+        "title": "Price & Valuation"
+      }
+    },
+    {
+      "Chart": {
+        "height_rows": 10,
+        "indicators": [],
+        "interval": "1d",
+        "range": "1Y",
+        "security": "AAPL US Equity",
+        "style": "Mountain"
+      }
+    },
+    {
+      "Text": {
+        "body": "[MOCK] Apple Inc. is shown with a synthetic profile: a technology hardware, storage & peripherals company in the Information Technology sector. All figures on this screen are generated locally and are not real.",
+        "title": "Business Description"
+      }
+    },
+    {
+      "Fields": {
+        "columns": 2,
+        "fields": [
+          {
+            "format": "Integer",
+            "label": "Employees",
+            "style": "Normal",
+            "text": null,
+            "value": 378900.0
+          },
+          {
+            "format": "Text",
+            "label": "Fiscal Year End",
+            "style": "Normal",
+            "text": "September",
+            "value": null
+          }
+        ],
+        "title": "Company Info"
+      }
+    }
+  ],
+  "function": "DES",
+  "menu": [
+    {
+      "action": {
+        "args": [],
+        "function": "GP",
+        "security": "AAPL US Equity"
+      },
+      "label": "Price Graph",
+      "number": 1,
+      "selected": false
+    },
+    {
+      "action": {
+        "args": [],
+        "function": "HP",
+        "security": "AAPL US Equity"
+      },
+      "label": "Historical Prices",
+      "number": 2,
+      "selected": false
+    },
+    {
+      "action": {
+        "args": [],
+        "function": "FA",
+        "security": "AAPL US Equity"
+      },
+      "label": "Financials",
+      "number": 3,
+      "selected": false
+    },
+    {
+      "action": {
+        "args": [],
+        "function": "EE",
+        "security": "AAPL US Equity"
+      },
+      "label": "Earnings Estimates",
+      "number": 4,
+      "selected": false
+    },
+    {
+      "action": {
+        "args": [],
+        "function": "ERN",
+        "security": "AAPL US Equity"
+      },
+      "label": "Earnings History",
+      "number": 5,
+      "selected": false
+    },
+    {
+      "action": {
+        "args": [],
+        "function": "ANR",
+        "security": "AAPL US Equity"
+      },
+      "label": "Analyst Recs",
+      "number": 6,
+      "selected": false
+    },
+    {
+      "action": {
+        "args": [],
+        "function": "HDS",
+        "security": "AAPL US Equity"
+      },
+      "label": "Holders",
+      "number": 7,
+      "selected": false
+    },
+    {
+      "action": {
+        "args": [],
+        "function": "DVD",
+        "security": "AAPL US Equity"
+      },
+      "label": "Dividends",
+      "number": 8,
+      "selected": false
+    },
+    {
+      "action": {
+        "args": [],
+        "function": "CN",
+        "security": "AAPL US Equity"
+      },
+      "label": "Company News",
+      "number": 9,
+      "selected": false
+    },
+    {
+      "action": {
+        "args": [],
+        "function": "CF",
+        "security": "AAPL US Equity"
+      },
+      "label": "Filings",
+      "number": 10,
+      "selected": false
+    },
+    {
+      "action": {
+        "args": [],
+        "function": "OMON",
+        "security": "AAPL US Equity"
+      },
+      "label": "Options",
+      "number": 11,
+      "selected": false
+    }
+  ],
+  "refresh_ms": null,
+  "security": "AAPL US Equity",
+  "sources": [
+    {
+      "as_of": 1791216000000000000,
+      "attribution": null,
+      "delay": "MOCK",
+      "provider": "mock",
+      "source": "MOCK",
+      "synthetic": true
+    }
+  ],
+  "status": "Ok",
+  "title": "Apple Inc. — Description"
+}
