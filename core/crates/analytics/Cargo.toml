@@ -1,13 +1,30 @@
 [package]
 name = "meridian-analytics"
+description = "Pure analytics: indicators, returns, statistics, risk, option pricing, vol surfaces, strategies, backtesting. No I/O."
 version.workspace = true
 edition.workspace = true
 rust-version.workspace = true
 license.workspace = true
 publish.workspace = true
 
+[features]
+default = ["parallel"]
+# Monte Carlo VaR runs its fixed-size, independently seeded chunks on rayon.
+# Results are bit-identical with and without this feature.
+parallel = ["dep:rayon"]
+
 [dependencies]
 meridian-types.workspace = true
+rand.workspace = true
+rand_chacha.workspace = true
+rand_distr.workspace = true
+rayon = { workspace = true, optional = true }
+serde.workspace = true
+thiserror.workspace = true
+
+[dev-dependencies]
+proptest.workspace = true
+serde_json.workspace = true
 
 [lints]
 workspace = true
