@@ -579,3 +579,29 @@ pub struct WorkspaceSummaryFfi {
     pub name: String,
     pub updated_at: i64,
 }
+
+// --- charts -------------------------------------------------------------------
+
+#[derive(Debug, Clone, uniffi::Record)]
+pub struct ChartStudyFfi {
+    pub name: String,
+    /// 0 = price overlay; 1.. = lower panes.
+    pub pane: u8,
+    /// f32 little-endian; overlays relative to `origin`, panes absolute.
+    pub values: Vec<u8>,
+}
+
+#[derive(Debug, Clone, uniffi::Record)]
+pub struct ChartDataFfi {
+    pub security: String,
+    pub interval: String,
+    pub count: u32,
+    pub origin: f64,
+    /// `[n: u32][origin: f64]` then ts i64[n], open/high/low/close f32[n]
+    /// (relative to origin), volume f32[n]; little-endian.
+    pub bars: Vec<u8>,
+    pub studies: Vec<ChartStudyFfi>,
+    pub price_decimals: u8,
+    pub sources: Vec<SourceBadgeFfi>,
+    pub stale: bool,
+}

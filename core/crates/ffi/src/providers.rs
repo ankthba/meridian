@@ -22,17 +22,17 @@ pub(crate) fn build(config: &CoreConfigFfi, econf: &EngineConfig, secrets: &dyn 
         None => Arc::new(SystemClock),
     };
     let providers: Vec<Arc<dyn Provider>> = match econf.mode {
-        DataMode::Mock => vec![Arc::new(meridian_provider_mock::MockProvider::new(meridian_provider_mock::MockConfig {
-            seed: config.mock_seed,
-            clock,
-            extra_symbols: config.mock_extra_symbols as usize,
-            updates_per_symbol_per_sec: if config.mock_update_rate > 0.0 { config.mock_update_rate } else { 2.0 },
-        }))],
+        DataMode::Mock => mock(config, clock),
         DataMode::Live => live(econf, secrets),
     };
     Ok(Built { providers, ai: None })
 }
 
 fn live(_econf: &EngineConfig, _secrets: &dyn SecretSource) -> Vec<Arc<dyn Provider>> {
+    Vec::new()
+}
+
+// MOCK-WIRING: replaced when the mock provider crate lands.
+fn mock(_config: &CoreConfigFfi, _clock: Arc<dyn Clock>) -> Vec<Arc<dyn Provider>> {
     Vec::new()
 }

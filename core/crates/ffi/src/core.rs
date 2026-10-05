@@ -201,6 +201,37 @@ impl Core {
         Ok(screen.into())
     }
 
+    /// Bars and studies for a chart, packed for direct upload to the
+    /// renderer. `studies` use `NAME[:p1[:p2]]`, e.g. `SMA:50`, `RSI:14`.
+    pub async fn chart_data(&self, security: String, interval: String, range: String, studies: Vec<String>) -> CoreResult<ChartDataFfi> {
+        let key = parse_key(&security)?;
+        let iv = meridian_types::BarInterval::from_code(&interval)
+            .ok_or_else(|| CoreError::InvalidInput { message: format!("bad interval {interval}") })?;
+        let studies: Vec<_> = studies.iter().filter_map(|s| meridian_engine::screens::chart::Study::parse(s)).collect();
+        let engine = self.engine.clone();
+        let data = self.on_runtime(async move { engine.chart_data(&key, iv, &range, &studies).await }).await??;
+        let (origin, bars) = meridian_engine::screens::chart::pack_bars(&data.series);
+        Ok(ChartDataFfi {
+            security,
+            interval: data.series.interval.code(),
+            count: data.series.len() as u32,
+            origin,
+            bars,
+            studies: data
+                .studies
+                .iter()
+                .map(|st| ChartStudyFfi {
+                    name: st.name.clone(),
+                    pane: st.pane,
+                    values: meridian_engine::screens::chart::pack_values(&st.values, if st.pane == 0 { origin } else { 0.0 }),
+                })
+                .collect(),
+            price_decimals: data.price_decimals,
+            sources: data.sources.into_iter().map(Into::into).collect(),
+            stale: data.stale,
+        })
+    }
+
     // --- streaming ------------------------------------------------------
 
     pub fn subscribe(&self, securities: Vec<String>) -> CoreResult<Arc<QuoteSubscriptionFfi>> {

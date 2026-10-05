@@ -15,3 +15,7 @@ bench/results/*.local.json
 core/target/
 .claude/worktrees/
 app/Meridian/Resources/Fonts/*.ttf
+app/Packages/MeridianCore/MeridianCoreFFI.xcframework/
+app/Packages/MeridianCore/Sources/MeridianCore/*.swift
+app/build/
+app/Meridian.xcodeproj/

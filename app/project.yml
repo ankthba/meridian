@@ -1,0 +1,72 @@
+name: Meridian
+options:
+  bundleIdPrefix: dev.meridian
+  deploymentTarget:
+    macOS: "15.0"
+  createIntermediateGroups: true
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    MACOSX_DEPLOYMENT_TARGET: "15.0"
+    DEVELOPMENT_TEAM: H7T2D2GL7U
+    CODE_SIGN_STYLE: Manual
+    CODE_SIGN_IDENTITY: "Apple Development"
+    ENABLE_HARDENED_RUNTIME: YES
+    DEAD_CODE_STRIPPING: YES
+packages:
+  MeridianCore:
+    path: Packages/MeridianCore
+targets:
+  Meridian:
+    type: application
+    platform: macOS
+    sources:
+      - path: Meridian
+        excludes: ["Resources/Fonts/*.md"]
+    resources:
+      - path: Meridian/Resources/Fonts
+        buildPhase: resources
+    dependencies:
+      - package: MeridianCore
+    info:
+      path: Meridian/Info.plist
+      properties:
+        CFBundleDisplayName: Meridian
+        CFBundleShortVersionString: "0.1.0"
+        CFBundleVersion: "1"
+        LSMinimumSystemVersion: "15.0"
+        NSPrincipalClass: NSApplication
+        LSApplicationCategoryType: public.app-category.finance
+        ATSApplicationFontsPath: "."
+        NSHumanReadableCopyright: "Personal use. Market data per provider terms."
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: dev.meridian.Meridian
+        PRODUCT_NAME: Meridian
+        SWIFT_DEFAULT_ACTOR_ISOLATION: MainActor
+        SWIFT_STRICT_CONCURRENCY: complete
+        ENABLE_APP_SANDBOX: NO
+        CODE_SIGN_ENTITLEMENTS: Meridian/Meridian.entitlements
+        COMBINE_HIDPI_IMAGES: YES
+  MeridianTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources: [MeridianTests]
+    dependencies:
+      - target: Meridian
+    settings:
+      base:
+        BUNDLE_LOADER: "$(TEST_HOST)"
+        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/Meridian.app/Contents/MacOS/Meridian"
+        SWIFT_DEFAULT_ACTOR_ISOLATION: MainActor
+        GENERATE_INFOPLIST_FILE: YES
+schemes:
+  Meridian:
+    build:
+      targets:
+        Meridian: all
+        MeridianTests: [test]
+    test:
+      targets: [MeridianTests]
+    run:
+      config: Debug
