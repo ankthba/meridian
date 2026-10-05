@@ -1,5 +1,6 @@
 [package]
 name = "meridian-provider-rss"
+description = "Press-release RSS/Atom feeds (GlobeNewswire, PR Newswire, Business Wire)."
 version.workspace = true
 edition.workspace = true
 rust-version.workspace = true
@@ -8,6 +9,20 @@ publish.workspace = true
 
 [dependencies]
 meridian-types.workspace = true
+meridian-provider.workspace = true
+async-trait.workspace = true
+chrono.workspace = true
+html2text.workspace = true
+quick-xml.workspace = true
+regex.workspace = true
+reqwest.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+tokio.workspace = true
+tracing.workspace = true
+
+[dev-dependencies]
+tokio = { workspace = true, features = ["test-util"] }
 
 [lints]
 workspace = true

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- HAND-MADE test fixture: not captured from any publisher. Items with
+     date variants (kept) and with unusable dates, titles or identifiers
+     (skipped). Titles say which. -->
+<rss version="2.0">
+  <channel>
+    <title>Hand-made Date Wire</title>
+    <link>https://example.com/</link>
+    <description>Test channel</description>
+    <item>
+      <title>KEEP no seconds GMT</title>
+      <link>https://example.com/d/1</link>
+      <pubDate>Mon, 05 Oct 2026 18:15 GMT</pubDate>
+    </item>
+    <item>
+      <title>KEEP UT zone single-digit day</title>
+      <link>https://example.com/d/2</link>
+      <pubDate>Mon, 5 Oct 2026 18:16:00 UT</pubDate>
+    </item>
+    <item>
+      <title>KEEP wrong weekday</title>
+      <link>https://example.com/d/3</link>
+      <pubDate>Tue, 05 Oct 2026 10:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>KEEP colon offset</title>
+      <link>https://example.com/d/4</link>
+      <pubDate>Mon, 05 Oct 2026 12:00:00 +02:00</pubDate>
+    </item>
+    <item>
+      <title>KEEP ISO date in pubDate</title>
+      <link>https://example.com/d/5</link>
+      <pubDate>2026-10-05T10:00:00Z</pubDate>
+    </item>
+    <item>
+      <title>SKIP unknown zone abbreviation</title>
+      <link>https://example.com/d/6</link>
+      <pubDate>Mon, 05 Oct 2026 10:00:00 CEST</pubDate>
+    </item>
+    <item>
+      <title>SKIP not a date</title>
+      <link>https://example.com/d/7</link>
+      <pubDate>yesterday afternoon</pubDate>
+    </item>
+    <item>
+      <title>SKIP no date</title>
+      <link>https://example.com/d/8</link>
+    </item>
+    <item>
+      <title>SKIP date without zone</title>
+      <link>https://example.com/d/9</link>
+      <pubDate>2026-10-05T10:00:00</pubDate>
+    </item>
+    <item>
+      <title>   </title>
+      <link>https://example.com/d/10</link>
+      <pubDate>Mon, 05 Oct 2026 10:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>SKIP no guid and no link</title>
+      <pubDate>Mon, 05 Oct 2026 10:00:00 GMT</pubDate>
+    </item>
+  </channel>
+</rss>
