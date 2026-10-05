@@ -5,6 +5,7 @@ import SwiftUI
 struct MainWindow: View {
     @Bindable var app = AppModel.shared
     @Environment(\.openWindow) private var openWindow
+    @Environment(\.openSettings) private var openSettings
 
     var body: some View {
         VStack(spacing: 0) {
@@ -24,6 +25,12 @@ struct MainWindow: View {
         .sheet(isPresented: $app.showKeyboardOverlay) { KeyboardOverlay() }
         .onReceive(NotificationCenter.default.publisher(for: .openLaunchpad)) { _ in
             openWindow(id: "launchpad", value: "1")
+        }
+        .task {
+            // Without stock data or EDGAR most screens are empty: open Setup.
+            if app.mode == .live, !SnapshotMode.enabled, !PerfHarness.enabled, SetupItem.essentialMissing {
+                openSettings()
+            }
         }
     }
 
@@ -56,7 +63,9 @@ struct MainWindow: View {
 
 struct StatusBar: View {
     @Bindable var app = AppModel.shared
+    @Environment(\.openSettings) private var openSettings
     @State private var now = Date()
+    @State private var missing = 0
     private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     private static let clock: DateFormatter = {
         let f = DateFormatter()
@@ -70,14 +79,27 @@ struct StatusBar: View {
             if app.mode == .mock {
                 Text("MOCK DATA").font(Theme.swiftFont(weight: .bold)).foregroundStyle(.white)
                     .padding(.horizontal, 6).background(Theme.mockBadge.swiftUI)
-                    .help("All data is synthetic. Switch to LIVE in Settings (⌘,).")
+                    .help("Synthetic data for automated tests (MERIDIAN_MODE=mock).")
             } else {
                 Text("LIVE").font(Theme.swiftFont(weight: .bold)).foregroundStyle(.black)
                     .padding(.horizontal, 6).background(Theme.up.swiftUI)
+                if app.restartNeeded {
+                    Button { SetupItem.relaunch() } label: {
+                        Text("RESTART TO APPLY KEYS").font(Theme.swiftFont(11, weight: .bold)).foregroundStyle(Theme.warning.swiftUI)
+                    }
+                    .buttonStyle(.plain)
+                } else if missing > 0 {
+                    Button { openSettings() } label: {
+                        Text("SETUP: \(missing) SOURCE\(missing == 1 ? "" : "S") NOT SET").font(Theme.swiftFont(11, weight: .bold)).foregroundStyle(Theme.warning.swiftUI)
+                    }
+                    .buttonStyle(.plain)
+                    .help("Open Settings → Setup (⌘,)")
+                }
             }
             ForEach(app.feeds) { f in
                 HStack(spacing: 4) {
-                    Circle().fill((f.connected ? Theme.up : Theme.down).swiftUI).frame(width: 7, height: 7)
+                    // Idle = connected on demand, nothing routed to it yet.
+                    Circle().fill((f.connected ? Theme.up : f.message.hasPrefix("idle") ? Theme.muted : Theme.down).swiftUI).frame(width: 7, height: 7)
                     Text(f.provider).font(Theme.swiftFont(11)).foregroundStyle(Theme.muted.swiftUI)
                 }
                 .help(f.message)
@@ -97,6 +119,7 @@ struct StatusBar: View {
         .background(Color.black)
         .overlay(alignment: .bottom) { Rectangle().fill(Theme.grid.swiftUI).frame(height: 1) }
         .onReceive(timer) { now = $0 }
+        .onAppear { if app.mode == .live { missing = SetupItem.missingCount } }
     }
 }
 

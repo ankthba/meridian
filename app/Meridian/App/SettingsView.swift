@@ -1,64 +1,20 @@
 import MeridianCore
 import SwiftUI
 
-/// Data mode, provider credentials (Keychain), provider settings, and the
-/// Data Sources table (capabilities, terms, attribution, purge).
+/// Data-source setup (credentials in the Keychain, provider settings) and
+/// the Data Sources table (capabilities, terms, attribution, purge).
 struct SettingsView: View {
-    @State private var mode: DataModeFfi = AppModel.preferredMode
     @State private var sources: [DataSourceFfi] = []
     @State private var status = ""
 
-    /// (provider, field, label, isSecret)
-    static let credentialFields: [(String, String, String, Bool)] = [
-        ("anthropic", "api_key", "Anthropic API key (ASK)", true),
-        ("alpaca", "key_id", "Alpaca key ID", true),
-        ("alpaca", "secret_key", "Alpaca secret key", true),
-        ("finnhub", "api_key", "Finnhub API key", true),
-        ("fred", "api_key", "FRED API key", true),
-    ]
-
     var body: some View {
         TabView {
-            general.tabItem { Text("General") }
-            credentials.tabItem { Text("API Keys") }
+            SetupView().tabItem { Text("Setup") }
             dataSources.tabItem { Text("Data Sources") }
         }
         .padding(14)
-        .frame(width: 900, height: 620)
+        .frame(width: 900, height: 680)
         .onAppear { sources = (try? AppModel.shared.core?.dataSources()) ?? [] }
-    }
-
-    private var general: some View {
-        Form {
-            Picker("Data mode", selection: $mode) {
-                Text("MOCK — synthetic data, no keys needed").tag(DataModeFfi.mock)
-                Text("LIVE — real providers you configure").tag(DataModeFfi.live)
-            }
-            .onChange(of: mode) { _, m in
-                AppModel.preferredMode = m
-                status = "Restart Meridian to switch to \(m == .mock ? "MOCK" : "LIVE"). Mock and live data never mix in one session."
-            }
-            ProviderSettingField(provider: "edgar", key: "contact", label: "SEC EDGAR contact (name and email, sent as User-Agent — required by SEC)")
-            Picker("Alpaca feed", selection: Binding(
-                get: { ProviderSettingField.read("alpaca", "feed") ?? "iex" },
-                set: { ProviderSettingField.write("alpaca", "feed", $0) }
-            )) {
-                Text("IEX (free Basic plan, single venue)").tag("iex")
-                Text("SIP (Algo Trader Plus, consolidated)").tag("sip")
-            }
-            Text(status).font(.callout).foregroundStyle(.orange)
-            Text("Changes to providers take effect after restart.").font(.callout).foregroundStyle(.secondary)
-        }
-    }
-
-    private var credentials: some View {
-        Form {
-            Text("Keys are stored only in your macOS Keychain (service “meridian.provider.<name>”).")
-                .font(.callout).foregroundStyle(.secondary)
-            ForEach(Self.credentialFields, id: \.2) { f in
-                SecretRow(provider: f.0, field: f.1, label: f.2)
-            }
-        }
     }
 
     private var dataSources: some View {
@@ -102,6 +58,7 @@ struct SecretRow: View {
     let provider: String
     let field: String
     let label: String
+    var onChange: () -> Void = {}
     @State private var value = ""
     @State private var saved = false
 
@@ -111,9 +68,10 @@ struct SecretRow: View {
             Button("Save") {
                 saved = Keychain.write(provider: provider, field: field, value: value.trimmingCharacters(in: .whitespacesAndNewlines))
                 value = ""
+                onChange()
             }
             .disabled(value.isEmpty)
-            Button("Remove") { Keychain.delete(provider: provider, field: field); saved = false }
+            Button("Remove") { Keychain.delete(provider: provider, field: field); saved = false; onChange() }
             Text(Keychain.read(provider: provider, field: field) != nil || saved ? "set" : "not set")
                 .foregroundStyle(.secondary)
                 .frame(width: 50)
@@ -126,7 +84,9 @@ struct ProviderSettingField: View {
     let provider: String
     let key: String
     let label: String
+    var onChange: () -> Void = {}
     @State private var value = ""
+    @State private var stored = ""
 
     static func read(_ provider: String, _ key: String) -> String? {
         guard let j = try? AppModel.shared.core?.providerSettings(provider: provider),
@@ -146,8 +106,20 @@ struct ProviderSettingField: View {
     }
 
     var body: some View {
-        TextField(label, text: $value)
-            .onAppear { value = Self.read(provider, key) ?? "" }
-            .onSubmit { Self.write(provider, key, value) }
+        HStack {
+            TextField(label, text: $value)
+                .onSubmit(save)
+            Button("Save", action: save)
+                .disabled(value.trimmingCharacters(in: .whitespaces) == stored)
+        }
+        .onAppear { value = Self.read(provider, key) ?? ""; stored = value }
+        .onDisappear { if value.trimmingCharacters(in: .whitespaces) != stored { save() } }
+    }
+
+    private func save() {
+        let v = value.trimmingCharacters(in: .whitespaces)
+        Self.write(provider, key, v)
+        stored = v
+        onChange()
     }
 }

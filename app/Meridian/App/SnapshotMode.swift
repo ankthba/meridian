@@ -9,6 +9,7 @@ import SwiftUI
 ///   MERIDIAN_SNAPSHOT_SPECS="DES|AAPL US Equity;GP|AAPL US Equity|range=1Y"
 ///   MERIDIAN_SNAPSHOT_SIZE=960x600   panel size (default 960x600)
 ///   MERIDIAN_SNAPSHOT_MAIN=1         also render the whole main window
+///   MERIDIAN_SNAPSHOT_SETUP=1        also render Settings → Setup
 ///
 /// Use with MERIDIAN_MODE=mock, MERIDIAN_IN_MEMORY=1 and
 /// MERIDIAN_FIXED_CLOCK_NS for deterministic output.
@@ -69,6 +70,10 @@ enum SnapshotMode {
                     .background(Color.black)
                     .environment(\.colorScheme, .dark)
                 render(view, size: size, to: out.appendingPathComponent(spec.fileName))
+            }
+            if env["MERIDIAN_SNAPSHOT_SETUP"] == "1" {
+                let setup = SetupView().padding(14).frame(width: 900, height: 1180).background(Color(nsColor: .windowBackgroundColor))
+                render(setup, size: CGSize(width: 900, height: 1180), to: out.appendingPathComponent("settings-setup.png"))
             }
             if env["MERIDIAN_SNAPSHOT_MAIN"] == "1" {
                 try? await Task.sleep(nanoseconds: 1_500_000_000)

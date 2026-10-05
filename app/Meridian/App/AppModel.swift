@@ -24,7 +24,7 @@ final class AppModel {
     static let shared = AppModel()
 
     private(set) var core: Core?
-    private(set) var mode: DataModeFfi = .mock
+    private(set) var mode: DataModeFfi = .live
     private(set) var startupError: String?
     var feeds: [FeedState] = []
     var instrumentsLoaded: UInt64 = 0
@@ -39,20 +39,19 @@ final class AppModel {
         return base.appendingPathComponent("Meridian", isDirectory: true)
     }
 
-    /// Stored preference; changing it requires a restart (mock and live
-    /// data never mix in one process).
-    static var preferredMode: DataModeFfi {
-        get { UserDefaults.standard.string(forKey: "dataMode") == "live" ? .live : .mock }
-        set { UserDefaults.standard.set(newValue == .live ? "live" : "mock", forKey: "dataMode") }
-    }
+    /// Credentials changed in Setup since launch (providers are built at
+    /// startup).
+    var restartNeeded = false
 
     func start() {
         guard core == nil else { return }
         Theme.registerFonts()
         let env = ProcessInfo.processInfo.environment
-        let modeOverride = env["MERIDIAN_MODE"].map { $0 == "live" ? DataModeFfi.live : .mock }
+        // Real data only. The synthetic feed is reachable solely through
+        // MERIDIAN_MODE=mock, for snapshot tests and the perf harness; it is
+        // never offered in the UI and is labeled MOCK DATA when running.
+        let mode: DataModeFfi = env["MERIDIAN_MODE"] == "mock" ? .mock : .live
         let fixedClock = env["MERIDIAN_FIXED_CLOCK_NS"].flatMap(Int64.init)
-        let mode = modeOverride ?? Self.preferredMode
         let config = CoreConfigFfi(
             mode: mode,
             dataDir: Self.dataDirectory.path,

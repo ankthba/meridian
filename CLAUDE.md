@@ -2,7 +2,7 @@
 
 Native macOS financial terminal for personal use. SwiftUI + AppKit UI, Rust core via UniFFI, DuckDB / SQLite / Parquet storage, Anthropic API for the ASK analyst. Read `ARCHITECTURE.md` before changing module boundaries, data contracts, threading, or the FFI.
 
-**Current phase:** Pre-code done (research + design docs). Waiting on the user for: budget tier, reference screenshots, and the open decisions in `ARCHITECTURE.md` §16. Phase 1 has not started.
+**Current phase:** Phases 1–9 implemented (2026-10-05). The user asked for the whole build without per-phase check-ins, so defaults were taken where decisions were open: free data tier only, `W` and Launchpad Monitor both, MENU = ⌘[ / End / Delete on an empty line, PANEL = ⌃Tab, layouts from documented conventions (no references exist). **The app runs on real data only** (user decision, 2026-10-05); see Hard rules. Remaining work is in Known gaps.
 
 Key docs: `docs/DATA_PROVIDERS.md` (provider comparison and budget stacks), `docs/research/*` (cited research), `docs/FUNCTIONS.md` (mnemonic registry and status), `reference/README.md` (reference inventory).
 
@@ -10,17 +10,18 @@ Key docs: `docs/DATA_PROVIDERS.md` (provider comparison and budget stacks), `doc
 
 - **Never use the Bloomberg name, logo, wordmarks, or icons** in the app, its code identifiers, strings, or assets. Docs may mention it only to describe UX conventions. `scripts/check-names` enforces this in CI (from Phase 1).
 - **Never fake data or stub success.** If something can't be done (licensing, API limits, missing data), say so and propose the closest alternative. Screens show `NOT AVAILABLE — <reason>` instead of placeholders.
-- **Mock data is always labeled.** The app runs in MOCK or LIVE mode, never both (ARCHITECTURE §4.3).
+- **Real data only in the app.** The user does not want a demo mode. The app always starts LIVE; `MockProvider` is reachable only via `MERIDIAN_MODE=mock` for snapshot tests and the perf harness, never from the UI, and is labeled `MOCK DATA` when running. Mock and live never mix in one process (ARCHITECTURE §4.3).
 - **Personal use only.** Don't design features that redistribute market data.
 - **Secrets only in the macOS Keychain.** Never in code, config, logs, env files, or tests.
 - **Don't guess APIs.** Check the vendor's current docs before writing integration code; cite the doc URL in the provider crate's README.
-- **Don't invent layouts.** Every function screen is built from `reference/<FUNCTION>/*.png`. If there's no reference, ask.
+- **Don't invent layouts.** Every function screen is built from `reference/<FUNCTION>/*.png`. None exist yet, so current screens follow documented conventions; when references arrive, run the fidelity loop.
 - **Don't invent mnemonics.** Use standard ones; if unsure, flag it in `docs/FUNCTIONS.md` and ask.
-- **Don't integrate a paid provider** until the user has picked a budget tier (see `docs/DATA_PROVIDERS.md`).
+- **Don't integrate a paid provider.** The chosen tier is free ($0); ask before adding anything paid (see `docs/DATA_PROVIDERS.md`).
+- **Don't fill in the user's personal details** (e.g. their email as the SEC EDGAR contact). They enter them in Settings → Setup.
 
 ## Process
 
-1. **Plan before each phase.** Show the plan and wait for approval.
+1. **Plan before each phase.** (Waived for the initial build at the user's request; resume for new work of similar size.)
 2. Implement, then test: Rust unit tests for all analytics and parsers; snapshot tests for every function screen.
 3. **Fidelity loop** for each screen: build → render → `scripts/capture` → `scripts/compare` against the reference → list differences → iterate until only data differs (not layout, typography, or color). Commit the side-by-side to `reference/compare/`.
 4. **Measure budgets** (ARCHITECTURE §12). A phase fails if any budget regresses.
@@ -74,37 +75,42 @@ Key docs: `docs/DATA_PROVIDERS.md` (provider comparison and budget stacks), `doc
 
 ## Commands
 
-Available from Phase 1. Until then these are the planned entry points.
-
 ```
 # Rust core
 cargo test --manifest-path core/Cargo.toml --workspace
 cargo clippy --manifest-path core/Cargo.toml --workspace --all-targets -- -D warnings
-cargo bench --manifest-path core/Cargo.toml -p meridian-bench
+scripts/bench-check.sh                 # criterion benches vs bench/baseline.json
 
-# Build XCFramework + Swift bindings
-cargo run --manifest-path core/Cargo.toml -p xtask -- build-ffi
+# Core → XCFramework + Swift bindings (debug by default; perf runs need release)
+scripts/build-core.sh [release]
 
-# App
-xcodegen generate --spec app/project.yml
-xcodebuild -project app/Meridian.xcodeproj -scheme Meridian -destination 'platform=macOS' build test
+# Full app build (fonts, core, xcodegen, xcodebuild)
+scripts/build-app.sh [debug|release]
+xcodebuild -project app/Meridian.xcodeproj -scheme Meridian -destination 'platform=macOS,arch=arm64' test
 
-# Fidelity
-scripts/capture <FUNCTION>
-scripts/compare <FUNCTION>
+# Screens: snapshot tests (core) and rendered PNGs (app, mock data)
+UPDATE_SNAPSHOTS=1 cargo test --manifest-path core/Cargo.toml -p meridian-engine --test screens
+scripts/capture.sh "DES|AAPL US Equity;W" [out_dir] [WxH]
+scripts/compare.sh                     # needs reference/<FUNCTION>/*.png
 
-# Budgets
-scripts/bench-check
+# App budgets (release build): writes bench/results/app-<date>.json
+scripts/perf-app.sh
+
+# Name check
+scripts/check-names.sh
 ```
 
 ## Environment (verified 2026-10-05)
 
-macOS 27.0.1 · Xcode 27.0 (Swift 6.4) · rustc 1.93.0 · Apple M5 Pro. Not yet installed: `uniffi-bindgen-swift`, `duckdb` CLI, `xcodegen`.
+macOS 27.0.1 · Xcode 27.0 (Swift 6.4) · rustc 1.93.0 · Apple M5 Pro · xcodegen (Homebrew). `uniffi-bindgen-swift` is built from the workspace by `scripts/build-core.sh`. Signing: Apple Development, team H7T2D2GL7U. Keychain items live in the login keychain (the data-protection keychain needs a provisioning profile), service `meridian.provider.<name>`.
 
 ## Known gaps
 
-- No reference screenshots exist yet (`reference/README.md` lists what's needed).
-- No budget tier chosen, so no paid provider may be integrated.
-- MENU and PANEL key bindings undecided; quote-monitor form (`W` vs Launchpad Monitor) undecided.
-- Index data (WEI) not yet researched. CORP/MUNI/MTGE bond pricing is not obtainable at the planned budgets.
-- Vendor terms on sending data to the ASK model are unchecked (gate before Phase 8).
+- **No reference screenshots**, so no fidelity pass has run; layouts follow documented conventions.
+- **Free tier limits (live):** US equities are IEX-only (single exchange) with 30 streamed symbols on Alpaca Basic; no real-time options or futures; no consensus estimates (EE), holders (HDS) or transcripts from any free source. Those screens show NOT AVAILABLE.
+- **Live paths needing credentials are untested end to end**: Alpaca, FRED, Finnhub, SEC EDGAR and ASK are covered by recorded-fixture tests only. Coinbase, Kraken, Frankfurter, Treasury and RSS have been run live.
+- EDGAR dividends (DVD) not implemented. Index levels for WEI not researched. CORP/MUNI/MTGE bond pricing is not obtainable on the free tier.
+- Launchpad components are tiled in one window; no floating windows or multi-monitor persistence.
+- Crash reporting is the Rust panic hook (writes reports to the data directory); no MetricKit.
+- Provider credential changes apply after a restart (Settings → Setup has a Restart button).
+- The 2,000-symbol streaming budget is measured with the synthetic load generator; real data at that scale needs a consolidated (SIP) plan.

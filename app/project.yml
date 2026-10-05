@@ -13,6 +13,7 @@ settings:
     CODE_SIGN_IDENTITY: "Apple Development"
     ENABLE_HARDENED_RUNTIME: YES
     DEAD_CODE_STRIPPING: YES
+    ARCHS: arm64
 packages:
   MeridianCore:
     path: Packages/MeridianCore
@@ -68,5 +69,10 @@ schemes:
         MeridianTests: [test]
     test:
       targets: [MeridianTests]
+      # The host app must not touch the user's data directory or the network.
+      environmentVariables:
+        MERIDIAN_MODE: mock
+        MERIDIAN_IN_MEMORY: "1"
+        MERIDIAN_MOCK_RATE: "0"
     run:
       config: Debug

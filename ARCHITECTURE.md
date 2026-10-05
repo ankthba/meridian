@@ -46,7 +46,7 @@ Meridian is a personal-use native macOS financial terminal. The UI is SwiftUI + 
 │   │   └── bench/            Load generators and cross-crate benches
 │   └── xtask/                Build orchestration: bindings, XCFramework
 ├── app/
-│   ├── project.yml           [DECIDE Phase 1] XcodeGen spec; .xcodeproj is generated
+│   ├── project.yml           XcodeGen spec; .xcodeproj is generated
 │   ├── Meridian/
 │   │   ├── App/              Entry point, AppDelegate, window and screen management
 │   │   ├── Shell/            Panels, command line, key routing, Launchpad, link groups
@@ -62,7 +62,7 @@ Meridian is a personal-use native macOS financial terminal. The UI is SwiftUI + 
 └── .github/workflows/        CI
 ```
 
-**Why an XcodeGen spec instead of a hand-maintained `.xcodeproj`:** project files are generated deterministically, diffs stay reviewable, and merge conflicts in `project.pbxproj` disappear. The generated project is still a normal Xcode project. Alternative: Tuist. **[DECIDE Phase 1]**
+**Why an XcodeGen spec instead of a hand-maintained `.xcodeproj`:** project files are generated deterministically, diffs stay reviewable, and merge conflicts in `project.pbxproj` disappear. The generated project is still a normal Xcode project. Chosen over Tuist (Phase 1).
 
 ---
 
@@ -193,12 +193,12 @@ The store enforces `CachePolicy`. The UI shows attributions on the screens that 
 
 ### 4.3 Data mode
 
-The app runs in exactly one **data mode**, chosen at launch and shown permanently in the status bar:
+The engine runs in exactly one **data mode**, fixed at launch and shown permanently in the status bar:
 
-- **MOCK** — only `MockProvider` is registered. Every screen shows a `MOCK DATA` badge.
-- **LIVE** — only real providers are registered. If a dataset has no provider, the screen shows `NOT AVAILABLE — <reason>`.
+- **LIVE** — only real providers are registered. If a dataset has no provider, or its provider lacks credentials, the screen shows `NOT AVAILABLE — <reason>` naming what to add in Settings → Setup. **The app always runs LIVE**; the user does not want a demo mode (2026-10-05).
+- **MOCK** — only `MockProvider` is registered and the status bar shows `MOCK DATA`. Reachable solely through `MERIDIAN_MODE=mock`, for snapshot tests (`scripts/capture.sh`, engine snapshot tests) and the perf harness (`scripts/perf-app.sh`). Never offered in the UI.
 
-The two are never mixed in one process. That makes "never silently mix mock and real data" structural rather than a convention.
+The two are never mixed in one process (`Engine::new` rejects a mixed provider set). That makes "never silently mix mock and real data" structural rather than a convention.
 
 ### 4.4 MockProvider
 
@@ -323,13 +323,13 @@ Swift display link (per window, ≤ 120 Hz) ── subscription.poll(since_seq) 
 - **Buffer layout** (`core/crates/stream/src/row.rs`): 128 bytes per row, little-endian — `instrument u32, changed u32, ts_event i64`, then `bid ask last open high low prev_close volume bid_size ask_size last_size net_change pct_change` as `f64` (NaN = missing), then `flags u32`. Rust exports the offsets (`hot_row_layout()`); Swift verifies them at startup and in a unit test, so the sides cannot drift silently. `changed` carries per-field change bits since the poll's `since` (used to flash cells).
 
 - **Backpressure**: the ingest channel is bounded. On overflow the apply thread conflates (keeps latest per instrument) rather than dropping or blocking the socket reader. The overflow count is a metric.
-- **Rendering**: the quote monitor uses a custom layer-backed `NSView` grid (`Render/TerminalGridView`) that redraws only visible dirty cells with Core Text and cached glyph runs. `NSTableView` and SwiftUI `List` are not used for streaming grids. If Core Text cannot hold the budget, the fallback is a Metal glyph-atlas renderer.
+- **Rendering**: streaming grids use a custom layer-backed `NSView` (`Render/TerminalGridView`). Each visible row (± 3 rows of overscan) is its own `CALayer` with an 8-bit (`RGBA8Uint`), opaque backing store; a live update calls `setNeedsDisplay` on that row's layer only, so AppKit never unions dirty rects into large repaints. Text is drawn as cached `CTLine`s (keyed by text, color, weight) on fixed monospace cell metrics; number formatting on this path avoids `NumberFormatter`/`DateFormatter`. Cell flashes expire on one shared 0.1 s timer. `NSTableView` and SwiftUI `List` are not used for streaming grids. Core Text holds the budget (§12), so the Metal glyph-atlas fallback was not needed.
 
 ### 7.4 Hot path: chart series
 
 - `Core.chart_data(...)` returns packed columns: `ts i64[n]`, OHLC as `f32` relative to an `f64` origin (precision), volume `f32`, plus study lines (`f32`, overlays relative to origin, lower panes absolute) computed in `analytics`.
 - The renderer (`Render/ChartView.swift`) decimates per pixel column at draw time (min/max of each bucket), so primitives per frame stay ≈ 2× the pixel width regardless of series length; pan and zoom only change the visible index window.
-- **Renderer decision [DECIDE Phase 3]**: Phase 3 begins with a short spike measuring Swift Charts (vectorized `LinePlot`/`RectanglePlot`, macOS 15+) against a minimal Metal renderer on the 1M-bar pan/zoom budget. The result is recorded as an ADR. Apple publishes no throughput figures for Swift Charts, and a DTS forum case shows ~2,900 scrolling points saturating a core, so the expected outcome is Metal for GP/GIP. Swift Charts or Core Graphics remain options for small static charts (ERN, payoff diagrams).
+- **Renderer decision (resolved)**: GP/GIP use Core Graphics (`PriceChartNSView`) with the per-pixel decimation above. Because work per frame is bounded by pixel width, 1M bars render well inside the 16.7 ms frame budget (§12), so Metal was not needed. Swift Charts is used only for small static charts (ERN, payoff and curve plots), where Apple publishes no throughput figures and a DTS forum case shows ~2,900 scrolling points saturating a core.
 
 ---
 
@@ -379,10 +379,10 @@ Standard mapping verified from public keyboard guides (sources in `docs/FUNCTION
 | GO | Return | Standard |
 | CANCEL | Esc | Standard |
 | HELP | F1 and ⌘? | F1 is standard; ⌘? per brief. Pressed twice opens help index. Pressed after typed words, it searches. |
-| MENU (back / related functions) | **[DECIDE Phase 2]** | No standard key equivalent exists. Candidates: ⌘[ (macOS "back"), or Backspace when the command line is empty |
+| MENU (back / related functions) | ⌘[ · End · Delete on an empty command line | No standard key equivalent exists; all three are bound |
 | END/BACK | End | Standard on newer keyboards; previous screen |
 | PAGE FWD / PAGE BACK | PgDn / PgUp, ⌘↓ / ⌘↑ | `<n>` + PAGE FWD jumps *n* pages |
-| PANEL (cycle panels) | **[DECIDE Phase 2]** | No standard key equivalent. Candidate: ⌃Tab / ⌃⇧Tab |
+| PANEL (cycle panels) | ⌃Tab / ⌃⇧Tab (⌘1–⌘4 jump) | No standard key equivalent |
 | Sector keys | F2 GOVT, F3 CORP, F4 MTGE, F5 M-MKT, F6 MUNI, F7 PFD, F8 EQUITY, F9 CMDTY, F10 INDEX, F11 CRNCY | Configurable. Mac keyboards send media keys on the F-row unless fn is held or the system setting is changed, so offer alternatives (e.g. ⌃F-key or ⌥1…⌥0) |
 | Keyboard overlay | ⌘/ | Ours |
 
@@ -417,7 +417,7 @@ final text ─► number verifier ─► ASK screen (answer + numbered SOURCES l
 ```
 
 - **Transport**: there is no official Anthropic Rust SDK, so `ask` calls `POST https://api.anthropic.com/v1/messages` directly (`reqwest` + an SSE parser), with headers `x-api-key`, `anthropic-version: 2023-06-01`, `content-type: application/json`. The manual tool-use loop runs until `stop_reason` is `end_turn`.
-- **Model**: `claude-opus-5-5` by default, configurable. Thinking is adaptive (always on for this model); `output_config.effort` is user-configurable (default **[DECIDE Phase 8]**, likely `high` for analysis). Forced `tool_choice` (`any`/`tool`) is rejected by this model, so tool use is `auto`, tools use `strict: true`, and the system prompt says which tools to use.
+- **Model**: `claude-opus-5-5` by default, configurable. Thinking is adaptive (always on for this model); `output_config.effort` is user-configurable (default `high`). Forced `tool_choice` (`any`/`tool`) is rejected by this model, so tool use is `auto`, tools use `strict: true`, and the system prompt says which tools to use.
 - **Streaming**: SSE events are forwarded to Swift via `AskObserver`. Client tools set `eager_input_streaming: true`, which means **we** must validate every tool input against its schema before running it, check `stop_reason` for `max_tokens` and `refusal` before executing tools, and return `is_error: true` results for invalid input.
 - **Refusal fallback**: send the server-side `fallbacks` parameter with its beta header, and show which model answered. **[VERIFY Phase 8]** exact parameter form and header version against current docs.
 - **Prompt caching**: the system prompt and tool definitions are byte-stable and cached (explicit `cache_control` on the last system block). The current date and the panel context go in the user turn, never in the system prompt. Cache hits are verified via `usage.cache_read_input_tokens` and logged.
@@ -452,8 +452,22 @@ final text ─► number verifier ─► ASK screen (answer + numbered SOURCES l
 | Streaming | 2,000 symbols, 60 fps, < 10% CPU (whole process) | MockProvider load mode (2,000 symbols, realistic tick rates); frame-time histogram from display-link timestamps; CPU via `task_info` sampling over 60 s |
 | Charts | Pan/zoom 10y daily and 1M intraday bars at 60 fps | Scripted pan/zoom in a UI test, frame-time p99 < 16.6 ms |
 
+**How the app budgets are measured now:** `scripts/perf-app.sh` runs the release app with `MERIDIAN_PERF=1` (`App/PerfHarness.swift`): process start → first panel loaded; suggestion latency over 8 inputs; GO → screen loaded for 4 commands; 2,000 synthetic symbols at 3 updates/s each into a live grid in an on-screen 1600×1000 window for 20 s (frames from the 60 Hz display clock, CPU from `getrusage` for the whole process, the main window's four live panels included); chart frames via `cacheDisplay` over 240 pan/zoom steps.
+
+**Measured 2026-10-05** (Apple M5 Pro, release build, three runs; `bench/results/app-2026-10-05-run{1,2,3}.json`):
+
+| Budget | Result | Status |
+|---|---|---|
+| Cold launch < 1.5 s | 0.66 s first run, 0.17 s warm | Met |
+| Suggestions < 50 ms | ≤ 0.07 ms | Met |
+| GO → screen loaded < 50 ms | 10–47 ms; the first command within ~0.5 s of launch took 83–92 ms in 2 of 3 runs while startup work was still running | Met after startup; first command can exceed |
+| 2,000 symbols at 60 fps, < 10% CPU | 60.0 fps; 9.7% / 8.6% / 7.2% CPU (feed alone 4.5–5.1%); main-loop interval p99 ≈ 18 ms | Met |
+| Charts 60 fps (p99 < 16.7 ms) | 1M bars p99 8.1–9.0 ms; 10y daily p99 4.4–5.1 ms | Met |
+
+What got streaming CPU from ~25% to under 10%: number/time formatting without `NumberFormatter`/`DateFormatter`, cached `CTLine`s, one 8-bit `CALayer` per visible row instead of AppKit dirty-rect unions, the mock feed ticking at 25 ms instead of 10 ms, and the hub's idle wakeup raised from 10 ms to 100 ms.
+
 - Rust benches use `criterion` (parser, cell apply/poll, BS/binomial, IV solver, decimation, DuckDB query templates).
-- Results go to `bench/results/<date>.json`; `scripts/bench-check` compares against `bench/baseline.json` and fails on a regression beyond noise threshold (default 10%). **[DECIDE Phase 1]** thresholds per metric.
+- Results go to `bench/results/<date>.json`; `scripts/bench-check` compares against `bench/baseline.json` and fails on a regression beyond noise threshold (10% for every metric).
 - CI runs build and tests on every push. Hosted runners aren't M-series-class or quiet enough for performance gating, so budgets are gated locally at the end of each phase and the results are committed.
 
 ---
@@ -508,15 +522,18 @@ pub enum CoreError {
 
 ---
 
-## 16. Open decisions
+## 16. Decisions
 
-| # | Decision | Needed by |
+Resolved during the uninterrupted build (2026-10-05); the user asked not to be consulted per phase, so documented defaults were taken.
+
+| # | Decision | Resolution |
 |---|---|---|
-| 1 | Data budget tier (free / ~$100 / ~$500) | Before any paid integration (Phase 3) |
-| 2 | Reference screenshots for each function screen | Phase 2 (shell) and each function's phase |
-| 3 | MENU and PANEL key bindings on a Mac keyboard | Phase 2 |
-| 3a | Quote monitor form: `W` worksheet, Launchpad Monitor component, or both | Phase 3 |
-| 4 | XcodeGen vs Tuist vs hand-maintained project | Phase 1 |
-| 5 | Signing identity: paid Apple Developer account or free Personal Team. Either gives a stable Apple Development identity; time-sensitive notifications may need the paid one (UNVERIFIED) | Phase 1 |
-| 6 | Chart renderer (Swift Charts vs Metal) | Phase 3 spike |
-| 7 | Non-standard mnemonics (flagged in `docs/FUNCTIONS.md`) | Before each function's phase |
+| 1 | Data budget tier | **Free ($0).** Ask before any paid integration |
+| 1a | Demo mode | **None in the app** (user, 2026-10-05). MOCK only for tests and benchmarks (§4.3) |
+| 2 | Reference screenshots | **Still open.** None provided; screens follow documented conventions until references exist |
+| 3 | MENU and PANEL keys | MENU = ⌘[ / End / Delete on empty line; PANEL = ⌃Tab (§9) |
+| 3a | Quote monitor form | Both: `W` worksheet and the Launchpad Monitor component |
+| 4 | Project generation | XcodeGen |
+| 5 | Signing identity | Apple Development, team H7T2D2GL7U, hardened runtime, no sandbox |
+| 6 | Chart renderer | Core Graphics with per-pixel decimation (§7.4); Swift Charts for small static charts |
+| 7 | Non-standard mnemonics | `ASK` is Meridian's own (the incumbent uses ASKB); flagged in `docs/FUNCTIONS.md` |
