@@ -1,13 +1,46 @@
 [package]
 name = "meridian-ffi"
+description = "UniFFI surface for the Swift app. Thin facade over meridian-engine; composition root for providers."
 version.workspace = true
 edition.workspace = true
 rust-version.workspace = true
 license.workspace = true
 publish.workspace = true
 
+[lib]
+crate-type = ["staticlib", "lib"]
+name = "meridian_ffi"
+
 [dependencies]
 meridian-types.workspace = true
+meridian-provider.workspace = true
+meridian-stream.workspace = true
+meridian-store.workspace = true
+meridian-engine.workspace = true
+meridian-command.workspace = true
+meridian-alerts.workspace = true
+meridian-ask.workspace = true
+meridian-provider-mock.workspace = true
+meridian-provider-coinbase.workspace = true
+meridian-provider-kraken.workspace = true
+meridian-provider-edgar.workspace = true
+meridian-provider-fred.workspace = true
+meridian-provider-treasury.workspace = true
+meridian-provider-frankfurter.workspace = true
+meridian-provider-alpaca.workspace = true
+meridian-provider-finnhub.workspace = true
+meridian-provider-rss.workspace = true
+async-trait.workspace = true
+parking_lot.workspace = true
+secrecy.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+tokio.workspace = true
+tracing.workspace = true
+tracing-oslog.workspace = true
+tracing-subscriber.workspace = true
+uniffi.workspace = true
 
 [lints]
 workspace = true

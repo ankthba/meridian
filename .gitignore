@@ -14,3 +14,4 @@ bench/results/*.local.json
 .DS_Store
 core/target/
 .claude/worktrees/
+app/Meridian/Resources/Fonts/*.ttf
