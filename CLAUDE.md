@@ -108,7 +108,7 @@ scripts/check-names.sh
 
 ## Environment (verified 2026-10-05)
 
-macOS 27.0.1 · Xcode 27.0 (Swift 6.4) · rustc 1.93.0 · Apple M5 Pro · xcodegen (Homebrew). `uniffi-bindgen-swift` is built from the workspace by `scripts/build-core.sh`. Signing: Apple Development, team H7T2D2GL7U. Keychain items live in the login keychain (the data-protection keychain needs a provisioning profile), service `meridian.provider.<name>`.
+macOS 27.0.1 · Xcode 27.0 (Swift 6.4) · rustc 1.93.0 (CI pins the same) · Apple M5 Pro · xcodegen (Homebrew). `uniffi-bindgen-swift` is built from the workspace by `scripts/build-core.sh`. Signing: Apple Development, team H7T2D2GL7U. Keychain items live in the login keychain (the data-protection keychain needs a provisioning profile), service `meridian.provider.<name>`.
 
 ## Known gaps
 

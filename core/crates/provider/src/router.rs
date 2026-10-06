@@ -385,7 +385,7 @@ impl ProviderRouter {
         {
             return Err(e);
         }
-        items.sort_by(|a, b| b.published_at.cmp(&a.published_at));
+        items.sort_by_key(|n| std::cmp::Reverse(n.published_at));
         items.dedup_by(|a, b| a.headline == b.headline && a.source == b.source);
         items.truncate(q.limit);
         Ok(NewsPage { items, next: None })
