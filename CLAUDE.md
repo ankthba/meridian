@@ -2,7 +2,7 @@
 
 Native macOS financial terminal for personal use. SwiftUI + AppKit UI, Rust core via UniFFI, DuckDB / SQLite / Parquet storage, Anthropic API for the ASK analyst. Read `ARCHITECTURE.md` before changing module boundaries, data contracts, threading, or the FFI.
 
-**Current phase:** Phases 1–9 implemented (2026-10-05). The user asked for the whole build without per-phase check-ins, so defaults were taken where decisions were open: free data tier only, `W` and Launchpad Monitor both, MENU = ⌘[ / End / Delete on an empty line, PANEL = ⌃Tab, layouts from documented conventions (no references exist). **The app runs on real data only** (user decision, 2026-10-05); see Hard rules. Remaining work is in Known gaps.
+**Current phase:** 1.0.0 released (2026-10-07); phases 1–9 implemented. The user asked for the whole build without per-phase check-ins, so defaults were taken where decisions were open: free data tier only, `W` and Launchpad Monitor both, MENU = ⌘[ / End / Delete on an empty line, PANEL = ⌃Tab, layouts from documented conventions (no references exist). **The app runs on real data only** (user decision, 2026-10-05); see Hard rules. Remaining work is in Known gaps.
 
 Key docs: `docs/DATA_PROVIDERS.md` (provider comparison and budget stacks), `docs/research/*` (cited research), `docs/FUNCTIONS.md` (mnemonic registry and status), `reference/README.md` (reference inventory).
 
@@ -113,10 +113,10 @@ macOS 27.0.1 · Xcode 27.0 (Swift 6.4) · rustc 1.93.0 (CI pins the same) · App
 ## Known gaps
 
 - **No reference screenshots**, so no fidelity pass has run; layouts follow documented conventions.
-- **Free tier limits (live):** US equities are IEX-only (single exchange) with 30 streamed symbols on Alpaca Basic; no real-time options or futures; no consensus estimates (EE), holders (HDS) or transcripts from any free source. Those screens show NOT AVAILABLE.
-- **Live paths needing credentials are untested end to end**: Alpaca, FRED, Finnhub, SEC EDGAR and ASK are covered by recorded-fixture tests only. Coinbase, Kraken, Frankfurter, Treasury and RSS have been run live.
-- EDGAR dividends (DVD) not implemented. Index levels for WEI not researched. CORP/MUNI/MTGE bond pricing is not obtainable on the free tier.
+- **Free tier limits (live):** US equities are IEX-only (single exchange) with 30 streamed symbols on Alpaca Basic; options are Alpaca's indicative feed; no consensus estimates (EE), holders (HDS) or transcripts from any free source. WEI shows US-listed ETF proxies, not index levels.
+- **ASK has not run against the live API** (no Anthropic key yet); it's covered by recorded-fixture tests. Alpaca, SEC EDGAR, FRED, Finnhub, Coinbase, Kraken, Frankfurter, Treasury and RSS have all run live.
+- FA per-share values before a stock split are as reported (a notice says so). CORP/MUNI/MTGE bond pricing is not obtainable on the free tier.
 - Launchpad components are tiled in one window; no floating windows or multi-monitor persistence.
 - Crash reporting is the Rust panic hook (writes reports to the data directory); no MetricKit.
-- Provider credential changes apply after a restart (Settings → Setup has a Restart button).
+- The release app is signed with an Apple Development certificate but not notarized (needs a paid Developer ID).
 - The 2,000-symbol streaming budget is measured with the synthetic load generator; real data at that scale needs a consolidated (SIP) plan.
