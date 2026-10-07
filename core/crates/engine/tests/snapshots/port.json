@@ -46,7 +46,7 @@
     {
       "Notice": {
         "level": "Info",
-        "text": "No positions. Add a transaction above, then select Add Transaction."
+        "text": "This portfolio is empty. Choose Import from broker… to load a CSV export from Robinhood, Fidelity, Charles Schwab or Vanguard, or a positions file; or add a transaction above."
       }
     }
   ],
@@ -84,6 +84,21 @@
       },
       "label": "Add Transaction",
       "number": 2,
+      "selected": false
+    },
+    {
+      "action": {
+        "args": [
+          [
+            "portfolio",
+            "1"
+          ]
+        ],
+        "function": "IMPORT",
+        "security": null
+      },
+      "label": "Import from broker…",
+      "number": 3,
       "selected": false
     }
   ],

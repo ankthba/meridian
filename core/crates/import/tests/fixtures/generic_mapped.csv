@@ -1,0 +1,8 @@
+Date,Type,Ticker,Shares,Price,Total,Notes
+15/01/2026,Buy,AAPL,10,180.00,1800.00,first buy
+20/02/2026,Dividend,AAPL,,,2.50,
+01/03/2026,Sell,AAPL,4,200.00,800.00,
+05/03/2026,Deposit,,,,1000.00,
+10/03/2026,Journal,,,,5.00,
+12/03/2026,Buy,MSFT,,,,
+not a date,Buy,MSFT,1,400.00,400.00,

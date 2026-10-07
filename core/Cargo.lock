@@ -1799,6 +1799,7 @@ dependencies = [
  "meridian-analytics",
  "meridian-ask",
  "meridian-command",
+ "meridian-import",
  "meridian-provider",
  "meridian-provider-mock",
  "meridian-provider-rss",
@@ -1824,6 +1825,7 @@ dependencies = [
  "meridian-ask",
  "meridian-command",
  "meridian-engine",
+ "meridian-import",
  "meridian-provider",
  "meridian-provider-alpaca",
  "meridian-provider-coinbase",
@@ -1848,6 +1850,15 @@ dependencies = [
  "tracing-oslog",
  "tracing-subscriber",
  "uniffi",
+]
+
+[[package]]
+name = "meridian-import"
+version = "0.1.0"
+dependencies = [
+ "chrono",
+ "meridian-types",
+ "thiserror",
 ]
 
 [[package]]

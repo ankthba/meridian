@@ -1,0 +1,30 @@
+﻿
+
+Run Date,Action,Symbol,Description,Type,Quantity,Price ($),Commission ($),Fees ($),Accrued Interest ($),Amount ($),Cash Balance ($),Settlement Date
+ 09/02/2025, Electronic Funds Transfer Paid (Cash), ,No Description,Cash,0.000,,,,,-1000.00,4091.99,
+ 08/05/2025, SOMETHING UNHEARD OF (Cash), ,No Description,Cash,0.000,,,,,1.00,5091.99,
+ 08/01/2025, YOU BOUGHT OPENING TRANSACTION CALL (MSFT) MICROSOFT CORP SEP 19 25 $450 (100 SHS) (Cash), -MSFT250919C450,CALL (MSFT) MICROSOFT CORP SEP 19 25 $450 (100 SHS),Cash,1,5.10,0.65,0.00,,-510.65,5090.99,08/04/2025
+ 07/15/2025, YOU SOLD VANGUARD INDEX FDS S&P 500 ETF (VOO) (Cash), VOO,VANGUARD INDEX FDS S&P 500 ETF,Cash,-4,550.00,,0.01,,2199.99,5601.64,07/16/2025
+ 06/10/2025, DISTRIBUTION ABCD HOLDINGS INC (ABCD) (Cash), ABCD,ABCD HOLDINGS INC,Shares,20,,,,,1234.00,3401.65,
+ 04/01/2025, FOREIGN TAX PAID VANGUARD TOTAL INTL STOCK (VXUS) (Cash), VXUS,VANGUARD TOTAL INTL STOCK,Cash,0.000,,,,,-0.45,3401.65,
+ 03/31/2025, REINVESTMENT FIDELITY GOVERNMENT MONEY MARKET (SPAXX) (Cash), SPAXX,FIDELITY GOVERNMENT MONEY MARKET,Cash,8.2,1,,,,-8.20,3402.10,
+ 03/31/2025, DIVIDEND RECEIVED FIDELITY GOVERNMENT MONEY MARKET (SPAXX) (Cash), SPAXX,FIDELITY GOVERNMENT MONEY MARKET,Cash,0.000,,,,,8.20,3410.30,
+ 02/14/2025, REINVESTMENT MICROSOFT CORP (MSFT) (Cash), MSFT,MICROSOFT CORP,Cash,0.01,415.00,,,,-4.15,3402.10,
+ 02/14/2025, DIVIDEND RECEIVED MICROSOFT CORP (MSFT) (Cash), MSFT,MICROSOFT CORP,Cash,0.000,,,,,4.15,3406.25,
+ 01/03/2025, YOU BOUGHT ABCD HOLDINGS INC (ABCD) (Cash), ABCD,ABCD HOLDINGS INC,Cash,20,30.00,,,,-600.00,2297.50,01/06/2025
+ 01/03/2025, YOU BOUGHT MICROSOFT CORP (MSFT) (Cash), MSFT,MICROSOFT CORP,Cash,5,420.00,,,,-2100.00,2897.50,01/06/2025
+ 01/03/2025, YOU BOUGHT VANGUARD INDEX FDS S&P 500 ETF (VOO) (Cash), VOO,VANGUARD INDEX FDS S&P 500 ETF,Cash,10,500.25,,,,-5002.50,4997.50,01/06/2025
+ 01/02/2025, Electronic Funds Transfer Received (Cash), ,No Description,Cash,0.000,,,,,10000.00,10000.00,
+
+
+
+"The data and information in this spreadsheet is provided to you solely for your use and is not for distribution. [Hand-built fixture: the rest of this sentence is paraphrased."
+"It continues across several quoted lines in the real file."
+"Third line of the wrapped disclaimer."
+"Fourth line of the wrapped disclaimer."
+"Fifth line of the wrapped disclaimer."]"
+
+"Brokerage services are provided by Fidelity Brokerage Services LLC (FBS), 900 Salem Street, Smithfield, RI 02917. [Paraphrased.]"
+"Custody and other services are provided by National Financial Services LLC (NFS). [Paraphrased.]"
+
+Date downloaded 09/30/2025 4:15 pm

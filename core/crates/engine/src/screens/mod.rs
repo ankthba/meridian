@@ -135,6 +135,7 @@ pub(crate) fn analytics_builder_for(function: &str) -> Option<Builder> {
         "RV" => builder!(analysis::rv),
         "CORR" => builder!(analysis::corr),
         "PORT" => builder!(analysis::port),
+        "IMPORT" => builder!(analysis::import),
         "BTST" => builder!(analysis::btst),
         "COMPARE" => builder!(compare::compare),
         _ => return None,

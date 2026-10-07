@@ -120,3 +120,4 @@ macOS 27.0.1 · Xcode 27.0 (Swift 6.4) · rustc 1.93.0 (CI pins the same) · App
 - Crash reporting is the Rust panic hook (writes reports to the data directory); no MetricKit.
 - The release app is signed with an Apple Development certificate but not notarized (needs a paid Developer ID).
 - The 2,000-symbol streaming budget is measured with the synthetic load generator; real data at that scale needs a consolidated (SIP) plan.
+- **Broker CSV import** (`core/crates/import`, sources in its README): Robinhood, Fidelity, Schwab, Vanguard, positions snapshots and a column-mapping path; no broker publishes a spec, so formats come from parsers and published exports. Options, short sales, mergers, bonds and 401(k) rows are warnings, not imports; no FX conversion; holdings rebuilt from a date-limited history can have gaps (PORT flags them). The app's file picker and mapping UI are not built yet (FFI `preview_import`/`commit_import` exist).

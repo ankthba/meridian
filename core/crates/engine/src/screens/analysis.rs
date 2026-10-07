@@ -11,6 +11,7 @@ use meridian_types::{AssetClass, BarInterval, Fundamentals, MarketSector, NANOS_
 use super::{ScreenRequest, parse_range, require_security};
 use crate::config::DataMode;
 use crate::core::Engine;
+use crate::portfolio::{Holding, Ledger};
 use crate::screen::{
     Action, Block, Cell, Column, Field, Format, HeatMap, Input, InputKind, NoticeLevel, Row, Screen, Style, Table, XyChart, XySeries,
 };
@@ -409,35 +410,16 @@ pub(crate) async fn corr(engine: Arc<Engine>, req: ScreenRequest) -> Screen {
 
 // --- PORT -----------------------------------------------------------------
 
-#[derive(Debug, Clone, Default)]
-struct Position {
-    qty: f64,
-    cost: f64,
-    realized: f64,
-}
+/// Most transactions PORT lists (the table crosses the FFI as records).
+const MAX_TX_ROWS: usize = 500;
 
-fn positions(txs: &[Transaction]) -> Vec<(String, Position)> {
-    let mut map: Vec<(String, Position)> = Vec::new();
-    for t in txs {
-        let idx = map.iter().position(|(k, _)| *k == t.security).unwrap_or_else(|| {
-            map.push((t.security.clone(), Position::default()));
-            map.len() - 1
-        });
-        let p = &mut map[idx].1;
-        if t.quantity >= 0.0 || p.qty <= 0.0 {
-            // Buy (or add to short): average-cost basis.
-            p.cost += t.quantity * t.price + t.fees;
-            p.qty += t.quantity;
-        } else {
-            let avg = if p.qty == 0.0 { 0.0 } else { p.cost / p.qty };
-            let sold = (-t.quantity).min(p.qty);
-            p.realized += sold * (t.price - avg) - t.fees;
-            p.cost -= sold * avg;
-            p.qty -= sold;
-        }
+/// Names a few items and counts the rest: `AAPL, MSFT and 3 more`.
+fn some_of(items: &[String], n: usize) -> String {
+    if items.len() <= n {
+        items.join(", ")
+    } else {
+        format!("{} and {} more", items[..n].join(", "), items.len() - n)
     }
-    map.retain(|(_, p)| p.qty.abs() > 1e-9 || p.realized != 0.0);
-    map
 }
 
 pub(crate) async fn port(engine: Arc<Engine>, req: ScreenRequest) -> Screen {
@@ -451,6 +433,7 @@ pub(crate) async fn port(engine: Arc<Engine>, req: ScreenRequest) -> Screen {
         portfolios.push(meridian_store::Portfolio { id, name: "Main".into(), base_currency: "USD".into() });
     }
     let pid = req.arg("portfolio").and_then(|x| x.parse::<i64>().ok()).or_else(|| portfolios.first().map(|p| p.id)).unwrap_or(0);
+    let base = portfolios.iter().find(|p| p.id == pid).map_or_else(|| "USD".to_owned(), |p| p.base_currency.clone());
     // Add/delete transactions from inputs.
     if req.arg("add").is_some() {
         let sec = req.arg("security").unwrap_or("").trim().to_owned();
@@ -459,16 +442,8 @@ pub(crate) async fn port(engine: Arc<Engine>, req: ScreenRequest) -> Screen {
         let date = req.arg("date").and_then(super::parse_date).unwrap_or_else(|| nanos_to_date(engine.now()));
         match (sec.parse::<SecurityKey>(), qty, px) {
             (Ok(k), Some(q), Some(p)) if q != 0.0 && p > 0.0 => {
-                let _ = store.add_transaction(&Transaction {
-                    id: 0,
-                    portfolio_id: pid,
-                    security: k.to_string(),
-                    trade_date: date.format("%Y-%m-%d").to_string(),
-                    quantity: q,
-                    price: p,
-                    fees: req.arg("fees").and_then(|x| x.trim().parse().ok()).unwrap_or(0.0),
-                    note: None,
-                });
+                let fees = req.arg("fees").and_then(|x| x.trim().parse().ok()).unwrap_or(0.0);
+                let _ = store.add_transaction(&Transaction::trade(pid, &k.to_string(), &date.format("%Y-%m-%d").to_string(), q, p, fees));
             }
             _ => s.push(Block::Notice { level: NoticeLevel::Error, text: "Enter a security key, a non-zero quantity, and a price".into() }),
         }
@@ -490,84 +465,133 @@ pub(crate) async fn port(engine: Arc<Engine>, req: ScreenRequest) -> Screen {
         ],
     });
     s.menu_item("Add Transaction", Action::new("PORT", None).arg("portfolio", pid.to_string()).arg("add", "1"), false);
+    // The app intercepts IMPORT and opens a file picker for this portfolio.
+    s.menu_item("Import from broker…", Action::new("IMPORT", None).arg("portfolio", pid.to_string()), false);
 
     let txs = store.transactions(pid).unwrap_or_default();
-    let pos = positions(&txs);
-    if pos.is_empty() {
-        s.push(Block::Notice { level: NoticeLevel::Info, text: "No positions. Add a transaction above, then select Add Transaction.".into() });
+    if txs.is_empty() {
+        s.push(Block::Notice {
+            level: NoticeLevel::Info,
+            text: "This portfolio is empty. Choose Import from broker… to load a CSV export from Robinhood, Fidelity, Charles Schwab or Vanguard, or a positions file; or add a transaction above.".into(),
+        });
         return s;
     }
-    let keys: Vec<SecurityKey> = pos.iter().filter_map(|(k, _)| k.parse().ok()).collect();
+    let ledger = crate::portfolio::ledger(&txs, &base);
+    let open: Vec<&Holding> = ledger.open().collect();
     let mut prices = HashMap::new();
     let mut sectors = HashMap::new();
-    for k in &keys {
-        if let Some(r) = engine.quote_row(k).await.filter(|r| r.last.is_finite()) {
-            prices.insert(k.to_string(), r.last);
+    for h in &open {
+        let Ok(k) = h.security.parse::<SecurityKey>() else { continue };
+        if let Some(r) = engine.quote_row(&k).await.filter(|r| r.last.is_finite()) {
+            prices.insert(h.security.clone(), r.last);
         }
-        let sec = engine.instrument(k).await.ok().and_then(|i| i.sector.or(Some(i.asset_class.label().to_string()))).unwrap_or_else(|| "Other".into());
-        sectors.insert(k.to_string(), sec);
-        if let Some(p) = engine.quote_provenance(k) {
+        let sec = engine.instrument(&k).await.ok().and_then(|i| i.sector.or(Some(i.asset_class.label().to_string()))).unwrap_or_else(|| "Other".into());
+        sectors.insert(h.security.clone(), sec);
+        if let Some(p) = engine.quote_provenance(&k) {
             s.source(&p);
         }
     }
-    let total_mv: f64 = pos.iter().filter_map(|(k, p)| prices.get(k).map(|px| px * p.qty)).sum();
-    let total_cost: f64 = pos.iter().map(|(_, p)| p.cost).sum();
-    let realized: f64 = pos.iter().map(|(_, p)| p.realized).sum();
-    let rows: Vec<Row> = pos
-        .iter()
-        .filter(|(_, p)| p.qty.abs() > 1e-9)
-        .map(|(k, p)| {
-            let px = prices.get(k).copied();
-            let mv = px.map(|x| x * p.qty);
-            let pnl = mv.map(|m| m - p.cost);
-            Row::new(vec![
-                Cell::text(k).styled(Style::Link),
-                Cell::num(Some(p.qty)),
-                Cell::num(Some(p.cost / p.qty)),
-                Cell::num(px),
-                Cell::num(mv),
-                Cell::signed(pnl),
-                Cell::signed(pnl.map(|x| x / p.cost.abs() * 100.0)),
-                Cell::num(mv.map(|m| m / total_mv * 100.0)),
-                Cell::text(sectors.get(k).cloned().unwrap_or_default()),
-            ])
-            .security(k)
-            .action(Action::new("DES", Some(k)))
-        })
-        .collect();
+    let mv_of = |h: &Holding| prices.get(&h.security).map(|px| px * h.quantity);
+    let total_mv: f64 = open.iter().filter_map(|h| mv_of(h)).sum();
+    let total_cost: f64 = open.iter().filter(|h| h.cost_known).map(|h| h.cost).sum();
+    let unrealized: f64 = open.iter().filter(|h| h.cost_known).filter_map(|h| mv_of(h).map(|mv| mv - h.cost)).sum();
+    let realized = ledger.realized();
+    let total_return = unrealized + realized + ledger.dividends + ledger.interest - ledger.fees;
     s.push(Block::Fields {
         title: None,
-        columns: 4,
+        columns: 3,
         fields: vec![
-            Field::num("Market Value", Some(total_mv), Format::Number { decimals: 2 }).styled(Style::Emphasis),
-            Field::num("Cost Basis", Some(total_cost), Format::Number { decimals: 2 }),
-            Field::num("Unrealized P&L", Some(total_mv - total_cost), Format::Change { decimals: 2 }),
+            Field::num("Market value", Some(total_mv), Format::Number { decimals: 2 }).styled(Style::Emphasis),
+            Field::num("Cost basis", Some(total_cost), Format::Number { decimals: 2 }),
+            Field::num("Unrealized P&L", Some(unrealized), Format::Change { decimals: 2 }),
             Field::num("Realized P&L", Some(realized), Format::Change { decimals: 2 }),
+            Field::num("Dividends", Some(ledger.dividends), Format::Number { decimals: 2 }),
+            Field::num("Interest", Some(ledger.interest), Format::Number { decimals: 2 }),
+            Field::num("Fees and taxes", Some(ledger.fees), Format::Number { decimals: 2 }),
+            Field::num("Total return", Some(total_return), Format::Change { decimals: 2 }).styled(Style::Emphasis),
+            Field::num("Net deposits", Some(ledger.deposits - ledger.withdrawals), Format::Number { decimals: 2 }),
         ],
     });
-    s.push(Block::Table(Table {
-        title: Some("Positions".into()),
-        columns: vec![
-            Column::text("Security", 18),
-            Column::num("Qty", Format::Number { decimals: 2 }, 9),
-            Column::num("Avg Cost", Format::Number { decimals: 2 }, 9),
-            Column::num("Last", Format::Number { decimals: 2 }, 9).live(crate::screen::LiveField::Last),
-            Column::num("Mkt Val", Format::Number { decimals: 0 }, 11),
-            Column::num("P&L", Format::Change { decimals: 0 }, 10),
-            Column::num("P&L %", Format::ChangePercent { decimals: 2 }, 8),
-            Column::num("Weight %", Format::Number { decimals: 1 }, 8),
-            Column::text("Sector", 18),
-        ],
-        rows,
-        page_size: Some(20),
-        numbered: true,
-    }));
+    port_notices(&mut s, &ledger, &open, &prices);
+    if !open.is_empty() {
+        let rows: Vec<Row> = open
+            .iter()
+            .map(|h| {
+                let k = &h.security;
+                let px = prices.get(k).copied();
+                let mv = px.map(|x| x * h.quantity);
+                let pnl = mv.filter(|_| h.cost_known).map(|m| m - h.cost);
+                Row::new(vec![
+                    Cell::text(k).styled(Style::Link),
+                    Cell::num(Some(h.quantity)),
+                    Cell::num(h.average_cost()),
+                    Cell::num(px),
+                    Cell::num(mv),
+                    Cell::signed(pnl),
+                    Cell::signed(pnl.filter(|_| h.cost.abs() > 0.0).map(|x| x / h.cost.abs() * 100.0)),
+                    Cell::num(Some(h.income)),
+                    Cell::num(mv.filter(|_| total_mv > 0.0).map(|m| m / total_mv * 100.0)),
+                    Cell::text(sectors.get(k).cloned().unwrap_or_default()),
+                ])
+                .security(k)
+                .action(Action::new("DES", Some(k)))
+            })
+            .collect();
+        s.push(Block::Table(Table {
+            title: Some("Positions".into()),
+            columns: vec![
+                Column::text("Security", 18),
+                Column::num("Qty", Format::Number { decimals: 2 }, 9),
+                Column::num("Avg Cost", Format::Number { decimals: 2 }, 9),
+                Column::num("Last", Format::Number { decimals: 2 }, 9).live(crate::screen::LiveField::Last),
+                Column::num("Mkt Val", Format::Number { decimals: 0 }, 11),
+                Column::num("P&L", Format::Change { decimals: 0 }, 10),
+                Column::num("P&L %", Format::ChangePercent { decimals: 2 }, 8),
+                Column::num("Income", Format::Number { decimals: 2 }, 9),
+                Column::num("Weight %", Format::Number { decimals: 1 }, 8),
+                Column::text("Sector", 18),
+            ],
+            rows,
+            page_size: Some(20),
+            numbered: true,
+        }));
+    }
+    if total_mv > 0.0 {
+        port_exposure_and_risk(&engine, &mut s, &open, &prices, &sectors, total_mv).await;
+    }
+    port_transactions(&mut s, &txs, pid);
+    s
+}
 
+/// Warnings about what the totals leave out.
+fn port_notices(s: &mut Screen, ledger: &Ledger, open: &[&Holding], prices: &HashMap<String, f64>) {
+    let warn = |s: &mut Screen, text: String| s.push(Block::Notice { level: NoticeLevel::Warning, text });
+    let unpriced: Vec<String> = open.iter().filter(|h| !prices.contains_key(&h.security)).map(|h| h.security.clone()).collect();
+    if !unpriced.is_empty() {
+        warn(s, format!("No current price for {}: market value and unrealized P&L leave them out.", some_of(&unpriced, 4)));
+    }
+    let no_cost: Vec<String> = open.iter().filter(|h| !h.cost_known).map(|h| h.security.clone()).collect();
+    if !no_cost.is_empty() {
+        warn(s, format!("Cost basis unknown for {} (shares arrived without one): cost and P&L leave them out.", some_of(&no_cost, 4)));
+    }
+    let issues: Vec<String> = ledger.holdings.iter().flat_map(|h| h.issues.iter().map(move |i| format!("{} {i}", h.security))).collect();
+    if !issues.is_empty() {
+        warn(s, format!("History gaps (imports cover only the exported date range): {}.", some_of(&issues, 3)));
+    }
+    if ledger.other > 0 {
+        s.push(Block::Notice { level: NoticeLevel::Info, text: format!("{} transactions of kind Other are listed below but not counted.", ledger.other) });
+    }
+    for (ccy, n) in &ledger.other_currency {
+        warn(s, format!("{n} transactions in {ccy} are listed below but not counted (no currency conversion)."));
+    }
+}
+
+async fn port_exposure_and_risk(engine: &Arc<Engine>, s: &mut Screen, open: &[&Holding], prices: &HashMap<String, f64>, sectors: &HashMap<String, String>, total_mv: f64) {
     // Sector exposure.
     let mut exposure: HashMap<String, f64> = HashMap::new();
-    for (k, p) in &pos {
-        if let Some(px) = prices.get(k) {
-            *exposure.entry(sectors.get(k).cloned().unwrap_or_default()).or_default() += px * p.qty;
+    for h in open {
+        if let Some(px) = prices.get(&h.security) {
+            *exposure.entry(sectors.get(&h.security).cloned().unwrap_or_default()).or_default() += px * h.quantity;
         }
     }
     let mut ex: Vec<_> = exposure.into_iter().collect();
@@ -593,11 +617,11 @@ pub(crate) async fn port(engine: Arc<Engine>, req: ScreenRequest) -> Screen {
     let from = Some(now - 366 * NANOS_PER_DAY);
     let to = now + NANOS_PER_DAY;
     let mut closes: Vec<(f64, HashMap<chrono::NaiveDate, f64>)> = Vec::new();
-    for (k, p) in &pos {
-        let (Ok(key), Some(px)) = (k.parse::<SecurityKey>(), prices.get(k)) else { continue };
+    for h in open {
+        let (Ok(key), Some(px)) = (h.security.parse::<SecurityKey>(), prices.get(&h.security)) else { continue };
         if let Ok(b) = engine.bars(&key, BarInterval::Day, from, to).await {
             let m: HashMap<_, _> = b.value.ts.iter().zip(&b.value.close).map(|(t, c)| (nanos_to_date(*t), *c)).collect();
-            closes.push((px * p.qty / total_mv, m));
+            closes.push((px * h.quantity / total_mv, m));
         }
     }
     let factor_keys = [("Market (SPY)", "SPY US Equity"), ("Size (IWM)", "IWM US Equity"), ("Rates (TLT)", "TLT US Equity"), ("Gold (GLD)", "GLD US Equity")];
@@ -611,13 +635,13 @@ pub(crate) async fn port(engine: Arc<Engine>, req: ScreenRequest) -> Screen {
     }
     if closes.is_empty() {
         s.push(Block::Notice { level: NoticeLevel::Warning, text: "No price history for holdings; risk metrics unavailable".into() });
-        return s;
+        return;
     }
     let mut dates: Vec<chrono::NaiveDate> = closes[0].1.keys().copied().filter(|d| closes.iter().all(|(_, m)| m.contains_key(d))).collect();
     dates.sort();
     if dates.len() < 30 {
         s.push(Block::Notice { level: NoticeLevel::Warning, text: "Too little common history for risk metrics".into() });
-        return s;
+        return;
     }
     let mut port_ret = vec![0.0; dates.len() - 1];
     for (w, m) in &closes {
@@ -626,10 +650,12 @@ pub(crate) async fn port(engine: Arc<Engine>, req: ScreenRequest) -> Screen {
             port_ret[i] += w * x;
         }
     }
-    let nav: Vec<f64> = std::iter::once(1.0).chain(port_ret.iter().scan(1.0, |acc, r| {
-        *acc *= 1.0 + r;
-        Some(*acc)
-    })).collect();
+    let nav: Vec<f64> = std::iter::once(1.0)
+        .chain(port_ret.iter().scan(1.0, |acc, r| {
+            *acc *= 1.0 + r;
+            Some(*acc)
+        }))
+        .collect();
     let vol = returns::annualized_volatility(&port_ret, 252.0);
     let var95 = risk::var_historical(&port_ret, 0.95);
     let var99 = risk::var_historical(&port_ret, 0.99);
@@ -684,35 +710,82 @@ pub(crate) async fn port(engine: Arc<Engine>, req: ScreenRequest) -> Screen {
         height_rows: 8,
         x_categories: None,
     }));
-    // Transactions table.
+}
+
+/// IMPORT: what can be imported and from where. The app intercepts this
+/// function to open a file picker; the screen is the explanation shown
+/// beside it (and when the function is opened directly).
+pub(crate) async fn import(_engine: Arc<Engine>, req: ScreenRequest) -> Screen {
+    let mut s = Screen::new("IMPORT", "Import from broker", None);
+    let back = req.arg("portfolio").map_or_else(|| Action::new("PORT", None), |p| Action::new("PORT", None).arg("portfolio", p));
+    s.menu_item("Back to portfolio", back, false);
+    s.push(Block::Text {
+        title: None,
+        body: "Choose a CSV file exported from your broker. Meridian reads it on this Mac and shows a preview before saving anything; rows already imported are skipped. Options, short sales, mergers, bonds and workplace 401(k) rows are listed as not imported so you can add them by hand.".into(),
+    });
+    let rows = [
+        ("Robinhood", "Account → Reports and statements → Account activity report (CSV)"),
+        ("Fidelity", "Activity & Orders → Download as CSV (History_for_Account or Accounts_History)"),
+        ("Charles Schwab", "History → Transactions → Export → CSV"),
+        ("Vanguard", "Transaction history → Download → spreadsheet-compatible CSV (OfxDownload.csv)"),
+        ("Positions file", "A holdings download with Symbol and Quantity columns (Fidelity, Schwab, E*TRADE and others); recorded on the import day"),
+        ("Any other CSV", "Map its columns to date, symbol, type, quantity, price and amount"),
+    ]
+    .into_iter()
+    .map(|(what, how)| Row::new(vec![Cell::text(what).styled(Style::Emphasis), Cell::text(how)]))
+    .collect();
+    s.push(Block::Table(Table {
+        title: Some("Supported files".into()),
+        columns: vec![Column::text("Source", 16), Column::text("Where to get it", 72)],
+        rows,
+        page_size: None,
+        numbered: false,
+    }));
+    s
+}
+
+/// The transactions table, newest first, capped at [`MAX_TX_ROWS`].
+fn port_transactions(s: &mut Screen, txs: &[Transaction], pid: i64) {
     let trows = txs
         .iter()
         .rev()
+        .take(MAX_TX_ROWS)
         .map(|t| {
+            let qty = (t.quantity != 0.0).then_some(t.quantity);
             Row::new(vec![
                 Cell::text(&t.trade_date),
-                Cell::text(&t.security),
-                Cell::signed(Some(t.quantity)),
-                Cell::num(Some(t.price)),
-                Cell::num(Some(t.fees)),
+                Cell::text(t.kind.label()),
+                Cell::text(t.security.clone().unwrap_or_default()),
+                Cell::signed(qty),
+                Cell::num(t.price),
+                Cell::signed(crate::portfolio::cash_flow(t)),
+                Cell::num((t.fees != 0.0).then_some(t.fees)),
+                Cell::text(t.note.clone().unwrap_or_default()).styled(Style::Muted),
             ])
             .action(Action::new("PORT", None).arg("portfolio", pid.to_string()).arg("delete_tx", t.id.to_string()))
         })
         .collect();
+    let title = if txs.len() > MAX_TX_ROWS {
+        format!("Transactions (latest {MAX_TX_ROWS} of {}; select to delete)", txs.len())
+    } else {
+        "Transactions (select to delete)".to_owned()
+    };
     s.push(Block::Table(Table {
-        title: Some("Transactions (select to delete)".into()),
+        title: Some(title),
         columns: vec![
             Column::text("Date", 11),
+            Column::text("Kind", 12),
             Column::text("Security", 18),
             Column::num("Qty", Format::Change { decimals: 2 }, 9),
             Column::num("Price", Format::Number { decimals: 2 }, 9),
+            Column::num("Amount", Format::Change { decimals: 2 }, 11),
             Column::num("Fees", Format::Number { decimals: 2 }, 7),
+            Column::text("Description", 28),
         ],
         rows: trows,
         page_size: Some(10),
         numbered: false,
     }));
-    s
 }
 
 // --- BTST -----------------------------------------------------------------

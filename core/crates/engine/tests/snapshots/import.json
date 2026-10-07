@@ -1,0 +1,181 @@
+{
+  "args": [
+    [
+      "portfolio",
+      "1"
+    ]
+  ],
+  "blocks": [
+    {
+      "Text": {
+        "body": "Choose a CSV file exported from your broker. Meridian reads it on this Mac and shows a preview before saving anything; rows already imported are skipped. Options, short sales, mergers, bonds and workplace 401(k) rows are listed as not imported so you can add them by hand.",
+        "title": null
+      }
+    },
+    {
+      "Table": {
+        "columns": [
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Source",
+            "width": 16
+          },
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Where to get it",
+            "width": 72
+          }
+        ],
+        "numbered": false,
+        "page_size": null,
+        "rows": [
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "Robinhood",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Account → Reports and statements → Account activity report (CSV)",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "Fidelity",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Activity & Orders → Download as CSV (History_for_Account or Accounts_History)",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "Charles Schwab",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "History → Transactions → Export → CSV",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "Vanguard",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Transaction history → Download → spreadsheet-compatible CSV (OfxDownload.csv)",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "Positions file",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "A holdings download with Symbol and Quantity columns (Fidelity, Schwab, E*TRADE and others); recorded on the import day",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "Any other CSV",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Map its columns to date, symbol, type, quantity, price and amount",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          }
+        ],
+        "title": "Supported files"
+      }
+    }
+  ],
+  "function": "IMPORT",
+  "menu": [
+    {
+      "action": {
+        "args": [
+          [
+            "portfolio",
+            "1"
+          ]
+        ],
+        "function": "PORT",
+        "security": null
+      },
+      "label": "Back to portfolio",
+      "number": 1,
+      "selected": false
+    }
+  ],
+  "refresh_ms": null,
+  "security": null,
+  "sources": [
+    {
+      "as_of": 1791216000000000000,
+      "attribution": null,
+      "delay": "MOCK",
+      "provider": "mock",
+      "source": "MOCK",
+      "synthetic": true
+    }
+  ],
+  "status": "Ok",
+  "title": "Import from broker"
+}

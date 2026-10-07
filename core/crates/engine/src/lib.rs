@@ -12,6 +12,8 @@ mod config;
 mod core;
 mod error;
 mod events;
+pub mod import;
+pub mod portfolio;
 pub mod screen;
 pub mod screens;
 mod universe;

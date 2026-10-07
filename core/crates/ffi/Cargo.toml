@@ -20,6 +20,7 @@ meridian-engine.workspace = true
 meridian-command.workspace = true
 meridian-alerts.workspace = true
 meridian-ask.workspace = true
+meridian-import.workspace = true
 meridian-provider-mock.workspace = true
 meridian-provider-coinbase.workspace = true
 meridian-provider-kraken.workspace = true

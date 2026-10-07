@@ -19,6 +19,7 @@ members = [
     "crates/command",
     "crates/ask",
     "crates/alerts",
+    "crates/import",
     "crates/engine",
     "crates/ffi",
     "crates/bench",
@@ -82,6 +83,7 @@ meridian-analytics = { path = "crates/analytics" }
 meridian-command = { path = "crates/command" }
 meridian-ask = { path = "crates/ask" }
 meridian-alerts = { path = "crates/alerts" }
+meridian-import = { path = "crates/import" }
 meridian-engine = { path = "crates/engine" }
 
 # External (versions verified 2026-10-05)

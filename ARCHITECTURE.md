@@ -41,6 +41,7 @@ Meridian is a personal-use native macOS financial terminal. The UI is SwiftUI + 
 │   │   ├── command/          Command-line tokenizer/parser, function registry, autocomplete index
 │   │   ├── ask/              Anthropic Messages API client, tool registry, audit log, number verifier
 │   │   ├── alerts/           Alert rules engine
+│   │   ├── import/           Broker CSV import: format detection, normalized portfolio transactions
 │   │   ├── engine/           Orchestration: providers by mode, cache, stream/alert loops, screen models, ASK tools
 │   │   ├── ffi/              UniFFI surface — the ONLY crate Swift links against
 │   │   └── bench/            Load generators and cross-crate benches
@@ -103,6 +104,7 @@ Dependency rules (enforced by crate dependencies, so violations fail to compile)
 | `stream` | `types`, `provider` | `store` (persistence of ticks goes through a sink trait) |
 | `analytics` | `types` | I/O of any kind. Pure functions over slices/arrays. |
 | `command` | `types` | I/O. Pure parser plus an in-memory index. |
+| `import` | `types` | I/O and clocks. Pure CSV reader; the caller passes text and the import date. |
 | `ask` | `types` | `ffi`, `engine` (the engine supplies tools through the `ToolExecutor` trait) |
 | `engine` | everything except `ffi` and concrete `provider-*` crates | `ffi` |
 | `ffi` | everything above, incl. concrete providers (composition root) | — (nothing depends on `ffi`) |

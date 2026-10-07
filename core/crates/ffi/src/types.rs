@@ -739,3 +739,295 @@ impl From<&meridian_ask::AskTurn> for AskTurnFfi {
         }
     }
 }
+
+// --- broker CSV import ---------------------------------------------------------
+
+/// Most preview rows and warnings sent to Swift (FFI rule: no unbounded
+/// record lists). Totals are always exact.
+const PREVIEW_ROWS: usize = 50;
+const MAX_WARNINGS: usize = 200;
+
+/// What an imported row does (`meridian_types::TransactionKind`).
+#[derive(Debug, Clone, Copy, PartialEq, Eq, uniffi::Enum)]
+pub enum ImportKindFfi {
+    Buy,
+    Sell,
+    Dividend,
+    ReinvestedDividend,
+    Interest,
+    Fee,
+    Split,
+    TransferIn,
+    TransferOut,
+    Deposit,
+    Withdrawal,
+    Other,
+}
+
+impl From<meridian_types::TransactionKind> for ImportKindFfi {
+    fn from(k: meridian_types::TransactionKind) -> Self {
+        use meridian_types::TransactionKind as K;
+        match k {
+            K::Buy => Self::Buy,
+            K::Sell => Self::Sell,
+            K::Dividend => Self::Dividend,
+            K::ReinvestedDividend => Self::ReinvestedDividend,
+            K::Interest => Self::Interest,
+            K::Fee => Self::Fee,
+            K::Split => Self::Split,
+            K::TransferIn => Self::TransferIn,
+            K::TransferOut => Self::TransferOut,
+            K::Deposit => Self::Deposit,
+            K::Withdrawal => Self::Withdrawal,
+            K::Other => Self::Other,
+        }
+    }
+}
+
+/// The user's column mapping for a file whose format wasn't recognized.
+/// Columns are 0-based positions in `ImportPreviewFfi.headers`. Without a
+/// date column the file is read as a positions snapshot (symbol and
+/// quantity required). Start from `ImportPreviewFfi.suggested_mapping`.
+#[derive(Debug, Clone, uniffi::Record)]
+pub struct ImportMappingFfi {
+    /// 1-based line of the header row (`ImportPreviewFfi.header_line`).
+    pub header_line: u32,
+    pub trade_date: Option<u32>,
+    pub settle_date: Option<u32>,
+    pub symbol: Option<u32>,
+    /// Transaction type column (`Buy`, `Dividend` …).
+    pub action: Option<u32>,
+    pub quantity: Option<u32>,
+    pub price: Option<u32>,
+    pub amount: Option<u32>,
+    pub fees: Option<u32>,
+    pub currency: Option<u32>,
+    pub description: Option<u32>,
+    /// Total cost basis (positions).
+    pub cost_basis: Option<u32>,
+    /// Average cost per share (positions).
+    pub average_cost: Option<u32>,
+    /// Currency when there is no currency column; empty means USD.
+    pub default_currency: String,
+    /// Dates are DD/MM/YYYY rather than MM/DD/YYYY.
+    pub day_first: bool,
+}
+
+impl From<ImportMappingFfi> for meridian_import::ColumnMapping {
+    fn from(m: ImportMappingFfi) -> Self {
+        let c = |v: Option<u32>| v.map(|x| x as usize);
+        Self {
+            header_line: m.header_line,
+            trade_date: c(m.trade_date),
+            settle_date: c(m.settle_date),
+            symbol: c(m.symbol),
+            action: c(m.action),
+            quantity: c(m.quantity),
+            price: c(m.price),
+            amount: c(m.amount),
+            fees: c(m.fees),
+            currency: c(m.currency),
+            description: c(m.description),
+            cost_basis: c(m.cost_basis),
+            average_cost: c(m.average_cost),
+            default_currency: m.default_currency,
+            day_first: m.day_first,
+        }
+    }
+}
+
+impl From<&meridian_import::ColumnMapping> for ImportMappingFfi {
+    fn from(m: &meridian_import::ColumnMapping) -> Self {
+        let c = |v: Option<usize>| v.map(|x| u32::try_from(x).unwrap_or(u32::MAX));
+        Self {
+            header_line: m.header_line,
+            trade_date: c(m.trade_date),
+            settle_date: c(m.settle_date),
+            symbol: c(m.symbol),
+            action: c(m.action),
+            quantity: c(m.quantity),
+            price: c(m.price),
+            amount: c(m.amount),
+            fees: c(m.fees),
+            currency: c(m.currency),
+            description: c(m.description),
+            cost_basis: c(m.cost_basis),
+            average_cost: c(m.average_cost),
+            default_currency: m.default_currency.clone(),
+            day_first: m.day_first,
+        }
+    }
+}
+
+/// One row as it would be imported. Signs: `quantity` is the change in
+/// shares (+ in, − out), `amount` the cash flow (+ in, − out), `fees` a
+/// positive cost.
+#[derive(Debug, Clone, uniffi::Record)]
+pub struct ImportRowFfi {
+    /// 1-based line in the file.
+    pub line: u32,
+    /// `YYYY-MM-DD`.
+    pub trade_date: String,
+    pub settle_date: Option<String>,
+    /// Ticker as the broker wrote it.
+    pub symbol: Option<String>,
+    /// The security key it is stored under (`BRK/B US Equity`).
+    pub security: Option<String>,
+    pub kind: ImportKindFfi,
+    /// Sentence-case label for `kind`.
+    pub kind_label: String,
+    pub quantity: Option<f64>,
+    pub price: Option<f64>,
+    pub amount: Option<f64>,
+    pub fees: Option<f64>,
+    /// Total cost basis (positions snapshots).
+    pub cost_basis: Option<f64>,
+    pub currency: String,
+    pub description: String,
+    /// The broker's own action or code text.
+    pub action: String,
+    pub account: Option<String>,
+}
+
+/// A row that was not imported, or a note about the file (line 0 = whole
+/// file).
+#[derive(Debug, Clone, uniffi::Record)]
+pub struct ImportWarningFfi {
+    pub line: u32,
+    pub message: String,
+    /// The row's text, truncated.
+    pub text: String,
+}
+
+#[derive(Debug, Clone, uniffi::Record)]
+pub struct ImportKindCountFfi {
+    pub kind: ImportKindFfi,
+    pub label: String,
+    pub count: u32,
+}
+
+#[derive(Debug, Clone, uniffi::Record)]
+pub struct ImportPreviewFfi {
+    /// `robinhood`, `fidelity`, `schwab`, `vanguard`, `positions` or
+    /// `mapped`; `None` when not recognized (offer the mapping UI).
+    pub format: Option<String>,
+    /// Display name ("Robinhood account activity" …, or "Not recognized").
+    pub format_name: String,
+    pub recognized: bool,
+    /// Holdings snapshot: rows are recorded as transfers in on the import day.
+    pub snapshot: bool,
+    /// 1-based line of the header row.
+    pub header_line: u32,
+    pub headers: Vec<String>,
+    /// The first rows (at most 50), in trade-date order.
+    pub rows: Vec<ImportRowFfi>,
+    /// Rows that would be imported.
+    pub total_rows: u32,
+    /// Rows by kind (non-zero only).
+    pub counts: Vec<ImportKindCountFfi>,
+    /// At most 200; `warning_count` is the total.
+    pub warnings: Vec<ImportWarningFfi>,
+    pub warning_count: u32,
+    /// Date range of the rows, `YYYY-MM-DD`.
+    pub first_date: Option<String>,
+    pub last_date: Option<String>,
+    /// Starting point for the column-mapping UI (the mapping used, when one
+    /// was given).
+    pub suggested_mapping: ImportMappingFfi,
+}
+
+#[derive(Debug, Clone, uniffi::Record)]
+pub struct ImportResultFfi {
+    pub portfolio_id: i64,
+    pub portfolio_name: String,
+    /// Format id, as in `ImportPreviewFfi.format`.
+    pub format: String,
+    pub imported: u32,
+    /// Rows already in the portfolio from an earlier import.
+    pub duplicates: u32,
+    /// At most 200; `warning_count` is the total.
+    pub warnings: Vec<ImportWarningFfi>,
+    pub warning_count: u32,
+}
+
+fn import_warnings(w: &[meridian_import::ImportWarning]) -> (Vec<ImportWarningFfi>, u32) {
+    let list = w.iter().take(MAX_WARNINGS).map(|w| ImportWarningFfi { line: w.line, message: w.message.clone(), text: w.text.clone() }).collect();
+    (list, u32::try_from(w.len()).unwrap_or(u32::MAX))
+}
+
+fn import_row(t: &meridian_import::ImportedTx) -> ImportRowFfi {
+    ImportRowFfi {
+        line: t.line,
+        trade_date: t.trade_date.format("%Y-%m-%d").to_string(),
+        settle_date: t.settle_date.map(|d| d.format("%Y-%m-%d").to_string()),
+        symbol: t.symbol.clone(),
+        security: t.symbol.as_deref().and_then(meridian_engine::import::security_for),
+        kind: t.kind.into(),
+        kind_label: t.kind.label().into(),
+        quantity: t.quantity,
+        price: t.price,
+        amount: t.amount,
+        fees: t.fees,
+        cost_basis: t.cost_basis,
+        currency: t.currency.clone(),
+        description: t.description.clone(),
+        action: t.action.clone(),
+        account: t.account.clone(),
+    }
+}
+
+pub(crate) fn import_preview(p: &meridian_engine::import::ImportPreview) -> ImportPreviewFfi {
+    let n = |x: usize| u32::try_from(x).unwrap_or(u32::MAX);
+    let suggested_mapping = (&p.suggested_mapping).into();
+    if let Some(parsed) = &p.parsed {
+        let (warnings, warning_count) = import_warnings(&parsed.warnings);
+        let date = |t: Option<&meridian_import::ImportedTx>| t.map(|t| t.trade_date.format("%Y-%m-%d").to_string());
+        ImportPreviewFfi {
+            format: Some(parsed.format.id().into()),
+            format_name: parsed.format.name().into(),
+            recognized: true,
+            snapshot: parsed.snapshot,
+            header_line: parsed.header_line,
+            headers: parsed.headers.clone(),
+            rows: parsed.transactions.iter().take(PREVIEW_ROWS).map(import_row).collect(),
+            total_rows: n(parsed.transactions.len()),
+            counts: parsed.counts().into_iter().map(|(k, c)| ImportKindCountFfi { kind: k.into(), label: k.label().into(), count: n(c) }).collect(),
+            warnings,
+            warning_count,
+            first_date: date(parsed.transactions.first()),
+            last_date: date(parsed.transactions.last()),
+            suggested_mapping,
+        }
+    } else {
+        let (warnings, warning_count) = import_warnings(&p.warnings);
+        ImportPreviewFfi {
+            format: None,
+            format_name: "Not recognized".into(),
+            recognized: false,
+            snapshot: false,
+            header_line: p.header_line,
+            headers: p.headers.clone(),
+            rows: Vec::new(),
+            total_rows: 0,
+            counts: Vec::new(),
+            warnings,
+            warning_count,
+            first_date: None,
+            last_date: None,
+            suggested_mapping,
+        }
+    }
+}
+
+pub(crate) fn import_result(o: &meridian_engine::import::ImportOutcome) -> ImportResultFfi {
+    let (warnings, warning_count) = import_warnings(&o.warnings);
+    ImportResultFfi {
+        portfolio_id: o.portfolio_id,
+        portfolio_name: o.portfolio_name.clone(),
+        format: o.format.id().into(),
+        imported: u32::try_from(o.imported).unwrap_or(u32::MAX),
+        duplicates: u32::try_from(o.duplicates).unwrap_or(u32::MAX),
+        warnings,
+        warning_count,
+    }
+}
