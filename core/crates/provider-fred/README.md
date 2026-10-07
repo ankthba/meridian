@@ -104,6 +104,8 @@ FRED's docs warn that release dates come from the data sources and may not match
 
 Not included on purpose: **H.15 Selected Interest Rates** (release 18) is published every business day, so rating it High would mark every day High. ISM surveys aren't on FRED.
 
+Any listed release that FRED dates on three or more consecutive days in the requested window is rated Medium instead (`demote_daily_releases`). Seen live on 2026-10-07: `releases/dates` lists the FOMC Press Release (101) every day, Saturdays included, because its target-range series (`DFEDTARU`/`DFEDTARL`) update daily, so those dates don't mark FOMC meetings. A one- or two-day window can't show the pattern, so 101 can still appear as High there.
+
 ### Errors
 
 FRED returns JSON bodies like `{"error_code":400,"error_message":"..."}` (with a `text/xml` content type).

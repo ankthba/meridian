@@ -438,3 +438,25 @@ fn config_debug_does_not_leak_the_key() {
     let c = FredConfig { api_key: Some(SecretString::from(TEST_KEY)) };
     assert!(!format!("{c:?}").contains(TEST_KEY));
 }
+
+#[test]
+fn releases_dated_daily_are_not_high_importance() {
+    let prov = meridian_types::Provenance::synthetic(0);
+    let ev = |id: i64, name: &str, date: &str| {
+        let dto = normalize::ReleaseDateDto { release_id: id, release_name: name.to_owned(), date: date.to_owned() };
+        normalize::release_event(&dto, prov.clone()).unwrap()
+    };
+    let mut events = vec![
+        ev(101, "FOMC Press Release", "2026-10-07"),
+        ev(101, "FOMC Press Release", "2026-10-08"),
+        ev(101, "FOMC Press Release", "2026-10-09"),
+        ev(50, "Employment Situation", "2026-10-09"),
+        ev(10, "Consumer Price Index", "2026-10-14"),
+        ev(10, "Consumer Price Index", "2026-11-12"),
+    ];
+    normalize::demote_daily_releases(&mut events);
+    let rated = |name: &str| events.iter().filter(|e| e.event == name).map(|e| e.importance).collect::<Vec<_>>();
+    assert_eq!(rated("FOMC Press Release"), vec![Importance::Medium; 3]);
+    assert_eq!(rated("Employment Situation"), vec![Importance::High]);
+    assert_eq!(rated("Consumer Price Index"), vec![Importance::High; 2]);
+}

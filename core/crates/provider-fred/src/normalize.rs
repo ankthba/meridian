@@ -208,6 +208,28 @@ pub(crate) fn representative_series(release_id: i64, name: &str) -> Option<&'sta
 /// One release date → one event. FRED gives a date only, so `release_time`
 /// is midnight UTC of that date and `time_known` is false. FRED has no
 /// consensus, actual, or prior values on this endpoint.
+/// Rates a release `Medium` when FRED dates it on three or more consecutive
+/// days in the window: that is a daily data feed, not a scheduled
+/// announcement. FRED dates the FOMC Press Release (101) daily because its
+/// target-range series update every day, so its dates don't mark meetings.
+pub(crate) fn demote_daily_releases(events: &mut [EconomicEvent]) {
+    let mut days: std::collections::HashMap<&str, Vec<i64>> = std::collections::HashMap::new();
+    for e in events.iter().filter(|e| e.importance == Importance::High) {
+        days.entry(e.event.as_str()).or_default().push(e.release_time.div_euclid(meridian_types::NANOS_PER_DAY));
+    }
+    let daily: std::collections::HashSet<String> = days
+        .into_iter()
+        .filter_map(|(name, mut d)| {
+            d.sort_unstable();
+            d.dedup();
+            d.windows(3).any(|w| w[1] == w[0] + 1 && w[2] == w[1] + 1).then(|| name.to_owned())
+        })
+        .collect();
+    for e in events.iter_mut().filter(|e| daily.contains(&e.event)) {
+        e.importance = Importance::Medium;
+    }
+}
+
 pub(crate) fn release_event(dto: &ReleaseDateDto, provenance: Provenance) -> ProviderResult<EconomicEvent> {
     let date = parse_date(&dto.date, "FRED release date")?;
     Ok(EconomicEvent {

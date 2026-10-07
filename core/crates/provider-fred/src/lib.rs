@@ -196,6 +196,7 @@ impl FredProvider {
             }
             match normalize::next_offset(page.count, page.offset, received) {
                 None => {
+                    normalize::demote_daily_releases(&mut events);
                     events.sort_by(|a, b| a.release_time.cmp(&b.release_time).then_with(|| a.event.cmp(&b.event)));
                     return Ok(events);
                 }
