@@ -113,7 +113,7 @@ New features get plain-word ids, not new mnemonics (CLAUDE.md). These are Meridi
 | FA | As-reported EDGAR statements; a value restated in a later filing wins, even under a different concept. A split disclosed inside the displayed window adds a notice that per-share values aren't adjusted. |
 | CALENDAR | Earnings: Finnhub `/calendar/earnings` (free tier: upcoming releases plus 1 month back; date, before open / after close, consensus EPS). Up to 3 stocks are asked one by one; more cost one request for the window. Dividends: Alpaca corporate actions for up to 100 symbols per request, filtered by ex-date. Macro: FRED release dates, high-importance releases unless `importance=All`. A missing source leaves only its kind NOT AVAILABLE. |
 | FILINGS | SEC EDGAR submissions per company (the CF list cache, 15 minutes). A company that fails is named in a notice; if every one fails, the screen is NOT AVAILABLE with the reason (e.g. no contact email set). No AI calls; CF summarizes only on request. |
-| TODAY | Quotes from the stream when subscribed, else one REST batch; the 10-year yield from the Treasury par curve (`UST:10 Yr`, keyless), else FRED `DGS10`; calendar and filings as above; company news from Alpaca and Finnhub for the 10 largest positions by cost, de-duplicated by headline, reused for a minute. |
+| TODAY | Quotes from the stream when subscribed, else one REST batch; the 10-year yield from the Treasury par curve (`UST:10 Yr`, keyless), else FRED `DGS10`; calendar and filings as above; company news from Alpaca and Finnhub for the 10 largest positions by cost, de-duplicated by headline, reused for five minutes. |
 
 ### Conflicts with the brief
 

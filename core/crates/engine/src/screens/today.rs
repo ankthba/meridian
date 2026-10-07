@@ -31,8 +31,10 @@ const NEW_FILINGS_ROWS: usize = 5;
 const NEWS_ROWS: usize = 8;
 /// Securities whose company news is fetched (largest positions first).
 const NEWS_SECURITIES: usize = 10;
-/// How long holdings news is reused before asking the sources again.
-const NEWS_TTL_NANOS: i64 = 60 * NANOS_PER_SEC;
+/// How long holdings news is reused before asking the sources again (the
+/// screen refreshes every minute; Finnhub company news costs one call per
+/// symbol against 60 calls/minute).
+const NEWS_TTL_NANOS: i64 = 5 * 60 * NANOS_PER_SEC;
 /// Window for "New filings".
 const FILING_DAYS: i64 = 30;
 
@@ -108,7 +110,7 @@ impl Engine {
     }
 
     /// Recent company news for `keys`, newest first, de-duplicated by
-    /// headline across sources. Reused for a minute.
+    /// headline across sources. Reused for five minutes.
     async fn holdings_news_items(&self, keys: &[SecurityKey]) -> EngineResult<Vec<NewsItem>> {
         let now = self.now();
         let ck = keys.iter().map(ToString::to_string).collect::<Vec<_>>().join(",");
