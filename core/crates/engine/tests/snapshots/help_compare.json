@@ -2,7 +2,7 @@
   "args": [
     [
       "topic",
-      "GP"
+      "COMPARE"
     ]
   ],
   "blocks": [
@@ -53,7 +53,7 @@
               "ASK",
               "HELP"
             ],
-            "value": "GP"
+            "value": "COMPARE"
           }
         ],
         "title": null
@@ -67,42 +67,42 @@
             "format": "Text",
             "label": "Function",
             "style": "Emphasis",
-            "text": "GP",
+            "text": "COMPARE",
             "value": null
           },
           {
             "format": "Text",
             "label": "Title",
             "style": "Normal",
-            "text": "Historical Price Graph",
+            "text": "Compare",
             "value": null
           },
           {
             "format": "Text",
             "label": "Area",
             "style": "Normal",
-            "text": "Charts & Prices",
+            "text": "Analytics",
             "value": null
           },
           {
             "format": "Text",
             "label": "Security",
             "style": "Normal",
-            "text": "Required",
+            "text": "Optional",
             "value": null
           },
           {
             "format": "Text",
             "label": "Plain phrase",
             "style": "Normal",
-            "text": "aapl 5y",
+            "text": "aapl vs msft 5y",
             "value": null
           },
           {
             "format": "Text",
             "label": "Example",
             "style": "Normal",
-            "text": "AAPL US <EQUITY> GP <GO>",
+            "text": "COMPARE <GO>",
             "value": null
           }
         ],
@@ -111,7 +111,7 @@
     },
     {
       "Text": {
-        "body": "Historical price chart with technical indicators and drawing tools.\n\nType a range after the mnemonic: AAPL US <EQUITY> GP 5Y <GO>",
+        "body": "Performance of two or more securities rebased to 100, with price changes and key figures side by side.\n\nName the securities with vs and an optional range: aapl vs msft, aapl vs msft vs googl 5y, compare aapl with btc.",
         "title": "Description"
       }
     },
@@ -141,66 +141,30 @@
             "cells": [
               {
                 "style": "Emphasis",
+                "text": "securities",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "comma-separated security keys (typing aapl vs msft sets them; up to 8)",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
                 "text": "range",
                 "value": null
               },
               {
                 "style": "Normal",
                 "text": "1D 5D 1M 3M 6M YTD 1Y 2Y 3Y 5Y 10Y 20Y MAX (default 1Y)",
-                "value": null
-              }
-            ],
-            "depth": 0,
-            "emphasis": false,
-            "security": null
-          },
-          {
-            "action": null,
-            "cells": [
-              {
-                "style": "Emphasis",
-                "text": "interval",
-                "value": null
-              },
-              {
-                "style": "Normal",
-                "text": "bar size: 1m 5m 15m 30m 1h 1d 1w 1mo (default depends on the range)",
-                "value": null
-              }
-            ],
-            "depth": 0,
-            "emphasis": false,
-            "security": null
-          },
-          {
-            "action": null,
-            "cells": [
-              {
-                "style": "Emphasis",
-                "text": "style",
-                "value": null
-              },
-              {
-                "style": "Normal",
-                "text": "Candles, Line, Mountain or Bars (default Candles)",
-                "value": null
-              }
-            ],
-            "depth": 0,
-            "emphasis": false,
-            "security": null
-          },
-          {
-            "action": null,
-            "cells": [
-              {
-                "style": "Emphasis",
-                "text": "studies",
-                "value": null
-              },
-              {
-                "style": "Normal",
-                "text": "comma list: SMA:n EMA:n BB:n:k VWAP RSI:n MACD:a:b:c ATR:n STOCH:k:d OBV (default SMA:50,SMA:200)",
                 "value": null
               }
             ],
@@ -243,7 +207,7 @@
               },
               {
                 "style": "Normal",
-                "text": "US stocks and ETFs (consolidated history; on the free plan it ends 15 minutes before now)",
+                "text": "prices and history for US stocks and ETFs",
                 "value": null
               }
             ],
@@ -261,7 +225,25 @@
               },
               {
                 "style": "Normal",
-                "text": "crypto from Coinbase and Kraken; FX daily reference rates from Frankfurter (ECB)",
+                "text": "crypto prices from Coinbase and Kraken; FX daily reference rates from Frankfurter (ECB)",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "SEC EDGAR",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "financial statements for market cap, P/E, net margin and dividend yield",
                 "value": null
               }
             ],
@@ -304,18 +286,18 @@
           {
             "action": {
               "args": [],
-              "function": "GIP",
+              "function": "GP",
               "security": null
             },
             "cells": [
               {
                 "style": "Link",
-                "text": "GIP",
+                "text": "GP",
                 "value": null
               },
               {
                 "style": "Normal",
-                "text": "Intraday Price Graph",
+                "text": "Historical Price Graph",
                 "value": null
               },
               {
@@ -331,23 +313,23 @@
           {
             "action": {
               "args": [],
-              "function": "HP",
+              "function": "RV",
               "security": null
             },
             "cells": [
               {
                 "style": "Link",
-                "text": "HP",
+                "text": "RV",
                 "value": null
               },
               {
                 "style": "Normal",
-                "text": "Historical Prices",
+                "text": "Relative Valuation",
                 "value": null
               },
               {
                 "style": "Normal",
-                "text": "Required",
+                "text": "Required (EQUITY)",
                 "value": null
               }
             ],
@@ -358,50 +340,23 @@
           {
             "action": {
               "args": [],
-              "function": "DES",
+              "function": "CORR",
               "security": null
             },
             "cells": [
               {
                 "style": "Link",
-                "text": "DES",
+                "text": "CORR",
                 "value": null
               },
               {
                 "style": "Normal",
-                "text": "Security Description",
+                "text": "Correlation Matrix",
                 "value": null
               },
               {
                 "style": "Normal",
-                "text": "Required",
-                "value": null
-              }
-            ],
-            "depth": 0,
-            "emphasis": false,
-            "security": null
-          },
-          {
-            "action": {
-              "args": [],
-              "function": "BTST",
-              "security": null
-            },
-            "cells": [
-              {
-                "style": "Link",
-                "text": "BTST",
-                "value": null
-              },
-              {
-                "style": "Normal",
-                "text": "Backtester",
-                "value": null
-              },
-              {
-                "style": "Normal",
-                "text": "Required",
+                "text": "Optional",
                 "value": null
               }
             ],
@@ -419,10 +374,10 @@
     {
       "action": {
         "args": [],
-        "function": "GP",
+        "function": "COMPARE",
         "security": null
       },
-      "label": "Open GP",
+      "label": "Open COMPARE",
       "number": 1,
       "selected": false
     },
@@ -455,5 +410,5 @@
     }
   ],
   "status": "Ok",
-  "title": "Help — GP Historical Price Graph"
+  "title": "Help — COMPARE Compare"
 }

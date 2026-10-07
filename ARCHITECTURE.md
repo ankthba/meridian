@@ -367,8 +367,11 @@ Cancellation: Swift task cancellation does **not** reach Rust on its own (§7.2 
 
 ### 9.2 Command line
 
-- Grammar: `[<SECURITY> [<EXCHANGE>] <SECTOR>] [<FUNCTION>] [<ARGS>…] <GO>`, e.g. `AAPL US <EQUITY> DES <GO>`. `DES <GO>` alone applies to the panel's loaded security.
-- Parser and autocomplete live in Rust (`command`): pure functions plus an in-memory index of instruments (ticker, name, aliases) and functions (mnemonic, title, keywords). The budget is < 50 ms from keystroke to rendered suggestions; the parser and index lookup target < 2 ms so most of the budget is left for rendering.
+- **Plain language first (1.1):** `aapl`, `aapl 5y`, `aapl filings`, `aapl vs msft 5y`, `earnings this week`, `cpi`, `ask <question>`. `command::interpret` reads plain phrases on top of the mnemonic grammar and returns `ParsedCommand::Run(Action)` (function, security, named arguments) for anything it resolves; input the grammar already gives a meaning keeps it. Bare tickers need the instrument index, so the engine calls `interpret` with its `SuggestIndex` as the `SecurityResolver`; `command` stays pure. The vocabulary, precedence and ambiguity rules are in `core/crates/command/src/plain.rs` and `docs/FUNCTIONS.md`.
+- Grammar: `[<SECURITY> [<EXCHANGE>] <SECTOR>] [<FUNCTION>] [<ARGS>…] <GO>`, e.g. `AAPL US <EQUITY> DES <GO>`. `DES <GO>` alone applies to the panel's loaded security. Unchanged by plain language.
+- Parser and autocomplete live in Rust (`command`): pure functions plus an in-memory index of instruments (ticker, name, aliases) and functions (mnemonic, title, keywords). The budget is < 50 ms from keystroke to rendered suggestions; the parser and index lookup target < 2 ms for mnemonic queries and < 5 ms for plain-language ones (measured ≤ 0.32 ms over 20,000 instruments, `benches/suggest.rs`), so most of the budget is left for rendering.
+- **Suggestions** feed a grouped popover (`docs/DESIGN.md`): each row has a group (`Security`, `On AAPL`, `Commands`, `Functions`, `Compare AAPL with`), a plain title and subtitle, a right-side hint (the mnemonic), the Tab completion, an optional resolved action for Return, and a `best` flag on the row Return runs by default. When `interpret` resolves the input, that row is the best one, so Return on the highlight and GO on the text agree. Rows arrive in display order.
+- **App actions:** `SETTINGS` and `IMPORT` come back as `Run` actions but have no engine screen; the app handles them.
 - **Function registry**: Rust holds metadata (mnemonic, title, security types and sectors accepted, argument schema). Swift maps mnemonic → view factory. A test fails if the two sets differ, so a function can't exist on one side only.
 - Numbered menu items: `<n> <GO>` selects item *n* on the current screen.
 

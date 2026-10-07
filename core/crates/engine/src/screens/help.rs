@@ -46,14 +46,28 @@ const OVERLAY_KEYS: &[(&str, &str)] = &[
 const ROUTER_ONLY_KEYS: &[(&str, &str)] = &[("Key reference overlay", "⌘/")];
 
 const SYNTAX: &str = "\
-<security> <yellow key> <function> <GO>     AAPL US <EQUITY> DES <GO>
-<function> <GO>                              runs on the panel's loaded security: DES <GO>
-<security> <yellow key> <GO>                 loads the security and opens its function menu
-<n> <GO>                                     selects numbered item n
-any other text <GO>                          searches for securities (SECF)
+Type what you want in plain words and press Return:
+aapl                          the overview
+aapl 5y                       chart over a range: 1d 5d 1m 3m 6m ytd 1y 2y 5y 10y max
+aapl filings                  or news, financials, balance sheet, earnings, analysts, dividends,
+                              options, volatility, peers, history, backtest, 10-k
+aapl vs msft 5y               performance and key figures side by side
+earnings this week            the earnings calendar; also dividends next week, calendar
+cpi  jobs  gdp  rates         economic series and the Treasury yield curve
+news  crypto  fx  world       markets
+today  portfolio  settings    your home screen, holdings and setup
+ask <question>                the AI analyst
+A security can be a ticker (aapl, brk.b), a coin (btc) or a currency pair (eurusd).
+Anything else searches for securities.
 
-Yellow keys: GOVT  CORP  MTGE  M-MKT  MUNI  PFD  EQUITY  CMDTY  INDEX  CRNCY
-A security is SYMBOL [EXCHANGE] <yellow key>; equities without an exchange are US.
+Mnemonics still work:
+<security> <sector key> <function> <GO>     AAPL US <EQUITY> DES <GO>
+<function> <GO>                              runs on the panel's loaded security: DES <GO>
+<security> <sector key> <GO>                 loads the security and opens its function menu
+<n> <GO>                                     selects numbered item n
+
+Sector keys: GOVT  CORP  MTGE  M-MKT  MUNI  PFD  EQUITY  CMDTY  INDEX  CRNCY
+A security is SYMBOL [EXCHANGE] <sector key>; equities without an exchange are US.
 HELP <GO> opens this page; pick a function under \"Help on\" for its own page.";
 
 /// Where a function's data comes from in LIVE mode, named as in
@@ -89,6 +103,8 @@ struct Topic {
     args: &'static [(&'static str, &'static str)],
     /// A command line that runs the function (without `<GO>`).
     example: &'static str,
+    /// The plain phrase that runs it, or "" when there is none.
+    plain: &'static str,
     /// Extra usage note (typed shortcuts), or "".
     usage: &'static str,
     /// LIVE-mode sources and what each provides; empty when none applies.
@@ -112,6 +128,7 @@ const TOPICS: &[Topic] = &[
         mnemonic: "DES",
         args: &[],
         example: "AAPL US <EQUITY> DES",
+        plain: "aapl",
         usage: "",
         live: &[
             (Src::Alpaca, "price, change, volume and 52-week range for US stocks and ETFs; dividends for yield"),
@@ -131,6 +148,7 @@ const TOPICS: &[Topic] = &[
             ("studies", "comma list: SMA:n EMA:n BB:n:k VWAP RSI:n MACD:a:b:c ATR:n STOCH:k:d OBV (default SMA:50,SMA:200)"),
         ],
         example: "AAPL US <EQUITY> GP",
+        plain: "aapl 5y",
         usage: "Type a range after the mnemonic: AAPL US <EQUITY> GP 5Y <GO>",
         live: BARS_LIVE,
         live_note: "",
@@ -145,6 +163,7 @@ const TOPICS: &[Topic] = &[
             ("studies", "comma list as for GP (default VWAP)"),
         ],
         example: "AAPL US <EQUITY> GIP",
+        plain: "aapl intraday",
         usage: "Type a range after the mnemonic: AAPL US <EQUITY> GIP 5D <GO>",
         live: BARS_LIVE,
         live_note: "",
@@ -158,6 +177,7 @@ const TOPICS: &[Topic] = &[
             ("end", "last date (default today)"),
         ],
         example: "AAPL US <EQUITY> HP",
+        plain: "aapl history",
         usage: "Type the period after the mnemonic: AAPL US <EQUITY> HP WEEKLY <GO>",
         live: BARS_LIVE,
         live_note: "",
@@ -172,6 +192,7 @@ const TOPICS: &[Topic] = &[
             ("new", "name of a new watchlist"),
         ],
         example: "W",
+        plain: "watchlist",
         usage: "",
         live: QUOTES_LIVE,
         live_note: "",
@@ -181,6 +202,7 @@ const TOPICS: &[Topic] = &[
         mnemonic: "BLP",
         args: &[],
         example: "BLP",
+        plain: "launchpad",
         usage: "",
         live: &[],
         live_note: "No data of its own: each Launchpad component uses its function's sources.",
@@ -190,6 +212,7 @@ const TOPICS: &[Topic] = &[
         mnemonic: "SECF",
         args: &[("q", "name or ticker text"), ("sector", "yellow key to filter by, e.g. EQUITY")],
         example: "SECF APPLE",
+        plain: "apple",
         usage: "Text typed after SECF is the search: SECF APPLE <GO>",
         live: &[
             (Src::Edgar, "US companies from the SEC ticker list"),
@@ -202,6 +225,7 @@ const TOPICS: &[Topic] = &[
         mnemonic: "MOST",
         args: &[("by", "Volume, Gainers or Losers (default Volume)")],
         example: "MOST",
+        plain: "most active",
         usage: "",
         live: &[],
         live_note: "NOT AVAILABLE in LIVE mode: it needs a market-wide quote feed, and the free sources quote only requested symbols.",
@@ -215,6 +239,7 @@ const TOPICS: &[Topic] = &[
             ("story", "id of a story to open (rows set it)"),
         ],
         example: "N",
+        plain: "",
         usage: "Text typed after N filters headlines: N EARNINGS <GO>",
         live: &[
             (Src::Alpaca, "market news (Benzinga)"),
@@ -228,6 +253,7 @@ const TOPICS: &[Topic] = &[
         mnemonic: "CN",
         args: &[("q", "text filter"), ("story", "id of a story to open (rows set it)")],
         example: "AAPL US <EQUITY> CN",
+        plain: "aapl news",
         usage: "",
         live: &[
             (Src::Alpaca, "company news (Benzinga)"),
@@ -241,6 +267,7 @@ const TOPICS: &[Topic] = &[
         mnemonic: "TOP",
         args: &[("q", "text filter"), ("story", "id of a story to open (rows set it)")],
         example: "TOP",
+        plain: "news",
         usage: "",
         live: &[(Src::Alpaca, "latest market-wide headlines"), (Src::Finnhub, "market headlines")],
         live_note: "No free source curates top stories; TOP shows the latest market headlines.",
@@ -253,6 +280,7 @@ const TOPICS: &[Topic] = &[
             ("per", "Annual or Quarterly (default Annual)"),
         ],
         example: "MSFT US <EQUITY> FA",
+        plain: "msft balance sheet",
         usage: "Type the statement after the mnemonic: MSFT US <EQUITY> FA BS <GO>",
         live: &[(Src::Edgar, "as-reported XBRL financial statements; restated values from later filings replace originals")],
         live_note: "",
@@ -262,6 +290,7 @@ const TOPICS: &[Topic] = &[
         mnemonic: "EE",
         args: &[("metric", "EPS, REV or EBITDA (default EPS)")],
         example: "NVDA US <EQUITY> EE",
+        plain: "nvda estimates",
         usage: "",
         live: &[],
         live_note: "NOT AVAILABLE in LIVE mode: no free source provides consensus estimates.",
@@ -271,6 +300,7 @@ const TOPICS: &[Topic] = &[
         mnemonic: "ERN",
         args: &[],
         example: "NVDA US <EQUITY> ERN",
+        plain: "nvda earnings",
         usage: "",
         live: &[(Src::Finnhub, "earnings history")],
         live_note: "",
@@ -280,6 +310,7 @@ const TOPICS: &[Topic] = &[
         mnemonic: "ANR",
         args: &[],
         example: "AAPL US <EQUITY> ANR",
+        plain: "aapl analysts",
         usage: "",
         live: &[(Src::Finnhub, "analyst rating counts"), (Src::Alpaca, "last price for the implied return")],
         live_note: "",
@@ -289,6 +320,7 @@ const TOPICS: &[Topic] = &[
         mnemonic: "HDS",
         args: &[("type", "All, Institutions, Funds or Insiders (default All)")],
         example: "AAPL US <EQUITY> HDS",
+        plain: "aapl holders",
         usage: "",
         live: &[],
         live_note: "NOT AVAILABLE in LIVE mode: no free source provides holders.",
@@ -298,6 +330,7 @@ const TOPICS: &[Topic] = &[
         mnemonic: "DVD",
         args: &[],
         example: "KO US <EQUITY> DVD",
+        plain: "ko dividends",
         usage: "",
         live: &[
             (Src::Alpaca, "corporate actions: ex-, record and pay dates, cash amounts and splits"),
@@ -316,6 +349,7 @@ const TOPICS: &[Topic] = &[
             ("summary", "1 = AI summary of the open filing"),
         ],
         example: "AAPL US <EQUITY> CF",
+        plain: "aapl 10-k",
         usage: "",
         live: &[(Src::Edgar, "filing lists and documents"), (Src::Anthropic, "AI summaries")],
         live_note: "",
@@ -328,6 +362,7 @@ const TOPICS: &[Topic] = &[
             ("strikes", "number of strikes around the money (default 20)"),
         ],
         example: "AAPL US <EQUITY> OMON",
+        plain: "aapl options",
         usage: "",
         live: &[
             (Src::Alpaca, "option chain (on the free plan the indicative feed: derived quotes, trades delayed 15 minutes), underlying price, dividends"),
@@ -340,6 +375,7 @@ const TOPICS: &[Topic] = &[
         mnemonic: "OVDV",
         args: &[("expiry", "expiration for the smile (default: first about a month out)")],
         example: "SPY US <EQUITY> OVDV",
+        plain: "spy volatility",
         usage: "",
         live: &[
             (Src::Alpaca, "option chain implied volatilities, underlying price, dividends"),
@@ -358,6 +394,7 @@ const TOPICS: &[Topic] = &[
             ("k1 … k4", "strikes for the strategy legs"),
         ],
         example: "AAPL US <EQUITY> OVME",
+        plain: "aapl option valuation",
         usage: "",
         live: &[
             (Src::Alpaca, "spot, price history for 30-day volatility, dividends"),
@@ -376,6 +413,7 @@ const TOPICS: &[Topic] = &[
             ("min_margin", "minimum net margin %"),
         ],
         example: "EQS",
+        plain: "screener",
         usage: "",
         live: &[(Src::Edgar, "financial statements"), (Src::Alpaca, "prices and one-year history")],
         live_note: "",
@@ -385,6 +423,7 @@ const TOPICS: &[Topic] = &[
         mnemonic: "RV",
         args: &[],
         example: "MSFT US <EQUITY> RV",
+        plain: "msft peers",
         usage: "",
         live: &[(Src::Edgar, "financial statements and industry"), (Src::Alpaca, "prices")],
         live_note: "",
@@ -397,6 +436,7 @@ const TOPICS: &[Topic] = &[
             ("range", "history window (default 1Y)"),
         ],
         example: "CORR",
+        plain: "aapl correlation",
         usage: "",
         live: BARS_LIVE,
         live_note: "",
@@ -410,6 +450,7 @@ const TOPICS: &[Topic] = &[
             ("delete_tx", "transaction id to delete (rows set it)"),
         ],
         example: "PORT",
+        plain: "portfolio",
         usage: "",
         live: QUOTES_LIVE,
         live_note: "Positions and transactions are stored on this Mac.",
@@ -423,6 +464,7 @@ const TOPICS: &[Topic] = &[
             ("short", "Yes allows short positions (default No)"),
         ],
         example: "SPY US <EQUITY> BTST",
+        plain: "spy backtest 10y",
         usage: "",
         live: BARS_LIVE,
         live_note: "",
@@ -437,6 +479,7 @@ const TOPICS: &[Topic] = &[
             ("toggle, delete", "alert id (rows set them)"),
         ],
         example: "ALRT",
+        plain: "alerts",
         usage: "",
         live: &[
             (Src::Alpaca, "prices; news for keyword alerts"),
@@ -450,6 +493,7 @@ const TOPICS: &[Topic] = &[
         mnemonic: "WEI",
         args: &[],
         example: "WEI",
+        plain: "world",
         usage: "",
         live: &[(Src::Alpaca, "quotes for US-listed ETFs used as index proxies")],
         live_note: "Index levels aren't available from free sources; rows show ETF proxies, whose % change approximates the index's.",
@@ -464,6 +508,7 @@ const TOPICS: &[Topic] = &[
             ("importance", "High, Medium or Low (default Low = all)"),
         ],
         example: "ECO",
+        plain: "cpi",
         usage: "",
         live: &[(Src::Fred, "release calendar and economic series"), (Src::Keyless, "US Treasury par yield curve")],
         live_note: "",
@@ -473,6 +518,7 @@ const TOPICS: &[Topic] = &[
         mnemonic: "FXC",
         args: &[],
         example: "FXC",
+        plain: "fx",
         usage: "",
         live: &[(Src::Keyless, "ECB reference rates via Frankfurter (daily)")],
         live_note: "",
@@ -482,6 +528,7 @@ const TOPICS: &[Topic] = &[
         mnemonic: "CRYP",
         args: &[],
         example: "CRYP",
+        plain: "crypto",
         usage: "",
         live: &[(Src::Keyless, "Coinbase and Kraken quotes and streams")],
         live_note: "",
@@ -491,7 +538,8 @@ const TOPICS: &[Topic] = &[
         mnemonic: "ASK",
         args: &[],
         example: "ASK",
-        usage: "Type the question in the ASK panel.",
+        plain: "ask what drove apple's margin?",
+        usage: "Type ask and the question on the command line, or a question ending in ?; or type it in the ASK panel.",
         live: &[(Src::Anthropic, "the model")],
         live_note: "Its tools read the other sources; data whose terms don't clearly allow AI use is left out.",
         related: &["DES", "FA", "CN"],
@@ -500,10 +548,61 @@ const TOPICS: &[Topic] = &[
         mnemonic: "HELP",
         args: &[("topic", "function mnemonic to explain (default: this overview)")],
         example: "HELP",
+        plain: "help",
         usage: "",
         live: &[],
         live_note: "Built in; uses no market data.",
         related: &["SECF", "BLP", "ASK"],
+    },
+    Topic {
+        mnemonic: "TODAY",
+        args: &[],
+        example: "TODAY",
+        plain: "today",
+        usage: "Also opens with home.",
+        live: &[],
+        live_note: "Gathers what the other screens show; each part names its sources.",
+        related: &["W", "PORT", "CALENDAR", "TOP"],
+    },
+    Topic {
+        mnemonic: "CALENDAR",
+        args: &[
+            ("kind", "earnings or dividends (default: both)"),
+            ("range", "today, this-week or next-week (default this-week)"),
+        ],
+        example: "CALENDAR",
+        plain: "earnings this week",
+        usage: "Plain phrases set both arguments: earnings this week, earnings next week, earnings today, dividends this week.",
+        live: &[],
+        live_note: "Each part of the calendar names its source.",
+        related: &["ERN", "DVD", "ECO"],
+    },
+    Topic {
+        mnemonic: "FILINGS",
+        args: &[],
+        example: "FILINGS",
+        plain: "filings",
+        usage: "For one company's filings, name it: aapl filings.",
+        live: &[(Src::Edgar, "filing lists and documents"), (Src::Anthropic, "AI summaries")],
+        live_note: "",
+        related: &["CF", "W", "PORT"],
+    },
+    Topic {
+        mnemonic: "COMPARE",
+        args: &[
+            ("securities", "comma-separated security keys (typing aapl vs msft sets them; up to 8)"),
+            ("range", "1D 5D 1M 3M 6M YTD 1Y 2Y 3Y 5Y 10Y 20Y MAX (default 1Y)"),
+        ],
+        example: "COMPARE",
+        plain: "aapl vs msft 5y",
+        usage: "Name the securities with vs and an optional range: aapl vs msft, aapl vs msft vs googl 5y, compare aapl with btc.",
+        live: &[
+            (Src::Alpaca, "prices and history for US stocks and ETFs"),
+            (Src::Keyless, "crypto prices from Coinbase and Kraken; FX daily reference rates from Frankfurter (ECB)"),
+            (Src::Edgar, "financial statements for market cap, P/E, net margin and dividend yield"),
+        ],
+        live_note: "",
+        related: &["GP", "RV", "CORR"],
     },
 ];
 
@@ -570,7 +669,7 @@ pub(crate) async fn help(_engine: Arc<Engine>, req: ScreenRequest) -> Screen {
 fn overview(req: &ScreenRequest) -> Screen {
     let mut s = Screen::new("HELP", TITLE, None);
     s.push(topic_input(OVERVIEW));
-    s.push(Block::Text { title: Some("Command Syntax".into()), body: SYNTAX.into() });
+    s.push(Block::Text { title: Some("Commands".into()), body: SYNTAX.into() });
     let keys = OVERLAY_KEYS
         .iter()
         .chain(ROUTER_ONLY_KEYS)
@@ -628,6 +727,9 @@ fn topic_screen(spec: &'static FunctionSpec, req: &ScreenRequest) -> Screen {
         Field::text("Security", security_text(spec)),
     ];
     if let Some(t) = t {
+        if !t.plain.is_empty() {
+            fields.push(Field::text("Plain phrase", t.plain));
+        }
         fields.push(Field::text("Example", format!("{} <GO>", t.example)));
     }
     s.push(Block::Fields { title: None, columns: 2, fields });
@@ -729,6 +831,37 @@ mod tests {
             }
             assert!(!t.live.is_empty() || !t.live_note.is_empty(), "{}: say where LIVE data comes from", t.mnemonic);
         }
+    }
+
+    #[test]
+    fn plain_phrases_run_their_function() {
+        use meridian_command::{IndexedInstrument, SuggestIndex};
+        let index = SuggestIndex::new(
+            ["AAPL", "MSFT", "NVDA", "KO", "SPY"]
+                .into_iter()
+                .map(|s| IndexedInstrument { key: SecurityKey::equity(s), name: s.into(), popularity: 1.0 })
+                .collect(),
+        );
+        let ctx = ParseContext::default();
+        for t in TOPICS.iter().filter(|t| !t.plain.is_empty()) {
+            let function = match index.interpret(t.plain, &ctx) {
+                ParsedCommand::Run(a) => a.function,
+                ParsedCommand::Function { function, .. } | ParsedCommand::Security { function: Some(function), .. } => function,
+                ParsedCommand::Search(_) => "SECF".into(),
+                other => panic!("{}: {:?} reads as {other:?}", t.mnemonic, t.plain),
+            };
+            assert_eq!(function, t.mnemonic, "{:?}", t.plain);
+        }
+    }
+
+    #[test]
+    fn the_overview_leads_with_plain_phrases() {
+        let s = overview(&ScreenRequest::new("HELP", None));
+        let Some(Block::Text { title, body }) = s.blocks.get(1) else { panic!("syntax block") };
+        assert_eq!(title.as_deref(), Some("Commands"));
+        let plain = body.find("aapl 5y").expect("plain phrases");
+        let mnemonic = body.find("AAPL US <EQUITY> DES <GO>").expect("mnemonic syntax");
+        assert!(plain < mnemonic);
     }
 
     /// `(key, binding)` pairs in the `KeyboardOverlay.rows` literal.

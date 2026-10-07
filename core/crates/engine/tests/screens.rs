@@ -75,6 +75,12 @@ fn cases() -> Vec<(&'static str, ScreenRequest)> {
         ("secf_apple", req("SECF", None, &[("q", "apple")])),
         ("help", req("HELP", None, &[])),
         ("help_gp", req("HELP", None, &[("topic", "GP")])),
+        ("help_compare", req("HELP", None, &[("topic", "COMPARE")])),
+        ("compare_aapl_msft", req("COMPARE", aapl, &[("securities", "AAPL US Equity, MSFT US Equity")])),
+        (
+            "compare_aapl_btc_spy_5y",
+            req("COMPARE", aapl, &[("securities", "AAPL US Equity, BTCUSD Curncy, SPY US Equity"), ("range", "5Y")]),
+        ),
     ]
 }
 

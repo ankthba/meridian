@@ -1,5 +1,6 @@
 //! Autocomplete latency over 20,000 instruments, `limit` 12.
-//! Budget: < 2 ms per call (ARCHITECTURE §12).
+//! Budget: < 2 ms per call for mnemonic queries (ARCHITECTURE §12) and
+//! < 5 ms for plain-language ones.
 
 #[path = "../tests/support/mod.rs"]
 mod support;
@@ -20,6 +21,18 @@ fn bench_suggest(c: &mut Criterion) {
         });
     }
     group.finish();
+
+    let mut group = c.benchmark_group("suggest_plain_20k");
+    for query in support::PLAIN_QUERIES {
+        group.bench_with_input(BenchmarkId::from_parameter(query.trim()), query, |b, q| {
+            b.iter(|| index.suggest(black_box(q), &ctx, 12));
+        });
+    }
+    group.finish();
+
+    c.bench_function("interpret_plain", |b| {
+        b.iter(|| index.interpret(black_box("aapl vs msft 5y"), &ctx));
+    });
 
     c.bench_function("build_index_20k", |b| {
         b.iter_batched(

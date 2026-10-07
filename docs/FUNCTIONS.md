@@ -76,6 +76,56 @@ The brief's **AI summary and diff vs prior filing** are our own additions. They 
 |---|---|---|---|
 | ASK | Our AI analyst | **Ours (not standard)** | Approved by the brief. The incumbent has a similar function, `ASKB`. `ASK` itself has no evidence of being an existing mnemonic, so there's no collision. |
 
+## 1.1: plain-word functions
+
+New functions get plain-word ids instead of new mnemonics (CLAUDE.md, 2026-10-07). They are Meridian's own and make no claim to be standard.
+
+| Id | Function | Arguments | Notes |
+|---|---|---|---|
+| TODAY | Home: your markets, holdings and what's coming up | none | Registered so `today` and `home` resolve and autocomplete; the screen is built separately |
+| CALENDAR | Upcoming earnings reports and dividend dates | `kind` = `earnings` or `dividends` (absent: both); `range` = `today`, `this-week` or `next-week` (absent: this week) | `earnings this week` → `kind=earnings range=this-week`; the screen is built separately |
+| FILINGS | Filings inbox: new filings from the companies you follow | none | `filings` alone; `aapl filings` is still CF for one company. The screen is built separately |
+| COMPARE | Securities side by side: performance rebased to 100 and a table of last price, 1D/1M/YTD/1Y change, market cap, P/E, net margin and dividend yield | `securities` = comma-separated keys (up to 8); `range` = a chart preset (default 1Y) | `aapl vs msft [vs …] [range]`, `compare aapl with msft`. Changes are measured from the last close on or before the period's start date (YTD from the prior year-end), and the chart is rebased at the same close, so a 1Y chart ends at the 1Y change |
+
+`SETTINGS` and `IMPORT` are app actions, not registry functions: `settings` and `import` resolve to them and the app opens Settings or the CSV import.
+
+## Plain-language commands (1.1)
+
+Case-insensitive. A security is a ticker (`aapl`, `brk.b`, `brk/b`), a ticker and exchange (`bmw gr`), a coin (`btc`, `eth`) or a currency pair (`eurusd`, `eur/usd`). The vocabulary lives in `core/crates/command/src/plain.rs`.
+
+| Typed | Runs |
+|---|---|
+| `<sec>` | DES |
+| `<sec> 1d · 5d · 1m · 3m · 6m · ytd · 1y · 2y · 3y · 5y · 10y · 20y · max` (also `5 years`, `1 week`, `year to date`) | GP with `range` |
+| `<sec> chart · graph [range]`, `<sec> 5y chart` | GP |
+| `<sec> intraday [range]`, `<sec> today` | GIP |
+| `<sec> news` | CN |
+| `<sec> filings`; `10-k · 10-q · 8-k` (also `10k`, `annual report`) | CF; with `form` |
+| `<sec> financials · fundamentals`; `income [statement] · balance sheet · cash flow · ratios [quarterly]` | FA; with `stmt` (and `per`) |
+| `<sec> earnings` · `estimates` · `analysts · ratings` · `dividends · splits` · `holders` | ERN · EE · ANR · DVD · HDS |
+| `<sec> options · chain` · `volatility · vol · smile` · `option valuation` | OMON · OVDV · OVME |
+| `<sec> backtest [range]` · `peers · comps` · `history · prices` · `description · profile · overview` · `correlation` | BTST · RV · HP · DES · CORR |
+| `<sec> <MNEMONIC> [args]` | as `SYMBOL US <EQUITY> <MNEMONIC> [args]` |
+| `<topic> <sec>` (`filings aapl`, `5y msft`) | as `<sec> <topic>` |
+| `<topic>` alone (`chart`, `options`, `5y`) | that topic on the panel's loaded security |
+| `<sec> vs <sec2> [vs …] [range]`, `compare <sec> [with] <sec2> …` | COMPARE |
+| `today · home` · `calendar` · `filings` · `portfolio` · `import` · `settings` | TODAY · CALENDAR · FILINGS · PORT · IMPORT · SETTINGS |
+| `earnings [this week · next week · today]`, `dividends [this week · next week · today]` | CALENDAR with `kind` (and `range`) |
+| `news · headlines` · `crypto` · `fx · currencies` · `indices · world` · `screener` · `alerts` · `watchlist` · `most active` · `gainers · losers` · `help` | TOP · CRYP · FXC · WEI · EQS · ALRT · W · MOST · HELP |
+| `rates · yield curve · treasury` | ECO `view=curve` |
+| `cpi · inflation` · `unemployment` · `jobs · payrolls` · `gdp` · `real gdp` · `fed funds` | ECO `series=` CPIAUCSL · UNRATE · PAYEMS · GDP · GDPC1 · FEDFUNDS |
+| `ask <question>`, or two or more words ending in `?` | ASK with `q=<question>` as typed |
+| anything else | security search (SECF), as before |
+
+**Ambiguity rules** (decided 2026-10-07; tests in `plain.rs` and `suggest.rs`):
+
+1. **Mnemonics keep precedence.** A typed key or a leading mnemonic means what it always did (`CN` alone is Company News; `W` is the worksheet). Exceptions: `ask <question>` keeps the question's case, and a plain-word id followed by more words is read as a phrase (`compare aapl msft`, `filings aapl`, `AAPL US <EQUITY> filings`).
+2. **Data words yield to an exact ticker.** `cpi`, `inflation`, `unemployment`, `jobs`, `payrolls` and `gdp` open the FRED series unless the index lists a ticker with exactly that symbol, which then opens instead: a listed ticker is the more specific match, and the series stays the next row in the suggestions. Navigation words (`news`, `crypto`, `fx`, `world`, `today`, `settings`, …) never yield; the ticker is reachable as `news us` or with its key.
+3. **Major coins beat same-named funds.** `btc`, `eth`, `sol`, `xrp`, `ada`, `doge`, `avax`, `link`, `dot`, `ltc`, `bch`, `xlm`, `uni`, `atom`, `aave` (the CRYP list) mean the coin even where a fund trades under the ticker (`btc us` reaches the fund). Other coin shorthands apply only when no ticker matches.
+4. **A ticker before a range word is a security.** `aapl vs max` compares with the ticker MAX; `aapl max` is the all-time chart.
+5. **Currency pairs of two ISO codes resolve without an index entry** (`usdjpy`), since the pair itself names the instrument; a screen with no source for it says NOT AVAILABLE.
+6. **Unresolved securities don't guess.** `zzzz 5y`, `aapl vs zzzz` and `aapl qqqq` stay security searches.
+
 ## Shell-level keys and screens (Phase 2)
 
 | Item | Finding | Source |

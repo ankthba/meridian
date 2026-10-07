@@ -6,6 +6,7 @@ mod analysis;
 pub mod chart;
 mod common;
 mod company;
+mod compare;
 mod des;
 mod dividends;
 mod filings;
@@ -135,6 +136,7 @@ pub(crate) fn analytics_builder_for(function: &str) -> Option<Builder> {
         "CORR" => builder!(analysis::corr),
         "PORT" => builder!(analysis::port),
         "BTST" => builder!(analysis::btst),
+        "COMPARE" => builder!(compare::compare),
         _ => return None,
     })
 }

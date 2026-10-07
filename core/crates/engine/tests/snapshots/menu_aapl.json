@@ -505,6 +505,33 @@
           {
             "action": {
               "args": [],
+              "function": "COMPARE",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "COMPARE",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Compare",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Performance of two or more securities rebased to 100, with price changes and key figures side by side.",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
               "function": "CORR",
               "security": "AAPL US Equity"
             },

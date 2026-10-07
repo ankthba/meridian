@@ -1,9 +1,10 @@
 //! The function registry: metadata for every function Meridian ships.
 //!
 //! Every mnemonic here is either verified as a standard terminal mnemonic or
-//! approved in `docs/FUNCTIONS.md`. Swift maps each mnemonic to a view
-//! factory, and ARCHITECTURE §9.2 requires a test that keeps the Rust and
-//! Swift sets identical.
+//! approved in `docs/FUNCTIONS.md`. Functions added in 1.1 use plain-word ids
+//! (`TODAY`, `CALENDAR`, `FILINGS`, `COMPARE`) rather than new mnemonics.
+//! Swift maps each id to a view factory, and ARCHITECTURE §9.2 requires a
+//! test that keeps the Rust and Swift sets identical.
 
 use meridian_types::MarketSector;
 use serde::{Deserialize, Serialize};
@@ -41,10 +42,16 @@ pub enum FunctionCategory {
 /// deserialize into `&'static` data.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
 pub struct FunctionSpec {
-    /// Upper-case mnemonic typed on the command line, e.g. `DES`.
+    /// Upper-case mnemonic or plain-word id typed on the command line, e.g.
+    /// `DES` or `TODAY`.
     pub mnemonic: &'static str,
-    /// Short title for menus and autocomplete.
+    /// Short title for menus and help screens.
     pub title: &'static str,
+    /// Plain name in sentence case for the command bar, e.g. `Filings`.
+    pub name: &'static str,
+    /// What it shows, in a few plain words (no final period), e.g. `10-K,
+    /// 10-Q and 8-K, with summaries and what changed`.
+    pub summary: &'static str,
     /// One-sentence description for help screens.
     pub description: &'static str,
     /// Lower-case search words for autocomplete.
@@ -90,11 +97,13 @@ const EQUITY_INDEX: &[MarketSector] = &[MarketSector::Equity, MarketSector::Inde
 use FunctionCategory as C;
 use SecurityNeed as S;
 
-static REGISTRY: [FunctionSpec; 33] = [
+static REGISTRY: [FunctionSpec; 37] = [
     // Core market
     FunctionSpec {
         mnemonic: "DES",
         title: "Security Description",
+        name: "Overview",
+        summary: "Company profile, key statistics and identifiers",
         description: "Profile of the security: business summary, key statistics, and identifiers.",
         keywords: &[
             "description",
@@ -113,6 +122,8 @@ static REGISTRY: [FunctionSpec; 33] = [
     FunctionSpec {
         mnemonic: "GP",
         title: "Historical Price Graph",
+        name: "Chart",
+        summary: "Price chart with moving averages and studies",
         description: "Historical price chart with technical indicators and drawing tools.",
         keywords: &[
             "graph",
@@ -134,6 +145,8 @@ static REGISTRY: [FunctionSpec; 33] = [
     FunctionSpec {
         mnemonic: "GIP",
         title: "Intraday Price Graph",
+        name: "Intraday chart",
+        summary: "The trading session in minute bars",
         description: "Intraday chart of the current or a recent trading session.",
         keywords: &[
             "intraday", "graph", "chart", "price", "today", "session", "minute", "tick", "bars",
@@ -145,6 +158,8 @@ static REGISTRY: [FunctionSpec; 33] = [
     FunctionSpec {
         mnemonic: "HP",
         title: "Historical Prices",
+        name: "Price history",
+        summary: "Daily, weekly or monthly prices in a table",
         description: "Table of historical open, high, low, close, and volume.",
         keywords: &[
             "historical",
@@ -164,8 +179,29 @@ static REGISTRY: [FunctionSpec; 33] = [
         category: C::Charts,
     },
     FunctionSpec {
+        mnemonic: "TODAY",
+        title: "Today",
+        name: "Today",
+        summary: "Home: your markets, holdings and what's coming up",
+        description: "Home screen: how your markets and holdings are doing today and what's coming up.",
+        keywords: &[
+            "today",
+            "home",
+            "dashboard",
+            "summary",
+            "markets",
+            "morning",
+            "overview",
+        ],
+        needs_security: S::None,
+        sectors: ANY,
+        category: C::Monitors,
+    },
+    FunctionSpec {
         mnemonic: "W",
         title: "Worksheet",
+        name: "Watchlist",
+        summary: "Live quotes for your watchlists",
         description: "Real-time worksheet of securities with configurable columns.",
         keywords: &[
             "worksheet",
@@ -183,6 +219,8 @@ static REGISTRY: [FunctionSpec; 33] = [
     FunctionSpec {
         mnemonic: "BLP",
         title: "Launchpad",
+        name: "Launchpad",
+        summary: "Tiled workspace of monitors, charts and news",
         description: "Workspace of monitors, charts, news, and function panels across pages and displays.",
         keywords: &[
             "launchpad",
@@ -200,6 +238,8 @@ static REGISTRY: [FunctionSpec; 33] = [
     FunctionSpec {
         mnemonic: "SECF",
         title: "Security Finder",
+        name: "Find a security",
+        summary: "Search by name or ticker",
         description: "Search for securities by name, ticker, or asset class.",
         keywords: &[
             "security",
@@ -220,6 +260,8 @@ static REGISTRY: [FunctionSpec; 33] = [
     FunctionSpec {
         mnemonic: "MOST",
         title: "Most Active",
+        name: "Most active",
+        summary: "Most traded securities, gainers and losers",
         description: "Most active securities ranked by volume, value traded, and price change.",
         keywords: &[
             "most", "active", "volume", "gainers", "losers", "movers", "leaders", "traded",
@@ -232,6 +274,8 @@ static REGISTRY: [FunctionSpec; 33] = [
     FunctionSpec {
         mnemonic: "N",
         title: "News",
+        name: "News menu",
+        summary: "Top stories, sources and press releases",
         description: "News main menu: top stories, sources, and topics.",
         keywords: &[
             "news",
@@ -249,6 +293,8 @@ static REGISTRY: [FunctionSpec; 33] = [
     FunctionSpec {
         mnemonic: "CN",
         title: "Company News",
+        name: "News",
+        summary: "Headlines and press releases for the company",
         description: "News for the loaded security, or general market news when none is loaded.",
         keywords: &["company", "news", "headlines", "stories", "security"],
         needs_security: S::Optional,
@@ -258,6 +304,8 @@ static REGISTRY: [FunctionSpec; 33] = [
     FunctionSpec {
         mnemonic: "TOP",
         title: "Top News",
+        name: "Top news",
+        summary: "Latest market headlines",
         description: "Top headlines across markets.",
         keywords: &["top", "news", "headlines", "stories", "breaking", "market"],
         needs_security: S::None,
@@ -267,6 +315,8 @@ static REGISTRY: [FunctionSpec; 33] = [
     FunctionSpec {
         mnemonic: "FA",
         title: "Financial Analysis",
+        name: "Financials",
+        summary: "Income statement, balance sheet, cash flow",
         description: "Financial statements and ratios: income statement, balance sheet, and cash flow.",
         keywords: &[
             "financial",
@@ -289,6 +339,8 @@ static REGISTRY: [FunctionSpec; 33] = [
     FunctionSpec {
         mnemonic: "EE",
         title: "Earnings Estimates",
+        name: "Estimates",
+        summary: "Analyst consensus for EPS and revenue",
         description: "Consensus analyst estimates for EPS, revenue, and other metrics.",
         keywords: &[
             "earnings",
@@ -307,6 +359,8 @@ static REGISTRY: [FunctionSpec; 33] = [
     FunctionSpec {
         mnemonic: "ERN",
         title: "Earnings History",
+        name: "Earnings",
+        summary: "Reported results against estimates",
         description: "Reported earnings against consensus, with surprises and price reaction.",
         keywords: &[
             "earnings",
@@ -328,6 +382,8 @@ static REGISTRY: [FunctionSpec; 33] = [
     FunctionSpec {
         mnemonic: "ANR",
         title: "Analyst Recommendations",
+        name: "Analyst ratings",
+        summary: "Ratings, price targets and the consensus",
         description: "Analyst ratings, price targets, and the consensus recommendation.",
         keywords: &[
             "analyst",
@@ -348,6 +404,8 @@ static REGISTRY: [FunctionSpec; 33] = [
     FunctionSpec {
         mnemonic: "HDS",
         title: "Holders",
+        name: "Holders",
+        summary: "Institutional, fund and insider holders",
         description: "Institutional and insider holders of the security.",
         keywords: &[
             "holders",
@@ -366,6 +424,8 @@ static REGISTRY: [FunctionSpec; 33] = [
     FunctionSpec {
         mnemonic: "DVD",
         title: "Dividends and Splits",
+        name: "Dividends and splits",
+        summary: "Dividend history, yield and stock splits",
         description: "Dividend history and projections, and stock splits.",
         keywords: &[
             "dividends",
@@ -381,8 +441,30 @@ static REGISTRY: [FunctionSpec; 33] = [
         category: C::Fundamentals,
     },
     FunctionSpec {
+        mnemonic: "CALENDAR",
+        title: "Calendar",
+        name: "Calendar",
+        summary: "Upcoming earnings reports and dividends",
+        description: "Upcoming earnings reports and dividend dates, for today, this week or next week.",
+        keywords: &[
+            "calendar",
+            "earnings",
+            "dividends",
+            "upcoming",
+            "schedule",
+            "week",
+            "reports",
+            "events",
+        ],
+        needs_security: S::None,
+        sectors: ANY,
+        category: C::Fundamentals,
+    },
+    FunctionSpec {
         mnemonic: "CF",
         title: "Company Filings",
+        name: "Filings",
+        summary: "10-K, 10-Q and 8-K, with summaries and what changed",
         description: "Regulatory filings such as 10-K, 10-Q, and 8-K, with summaries and changes from the prior filing.",
         keywords: &[
             "company",
@@ -402,10 +484,25 @@ static REGISTRY: [FunctionSpec; 33] = [
         sectors: EQUITY,
         category: C::Filings,
     },
+    FunctionSpec {
+        mnemonic: "FILINGS",
+        title: "Filings inbox",
+        name: "Filings inbox",
+        summary: "New filings from the companies you follow",
+        description: "New regulatory filings from the companies you follow, newest first, with summaries and what changed.",
+        keywords: &[
+            "filings", "inbox", "new", "recent", "sec", "edgar", "10-k", "10-q", "8-k",
+        ],
+        needs_security: S::None,
+        sectors: ANY,
+        category: C::Filings,
+    },
     // Derivatives
     FunctionSpec {
         mnemonic: "OMON",
         title: "Option Monitor",
+        name: "Options",
+        summary: "Option chain with implied volatility and Greeks",
         description: "Option chain with prices, implied volatility, and Greeks.",
         keywords: &[
             "options",
@@ -428,6 +525,8 @@ static REGISTRY: [FunctionSpec; 33] = [
     FunctionSpec {
         mnemonic: "OVDV",
         title: "Volatility Surface",
+        name: "Volatility",
+        summary: "Implied volatility smile and term structure",
         description: "Implied volatility surface and skew across strikes and expiries.",
         keywords: &[
             "volatility",
@@ -448,6 +547,8 @@ static REGISTRY: [FunctionSpec; 33] = [
     FunctionSpec {
         mnemonic: "OVME",
         title: "Option Valuation",
+        name: "Option valuation",
+        summary: "Price options and strategies, with the payoff",
         description: "Value options and multi-leg strategies, with payoff and scenario analysis.",
         keywords: &[
             "option",
@@ -470,6 +571,8 @@ static REGISTRY: [FunctionSpec; 33] = [
     FunctionSpec {
         mnemonic: "EQS",
         title: "Equity Screener",
+        name: "Screener",
+        summary: "Filter stocks by valuation, growth and margins",
         description: "Screen equities by fundamental and market criteria.",
         keywords: &[
             "equity", "screener", "screen", "filter", "stocks", "criteria", "search",
@@ -481,6 +584,8 @@ static REGISTRY: [FunctionSpec; 33] = [
     FunctionSpec {
         mnemonic: "RV",
         title: "Relative Valuation",
+        name: "Peers",
+        summary: "Valuation and performance against peers",
         description: "Compare the security with its peers on valuation and performance.",
         keywords: &[
             "relative",
@@ -497,8 +602,29 @@ static REGISTRY: [FunctionSpec; 33] = [
         category: C::Analytics,
     },
     FunctionSpec {
+        mnemonic: "COMPARE",
+        title: "Compare",
+        name: "Compare",
+        summary: "Performance and key figures side by side",
+        description: "Performance of two or more securities rebased to 100, with price changes and key figures side by side.",
+        keywords: &[
+            "compare",
+            "comparison",
+            "versus",
+            "vs",
+            "performance",
+            "rebased",
+            "side",
+        ],
+        needs_security: S::Optional,
+        sectors: ANY,
+        category: C::Analytics,
+    },
+    FunctionSpec {
         mnemonic: "CORR",
         title: "Correlation Matrix",
+        name: "Correlation",
+        summary: "Correlation of returns across securities",
         description: "Correlation of returns across a set of securities.",
         keywords: &[
             "correlation",
@@ -514,6 +640,8 @@ static REGISTRY: [FunctionSpec; 33] = [
     FunctionSpec {
         mnemonic: "PORT",
         title: "Portfolio Analytics",
+        name: "Portfolio",
+        summary: "Holdings, performance and risk",
         description: "Portfolio holdings, performance, and risk.",
         keywords: &[
             "portfolio",
@@ -532,6 +660,8 @@ static REGISTRY: [FunctionSpec; 33] = [
     FunctionSpec {
         mnemonic: "BTST",
         title: "Backtester",
+        name: "Backtest",
+        summary: "Test a trading strategy on price history",
         description: "Backtest a trading strategy on the security's price history.",
         keywords: &[
             "backtest",
@@ -550,6 +680,8 @@ static REGISTRY: [FunctionSpec; 33] = [
     FunctionSpec {
         mnemonic: "ALRT",
         title: "Alerts",
+        name: "Alerts",
+        summary: "Price and news alerts",
         description: "Create and manage price and event alerts.",
         keywords: &[
             "alerts",
@@ -567,6 +699,8 @@ static REGISTRY: [FunctionSpec; 33] = [
     FunctionSpec {
         mnemonic: "WEI",
         title: "World Equity Indices",
+        name: "World indices",
+        summary: "Major stock indices around the world",
         description: "Major equity indices worldwide with price and performance.",
         keywords: &[
             "world",
@@ -586,6 +720,8 @@ static REGISTRY: [FunctionSpec; 33] = [
     FunctionSpec {
         mnemonic: "ECO",
         title: "Economic Calendar",
+        name: "Economic calendar",
+        summary: "Releases, economic series and the Treasury curve",
         description: "Economic releases with actual, consensus, and prior values, plus economic data series.",
         keywords: &[
             "economic",
@@ -609,6 +745,8 @@ static REGISTRY: [FunctionSpec; 33] = [
     FunctionSpec {
         mnemonic: "FXC",
         title: "FX Cross Rates",
+        name: "Currencies",
+        summary: "Cross rates between major currencies",
         description: "Matrix of cross exchange rates between major currencies.",
         keywords: &[
             "fx",
@@ -628,6 +766,8 @@ static REGISTRY: [FunctionSpec; 33] = [
     FunctionSpec {
         mnemonic: "CRYP",
         title: "Crypto Monitor",
+        name: "Crypto",
+        summary: "Prices for major cryptocurrencies",
         description: "Prices and market data for cryptocurrencies.",
         keywords: &[
             "crypto",
@@ -647,6 +787,8 @@ static REGISTRY: [FunctionSpec; 33] = [
     FunctionSpec {
         mnemonic: "ASK",
         title: "AI Analyst",
+        name: "Ask",
+        summary: "Questions about markets in plain language",
         description: "Ask questions about markets and securities in plain language; numbers in answers are checked against the data used.",
         keywords: &[
             "ai",
@@ -665,6 +807,8 @@ static REGISTRY: [FunctionSpec; 33] = [
     FunctionSpec {
         mnemonic: "HELP",
         title: "Help",
+        name: "Help",
+        summary: "Commands, keys and every function",
         description: "Command syntax, the keyboard map, and a directory of every function; with a topic, help for one function.",
         keywords: &[
             "help",
@@ -689,11 +833,15 @@ mod tests {
 
     use super::*;
 
-    const EXPECTED: [&str; 33] = [
-        "DES", "GP", "GIP", "HP", "W", "BLP", "SECF", "MOST", "N", "CN", "TOP", "FA", "EE", "ERN",
-        "ANR", "HDS", "DVD", "CF", "OMON", "OVDV", "OVME", "EQS", "RV", "CORR", "PORT", "BTST",
-        "ALRT", "WEI", "ECO", "FXC", "CRYP", "ASK", "HELP",
+    const EXPECTED: [&str; 37] = [
+        "DES", "GP", "GIP", "HP", "TODAY", "W", "BLP", "SECF", "MOST", "N", "CN", "TOP", "FA",
+        "EE", "ERN", "ANR", "HDS", "DVD", "CALENDAR", "CF", "FILINGS", "OMON", "OVDV", "OVME",
+        "EQS", "RV", "COMPARE", "CORR", "PORT", "BTST", "ALRT", "WEI", "ECO", "FXC", "CRYP", "ASK",
+        "HELP",
     ];
+
+    /// Plain-word ids added in 1.1 instead of new mnemonics.
+    const PLAIN_IDS: [&str; 4] = ["TODAY", "CALENDAR", "FILINGS", "COMPARE"];
 
     fn spec(m: &str) -> &'static FunctionSpec {
         lookup(m).unwrap_or_else(|| panic!("{m} missing"))
@@ -720,8 +868,13 @@ mod tests {
     #[test]
     fn specs_are_well_formed() {
         for s in registry() {
+            let max_len = if PLAIN_IDS.contains(&s.mnemonic) {
+                8
+            } else {
+                4
+            };
             assert!(
-                !s.mnemonic.is_empty() && s.mnemonic.len() <= 4,
+                !s.mnemonic.is_empty() && s.mnemonic.len() <= max_len,
                 "{}",
                 s.mnemonic
             );
@@ -732,6 +885,22 @@ mod tests {
             );
             assert!(!s.title.is_empty(), "{}", s.mnemonic);
             assert!(s.description.ends_with('.'), "{}", s.mnemonic);
+            // Plain names and summaries: sentence case, no final period.
+            assert!(
+                s.name.starts_with(|c: char| c.is_ascii_uppercase()),
+                "{}",
+                s.mnemonic
+            );
+            assert!(
+                !s.summary.is_empty() && !s.summary.ends_with('.'),
+                "{}",
+                s.mnemonic
+            );
+            assert!(
+                s.name.len() <= 24 && s.summary.len() <= 60,
+                "{}",
+                s.mnemonic
+            );
             assert!(!s.keywords.is_empty(), "{}", s.mnemonic);
             for k in s.keywords {
                 assert_eq!(
@@ -788,13 +957,33 @@ mod tests {
         );
         for m in [
             "WEI", "ECO", "FXC", "CRYP", "TOP", "N", "EQS", "BLP", "W", "MOST", "PORT", "ALRT",
-            "ASK", "SECF", "HELP",
+            "ASK", "SECF", "HELP", "TODAY", "CALENDAR", "FILINGS",
         ] {
             assert_eq!(spec(m).needs_security, SecurityNeed::None, "{m}");
         }
-        for m in ["CN", "CORR"] {
+        for m in ["CN", "CORR", "COMPARE"] {
             assert_eq!(spec(m).needs_security, SecurityNeed::Optional, "{m}");
         }
+        assert!(spec("COMPARE").sectors.is_empty());
+    }
+
+    #[test]
+    fn plain_names() {
+        for (m, name) in [
+            ("DES", "Overview"),
+            ("GP", "Chart"),
+            ("CF", "Filings"),
+            ("FA", "Financials"),
+            ("TODAY", "Today"),
+            ("COMPARE", "Compare"),
+        ] {
+            assert_eq!(spec(m).name, name);
+        }
+        assert_eq!(
+            spec("CF").summary,
+            "10-K, 10-Q and 8-K, with summaries and what changed"
+        );
+        assert_eq!(lookup("today").map(|s| s.mnemonic), Some("TODAY"));
     }
 
     #[test]
@@ -816,5 +1005,7 @@ mod tests {
         assert_eq!(spec("BLP").category, FunctionCategory::Workspace);
         assert_eq!(spec("ASK").category, FunctionCategory::Ai);
         assert_eq!(spec("HELP").category, FunctionCategory::Workspace);
+        assert_eq!(spec("FILINGS").category, FunctionCategory::Filings);
+        assert_eq!(spec("COMPARE").category, FunctionCategory::Analytics);
     }
 }

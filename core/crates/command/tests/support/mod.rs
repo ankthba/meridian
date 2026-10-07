@@ -82,6 +82,7 @@ pub fn universe(n: usize) -> Vec<IndexedInstrument> {
         ("AAPL", "Apple Inc."),
         ("AMZN", "Amazon.com Inc."),
         ("BAC", "Bank of America Corp"),
+        ("MSFT", "Microsoft Corp"),
     ] {
         out.push(IndexedInstrument {
             key: SecurityKey::new(symbol, Some("US"), MarketSector::Equity),
@@ -89,6 +90,11 @@ pub fn universe(n: usize) -> Vec<IndexedInstrument> {
             popularity: 1.0,
         });
     }
+    out.push(IndexedInstrument {
+        key: SecurityKey::currency("BTCUSD"),
+        name: "Bitcoin / USD".to_owned(),
+        popularity: 0.6,
+    });
     out
 }
 
@@ -107,4 +113,21 @@ pub const QUERIES: [&str; 12] = [
     "fin",
     "AAPL US",
     "AAPL US <EQUITY> G",
+];
+
+/// Plain-language queries: a ticker with a topic, a range, a listing, a
+/// comparison, commands, a crypto shorthand and a question.
+pub const PLAIN_QUERIES: [&str; 12] = [
+    "aapl fil",
+    "aapl ",
+    "aapl 5y",
+    "aapl vs ms",
+    "aapl vs msft 5y",
+    "earn",
+    "earnings this week",
+    "appl",
+    "cpi",
+    "btc",
+    "ask what moved apple",
+    "AAPL US <EQUITY> fil",
 ];

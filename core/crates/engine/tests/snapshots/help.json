@@ -14,6 +14,7 @@
               "GP",
               "GIP",
               "HP",
+              "TODAY",
               "W",
               "BLP",
               "SECF",
@@ -27,12 +28,15 @@
               "ANR",
               "HDS",
               "DVD",
+              "CALENDAR",
               "CF",
+              "FILINGS",
               "OMON",
               "OVDV",
               "OVME",
               "EQS",
               "RV",
+              "COMPARE",
               "CORR",
               "PORT",
               "BTST",
@@ -52,8 +56,8 @@
     },
     {
       "Text": {
-        "body": "<security> <yellow key> <function> <GO>     AAPL US <EQUITY> DES <GO>\n<function> <GO>                              runs on the panel's loaded security: DES <GO>\n<security> <yellow key> <GO>                 loads the security and opens its function menu\n<n> <GO>                                     selects numbered item n\nany other text <GO>                          searches for securities (SECF)\n\nYellow keys: GOVT  CORP  MTGE  M-MKT  MUNI  PFD  EQUITY  CMDTY  INDEX  CRNCY\nA security is SYMBOL [EXCHANGE] <yellow key>; equities without an exchange are US.\nHELP <GO> opens this page; pick a function under \"Help on\" for its own page.",
-        "title": "Command Syntax"
+        "body": "Type what you want in plain words and press Return:\naapl                          the overview\naapl 5y                       chart over a range: 1d 5d 1m 3m 6m ytd 1y 2y 5y 10y max\naapl filings                  or news, financials, balance sheet, earnings, analysts, dividends,\n                              options, volatility, peers, history, backtest, 10-k\naapl vs msft 5y               performance and key figures side by side\nearnings this week            the earnings calendar; also dividends next week, calendar\ncpi  jobs  gdp  rates         economic series and the Treasury yield curve\nnews  crypto  fx  world       markets\ntoday  portfolio  settings    your home screen, holdings and setup\nask <question>                the AI analyst\nA security can be a ticker (aapl, brk.b), a coin (btc) or a currency pair (eurusd).\nAnything else searches for securities.\n\nMnemonics still work:\n<security> <sector key> <function> <GO>     AAPL US <EQUITY> DES <GO>\n<function> <GO>                              runs on the panel's loaded security: DES <GO>\n<security> <sector key> <GO>                 loads the security and opens its function menu\n<n> <GO>                                     selects numbered item n\n\nSector keys: GOVT  CORP  MTGE  M-MKT  MUNI  PFD  EQUITY  CMDTY  INDEX  CRNCY\nA security is SYMBOL [EXCHANGE] <sector key>; equities without an exchange are US.\nHELP <GO> opens this page; pick a function under \"Help on\" for its own page.",
+        "title": "Commands"
       }
     },
     {
@@ -1055,6 +1059,38 @@
             "security": null
           },
           {
+            "action": {
+              "args": [],
+              "function": "CALENDAR",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "CALENDAR",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Calendar",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "—",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Upcoming earnings reports and dividend dates, for today, this week or next week.",
+                "value": null
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": null
+          },
+          {
             "action": null,
             "cells": [
               {
@@ -1107,6 +1143,38 @@
               {
                 "style": "Muted",
                 "text": "Regulatory filings such as 10-K, 10-Q, and 8-K, with summaries and changes from the prior filing.",
+                "value": null
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "FILINGS",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "FILINGS",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Filings inbox",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "—",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "New regulatory filings from the companies you follow, newest first, with summaries and what changed.",
                 "value": null
               }
             ],
@@ -1323,6 +1391,38 @@
               {
                 "style": "Muted",
                 "text": "Compare the security with its peers on valuation and performance.",
+                "value": null
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "COMPARE",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "COMPARE",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Compare",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Optional",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Performance of two or more securities rebased to 100, with price changes and key figures side by side.",
                 "value": null
               }
             ],
@@ -1576,6 +1676,38 @@
             ],
             "depth": 0,
             "emphasis": true,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "TODAY",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "TODAY",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Today",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "—",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Home screen: how your markets and holdings are doing today and what's coming up.",
+                "value": null
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
             "security": null
           },
           {
