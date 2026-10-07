@@ -75,6 +75,10 @@ fn cases() -> Vec<(&'static str, ScreenRequest)> {
         ("secf_apple", req("SECF", None, &[("q", "apple")])),
         ("help", req("HELP", None, &[])),
         ("help_gp", req("HELP", None, &[("topic", "GP")])),
+        ("today", req("TODAY", None, &[])),
+        ("calendar", req("CALENDAR", None, &[])),
+        ("calendar_month_all", req("CALENDAR", None, &[("range", "month"), ("scope", "all"), ("importance", "all")])),
+        ("filings", req("FILINGS", None, &[])),
     ]
 }
 
@@ -94,13 +98,30 @@ fn normalize(s: &Screen) -> String {
     serde_json::to_string_pretty(&round(serde_json::to_value(s).expect("json"))).expect("pretty")
 }
 
+/// Compares `screen` with `tests/snapshots/<name>.json` (writing it when
+/// missing or `UPDATE_SNAPSHOTS` is set). Returns false on a difference and
+/// leaves `<name>.new.json` to review.
+fn matches_snapshot(name: &str, screen: &Screen) -> bool {
+    let dir = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/snapshots");
+    let got = normalize(screen);
+    let path = dir.join(format!("{name}.json"));
+    if std::env::var("UPDATE_SNAPSHOTS").is_ok() || !path.exists() {
+        std::fs::write(&path, &got).expect("write snapshot");
+        return true;
+    }
+    let want = std::fs::read_to_string(&path).expect("read snapshot");
+    if want == got {
+        return true;
+    }
+    std::fs::write(dir.join(format!("{name}.new.json")), &got).expect("write new");
+    false
+}
+
 #[test]
 fn every_function_screen_matches_snapshot() {
     let rt = tokio::runtime::Builder::new_multi_thread().enable_all().build().expect("rt");
     let engine = engine();
     rt.block_on(engine.refresh_universe());
-    let dir = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/snapshots");
-    let update = std::env::var("UPDATE_SNAPSHOTS").is_ok();
     let mut failures = Vec::new();
     for (name, r) in cases() {
         let screen = rt.block_on(engine.screen(r.clone()));
@@ -110,18 +131,105 @@ fn every_function_screen_matches_snapshot() {
             screen.status
         );
         assert!(!screen.blocks.is_empty(), "{name}: no blocks");
-        let got = normalize(&screen);
-        let path = dir.join(format!("{name}.json"));
-        if update || !path.exists() {
-            std::fs::write(&path, &got).expect("write snapshot");
-            continue;
-        }
-        let want = std::fs::read_to_string(&path).expect("read snapshot");
-        if want != got {
-            std::fs::write(dir.join(format!("{name}.new.json")), &got).expect("write new");
+        if !matches_snapshot(name, &screen) {
             failures.push(name);
         }
     }
+    engine.shutdown();
+    assert!(failures.is_empty(), "snapshots differ (see *.new.json): {failures:?}");
+}
+
+fn tables(s: &Screen) -> Vec<&meridian_engine::screen::Table> {
+    s.blocks
+        .iter()
+        .filter_map(|b| match b {
+            meridian_engine::screen::Block::Table(t) => Some(t),
+            _ => None,
+        })
+        .collect()
+}
+
+fn table<'a>(s: &'a Screen, prefix: &str) -> &'a meridian_engine::screen::Table {
+    tables(s)
+        .into_iter()
+        .find(|t| t.title.as_deref().is_some_and(|x| x.starts_with(prefix)))
+        .unwrap_or_else(|| panic!("no table titled {prefix}…"))
+}
+
+/// TODAY with a portfolio (MOCK data), and the FILINGS read state: opening
+/// a filing in CF marks it read; "Mark all read" clears the inbox.
+#[test]
+fn today_with_holdings_and_filing_read_state() {
+    use meridian_engine::screen::Field;
+    use meridian_store::Transaction;
+
+    let rt = tokio::runtime::Builder::new_multi_thread().enable_all().build().expect("rt");
+    let engine = engine();
+    rt.block_on(engine.refresh_universe());
+    let store = &engine.stores().app;
+    let pid = store.create_portfolio("Brokerage", "USD").expect("portfolio");
+    let tx = |sec: &str, date: &str, qty: f64, price: f64| Transaction {
+        id: 0,
+        portfolio_id: pid,
+        security: sec.into(),
+        trade_date: date.into(),
+        quantity: qty,
+        price,
+        fees: 0.0,
+        note: None,
+    };
+    for t in [
+        tx("AAPL US Equity", "2025-03-03", 20.0, 180.0),
+        tx("MSFT US Equity", "2025-06-02", 8.0, 410.0),
+        tx("KO US Equity", "2026-10-05", 50.0, 79.25),
+        tx("BTCUSD Curncy", "2024-01-08", 0.05, 45_000.0),
+    ] {
+        store.add_transaction(&t).expect("transaction");
+    }
+
+    let today = rt.block_on(engine.screen(req("TODAY", None, &[])));
+    assert!(matches!(today.status, ScreenStatus::Ok), "{:?}", today.status);
+    let mut failures = Vec::new();
+    if !matches_snapshot("today_holdings", &today) {
+        failures.push("today_holdings");
+    }
+    // The summary adds up the holdings table.
+    let holdings = table(&today, "Holdings");
+    assert_eq!(holdings.rows.len(), 4);
+    let value_col = holdings.columns.iter().position(|c| c.title == "Value").expect("value column");
+    let sum: f64 = holdings.rows.iter().filter_map(|r| r.cells[value_col].value).sum();
+    let summary: Vec<&Field> = today
+        .blocks
+        .iter()
+        .find_map(|b| match b {
+            meridian_engine::screen::Block::Fields { title: Some(t), fields, .. } if t == "Portfolio" => Some(fields.iter().collect()),
+            _ => None,
+        })
+        .expect("portfolio fields");
+    assert!((summary[0].value.unwrap() - sum).abs() < 1e-6, "value {:?} vs rows {sum}", summary[0].value);
+    assert!(today.menu.iter().all(|m| m.action.function != "IMPORT"), "no import prompt with a portfolio");
+
+    // FILINGS: open the newest unread filing, then mark all read.
+    let inbox = rt.block_on(engine.screen(req("FILINGS", None, &[])));
+    let t = table(&inbox, "Last 30 days");
+    let first = t.rows.first().expect("a filing").clone();
+    let unread_before = t.rows.iter().filter(|r| r.cells[0].text.is_some()).count();
+    assert!(unread_before > 0);
+    let open = first.action.expect("row opens CF");
+    assert_eq!(open.function, "CF");
+    let args: Vec<(&str, &str)> = open.args.iter().map(|(k, v)| (k.as_str(), v.as_str())).collect();
+    let cf = rt.block_on(engine.screen(req("CF", open.security.as_deref(), &args)));
+    assert!(matches!(cf.status, ScreenStatus::Ok), "{:?}", cf.status);
+    let inbox = rt.block_on(engine.screen(req("FILINGS", None, &[])));
+    let after = table(&inbox, "Last 30 days").rows.iter().filter(|r| r.cells[0].text.is_some()).count();
+    assert_eq!(after, unread_before - 1);
+    let mark = inbox.menu.iter().find(|m| m.label == "Mark all read").expect("mark all read").action.clone();
+    let args: Vec<(&str, &str)> = mark.args.iter().map(|(k, v)| (k.as_str(), v.as_str())).collect();
+    let cleared = rt.block_on(engine.screen(req("FILINGS", None, &args)));
+    assert!(table(&cleared, "Last 30 days").rows.iter().all(|r| r.cells[0].text.is_none()));
+    assert!(cleared.menu.iter().all(|m| m.label != "Mark all read"));
+    let unread_only = rt.block_on(engine.screen(req("FILINGS", None, &[("show", "Unread")])));
+    assert!(tables(&unread_only).is_empty());
     engine.shutdown();
     assert!(failures.is_empty(), "snapshots differ (see *.new.json): {failures:?}");
 }

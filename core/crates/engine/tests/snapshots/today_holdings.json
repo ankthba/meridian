@@ -1,0 +1,1400 @@
+{
+  "args": [],
+  "blocks": [
+    {
+      "Fields": {
+        "columns": 4,
+        "fields": [
+          {
+            "format": {
+              "Number": {
+                "decimals": 2
+              }
+            },
+            "label": "Value",
+            "style": "Emphasis",
+            "text": null,
+            "value": 15738.613
+          },
+          {
+            "format": {
+              "Change": {
+                "decimals": 2
+              }
+            },
+            "label": "Today",
+            "style": "Normal",
+            "text": null,
+            "value": -81.0995
+          },
+          {
+            "format": {
+              "ChangePercent": {
+                "decimals": 2
+              }
+            },
+            "label": "Today %",
+            "style": "Normal",
+            "text": null,
+            "value": -0.512648
+          },
+          {
+            "format": "Integer",
+            "label": "Positions",
+            "style": "Normal",
+            "text": null,
+            "value": 4.0
+          }
+        ],
+        "title": "Portfolio"
+      }
+    },
+    {
+      "Table": {
+        "columns": [
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "",
+            "width": 30
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Price": {
+                "decimals": 2
+              }
+            },
+            "live": "Last",
+            "title": "Last",
+            "width": 11
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Change": {
+                "decimals": 2
+              }
+            },
+            "live": "NetChange",
+            "title": "Change",
+            "width": 9
+          },
+          {
+            "align": "Right",
+            "format": {
+              "ChangePercent": {
+                "decimals": 2
+              }
+            },
+            "live": "PctChange",
+            "title": "Change %",
+            "width": 9
+          }
+        ],
+        "numbered": false,
+        "page_size": null,
+        "rows": [
+          {
+            "action": {
+              "args": [],
+              "function": "GP",
+              "security": "SPY US Equity"
+            },
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "S&P 500 (SPY)",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 801.5
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 1.97
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 0.246395
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "SPY US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "GP",
+              "security": "QQQ US Equity"
+            },
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "Nasdaq 100 (QQQ)",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 731.64
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 6.85
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 0.945101
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "QQQ US Equity"
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "view",
+                  "curve"
+                ]
+              ],
+              "function": "ECO",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "10-year Treasury, % · 10/02",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 5.75
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 0.02
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "GP",
+              "security": "BTCUSD Curncy"
+            },
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "Bitcoin (BTC)",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 34603.46
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -1831.19
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -5.025957
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "BTCUSD Curncy"
+          }
+        ],
+        "title": "Markets"
+      }
+    },
+    {
+      "Table": {
+        "columns": [
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Security",
+            "width": 9
+          },
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Name",
+            "width": 26
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Price": {
+                "decimals": 2
+              }
+            },
+            "live": "Last",
+            "title": "Last",
+            "width": 11
+          },
+          {
+            "align": "Right",
+            "format": {
+              "ChangePercent": {
+                "decimals": 2
+              }
+            },
+            "live": "PctChange",
+            "title": "Today %",
+            "width": 9
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 2
+              }
+            },
+            "live": null,
+            "title": "Value",
+            "width": 13
+          },
+          {
+            "align": "Right",
+            "format": {
+              "Number": {
+                "decimals": 1
+              }
+            },
+            "live": null,
+            "title": "Weight %",
+            "width": 9
+          }
+        ],
+        "numbered": true,
+        "page_size": 15,
+        "rows": [
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "AAPL",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Apple Inc.",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 289.52
+              },
+              {
+                "style": "Up",
+                "text": null,
+                "value": 1.768076
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 5790.4
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 36.791044
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "AAPL US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "MSFT US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "MSFT",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Microsoft Corporation",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 533.88
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -1.717568
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 4271.04
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 27.137334
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "MSFT US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "KO US Equity"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "KO",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "The Coca-Cola Company",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 78.94
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -0.277918
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 3947.0
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 25.078449
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "KO US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": "BTCUSD Curncy"
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "BTCUSD",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Bitcoin",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 34603.46
+              },
+              {
+                "style": "Down",
+                "text": null,
+                "value": -5.025957
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1730.173
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 10.993173
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "BTCUSD Curncy"
+          }
+        ],
+        "title": "Holdings"
+      }
+    },
+    {
+      "Table": {
+        "columns": [
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Date",
+            "width": 10
+          },
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Time",
+            "width": 13
+          },
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Kind",
+            "width": 11
+          },
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Security",
+            "width": 9
+          },
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Name",
+            "width": 32
+          },
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Detail",
+            "width": 40
+          }
+        ],
+        "numbered": false,
+        "page_size": null,
+        "rows": [
+          {
+            "action": {
+              "args": [
+                [
+                  "series",
+                  "PAYEMS"
+                ]
+              ],
+              "function": "ECO",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Fri 10/09",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "08:30 ET",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Macro",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "US",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Change in Nonfarm Payrolls",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Sep · High importance",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "series",
+                  "UNRATE"
+                ]
+              ],
+              "function": "ECO",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Fri 10/09",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "08:30 ET",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Macro",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "US",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Unemployment Rate",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Sep · High importance",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DVD",
+              "security": "GOOGL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Mon 10/12",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Ex-dividend",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "GOOGL",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Alphabet Inc. Class A",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "0.1675 USD · pays 10/28",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "GOOGL US Equity"
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "series",
+                  "CPILFESL"
+                ]
+              ],
+              "function": "ECO",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Wed 10/14",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "08:30 ET",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Macro",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "US",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "CPI Ex Food and Energy MoM",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Sep · High importance",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "series",
+                  "CPIAUCSL"
+                ]
+              ],
+              "function": "ECO",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Wed 10/14",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "08:30 ET",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Macro",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "US",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "CPI MoM",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Sep · High importance",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "series",
+                  "CPIAUCSL"
+                ]
+              ],
+              "function": "ECO",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Wed 10/14",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "08:30 ET",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Macro",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "US",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "CPI YoY",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Sep · High importance",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          }
+        ],
+        "title": "Coming up"
+      }
+    },
+    {
+      "Table": {
+        "columns": [
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "",
+            "width": 1
+          },
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Security",
+            "width": 9
+          },
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Form",
+            "width": 9
+          },
+          {
+            "align": "Right",
+            "format": "DateTime",
+            "live": null,
+            "title": "Filed",
+            "width": 16
+          },
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Description",
+            "width": 70
+          }
+        ],
+        "numbered": false,
+        "page_size": null,
+        "rows": [
+          {
+            "action": {
+              "args": [
+                [
+                  "doc",
+                  "0009999999-26-112441"
+                ]
+              ],
+              "function": "CF",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "●",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "AAPL",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "4",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.7895078e+18
+              },
+              {
+                "style": "Emphasis",
+                "text": "Insider transaction",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "AAPL US Equity"
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "doc",
+                  "0009999999-26-648306"
+                ]
+              ],
+              "function": "CF",
+              "security": "NVDA US Equity"
+            },
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "●",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "NVDA",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "8-K",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.78942122e+18
+              },
+              {
+                "style": "Emphasis",
+                "text": "Regulation FD Disclosure",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "NVDA US Equity"
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "doc",
+                  "0009999999-26-840952"
+                ]
+              ],
+              "function": "CF",
+              "security": "NVDA US Equity"
+            },
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "●",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "NVDA",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "4",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.78941978e+18
+              },
+              {
+                "style": "Emphasis",
+                "text": "Insider transaction",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "NVDA US Equity"
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "doc",
+                  "0009999999-26-634661"
+                ]
+              ],
+              "function": "CF",
+              "security": "GOOGL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "●",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "GOOGL",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "8-K",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.78941924e+18
+              },
+              {
+                "style": "Emphasis",
+                "text": "Departure of Directors or Certain Officers; Election of Directors; Appointment of Certain Officers; Compensatory Arrangements of Certain Officers",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "GOOGL US Equity"
+          }
+        ],
+        "title": "New filings · 4 unread"
+      }
+    },
+    {
+      "Table": {
+        "columns": [
+          {
+            "align": "Right",
+            "format": "DateTime",
+            "live": null,
+            "title": "Time",
+            "width": 16
+          },
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Source",
+            "width": 14
+          },
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Headline",
+            "width": 80
+          },
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Tickers",
+            "width": 14
+          }
+        ],
+        "numbered": false,
+        "page_size": null,
+        "rows": [
+          {
+            "action": {
+              "args": [
+                [
+                  "story",
+                  "mock-c14524604b02ba98"
+                ]
+              ],
+              "function": "N",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.79120856e+18
+              },
+              {
+                "style": "Muted",
+                "text": "Synthetic Newswire",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "[MOCK] Coca-Cola to Present at Investor Conference",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "KO",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "story",
+                  "mock-822fb5784240bfac"
+                ]
+              ],
+              "function": "N",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.79120472e+18
+              },
+              {
+                "style": "Muted",
+                "text": "Mock PR Wire",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "[MOCK] Apple Inc. Prices $2 Billion Senior Notes Offering",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "AAPL",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "story",
+                  "mock-5b6be65a57503a7d"
+                ]
+              ],
+              "function": "N",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.79120382e+18
+              },
+              {
+                "style": "Muted",
+                "text": "Mock Wire",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "[MOCK] Apple Names New Chief Technology Officer",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "AAPL",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "story",
+                  "mock-693a1de3c05be934"
+                ]
+              ],
+              "function": "N",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.7912025e+18
+              },
+              {
+                "style": "Muted",
+                "text": "Mock Wire",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "[MOCK] Apple Edges Higher in Heavy Trading",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "AAPL",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "story",
+                  "mock-ed613594bb5b1601"
+                ]
+              ],
+              "function": "N",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.79119902e+18
+              },
+              {
+                "style": "Muted",
+                "text": "Synthetic Newswire",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "[MOCK] Apple Said to Weigh Acquisition in Information Technology",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "AAPL",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "story",
+                  "mock-2754c8cfb469f90c"
+                ]
+              ],
+              "function": "N",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.7911989e+18
+              },
+              {
+                "style": "Muted",
+                "text": "Mock Markets Desk",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "[MOCK] Ashford Lane Securities Upgrades Apple to Buy, PT $337",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "AAPL",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "story",
+                  "mock-f1a36ab6bd0dca22"
+                ]
+              ],
+              "function": "N",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.7911989e+18
+              },
+              {
+                "style": "Muted",
+                "text": "Mock Markets Desk",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "[MOCK] Hawthorne Bay Equity Research Reiterates Coca-Cola to Market Perform, PT $84",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "KO",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "story",
+                  "mock-beb6200c520d49da"
+                ]
+              ],
+              "function": "N",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.79119656e+18
+              },
+              {
+                "style": "Muted",
+                "text": "Mock PR Wire",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "[MOCK] Microsoft Corporation Launches New Systems Software Offering",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "MSFT",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          }
+        ],
+        "title": "News on your holdings"
+      }
+    }
+  ],
+  "function": "TODAY",
+  "menu": [
+    {
+      "action": {
+        "args": [],
+        "function": "PORT",
+        "security": null
+      },
+      "label": "Portfolio",
+      "number": 1,
+      "selected": false
+    },
+    {
+      "action": {
+        "args": [],
+        "function": "CALENDAR",
+        "security": null
+      },
+      "label": "Calendar",
+      "number": 2,
+      "selected": false
+    },
+    {
+      "action": {
+        "args": [],
+        "function": "FILINGS",
+        "security": null
+      },
+      "label": "Filings",
+      "number": 3,
+      "selected": false
+    }
+  ],
+  "refresh_ms": 60000,
+  "security": null,
+  "sources": [
+    {
+      "as_of": 1791216000000000000,
+      "attribution": null,
+      "delay": "MOCK",
+      "provider": "mock",
+      "source": "MOCK",
+      "synthetic": true
+    }
+  ],
+  "status": "Ok",
+  "title": "Today"
+}

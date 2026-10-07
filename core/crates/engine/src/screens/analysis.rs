@@ -403,13 +403,14 @@ pub(crate) async fn corr(engine: Arc<Engine>, req: ScreenRequest) -> Screen {
 // --- PORT -----------------------------------------------------------------
 
 #[derive(Debug, Clone, Default)]
-struct Position {
-    qty: f64,
-    cost: f64,
-    realized: f64,
+pub(crate) struct Position {
+    pub(crate) qty: f64,
+    pub(crate) cost: f64,
+    pub(crate) realized: f64,
 }
 
-fn positions(txs: &[Transaction]) -> Vec<(String, Position)> {
+/// Average-cost positions from transactions, in first-trade order.
+pub(crate) fn positions(txs: &[Transaction]) -> Vec<(String, Position)> {
     let mut map: Vec<(String, Position)> = Vec::new();
     for t in txs {
         let idx = map.iter().position(|(k, _)| *k == t.security).unwrap_or_else(|| {

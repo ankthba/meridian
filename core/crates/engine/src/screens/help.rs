@@ -497,6 +497,56 @@ const TOPICS: &[Topic] = &[
         related: &["DES", "FA", "CN"],
     },
     Topic {
+        mnemonic: "TODAY",
+        args: &[],
+        example: "TODAY",
+        usage: "Without a portfolio it offers to import one and shows your first watchlist instead.",
+        live: &[
+            (Src::Alpaca, "stock and ETF prices (IEX on the free plan, streamed), ex-dividend dates, company news"),
+            (Src::Keyless, "crypto prices from Coinbase and Kraken; the 10-year yield from the US Treasury"),
+            (Src::Finnhub, "earnings dates with consensus EPS estimates; company news"),
+            (Src::Fred, "macro release dates"),
+            (Src::Edgar, "new filings"),
+        ],
+        live_note: "Holdings come from your portfolios (PORT or an import) and watchlists, stored on this Mac. Each section that lacks its source says so.",
+        related: &["PORT", "W", "CALENDAR", "FILINGS"],
+    },
+    Topic {
+        mnemonic: "CALENDAR",
+        args: &[
+            ("range", "Next 10 days (default), Today, This week, Next week or This month"),
+            ("scope", "Holdings and watchlists (default), Holdings, Watchlists or All securities"),
+            ("kind", "All (default), Earnings, Dividends or Macro"),
+            ("importance", "macro releases: High importance (default) or All"),
+        ],
+        example: "CALENDAR",
+        usage: "Rows open the company's earnings (ERN) or dividends (DVD), or the release's series (ECO).",
+        live: &[
+            (Src::Finnhub, "earnings dates, before open / after close, consensus EPS estimate (free tier: upcoming releases plus 1 month back)"),
+            (Src::Alpaca, "ex-dividend dates and splits, including announced ones (corporate actions)"),
+            (Src::Fred, "macro release dates (dates only; no times or consensus)"),
+        ],
+        live_note: "Each kind of event degrades on its own: a missing source leaves only its rows NOT AVAILABLE.",
+        related: &["ERN", "DVD", "ECO", "TODAY"],
+    },
+    Topic {
+        mnemonic: "FILINGS",
+        args: &[
+            ("days", "Last 7 days, Last 30 days (default) or Last 90 days"),
+            ("show", "All (default) or Unread"),
+            ("read_through", "marks every listed filing up to this time read (set by Mark all read)"),
+            ("unread", "accession number to mark unread"),
+        ],
+        example: "FILINGS",
+        usage: "Opening a filing in CF marks it read. Annual and quarterly reports and proxies open on what changed versus the prior filing of the same form.",
+        live: &[
+            (Src::Edgar, "filings, 8-K items and documents"),
+            (Src::Anthropic, "AI summary in CF, only when you ask for one"),
+        ],
+        live_note: "Read state is stored on this Mac.",
+        related: &["CF", "TODAY", "CALENDAR"],
+    },
+    Topic {
         mnemonic: "HELP",
         args: &[("topic", "function mnemonic to explain (default: this overview)")],
         example: "HELP",
@@ -696,11 +746,18 @@ mod tests {
 
     use super::*;
 
+    /// Functions whose screens exist but whose command-registry entries land
+    /// in a separate change. Remove each once the registry lists it.
+    const PENDING_REGISTRATION: &[&str] = &["TODAY", "CALENDAR", "FILINGS"];
+
     #[test]
     fn every_registered_function_has_a_topic() {
         let registered: HashSet<&str> = registry().iter().map(|f| f.mnemonic).collect();
         let topics: HashSet<&str> = TOPICS.iter().map(|t| t.mnemonic).collect();
-        assert_eq!(registered, topics);
+        let missing: Vec<&&str> = registered.difference(&topics).collect();
+        assert!(missing.is_empty(), "registered without a topic: {missing:?}");
+        let extra: Vec<&&str> = topics.difference(&registered).filter(|t| !PENDING_REGISTRATION.contains(t)).collect();
+        assert!(extra.is_empty(), "topics for unknown functions: {extra:?}");
         assert_eq!(TOPICS.len(), topics.len(), "duplicate topic");
         let areas: HashSet<FunctionCategory> = AREAS.iter().map(|(a, _)| *a).collect();
         assert!(registry().iter().all(|f| areas.contains(&f.category)), "every category has a directory group");
@@ -710,7 +767,10 @@ mod tests {
     fn examples_parse_to_their_function_and_related_exist() {
         let ctx = ParseContext::default();
         for t in TOPICS {
-            let spec = lookup(t.mnemonic).unwrap();
+            let Some(spec) = lookup(t.mnemonic) else {
+                assert!(PENDING_REGISTRATION.contains(&t.mnemonic), "{} is not registered", t.mnemonic);
+                continue;
+            };
             let function = match parse(t.example, &ctx) {
                 ParsedCommand::Security { function: Some(f), security, .. } => {
                     assert!(spec.takes_security(), "{}: example names a security", t.mnemonic);
@@ -725,7 +785,8 @@ mod tests {
             };
             assert_eq!(function, t.mnemonic);
             for r in t.related {
-                assert!(lookup(r).is_some() && *r != t.mnemonic, "{}: related {r}", t.mnemonic);
+                let known = lookup(r).is_some() || PENDING_REGISTRATION.contains(r);
+                assert!(known && *r != t.mnemonic, "{}: related {r}", t.mnemonic);
             }
             assert!(!t.live.is_empty() || !t.live_note.is_empty(), "{}: say where LIVE data comes from", t.mnemonic);
         }

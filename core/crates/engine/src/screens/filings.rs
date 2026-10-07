@@ -126,6 +126,10 @@ async fn document(engine: Arc<Engine>, req: &ScreenRequest, key: &SecurityKey, a
         return Screen::not_available("CF", TITLE, Some(ks), format!("filing {accession} not found"));
     };
     let filing = list[idx].clone();
+    // Opening a filing marks it read in the FILINGS inbox.
+    if let Err(e) = engine.stores().app.mark_filings_read(std::slice::from_ref(&filing.accession), engine.now()) {
+        tracing::warn!(error = %e, "could not record filing as read");
+    }
     let doc = match engine.filing_document(&filing).await {
         Ok(d) => d,
         Err(e) => return error_screen("CF", TITLE, Some(key), &e),
@@ -138,6 +142,7 @@ async fn document(engine: Arc<Engine>, req: &ScreenRequest, key: &SecurityKey, a
     s.menu_item("Diff vs Prior", base.clone().arg("diff", "1"), req.arg("diff").is_some());
     s.menu_item("AI Summary", base.clone().arg("summary", "1"), req.arg("summary").is_some());
     s.menu_item("Back to List", Action::new("CF", Some(&ks)), false);
+    s.menu_item("Mark Unread", Action::new("FILINGS", None).arg("unread", accession), false);
 
     let mut fields = vec![
         Field::text("Form", &filing.form).styled(Style::Emphasis),

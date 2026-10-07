@@ -1,0 +1,331 @@
+{
+  "args": [],
+  "blocks": [
+    {
+      "Inputs": {
+        "inputs": [
+          {
+            "id": "days",
+            "kind": "Choice",
+            "label": "Period",
+            "options": [
+              "Last 7 days",
+              "Last 30 days",
+              "Last 90 days"
+            ],
+            "value": "Last 30 days"
+          },
+          {
+            "id": "show",
+            "kind": "Choice",
+            "label": "Show",
+            "options": [
+              "All",
+              "Unread"
+            ],
+            "value": "All"
+          }
+        ],
+        "title": null
+      }
+    },
+    {
+      "Notice": {
+        "level": "Info",
+        "text": "No SEC filings found for SPY, QQQ (Mock data)"
+      }
+    },
+    {
+      "Table": {
+        "columns": [
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "",
+            "width": 1
+          },
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Security",
+            "width": 9
+          },
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Form",
+            "width": 9
+          },
+          {
+            "align": "Right",
+            "format": "DateTime",
+            "live": null,
+            "title": "Filed",
+            "width": 16
+          },
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Description",
+            "width": 70
+          }
+        ],
+        "numbered": true,
+        "page_size": 25,
+        "rows": [
+          {
+            "action": {
+              "args": [
+                [
+                  "doc",
+                  "0009999999-26-112441"
+                ]
+              ],
+              "function": "CF",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "●",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "AAPL",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "4",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.7895078e+18
+              },
+              {
+                "style": "Emphasis",
+                "text": "Insider transaction",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "AAPL US Equity"
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "doc",
+                  "0009999999-26-648306"
+                ]
+              ],
+              "function": "CF",
+              "security": "NVDA US Equity"
+            },
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "●",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "NVDA",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "8-K",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.78942122e+18
+              },
+              {
+                "style": "Emphasis",
+                "text": "Regulation FD Disclosure",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "NVDA US Equity"
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "doc",
+                  "0009999999-26-840952"
+                ]
+              ],
+              "function": "CF",
+              "security": "NVDA US Equity"
+            },
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "●",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "NVDA",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "4",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.78941978e+18
+              },
+              {
+                "style": "Emphasis",
+                "text": "Insider transaction",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "NVDA US Equity"
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "doc",
+                  "0009999999-26-634661"
+                ]
+              ],
+              "function": "CF",
+              "security": "GOOGL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "●",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "GOOGL",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "8-K",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": 1.78941924e+18
+              },
+              {
+                "style": "Emphasis",
+                "text": "Departure of Directors or Certain Officers; Election of Directors; Appointment of Certain Officers; Compensatory Arrangements of Certain Officers",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "GOOGL US Equity"
+          }
+        ],
+        "title": "Last 30 days · 4 unread of 4"
+      }
+    }
+  ],
+  "function": "FILINGS",
+  "menu": [
+    {
+      "action": {
+        "args": [
+          [
+            "days",
+            "30"
+          ],
+          [
+            "show",
+            "All"
+          ],
+          [
+            "read_through",
+            "1789507800000000000"
+          ]
+        ],
+        "function": "FILINGS",
+        "security": null
+      },
+      "label": "Mark all read",
+      "number": 1,
+      "selected": false
+    },
+    {
+      "action": {
+        "args": [
+          [
+            "days",
+            "30"
+          ],
+          [
+            "show",
+            "Unread"
+          ]
+        ],
+        "function": "FILINGS",
+        "security": null
+      },
+      "label": "Unread only",
+      "number": 2,
+      "selected": false
+    },
+    {
+      "action": {
+        "args": [
+          [
+            "days",
+            "30"
+          ],
+          [
+            "show",
+            "All"
+          ]
+        ],
+        "function": "FILINGS",
+        "security": null
+      },
+      "label": "All filings",
+      "number": 3,
+      "selected": true
+    }
+  ],
+  "refresh_ms": null,
+  "security": null,
+  "sources": [
+    {
+      "as_of": 1791216000000000000,
+      "attribution": null,
+      "delay": "MOCK",
+      "provider": "mock",
+      "source": "MOCK",
+      "synthetic": true
+    }
+  ],
+  "status": "Ok",
+  "title": "Filings"
+}

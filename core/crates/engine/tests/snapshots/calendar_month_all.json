@@ -1,0 +1,5542 @@
+{
+  "args": [
+    [
+      "range",
+      "month"
+    ],
+    [
+      "scope",
+      "all"
+    ],
+    [
+      "importance",
+      "all"
+    ]
+  ],
+  "blocks": [
+    {
+      "Inputs": {
+        "inputs": [
+          {
+            "id": "range",
+            "kind": "Choice",
+            "label": "When",
+            "options": [
+              "Next 10 days",
+              "Today",
+              "This week",
+              "Next week",
+              "This month"
+            ],
+            "value": "This month"
+          },
+          {
+            "id": "scope",
+            "kind": "Choice",
+            "label": "Securities",
+            "options": [
+              "Holdings and watchlists",
+              "Holdings",
+              "Watchlists",
+              "All securities"
+            ],
+            "value": "All securities"
+          },
+          {
+            "id": "kind",
+            "kind": "Choice",
+            "label": "Events",
+            "options": [
+              "All",
+              "Earnings",
+              "Dividends",
+              "Macro"
+            ],
+            "value": "All"
+          },
+          {
+            "id": "importance",
+            "kind": "Choice",
+            "label": "Macro releases",
+            "options": [
+              "High importance",
+              "All"
+            ],
+            "value": "All"
+          }
+        ],
+        "title": null
+      }
+    },
+    {
+      "Table": {
+        "columns": [
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Date",
+            "width": 10
+          },
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Time",
+            "width": 13
+          },
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Kind",
+            "width": 11
+          },
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Security",
+            "width": 9
+          },
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Name",
+            "width": 32
+          },
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Detail",
+            "width": 40
+          }
+        ],
+        "numbered": true,
+        "page_size": 25,
+        "rows": [
+          {
+            "action": {
+              "args": [
+                [
+                  "series",
+                  "ICSA"
+                ]
+              ],
+              "function": "ECO",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Thu 10/01",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "08:30 ET",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Macro",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "US",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Initial Jobless Claims",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Sep 26 · Medium importance",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "from",
+                  "10/01/2026"
+                ],
+                [
+                  "to",
+                  "10/01/2026"
+                ]
+              ],
+              "function": "ECO",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Thu 10/01",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "10:00 ET",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Macro",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "US",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "ISM Manufacturing",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Sep · Medium importance",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "ERN",
+              "security": "COST US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Thu 10/01",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "After close",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Earnings",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "COST",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Costco Wholesale Corporation",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Q4 2026 · EPS 4.14 vs est. 3.99",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "COST US Equity"
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "from",
+                  "10/05/2026"
+                ],
+                [
+                  "to",
+                  "10/05/2026"
+                ]
+              ],
+              "function": "ECO",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Mon 10/05",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "10:00 ET",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Macro",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "US",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "ISM Services Index",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Sep · Medium importance",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DVD",
+              "security": "BKNG US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Mon 10/05",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Ex-dividend",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "BKNG",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Booking Holdings Inc.",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "7.1161 USD · pays 10/22",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "BKNG US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "ERN",
+              "security": "NKE US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Tue 10/06",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "After close",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Earnings",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "NKE",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "NIKE, Inc. Class B",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Q1 2027 · EPS est. 0.43",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "NKE US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DVD",
+              "security": "C US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Tue 10/06",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Ex-dividend",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "C",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Citigroup Inc.",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "1.1248 USD · pays 10/27",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "C US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DVD",
+              "security": "TMO US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Tue 10/06",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Ex-dividend",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "TMO",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Thermo Fisher Scientific Inc.",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "0.3948 USD · pays 10/29",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "TMO US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DVD",
+              "security": "USB US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Tue 10/06",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Ex-dividend",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "USB",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "U.S. Bancorp",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "0.4844 USD · pays 10/21",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "USB US Equity"
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "series",
+                  "ICSA"
+                ]
+              ],
+              "function": "ECO",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Thu 10/08",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "08:30 ET",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Macro",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "US",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Initial Jobless Claims",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Oct 3 · Medium importance",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "from",
+                  "10/08/2026"
+                ],
+                [
+                  "to",
+                  "10/08/2026"
+                ]
+              ],
+              "function": "ECO",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Thu 10/08",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "21:30 ET",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Macro",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "CN",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "China CPI YoY",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Sep · Medium importance",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DVD",
+              "security": "CMCSA US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Thu 10/08",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Ex-dividend",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "CMCSA",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Comcast Corporation Class A",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "0.269 USD · pays 10/26",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "CMCSA US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DVD",
+              "security": "CSCO US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Thu 10/08",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Ex-dividend",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "CSCO",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Cisco Systems, Inc.",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "0.3603 USD · pays 10/26",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "CSCO US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DVD",
+              "security": "MCD US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Thu 10/08",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Ex-dividend",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "MCD",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "McDonald's Corporation",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "1.2716 USD · pays 10/22",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "MCD US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DVD",
+              "security": "SBUX US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Thu 10/08",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Ex-dividend",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "SBUX",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Starbucks Corporation",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "0.8791 USD · pays 10/26",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "SBUX US Equity"
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "series",
+                  "PAYEMS"
+                ]
+              ],
+              "function": "ECO",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Fri 10/09",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "08:30 ET",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Macro",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "US",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Change in Nonfarm Payrolls",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Sep · High importance",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "series",
+                  "UNRATE"
+                ]
+              ],
+              "function": "ECO",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Fri 10/09",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "08:30 ET",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Macro",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "US",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Unemployment Rate",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Sep · High importance",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DVD",
+              "security": "NEM US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Fri 10/09",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Ex-dividend",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "NEM",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Newmont Corporation",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "0.3133 USD · pays 10/27",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "NEM US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DVD",
+              "security": "ADI US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Mon 10/12",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Ex-dividend",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "ADI",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Analog Devices, Inc.",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "1.1484 USD · pays 10/28",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "ADI US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DVD",
+              "security": "CME US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Mon 10/12",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Ex-dividend",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "CME",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "CME Group Inc. Class A",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "1.2094 USD · pays 10/26",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "CME US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DVD",
+              "security": "CVX US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Mon 10/12",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Ex-dividend",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "CVX",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Chevron Corporation",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "1.1911 USD · pays 11/02",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "CVX US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DVD",
+              "security": "DUK US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Mon 10/12",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Ex-dividend",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "DUK",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Duke Energy Corporation",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "0.9433 USD · pays 10/27",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "DUK US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DVD",
+              "security": "GOOGL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Mon 10/12",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Ex-dividend",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "GOOGL",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Alphabet Inc. Class A",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "0.1675 USD · pays 10/28",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "GOOGL US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DVD",
+              "security": "KHC US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Mon 10/12",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Ex-dividend",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "KHC",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "The Kraft Heinz Company",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "0.5643 USD · pays 11/02",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "KHC US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DVD",
+              "security": "LOW US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Mon 10/12",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Ex-dividend",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "LOW",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Lowe's Companies, Inc.",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "1.2293 USD · pays 11/05",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "LOW US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DVD",
+              "security": "MDLZ US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Mon 10/12",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Ex-dividend",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "MDLZ",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Mondelez International, Inc. Class A",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "0.7466 USD · pays 10/30",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "MDLZ US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DVD",
+              "security": "AMGN US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Tue 10/13",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Ex-dividend",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "AMGN",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Amgen Inc.",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "3.2376 USD · pays 11/04",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "AMGN US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DVD",
+              "security": "VZ US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Tue 10/13",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Ex-dividend",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "VZ",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Verizon Communications Inc.",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "0.6866 USD · pays 11/06",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "VZ US Equity"
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "series",
+                  "CPILFESL"
+                ]
+              ],
+              "function": "ECO",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Wed 10/14",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "08:30 ET",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Macro",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "US",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "CPI Ex Food and Energy MoM",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Sep · High importance",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "series",
+                  "CPIAUCSL"
+                ]
+              ],
+              "function": "ECO",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Wed 10/14",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "08:30 ET",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Macro",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "US",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "CPI MoM",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Sep · High importance",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "series",
+                  "CPIAUCSL"
+                ]
+              ],
+              "function": "ECO",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Wed 10/14",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "08:30 ET",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Macro",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "US",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "CPI YoY",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Sep · High importance",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DVD",
+              "security": "AMAT US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Wed 10/14",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Ex-dividend",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "AMAT",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Applied Materials, Inc.",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "0.3849 USD · pays 11/04",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "AMAT US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DVD",
+              "security": "BMY US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Wed 10/14",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Ex-dividend",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "BMY",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Bristol-Myers Squibb Company",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "0.6179 USD · pays 10/26",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "BMY US Equity"
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "series",
+                  "ICSA"
+                ]
+              ],
+              "function": "ECO",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Thu 10/15",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "08:30 ET",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Macro",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "US",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Initial Jobless Claims",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Oct 10 · Medium importance",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "series",
+                  "RSAFS"
+                ]
+              ],
+              "function": "ECO",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Thu 10/15",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "08:30 ET",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Macro",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "US",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Retail Sales Advance MoM",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Sep · Medium importance",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "from",
+                  "10/15/2026"
+                ],
+                [
+                  "to",
+                  "10/15/2026"
+                ]
+              ],
+              "function": "ECO",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Thu 10/15",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "19:30 ET",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Macro",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "JP",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Japan Natl CPI YoY",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Sep · Medium importance",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "from",
+                  "10/15/2026"
+                ],
+                [
+                  "to",
+                  "10/15/2026"
+                ]
+              ],
+              "function": "ECO",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Thu 10/15",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "22:00 ET",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Macro",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "CN",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "China GDP YoY",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "3Q · High importance",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DVD",
+              "security": "F US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Thu 10/15",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Ex-dividend",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "F",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Ford Motor Company",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "0.1482 USD · pays 10/26",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "F US Equity"
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "series",
+                  "INDPRO"
+                ]
+              ],
+              "function": "ECO",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Fri 10/16",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "09:15 ET",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Macro",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "US",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Industrial Production MoM",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Sep · Low importance",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DVD",
+              "security": "MDT US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Fri 10/16",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Ex-dividend",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "MDT",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Medtronic plc",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "0.9228 USD · pays 10/26",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "MDT US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DVD",
+              "security": "REGN US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Fri 10/16",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Ex-dividend",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "REGN",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Regeneron Pharmaceuticals, Inc.",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "1.3076 USD · pays 10/26",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "REGN US Equity"
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "series",
+                  "HOUST"
+                ]
+              ],
+              "function": "ECO",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Mon 10/19",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "08:30 ET",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Macro",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "US",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Housing Starts",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Sep · Low importance",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DVD",
+              "security": "ABT US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Mon 10/19",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Ex-dividend",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "ABT",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Abbott Laboratories",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "0.4219 USD · pays 11/02",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "ABT US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DVD",
+              "security": "DIA US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Mon 10/19",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Ex-dividend",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "DIA",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "SPDR Dow Jones Industrial Average ETF Trust",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "0.4731 USD · pays 11/09",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "DIA US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DVD",
+              "security": "HON US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Mon 10/19",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Ex-dividend",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "HON",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Honeywell International Inc.",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "0.7909 USD · pays 11/04",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "HON US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DVD",
+              "security": "MAR US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Mon 10/19",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Ex-dividend",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "MAR",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Marriott International, Inc. Class A",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "0.6554 USD · pays 11/04",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "MAR US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DVD",
+              "security": "MMM US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Mon 10/19",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Ex-dividend",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "MMM",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "3M Company",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "0.7776 USD · pays 10/30",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "MMM US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DVD",
+              "security": "TLT US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Mon 10/19",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Ex-dividend",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "TLT",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "iShares 20+ Year Treasury Bond ETF",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "0.3758 USD · pays 11/02",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "TLT US Equity"
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "from",
+                  "10/20/2026"
+                ],
+                [
+                  "to",
+                  "10/20/2026"
+                ]
+              ],
+              "function": "ECO",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Tue 10/20",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "05:00 ET",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Macro",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "DE",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "ZEW Survey Expectations",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Oct · Medium importance",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DVD",
+              "security": "MMC US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Tue 10/20",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Ex-dividend",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "MMC",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Marsh & McLennan Companies, Inc.",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "0.6965 USD · pays 11/09",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "MMC US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "ERN",
+              "security": "HON US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Wed 10/21",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Before open",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Earnings",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "HON",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Honeywell International Inc.",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Q3 2026 · EPS est. 2.05",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "HON US Equity"
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "from",
+                  "10/21/2026"
+                ],
+                [
+                  "to",
+                  "10/21/2026"
+                ]
+              ],
+              "function": "ECO",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Wed 10/21",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "02:00 ET",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Macro",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "GB",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "UK CPI YoY",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Sep · High importance",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "ERN",
+              "security": "MDLZ US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Wed 10/21",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "After close",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Earnings",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "MDLZ",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Mondelez International, Inc. Class A",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Q3 2026 · EPS est. -0.02",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "MDLZ US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "ERN",
+              "security": "NEM US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Wed 10/21",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "After close",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Earnings",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "NEM",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Newmont Corporation",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Q3 2026 · EPS est. 0.86",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "NEM US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DVD",
+              "security": "EL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Wed 10/21",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Ex-dividend",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "EL",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "The Estee Lauder Companies Inc. Class A",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "0.5176 USD · pays 11/04",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "EL US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DVD",
+              "security": "UPS US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Wed 10/21",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Ex-dividend",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "UPS",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "United Parcel Service, Inc. Class B",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "1.1708 USD · pays 11/11",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "UPS US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "ERN",
+              "security": "CL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Thu 10/22",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Before open",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Earnings",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "CL",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Colgate-Palmolive Company",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Q3 2026 · EPS est. 0.34",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "CL US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "ERN",
+              "security": "EL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Thu 10/22",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Before open",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Earnings",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "EL",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "The Estee Lauder Companies Inc. Class A",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Q1 2027 · EPS est. 2.17",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "EL US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "ERN",
+              "security": "GILD US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Thu 10/22",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Before open",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Earnings",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "GILD",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Gilead Sciences, Inc.",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Q3 2026 · EPS est. 1.46",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "GILD US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "ERN",
+              "security": "LLY US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Thu 10/22",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Before open",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Earnings",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "LLY",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Eli Lilly and Company",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Q3 2026 · EPS est. 12.34",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "LLY US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "ERN",
+              "security": "MS US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Thu 10/22",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Before open",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Earnings",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "MS",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Morgan Stanley",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Q3 2026 · EPS est. 2.68",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "MS US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "ERN",
+              "security": "PM US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Thu 10/22",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Before open",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Earnings",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "PM",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Philip Morris International Inc.",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Q3 2026 · EPS est. 3.04",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "PM US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "ERN",
+              "security": "VRTX US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Thu 10/22",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Before open",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Earnings",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "VRTX",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Vertex Pharmaceuticals Incorporated",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Q3 2026 · EPS est. 3.64",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "VRTX US Equity"
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "from",
+                  "10/22/2026"
+                ],
+                [
+                  "to",
+                  "10/22/2026"
+                ]
+              ],
+              "function": "ECO",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Thu 10/22",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "08:15 ET",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Macro",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "EU",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "ECB Deposit Facility Rate",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "High importance",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "series",
+                  "ICSA"
+                ]
+              ],
+              "function": "ECO",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Thu 10/22",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "08:30 ET",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Macro",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "US",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Initial Jobless Claims",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Oct 17 · Medium importance",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "ERN",
+              "security": "BA US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Thu 10/22",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "After close",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Earnings",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "BA",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "The Boeing Company",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Q3 2026 · EPS est. 2.14",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "BA US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "ERN",
+              "security": "ICE US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Thu 10/22",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "After close",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Earnings",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "ICE",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Intercontinental Exchange, Inc.",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Q3 2026 · EPS est. 3.07",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "ICE US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "ERN",
+              "security": "KO US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Thu 10/22",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "After close",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Earnings",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "KO",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "The Coca-Cola Company",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Q3 2026 · EPS est. 0.84",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "KO US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DVD",
+              "security": "AXP US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Thu 10/22",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Ex-dividend",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "AXP",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "American Express Company",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "1.28 USD · pays 11/16",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "AXP US Equity"
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "from",
+                  "10/23/2026"
+                ],
+                [
+                  "to",
+                  "10/23/2026"
+                ]
+              ],
+              "function": "ECO",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Fri 10/23",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "04:00 ET",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Macro",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "EU",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Eurozone Composite PMI",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Oct · Medium importance",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DVD",
+              "security": "CRM US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Fri 10/23",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Ex-dividend",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "CRM",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Salesforce, Inc.",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "0.4244 USD · pays 11/02",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "CRM US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DVD",
+              "security": "KLAC US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Fri 10/23",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Ex-dividend",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "KLAC",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "KLA Corporation",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "1.7205 USD · pays 11/13",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "KLAC US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DVD",
+              "security": "MSFT US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Fri 10/23",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Ex-dividend",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "MSFT",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Microsoft Corporation",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "0.8222 USD · pays 11/02",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "MSFT US Equity"
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "from",
+                  "10/26/2026"
+                ],
+                [
+                  "to",
+                  "10/26/2026"
+                ]
+              ],
+              "function": "ECO",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Mon 10/26",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "05:00 ET",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Macro",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "DE",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "IFO Business Climate",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Oct · Medium importance",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DVD",
+              "security": "SLB US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Mon 10/26",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Ex-dividend",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "SLB",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "SLB N.V.",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "0.1961 USD · pays 11/06",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "SLB US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "ERN",
+              "security": "CMCSA US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Tue 10/27",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Before open",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Earnings",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "CMCSA",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Comcast Corporation Class A",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Q3 2026 · EPS est. -0.07",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "CMCSA US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "ERN",
+              "security": "CME US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Tue 10/27",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Before open",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Earnings",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "CME",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "CME Group Inc. Class A",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Q3 2026 · EPS est. 9.01",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "CME US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "ERN",
+              "security": "COP US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Tue 10/27",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Before open",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Earnings",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "COP",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "ConocoPhillips",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Q3 2026 · EPS est. 2.97",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "COP US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "ERN",
+              "security": "HCA US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Tue 10/27",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Before open",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Earnings",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "HCA",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "HCA Healthcare, Inc.",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Q3 2026 · EPS est. 4.86",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "HCA US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "ERN",
+              "security": "JPM US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Tue 10/27",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Before open",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Earnings",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "JPM",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "JPMorgan Chase & Co.",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Q3 2026 · EPS est. 5.71",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "JPM US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "ERN",
+              "security": "MAR US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Tue 10/27",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Before open",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Earnings",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "MAR",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Marriott International, Inc. Class A",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Q3 2026 · EPS est. 2.09",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "MAR US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "ERN",
+              "security": "PG US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Tue 10/27",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Before open",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Earnings",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "PG",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "The Procter & Gamble Company",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Q1 2027 · EPS est. 2.40",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "PG US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "ERN",
+              "security": "REGN US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Tue 10/27",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Before open",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Earnings",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "REGN",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Regeneron Pharmaceuticals, Inc.",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Q3 2026 · EPS est. 12.83",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "REGN US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "ERN",
+              "security": "SLB US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Tue 10/27",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Before open",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Earnings",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "SLB",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "SLB N.V.",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Q3 2026 · EPS est. 0.60",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "SLB US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "ERN",
+              "security": "SPG US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Tue 10/27",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Before open",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Earnings",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "SPG",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Simon Property Group, Inc.",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Q3 2026 · EPS est. -4.19",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "SPG US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "ERN",
+              "security": "UPS US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Tue 10/27",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Before open",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Earnings",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "UPS",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "United Parcel Service, Inc. Class B",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Q3 2026 · EPS est. 1.25",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "UPS US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "ERN",
+              "security": "WFC US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Tue 10/27",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Before open",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Earnings",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "WFC",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Wells Fargo & Company",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Q3 2026 · EPS est. 2.18",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "WFC US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "ERN",
+              "security": "AMD US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Tue 10/27",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "After close",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Earnings",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "AMD",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Advanced Micro Devices, Inc.",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Q3 2026 · EPS est. 2.41",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "AMD US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "ERN",
+              "security": "AMGN US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Tue 10/27",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "After close",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Earnings",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "AMGN",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Amgen Inc.",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Q3 2026 · EPS est. 2.06",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "AMGN US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "ERN",
+              "security": "AMT US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Tue 10/27",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "After close",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Earnings",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "AMT",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "American Tower Corporation",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Q3 2026 · EPS est. 0.74",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "AMT US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "ERN",
+              "security": "AXP US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Tue 10/27",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "After close",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Earnings",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "AXP",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "American Express Company",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Q3 2026 · EPS est. 7.36",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "AXP US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "ERN",
+              "security": "BMY US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Tue 10/27",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "After close",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Earnings",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "BMY",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Bristol-Myers Squibb Company",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Q3 2026 · EPS est. -0.67",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "BMY US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "ERN",
+              "security": "COF US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Tue 10/27",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "After close",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Earnings",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "COF",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Capital One Financial Corporation",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Q3 2026 · EPS est. 5.96",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "COF US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "ERN",
+              "security": "LMT US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Tue 10/27",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "After close",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Earnings",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "LMT",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Lockheed Martin Corporation",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Q3 2026 · EPS est. 6.87",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "LMT US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "ERN",
+              "security": "LRCX US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Tue 10/27",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "After close",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Earnings",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "LRCX",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Lam Research Corporation",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Q1 2027 · EPS est. 1.54",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "LRCX US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "ERN",
+              "security": "MCD US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Tue 10/27",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "After close",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Earnings",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "MCD",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "McDonald's Corporation",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Q3 2026 · EPS est. 3.57",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "MCD US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "ERN",
+              "security": "META US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Tue 10/27",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "After close",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Earnings",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "META",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Meta Platforms, Inc. Class A",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Q3 2026 · EPS est. 6.77",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "META US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "ERN",
+              "security": "MSFT US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Tue 10/27",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "After close",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Earnings",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "MSFT",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Microsoft Corporation",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Q1 2027 · EPS est. 4.53",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "MSFT US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "ERN",
+              "security": "NOW US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Tue 10/27",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "After close",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Earnings",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "NOW",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "ServiceNow, Inc.",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Q3 2026 · EPS est. 7.98",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "NOW US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "ERN",
+              "security": "PFE US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Tue 10/27",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "After close",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Earnings",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "PFE",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Pfizer Inc.",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Q3 2026 · EPS est. -0.32",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "PFE US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "ERN",
+              "security": "PYPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Tue 10/27",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "After close",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Earnings",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "PYPL",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "PayPal Holdings, Inc.",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Q3 2026 · EPS est. 1.13",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "PYPL US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "ERN",
+              "security": "SCHW US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Tue 10/27",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "After close",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Earnings",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "SCHW",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "The Charles Schwab Corporation",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Q3 2026 · EPS est. 2.12",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "SCHW US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "ERN",
+              "security": "SO US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Tue 10/27",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "After close",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Earnings",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "SO",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "The Southern Company",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Q3 2026 · EPS est. 0.81",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "SO US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "ERN",
+              "security": "UNP US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Tue 10/27",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "After close",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Earnings",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "UNP",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Union Pacific Corporation",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Q3 2026 · EPS est. 1.75",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "UNP US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "ERN",
+              "security": "VZ US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Tue 10/27",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "After close",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Earnings",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "VZ",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Verizon Communications Inc.",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Q3 2026 · EPS est. -0.58",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "VZ US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "ERN",
+              "security": "AAPL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Wed 10/28",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Before open",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Earnings",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "AAPL",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Apple Inc.",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Q4 2026 · EPS est. 1.76",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "AAPL US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "ERN",
+              "security": "DIS US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Wed 10/28",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Before open",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Earnings",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "DIS",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "The Walt Disney Company",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Q4 2026 · EPS est. 0.89",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "DIS US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "ERN",
+              "security": "EOG US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Wed 10/28",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Before open",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Earnings",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "EOG",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "EOG Resources, Inc.",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Q3 2026 · EPS est. 3.09",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "EOG US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "ERN",
+              "security": "TXN US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Wed 10/28",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Before open",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Earnings",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "TXN",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Texas Instruments Incorporated",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Q3 2026 · EPS est. 0.17",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "TXN US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "ERN",
+              "security": "UBER US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Wed 10/28",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Before open",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Earnings",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "UBER",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Uber Technologies, Inc.",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Q3 2026 · EPS est. 0.88",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "UBER US Equity"
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "series",
+                  "FEDFUNDS"
+                ]
+              ],
+              "function": "ECO",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Wed 10/28",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "14:00 ET",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Macro",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "US",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "FOMC Rate Decision (Upper Bound)",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "High importance",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "ERN",
+              "security": "ADP US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Wed 10/28",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "After close",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Earnings",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "ADP",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Automatic Data Processing, Inc.",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Q1 2027 · EPS est. 3.02",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "ADP US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "ERN",
+              "security": "PEP US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Wed 10/28",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "After close",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Earnings",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "PEP",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "PepsiCo, Inc.",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Q3 2026 · EPS est. 1.97",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "PEP US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "ERN",
+              "security": "DUK US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Thu 10/29",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Before open",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Earnings",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "DUK",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Duke Energy Corporation",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Q3 2026 · EPS est. 2.36",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "DUK US Equity"
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "series",
+                  "ICSA"
+                ]
+              ],
+              "function": "ECO",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Thu 10/29",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "08:30 ET",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Macro",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "US",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Initial Jobless Claims",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Oct 24 · Medium importance",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "ERN",
+              "security": "GM US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Thu 10/29",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "After close",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Earnings",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "GM",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "General Motors Company",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Q3 2026 · EPS est. 0.50",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "GM US Equity"
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "ERN",
+              "security": "ZTS US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Thu 10/29",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "After close",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Earnings",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "ZTS",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Zoetis Inc. Class A",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Q3 2026 · EPS est. 1.91",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "ZTS US Equity"
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "from",
+                  "10/29/2026"
+                ],
+                [
+                  "to",
+                  "10/29/2026"
+                ]
+              ],
+              "function": "ECO",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Thu 10/29",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "21:30 ET",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Macro",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "CN",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "China Official Manufacturing PMI",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Oct · Medium importance",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "from",
+                  "10/29/2026"
+                ],
+                [
+                  "to",
+                  "10/29/2026"
+                ]
+              ],
+              "function": "ECO",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Thu 10/29",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "23:00 ET",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Macro",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "JP",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "BOJ Target Rate",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "High importance",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "from",
+                  "10/30/2026"
+                ],
+                [
+                  "to",
+                  "10/30/2026"
+                ]
+              ],
+              "function": "ECO",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Fri 10/30",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "06:00 ET",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Macro",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "EU",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Eurozone CPI Estimate YoY",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Oct · High importance",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "from",
+                  "10/30/2026"
+                ],
+                [
+                  "to",
+                  "10/30/2026"
+                ]
+              ],
+              "function": "ECO",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Fri 10/30",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "06:00 ET",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Macro",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "EU",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Eurozone GDP SA QoQ",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "3Q · Medium importance",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "series",
+                  "PCEPILFE"
+                ]
+              ],
+              "function": "ECO",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Fri 10/30",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "08:30 ET",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Macro",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "US",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "PCE Core Deflator MoM",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Sep · Medium importance",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "series",
+                  "UMCSENT"
+                ]
+              ],
+              "function": "ECO",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Fri 10/30",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "10:00 ET",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Macro",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "US",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "U. of Mich. Sentiment",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Oct · Medium importance",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          }
+        ],
+        "title": "This month · Thu 10/01 – Sat 10/31/2026"
+      }
+    },
+    {
+      "Fields": {
+        "columns": 1,
+        "fields": [
+          {
+            "format": "Text",
+            "label": "Earnings",
+            "style": "Muted",
+            "text": "Mock data · estimates are the source's consensus",
+            "value": null
+          },
+          {
+            "format": "Text",
+            "label": "Dividends",
+            "style": "Muted",
+            "text": "Mock data · ex-dates of announced dividends and splits",
+            "value": null
+          },
+          {
+            "format": "Text",
+            "label": "Macro",
+            "style": "Muted",
+            "text": "Mock data · release calendar, all releases",
+            "value": null
+          }
+        ],
+        "title": "Sources"
+      }
+    }
+  ],
+  "function": "CALENDAR",
+  "menu": [],
+  "refresh_ms": null,
+  "security": null,
+  "sources": [
+    {
+      "as_of": 1791216000000000000,
+      "attribution": null,
+      "delay": "MOCK",
+      "provider": "mock",
+      "source": "MOCK",
+      "synthetic": true
+    }
+  ],
+  "status": "Ok",
+  "title": "Calendar"
+}

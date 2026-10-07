@@ -47,6 +47,9 @@ pub struct Engine {
     /// re-fetching the feed. In memory only (some providers forbid storing
     /// news on disk).
     pub(crate) recent_news: Mutex<HashMap<String, meridian_types::NewsItem>>,
+    /// Company news for TODAY by key set: (fetched at, items). In memory
+    /// only, like `recent_news`; a short TTL keeps the home screen fast.
+    pub(crate) holdings_news: Mutex<HashMap<String, (UnixNanos, Vec<meridian_types::NewsItem>)>>,
     cancel: CancellationToken,
 }
 
@@ -83,6 +86,7 @@ impl Engine {
             ai: RwLock::new(None),
             instruments: RwLock::new(HashMap::new()),
             recent_news: Mutex::new(HashMap::new()),
+            holdings_news: Mutex::new(HashMap::new()),
             cancel: CancellationToken::new(),
         });
         engine.reload_alerts()?;
@@ -331,6 +335,13 @@ impl Engine {
         let routed = self.router().instrument(key).await?;
         self.instruments.write().insert(key.clone(), routed.value.clone());
         Ok(routed.value)
+    }
+
+    /// Reference data already in memory (loaded with the universe or looked
+    /// up earlier); never touches the network.
+    #[must_use]
+    pub fn instrument_in_memory(&self, key: &SecurityKey) -> Option<Instrument> {
+        self.instruments.read().get(key).cloned()
     }
 
     /// Price decimals for display, defaulting by sector.
