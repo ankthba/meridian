@@ -10,7 +10,7 @@ use crate::core::Engine;
 use crate::screen::{
     Action, Block, Cell, Column, Format, Input, InputKind, LiveField, NoticeLevel, Row, Screen, Style, Table,
 };
-use crate::universe::{CRYPTO, FX_MATRIX, WORLD_INDICES, usd_pair};
+use crate::universe::{CRYPTO, FX_MATRIX, WORLD_INDICES, index_proxy, usd_pair};
 
 fn live_columns(dec: u8) -> Vec<Column> {
     vec![
@@ -113,12 +113,7 @@ pub(crate) async fn wei(engine: Arc<Engine>, _req: ScreenRequest) -> Screen {
     let keys: Vec<SecurityKey> = WORLD_INDICES.iter().map(|(sym, _, _)| SecurityKey::index(sym)).collect();
     let covered: Vec<bool> = keys.iter().map(|k| engine.router().supports(meridian_provider::Capability::Quotes, Some(k))).collect();
     if !covered.iter().any(|c| *c) {
-        return Screen::not_available(
-            "WEI",
-            "World Equity Indices",
-            None,
-            "no configured data source provides index levels (index data is separately licensed)",
-        );
+        return wei_proxies(&engine);
     }
     let mut s = Screen::new("WEI", "World Equity Indices", None);
     badge_from_quotes(&engine, &mut s, &keys);
@@ -143,6 +138,66 @@ pub(crate) async fn wei(engine: Arc<Engine>, _req: ScreenRequest) -> Screen {
             cells.push(Cell::text("n/a").styled(Style::Muted));
             cells.extend(live_cells(ncells - 1));
             rows.push(Row::new(cells).depth(1));
+        }
+    }
+    s.push(Block::Table(Table { title: None, columns, rows, page_size: None, numbered: false }));
+    s
+}
+
+/// Shown on WEI when index levels come from US-listed ETF proxies.
+pub(crate) const WEI_PROXY_NOTICE: &str =
+    "Index levels aren't available from free sources; rows show ETF proxies, whose % change approximates the index's.";
+
+/// WEI when no source provides index levels: each index with a liquid
+/// US-listed ETF proxy, quoted through the equity path.
+fn wei_proxies(engine: &Engine) -> Screen {
+    const T: &str = "World Equity Indices";
+    let etf = |sym: &str| index_proxy(sym).map(|(ticker, name)| (SecurityKey::equity(ticker), ticker, name));
+    let quoted = |k: &SecurityKey| engine.router().supports(meridian_provider::Capability::Quotes, Some(k));
+    let keys: Vec<SecurityKey> =
+        WORLD_INDICES.iter().filter_map(|(sym, _, _)| etf(sym)).map(|(k, _, _)| k).filter(|k| quoted(k)).collect();
+    if keys.is_empty() {
+        return Screen::not_available(
+            "WEI",
+            T,
+            None,
+            "no configured data source provides index levels (index data is separately licensed) or quotes for the US-listed ETFs used as proxies; add Alpaca in Settings → Setup",
+        );
+    }
+    let mut s = Screen::new("WEI", T, None);
+    s.push(Block::Notice { level: NoticeLevel::Info, text: WEI_PROXY_NOTICE.into() });
+    badge_from_quotes(engine, &mut s, &keys);
+    let mut columns = vec![Column::text("Index", 28), Column::text("Proxy", 50)];
+    columns.extend(
+        live_columns(2)
+            .into_iter()
+            .filter(|c| !matches!(c.live, Some(LiveField::Bid | LiveField::Ask | LiveField::Volume)))
+            .map(|c| if c.live == Some(LiveField::Last) { Column { title: "ETF Last".into(), ..c } } else { c }),
+    );
+    let nlive = columns.len() - 2;
+    let mut rows = Vec::new();
+    let mut region = "";
+    for (sym, name, reg) in WORLD_INDICES {
+        if *reg != region {
+            region = reg;
+            let mut cells = vec![Cell::text(*reg).styled(Style::Emphasis), Cell::empty()];
+            cells.extend(live_cells(nlive));
+            rows.push(Row::new(cells).emphasis());
+        }
+        let mut cells = vec![Cell::text(*name)];
+        match etf(sym) {
+            Some((k, ticker, etf_name)) if quoted(&k) => {
+                let ks = k.to_string();
+                cells.push(Cell::text(format!("{ticker:<5} {etf_name}")).styled(Style::Link));
+                cells.extend(live_cells(nlive));
+                rows.push(Row::new(cells).security(&ks).action(Action::new("GP", Some(&ks))).depth(1));
+            }
+            other => {
+                let why = if other.is_some() { "n/a — no quote source" } else { "n/a — no proxy" };
+                cells.push(Cell::text(why).styled(Style::Muted));
+                cells.extend(live_cells(nlive));
+                rows.push(Row::new(cells).depth(1));
+            }
         }
     }
     s.push(Block::Table(Table { title: None, columns, rows, page_size: None, numbered: false }));

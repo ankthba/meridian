@@ -460,3 +460,93 @@ fn news_query_shape() {
     assert_eq!(m["sort"], "desc");
     assert_eq!(m["include_content"], "false");
 }
+
+const CA_PAGE_1: &str = include_str!("../tests/fixtures/corporate_actions_constructed_page1.json");
+const CA_PAGE_2: &str = include_str!("../tests/fixtures/corporate_actions_constructed_page2.json");
+
+#[test]
+fn dividends_capability_is_declared_on_both_plans() {
+    for feed in [AlpacaFeed::Iex, AlpacaFeed::Sip] {
+        let caps = capabilities_for(feed);
+        let e = caps.entry(Capability::Dividends, Some(AssetClass::Equity)).unwrap();
+        assert_eq!(e.delay, DataDelay::EndOfDay);
+        assert_eq!(e.source, FeedSource::Aggregated);
+        assert!(caps.supports(Capability::Dividends, Some(AssetClass::Etf)));
+    }
+}
+
+#[tokio::test]
+async fn dividends_follow_pagination_and_sort_newest_first() {
+    use meridian_types::DividendKind::{Regular, Special, Split};
+
+    let server = TestServer::start(vec![(200, CA_PAGE_1), (200, CA_PAGE_2)]).await;
+    let p = provider(AlpacaFeed::Iex, &server.base);
+    let key: SecurityKey = "TESTA US Equity".parse().unwrap();
+    let d = p.dividends(&key).await.unwrap();
+
+    let reqs = server.requests();
+    assert_eq!(reqs.len(), 2);
+    assert_eq!(reqs[0].path, "/v1/corporate-actions");
+    assert_eq!(reqs[0].query["symbols"], "TESTA");
+    assert_eq!(reqs[0].query["types"], "cash_dividend,forward_split,reverse_split");
+    assert_eq!(reqs[0].query["sort"], "desc");
+    assert!(!reqs[0].query.contains_key("page_token"));
+    assert_eq!(reqs[1].query["page_token"], "page-2");
+    assert_eq!(reqs[0].headers["apca-api-key-id"], "TEST-KEY-ID");
+    // Ten years back, and ahead of today for declared, not yet paid actions.
+    let date = |s: &str| NaiveDate::parse_from_str(s, "%Y-%m-%d").unwrap();
+    let (start, end) = (date(&reqs[0].query["start"]), date(&reqs[0].query["end"]));
+    assert_eq!((end - start).num_days(), CORPORATE_ACTIONS_LOOKBACK_DAYS + CORPORATE_ACTIONS_LOOKAHEAD_DAYS);
+    assert_eq!(reqs[1].query["start"], reqs[0].query["start"]);
+
+    assert_eq!(d.key, key);
+    let got: Vec<(NaiveDate, meridian_types::DividendKind, f64)> =
+        d.dividends.iter().map(|x| (x.ex_date, x.kind.clone(), x.amount)).collect();
+    assert_eq!(
+        got,
+        vec![
+            (date("2026-09-12"), Regular, 0.51),
+            (date("2025-12-01"), Special, 1.25),
+            (date("2024-06-10"), Split, 1.5),
+            (date("2023-01-05"), Split, 0.1),
+        ]
+    );
+    assert!(d.per_period.is_empty() && d.reported_splits.is_empty());
+    assert_eq!(d.provenance.provider.as_str(), "alpaca");
+    assert_eq!(d.provenance.delay, DataDelay::EndOfDay);
+    assert_eq!(d.provenance.source, FeedSource::Aggregated);
+    let source_ref = d.provenance.source_ref.as_deref().unwrap();
+    assert!(source_ref.starts_with(&format!("{}/v1/corporate-actions?symbols=TESTA", server.base)));
+    assert!(!source_ref.contains("TEST-SECRET") && !source_ref.contains("TEST-KEY-ID"));
+}
+
+#[tokio::test]
+async fn dividends_retry_once_without_a_future_end_date() {
+    let server = TestServer::start(vec![(400, r#"{"message":"invalid end"}"#), (200, CA_PAGE_2)]).await;
+    let p = provider(AlpacaFeed::Iex, &server.base);
+    let d = p.dividends(&"TESTA US Equity".parse().unwrap()).await.unwrap();
+    assert_eq!(d.dividends.len(), 2);
+    let reqs = server.requests();
+    assert_eq!(reqs.len(), 2);
+    let end = |i: usize| NaiveDate::parse_from_str(&reqs[i].query["end"], "%Y-%m-%d").unwrap();
+    assert_eq!((end(0) - end(1)).num_days(), CORPORATE_ACTIONS_LOOKAHEAD_DAYS);
+}
+
+#[tokio::test]
+async fn dividends_errors_and_unserved_keys() {
+    let server = TestServer::start(vec![(403, r#"{"message":"forbidden"}"#)]).await;
+    let p = provider(AlpacaFeed::Iex, &server.base);
+    let err = p.dividends(&SecurityKey::equity("AAPL")).await.unwrap_err();
+    assert!(matches!(err, ProviderError::Unauthorized(ref m) if m.contains("403")), "{err:?}");
+    // Foreign listings and non-equities aren't Alpaca's: NotFound, no request.
+    let before = server.requests().len();
+    assert!(matches!(p.dividends(&"VOD LN Equity".parse().unwrap()).await, Err(ProviderError::NotFound(_))));
+    assert!(matches!(p.dividends(&SecurityKey::currency("EURUSD")).await, Err(ProviderError::NotFound(_))));
+    // Without keys: Unauthorized, and no request either.
+    let unkeyed = keyless(&server.base);
+    assert_eq!(
+        unkeyed.dividends(&SecurityKey::equity("AAPL")).await.unwrap_err(),
+        ProviderError::Unauthorized(MISSING_KEY.into())
+    );
+    assert_eq!(server.requests().len(), before);
+}

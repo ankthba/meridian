@@ -7,7 +7,9 @@ pub mod chart;
 mod common;
 mod company;
 mod des;
+mod dividends;
 mod filings;
+mod help;
 mod hp;
 mod macro_eco;
 mod monitors;
@@ -74,7 +76,7 @@ pub(crate) fn builder_for(function: &str) -> Option<Builder> {
         "ERN" => builder!(company::ern),
         "ANR" => builder!(company::anr),
         "HDS" => builder!(company::hds),
-        "DVD" => builder!(company::dvd),
+        "DVD" => builder!(dividends::dvd),
         "ECO" => builder!(macro_eco::eco),
         "W" => builder!(monitors::worksheet),
         "WEI" => builder!(monitors::wei),
@@ -83,6 +85,7 @@ pub(crate) fn builder_for(function: &str) -> Option<Builder> {
         "MOST" => builder!(monitors::most),
         "ALRT" => builder!(alerts::alrt),
         "SECF" => builder!(secf::secf),
+        "HELP" => builder!(help::help),
         "MENU" => builder!(secf::security_menu),
         _ => return extra_builder_for(function),
     })

@@ -1,6 +1,6 @@
 # meridian-provider-alpaca
 
-Provider `alpaca`: Alpaca Market Data API for US stocks (snapshot quotes, historical bars, a real-time trade/quote WebSocket stream), US option chain snapshots with vendor Greeks, and news.
+Provider `alpaca`: Alpaca Market Data API for US stocks (snapshot quotes, historical bars, a real-time trade/quote WebSocket stream), US option chain snapshots with vendor Greeks, news, and corporate actions (cash dividends and splits for DVD).
 
 Requires an Alpaca account and API key pair (a free paper account works for the Basic plan). Keys come from the Keychain through `AlpacaConfig`; the crate never reads them from anywhere else.
 
@@ -18,6 +18,9 @@ Requires an Alpaca account and API key pair (a free paper account works for the 
 | Bars `GET /v2/stocks/{symbol}/bars` | <https://docs.alpaca.markets/us/reference/stockbarsingle-1> (multi-symbol: <https://docs.alpaca.markets/us/reference/stockbars>) |
 | Option chain `GET /v1beta1/options/snapshots/{underlying}` | <https://docs.alpaca.markets/us/reference/optionchain> |
 | News `GET /v1beta1/news` | <https://docs.alpaca.markets/us/reference/news-3> |
+| Corporate actions `GET /v1/corporate-actions` (checked 2026-10-07; page updated 2026-05-27) | <https://docs.alpaca.markets/us/reference/corporateactions-1> |
+| Corporate actions: `region`, `isin` and `currency` added (2026-06-03) | <https://docs.alpaca.markets/us/v1.1/changelog/2026-06-03-market-data-9dddd18> |
+| `end` filters on `process_date`, which can be days after the ex-date (Alpaca staff, community forum) | <https://forum.alpaca.markets/t/querying-corporate-actions-by-ex-date-rather-than-process-date/17724> |
 | WebSocket protocol, errors, limits | <https://docs.alpaca.markets/us/docs/streaming-market-data> |
 | Stock stream channels and schemas | <https://docs.alpaca.markets/us/docs/real-time-stock-pricing-data> |
 | Option stream (not used: msgpack only) | <https://docs.alpaca.markets/us/docs/real-time-option-data> |
@@ -35,7 +38,7 @@ Two facts come from Alpaca staff on the community forum, not the docs:
 
 - REST (`https://data.alpaca.markets`): headers `APCA-API-KEY-ID` and `APCA-API-SECRET-KEY`. Both header values are marked sensitive (`HeaderValue::set_sensitive`), so they are redacted from `Debug` output. Keys never go in URLs, so `Provenance.source_ref` (the request URL) is safe to store and show.
 - Stream: after the server's `[{"T":"success","msg":"connected"}]`, the client sends `{"action":"auth","key":…,"secret":…}` (within 10 s) and expects `[{"T":"success","msg":"authenticated"}]`. The message is built in memory and never logged.
-- If either key is missing or blank, every keyed call (`quotes`, `bars`, `option_chain`, `news`, `connect`) returns `ProviderError::Unauthorized("Alpaca API key not set — add it in Settings")` without any network I/O. `quotes` for keys Alpaca doesn't serve returns `Ok(vec![])` even without keys.
+- If either key is missing or blank, every keyed call (`quotes`, `bars`, `option_chain`, `news`, `dividends`, `connect`) returns `ProviderError::Unauthorized("Alpaca API key not set — add it in Settings")` without any network I/O. `quotes` for keys Alpaca doesn't serve returns `Ok(vec![])` even without keys.
 
 ## Plans, feeds and what the capabilities say
 
@@ -47,6 +50,7 @@ Two facts come from Alpaca staff on the community forum, not the docs:
 | Bars (daily and intraday) | **SIP**, `end` clamped to 16 min ago: `Consolidated`, `Delayed { 15 }` | SIP: `Consolidated`, `RealTime` |
 | Option chain | `feed=indicative`: `FeedSource::Modelled`, `Delayed { 15 }` | `feed=opra`: `Consolidated`, `RealTime` |
 | News | `Aggregated`, `RealTime` | same |
+| Corporate actions (dividends, splits) | `Aggregated`, `EndOfDay` | same |
 | REST rate limit | 200/min (`RateLimit::per_minute(200)`) | 10,000/min |
 | Streamed symbols | 30 (`max_stream_symbols = Some(30)`) | unlimited (`None`) |
 | History | Bars since 2016 (SIP) | same |
@@ -103,6 +107,27 @@ The stream page still says quote sizes are "in round lots"; the REST schema and 
 - Scopes: `Company` → `symbols` from the served keys (no served keys → empty page, no request); `Market` → no symbol filter; `Top` and `PressReleases` → `Unsupported` (Alpaca has neither category).
 - Text filter: applied client-side (case-insensitive, headline and summary). With a filter or a limit above 50, up to 5 pages are read.
 - Mapping: `id` → `id` (string); `source` (e.g. `benzinga`); `headline`; `summary` with HTML stripped and entities decoded (empty → `None`); `body` always `None`; `url` (null/empty → `None`); `created_at` → `published_at`; fetch time → `received_at`; `symbols` → `tickers`; `topics` empty. `provenance.as_of` = `updated_at`; `source_ref` = request URL. `NewsPage.next` is the vendor's `next_page_token` after the last page read.
+
+### `dividends` — `GET /v1/corporate-actions`
+
+**Plan.** Corporate actions are part of the Market Data API (`data.alpaca.markets`, same `APCA-API-KEY-ID`/`APCA-API-SECRET-KEY` headers). The plans page says Basic "serves as the default option for both Paper and Live trading accounts, ensuring all users can access essential data with zero cost" and limits Basic only on real-time coverage (IEX, indicative options), stream symbols, the latest 15 minutes of history and call rate; the corporate actions reference names no plan requirement. We found no statement restricting it to a paid plan, so it is used on both plans. **Not yet confirmed with a live Basic key** (`tests/live.rs` `live_corporate_actions`). A 403 is reported as is (`Unauthorized("HTTP 403: …")`), and DVD still shows the SEC EDGAR data.
+
+- Query: `symbols=<symbol>`, `types=cash_dividend,forward_split,reverse_split`, `start` = today − 3,653 days, `end` = today + 90 days, `limit=1000` (documented maximum), `sort=desc`, `page_token`. Up to 10 pages. Default `data_quality=complete` (incomplete records without an ex-date are excluded by Alpaca).
+- `start`/`end` filter on `process_date`, "the date when the corporate action is processed by Alpaca", which Alpaca staff say "can be several days (or more) after the `ex_date`"; the 90-day look-ahead picks up declared dividends that haven't been paid. The docs neither allow nor forbid a future `end`: if the request fails with 400/422, it is retried once with `end` = today. How far back Alpaca's history goes isn't documented.
+- Alpaca warns it "has no guarantees on the creation time of corporate actions", so the capability is labelled `EndOfDay`, source `Aggregated`.
+
+| `Dividend` | `cash_dividends[]` | `forward_splits[]` / `reverse_splits[]` |
+|---|---|---|
+| `kind` | `Special` if `special`, else `Regular` | `Split` |
+| `amount` | `rate` (per share) | `new_rate / old_rate` (2 = 2-for-1, 0.1 = 1-for-10) |
+| `ex_date` | `ex_date` (record skipped if missing/invalid) | `ex_date` |
+| `record_date`, `pay_date` | `record_date`, `payable_date` | same |
+| `declared_date`, `frequency` | `None` (not in the response) | `None` |
+| `currency` | `currency` as sent; **empty stays empty** (the schema: "Empty value can mean USD, non-applicable … or unknown") | empty |
+
+- Records for other symbols are ignored; records without a valid ex-date or amount are skipped and counted in a warning. `sub_type` (`interest`, `return_of_capital`), `foreign`, CUSIP/ISIN and the other action types (mergers, spin-offs, stock dividends, …) are not used.
+- Events are sorted newest first. `per_period` and `reported_splits` stay empty (they come from SEC EDGAR).
+- `provenance`: `EndOfDay`, `Aggregated`, `as_of` = fetch time, `source_ref` = first page URL (no credentials in it).
 
 ## Streaming
 

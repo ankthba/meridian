@@ -146,42 +146,83 @@ impl ProviderRouter {
         let mut last_err = ProviderError::Unsupported { capability: cap };
         for reg in candidates {
             if reg.is_open() {
-                last_err = ProviderError::Upstream(format!("{} temporarily disabled after repeated failures", reg.provider.id()));
+                last_err = Self::disabled(reg);
                 continue;
             }
-            let mut attempt = 0;
-            loop {
-                if let Some(b) = &reg.bucket {
-                    b.acquire().await;
-                }
-                match f(reg.provider.clone()).await {
-                    Ok(value) => {
-                        reg.record(true);
-                        return Ok(Routed { value, provider: reg.provider.id() });
-                    }
-                    Err(e @ (ProviderError::Unsupported { .. } | ProviderError::NotFound(_))) => {
-                        // Try the next provider.
-                        last_err = e;
-                        break;
-                    }
-                    Err(e) if e.is_retryable() && attempt < MAX_RETRIES => {
-                        reg.record(false);
-                        let backoff = match &e {
-                            ProviderError::RateLimited { retry_after: Some(d) } => *d,
-                            _ => Duration::from_millis(250 * 2u64.pow(attempt)),
-                        };
-                        tracing::debug!(provider = %reg.provider.id(), error = %e, ?backoff, "retrying");
-                        tokio::time::sleep(backoff).await;
-                        attempt += 1;
-                    }
-                    Err(e) => {
-                        reg.record(!e.is_retryable());
-                        return Err(e);
-                    }
-                }
+            match Self::attempt(reg, &f).await {
+                Ok(routed) => return Ok(routed),
+                // Try the next provider.
+                Err(e @ (ProviderError::Unsupported { .. } | ProviderError::NotFound(_))) => last_err = e,
+                Err(e) => return Err(e),
             }
         }
         Err(last_err)
+    }
+
+    fn disabled(reg: &Registered) -> ProviderError {
+        ProviderError::Upstream(format!("{} temporarily disabled after repeated failures", reg.provider.id()))
+    }
+
+    /// One provider: rate limit, and retries with backoff for retryable
+    /// errors. The caller checks the circuit breaker.
+    async fn attempt<T: Send + 'static>(
+        reg: &Registered,
+        f: &impl Fn(Arc<dyn Provider>) -> BoxFut<T>,
+    ) -> ProviderResult<Routed<T>> {
+        let mut attempt = 0;
+        loop {
+            if let Some(b) = &reg.bucket {
+                b.acquire().await;
+            }
+            match f(reg.provider.clone()).await {
+                Ok(value) => {
+                    reg.record(true);
+                    return Ok(Routed { value, provider: reg.provider.id() });
+                }
+                Err(e @ (ProviderError::Unsupported { .. } | ProviderError::NotFound(_))) => return Err(e),
+                Err(e) if e.is_retryable() && attempt < MAX_RETRIES => {
+                    reg.record(false);
+                    let backoff = match &e {
+                        ProviderError::RateLimited { retry_after: Some(d) } => *d,
+                        _ => Duration::from_millis(250 * 2u64.pow(attempt)),
+                    };
+                    tracing::debug!(provider = %reg.provider.id(), error = %e, ?backoff, "retrying");
+                    tokio::time::sleep(backoff).await;
+                    attempt += 1;
+                }
+                Err(e) => {
+                    reg.record(!e.is_retryable());
+                    return Err(e);
+                }
+            }
+        }
+    }
+
+    /// Providers that offer `cap` for `key`, in routing order.
+    #[must_use]
+    pub fn providers_for(&self, cap: Capability, key: Option<&SecurityKey>) -> Vec<ProviderId> {
+        self.candidates(cap, key).into_iter().map(|r| r.provider.id()).collect()
+    }
+
+    /// Calls one specific provider (from [`Self::providers_for`]) with the
+    /// usual breaker, rate limit and retries, without falling through to
+    /// another provider. For datasets where sources complement each other.
+    async fn call_on<T: Send + 'static>(
+        &self,
+        provider: &ProviderId,
+        cap: Capability,
+        key: Option<&SecurityKey>,
+        f: impl Fn(Arc<dyn Provider>) -> BoxFut<T>,
+    ) -> ProviderResult<Routed<T>> {
+        let reg = self
+            .candidates(cap, key)
+            .into_iter()
+            .find(|r| r.provider.id() == *provider)
+            .ok_or(ProviderError::Unsupported { capability: cap })?;
+        if reg.is_open() {
+            return Err(Self::disabled(reg));
+        }
+        Self::attempt(reg, &f).await
     }
 
     pub async fn search(&self, q: InstrumentQuery) -> ProviderResult<Vec<Instrument>> {
@@ -319,6 +360,18 @@ impl ProviderRouter {
     pub async fn dividends(&self, key: &SecurityKey) -> ProviderResult<Routed<Dividends>> {
         let k = key.clone();
         self.call(Capability::Dividends, Some(key), move |p| {
+            let k = k.clone();
+            Box::pin(async move { p.dividends(&k).await })
+        })
+        .await
+    }
+
+    /// Dividends from one specific provider. Dividend sources complement
+    /// each other (event dates from one, per-period amounts from another),
+    /// so DVD asks each of [`Self::providers_for`] and merges.
+    pub async fn dividends_from(&self, provider: &ProviderId, key: &SecurityKey) -> ProviderResult<Routed<Dividends>> {
+        let k = key.clone();
+        self.call_on(provider, Capability::Dividends, Some(key), move |p| {
             let k = k.clone();
             Box::pin(async move { p.dividends(&k).await })
         })
@@ -542,5 +595,98 @@ mod tests {
         assert!(matches!(err, ProviderError::Upstream(_)));
         assert_eq!(a.calls.load(Ordering::SeqCst), calls_before);
         let _ = Provenance::synthetic(0);
+    }
+
+    /// A dividends source: events or per-period rows, or an error.
+    struct Divs {
+        id: &'static str,
+        caps: Capabilities,
+        result: ProviderResult<usize>,
+        calls: AtomicU32,
+    }
+
+    impl Divs {
+        fn new(id: &'static str, result: ProviderResult<usize>) -> Self {
+            let mut caps = Fake::new(id, None).caps;
+            caps.entries[0].capability = Capability::Dividends;
+            Self { id, caps, result, calls: AtomicU32::new(0) }
+        }
+    }
+
+    #[async_trait]
+    impl Provider for Divs {
+        fn id(&self) -> ProviderId {
+            ProviderId::new(self.id)
+        }
+        fn capabilities(&self) -> &Capabilities {
+            &self.caps
+        }
+        async fn dividends(&self, key: &SecurityKey) -> ProviderResult<Dividends> {
+            self.calls.fetch_add(1, Ordering::SeqCst);
+            let n = self.result.clone()?;
+            let ex_date = chrono::NaiveDate::from_ymd_opt(2026, 1, 2).unwrap();
+            let d = meridian_types::Dividend {
+                declared_date: None,
+                ex_date,
+                record_date: None,
+                pay_date: None,
+                amount: 0.5,
+                currency: "USD".into(),
+                frequency: None,
+                kind: meridian_types::DividendKind::Regular,
+            };
+            Ok(Dividends {
+                key: key.clone(),
+                dividends: vec![d; n],
+                per_period: Vec::new(),
+                reported_splits: Vec::new(),
+                provenance: Provenance::synthetic(0),
+            })
+        }
+    }
+
+    #[tokio::test(start_paused = true)]
+    async fn dividends_from_each_provider_without_fall_through() {
+        let a = Arc::new(Divs::new("a", Ok(2)));
+        let b = Arc::new(Divs::new("b", Err(ProviderError::NotFound("none".into()))));
+        let c = Arc::new(Fake::new("c", None)); // no dividends capability
+        let r = ProviderRouter::new(vec![a.clone(), b.clone(), c]);
+        let key = SecurityKey::equity("AAPL");
+        assert_eq!(r.providers_for(Capability::Dividends, Some(&key)), vec![ProviderId::new("a"), ProviderId::new("b")]);
+        assert!(r.providers_for(Capability::Dividends, Some(&SecurityKey::currency("EURUSD"))).is_empty());
+
+        let got = r.dividends_from(&ProviderId::new("a"), &key).await.unwrap();
+        assert_eq!(got.provider, ProviderId::new("a"));
+        assert_eq!(got.value.dividends.len(), 2);
+        // b's NotFound is b's answer; a is not asked again.
+        let calls_a = a.calls.load(Ordering::SeqCst);
+        let err = r.dividends_from(&ProviderId::new("b"), &key).await.unwrap_err();
+        assert_eq!(err, ProviderError::NotFound("none".into()));
+        assert_eq!(a.calls.load(Ordering::SeqCst), calls_a);
+        // A provider that doesn't offer dividends (or isn't registered).
+        assert!(matches!(
+            r.dividends_from(&ProviderId::new("c"), &key).await,
+            Err(ProviderError::Unsupported { capability: Capability::Dividends })
+        ));
+        assert!(matches!(
+            r.dividends_from(&ProviderId::new("zz"), &key).await,
+            Err(ProviderError::Unsupported { .. })
+        ));
+        // The routed call still falls through b's NotFound order-wise: a first.
+        assert_eq!(r.dividends(&key).await.unwrap().provider, ProviderId::new("a"));
+    }
+
+    #[tokio::test(start_paused = true)]
+    async fn dividends_from_retries_and_respects_the_breaker() {
+        let a = Arc::new(Divs::new("a", Err(ProviderError::Network("down".into()))));
+        let r = ProviderRouter::new(vec![a.clone()]);
+        let key = SecurityKey::equity("AAPL");
+        let id = ProviderId::new("a");
+        assert_eq!(r.dividends_from(&id, &key).await.unwrap_err(), ProviderError::Network("down".into()));
+        assert_eq!(a.calls.load(Ordering::SeqCst), MAX_RETRIES + 1);
+        let _ = r.dividends_from(&id, &key).await;
+        let before = a.calls.load(Ordering::SeqCst);
+        assert!(matches!(r.dividends_from(&id, &key).await, Err(ProviderError::Upstream(_))));
+        assert_eq!(a.calls.load(Ordering::SeqCst), before);
     }
 }

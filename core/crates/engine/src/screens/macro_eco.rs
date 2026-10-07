@@ -180,6 +180,7 @@ async fn series(engine: Arc<Engine>, id: &str) -> Screen {
         }],
         x_marker: None,
         height_rows: 12,
+        x_categories: None,
     }));
     if let Some(n) = &se.notes {
         s.push(Block::Text { title: Some("Notes".into()), body: n.clone() });
@@ -225,6 +226,7 @@ async fn curve(engine: Arc<Engine>) -> Screen {
         }],
         x_marker: None,
         height_rows: 12,
+        x_categories: None,
     }));
     let y = |t: &str| c.points.iter().find(|p| p.tenor == t).and_then(|p| p.yield_pct);
     let spread = |a: &str, b: &str| y(a).zip(y(b)).map(|(a, b)| (a - b) * 100.0);

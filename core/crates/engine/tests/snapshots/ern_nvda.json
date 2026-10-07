@@ -110,6 +110,21 @@
           }
         ],
         "title": "EPS: Actual vs Estimate",
+        "x_categories": [
+          "Q3 24",
+          "Q4 24",
+          "Q1 25",
+          "Q2 25",
+          "Q3 25",
+          "Q4 25",
+          "Q1 26",
+          "Q2 26",
+          "Q3 26",
+          "Q4 26",
+          "Q1 27",
+          "Q2 27",
+          "Q3 27"
+        ],
         "x_label": "Quarter",
         "x_marker": null,
         "y_label": "EPS"

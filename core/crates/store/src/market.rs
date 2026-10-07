@@ -395,9 +395,12 @@ impl MarketStore {
             }
         }
         let Some(provider) = provider else { return Ok(None) };
+        // The SQL table holds statement lines only (for ASK's views); split
+        // disclosures live in the JSON screen cache.
         Ok(Some(Fundamentals {
             key: key.clone(),
             statements,
+            reported_splits: Vec::new(),
             provenance: Provenance {
                 provider: meridian_types::ProviderId::new(&provider),
                 synthetic: false,
@@ -767,6 +770,7 @@ mod tests {
                     StatementLine { code: "net_income".into(), label: "Net Income".into(), value: None, depth: 0, source_tag: None },
                 ],
             }],
+            reported_splits: Vec::new(),
             provenance: prov("edgar"),
         };
         st.put_fundamentals(&f).unwrap();

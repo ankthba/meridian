@@ -63,3 +63,24 @@ async fn live_fundamentals() {
         assert!(f.statements.iter().any(|s| s.value("revenue").is_some()));
     }
 }
+
+#[tokio::test]
+#[ignore = "live: calls SEC EDGAR; needs MERIDIAN_SEC_CONTACT"]
+async fn live_dividends_per_share() {
+    let Some(p) = provider() else {
+        eprintln!("MERIDIAN_SEC_CONTACT not set; skipping");
+        return;
+    };
+    // Confirms the per-share dividend concepts and the `USD/shares` unit
+    // against a real dividend payer.
+    let d = p
+        .dividends(&SecurityKey::equity("KO"))
+        .await
+        .expect("dividends");
+    assert!(d.dividends.is_empty());
+    assert!(
+        d.per_period
+            .iter()
+            .any(|x| x.declared_per_share.is_some() || x.paid_per_share.is_some())
+    );
+}

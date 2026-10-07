@@ -21,13 +21,13 @@ Meridian runs on real data only. Every screen shows where its data came from and
 | Area | Mnemonics |
 |---|---|
 | Equities | `DES` description · `GP` / `GIP` price graphs · `HP` historical prices · `FA` financials · `EE` estimates · `ERN` earnings · `ANR` analyst ratings · `HDS` holders · `DVD` dividends |
-| Monitors | `W` worksheet · `MOST` most active · `WEI` world indices · `CRYP` crypto · `FXC` FX crosses · Launchpad monitor (`BLP`) |
+| Monitors | `W` worksheet · `MOST` most active · `WEI` world indices (labeled ETF proxies on free sources) · `CRYP` crypto · `FXC` FX crosses · Launchpad monitor (`BLP`) |
 | News and filings | `TOP` · `N` · `CN` · `CF` filings with AI summary and version diff |
 | Derivatives | `OMON` option monitor · `OVDV` volatility surface · `OVME` option valuation |
 | Analytics | `EQS` screener · `RV` relative value · `CORR` correlation · `PORT` portfolio · `BTST` backtester · `ALRT` alerts |
 | Macro | `ECO` economic calendar and series · Treasury curve |
 | AI | `ASK` analyst built on Claude, answering from the terminal's own data through tools |
-| Navigation | `SECF` security finder · `MENU` · `HELP` · F-key sectors · linked panels |
+| Navigation | `SECF` security finder · `MENU` · `HELP` syntax, keys and function directory · F-key sectors · linked panels |
 
 `docs/FUNCTIONS.md` lists every mnemonic, its status, and what it needs.
 
@@ -37,8 +37,8 @@ All free and official. Keys are stored only in the macOS Keychain and entered in
 
 | Source | Provides | Needs |
 |---|---|---|
-| [Alpaca](https://alpaca.markets) | US equity quotes (IEX on the free plan), streaming, bars, news, option chains | Free key |
-| [SEC EDGAR](https://www.sec.gov/about/developer-resources) | Company search, as-reported financials, filings | Your name and email (SEC fair-access policy) |
+| [Alpaca](https://alpaca.markets) | US equity quotes (IEX on the free plan), streaming, bars, news, option chains, corporate actions (dividend and split dates) | Free key |
+| [SEC EDGAR](https://www.sec.gov/about/developer-resources) | Company search, as-reported financials, dividends per share by fiscal period, filings | Your name and email (SEC fair-access policy) |
 | [FRED](https://fred.stlouisfed.org/docs/api/api_key.html) | Economic series and release calendar | Free key |
 | [Finnhub](https://finnhub.io) | Market and company news, analyst ratings, earnings | Free key |
 | Coinbase, Kraken | Crypto quotes and streaming | Nothing |

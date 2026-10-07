@@ -191,6 +191,8 @@ The store enforces `CachePolicy`. The UI shows attributions on the screens that 
 - retries retryable errors with exponential backoff and jitter, and opens a per-provider circuit breaker after repeated failures;
 - **never** falls back across the mock/live boundary.
 
+Most datasets take the first provider that answers. Where sources complement each other, the caller asks each one: `providers_for(capability, key)` lists them in routing order and `dividends_from(provider, key)` calls one with the same rate limit, retries and breaker but no fall-through. DVD uses this to merge dividend events with ex-dates (a vendor's corporate actions) and per-share totals by fiscal period (SEC XBRL); each source is cached separately, and a failing source leaves only its part `NOT AVAILABLE`.
+
 ### 4.3 Data mode
 
 The engine runs in exactly one **data mode**, fixed at launch and shown permanently in the status bar:
@@ -235,7 +237,7 @@ All in `core/crates/types`. Each type is `serde`-serializable for storage and te
 - **NewsItem**: `id, source, headline, summary?, body? (only if licensed), url, published_at, received_at, tickers[], topics[], provenance`.
 - **Estimate**: `instrument, metric (EPS, Revenue, EBITDA, …), fiscal_period, period_type (Q/FY), mean, median?, high?, low?, count?, actual?, as_of, provenance`.
 - **Fundamentals**: `instrument, statements[]`. `Statement` = `{ kind (Income/Balance/CashFlow), period_type, fiscal_period, period_end, currency, lines[] }`. `Line` = `{ concept (normalized code), label, value, unit, as_reported_tag? }`.
-- **Also**: `Holder`, `Dividend`, `CorporateAction`, `Recommendation`, `EconomicSeries`, `Observation`, `EconomicEvent`, `Transcript`, `Portfolio`, `Position`, `Transaction`, `Alert`.
+- **Also**: `Holder`, `Dividend` (event with ex-date), `PeriodDividend` (per-share total for a fiscal period), `ReportedSplit` (split ratio disclosed in filings, no ex-date; also on `Fundamentals`), `CorporateAction`, `Recommendation`, `EconomicSeries`, `Observation`, `EconomicEvent`, `Transcript`, `Portfolio`, `Position`, `Transaction`, `Alert`.
 
 ### 5.3 Errors
 
@@ -335,7 +337,7 @@ Swift display link (per window, ≤ 120 Hz) ── subscription.poll(since_seq) 
 
 ### 7.5 Screen model
 
-Function screens are built in Rust (`engine/src/screens/*`) as a generic `Screen`: a title, numbered menu (`Action`s), source badges, a status (`Ok` / `NotAvailable{reason}` / `Error`), and blocks — `Fields`, `Table` (columns may bind to a live hot-row field), `Text`, `Inputs` (editable amber cells; changing one re-requests the screen with that argument), `Notice`, `Chart` (spec; Swift fetches `chart_data`), `Xy` (small embedded charts), `Heat`, and `Diff`. Swift renders every function with one renderer (`Render/ScreenView.swift`, `TerminalGridView`), so screens get consistent look and keyboard behavior and all logic stays testable in Rust. Swift-native views exist only where interaction demands it: the price chart, ASK, and Launchpad.
+Function screens are built in Rust (`engine/src/screens/*`) as a generic `Screen`: a title, numbered menu (`Action`s), source badges, a status (`Ok` / `NotAvailable{reason}` / `Error`), and blocks — `Fields`, `Table` (columns may bind to a live hot-row field), `Text`, `Inputs` (editable amber cells; changing one re-requests the screen with that argument), `Notice`, `Chart` (spec; Swift fetches `chart_data`), `Xy` (small embedded charts; bar charts may carry category labels shown instead of numeric x ticks), `Heat`, and `Diff`. Swift renders every function with one renderer (`Render/ScreenView.swift`, `TerminalGridView`), so screens get consistent look and keyboard behavior and all logic stays testable in Rust. Swift-native views exist only where interaction demands it: the price chart, ASK, and Launchpad.
 
 ## 8. Threading model
 

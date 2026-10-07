@@ -82,6 +82,7 @@ The brief's **AI summary and diff vs prior filing** are our own additions. They 
 |---|---|---|
 | Sector keys | F2 GOVT, F3 CORP, F4 MTGE, F5 M-MKT, F6 MUNI, F7 PFD, F8 EQUITY, F9 CMDTY, F10 INDEX, F11 CRNCY. F12's label varies by keyboard generation (CLIENT / PORT / ALPHA). | [Illinois](https://guides.library.illinois.edu/bloomberg_user_guide/the_bloomberg_keyboard), [Seton Hall](https://library.shu.edu/c.php?g=351647&p=2373722), Wikipedia |
 | HELP | F1. On a function, it opens that function's help. After typed words, it searches. HELP HELP opens live help chat. | UCD, UT Tampa, SMU |
+| HELP (function) | Registered in the function registry (2026-10-07) so `HELP <GO>` opens a screen: command syntax, the key map (kept identical to `KeyRouter.swift` and the ⌘/ overlay by a test), and a directory of every function grouped by area. `topic=<MNEMONIC>` (the "Help on" input) explains one function: arguments, an example, which Settings → Setup source it needs in LIVE mode, related functions. The F1 key itself still shows the key overlay (twice: MENU); pointing it at this screen is a pending app change. | Same sources as the key |
 | GO / CANCEL | Enter / Esc | Wikipedia, Pace |
 | MENU | Back / related-functions menu. No standard-keyboard equivalent found. | Pace, BU |
 | END/BACK | End key: back to the previous screen (newer keyboards) | [UPenn](https://guides.library.upenn.edu/bloomberg/keyboard) |
@@ -92,6 +93,14 @@ The brief's **AI summary and diff vs prior filing** are our own additions. They 
 | Autocomplete | Matching functions and securities appear as you type | UF, Imperial |
 | Panel anatomy | Toolbar (menu + recent securities), command line, red function bar with drop-downs, function area | Imperial, NYU Law, ISEG |
 | Linking | Launchpad Group Manager; groups are labeled by **letter** (A, B, C…), with security groups and monitor groups. Colour-group linking was not found. | Lippincott Part III |
+
+## LIVE data notes (free tier)
+
+| Mnemonic | What LIVE mode shows |
+|---|---|
+| DVD | Alpaca corporate actions (ex-, record and pay dates, cash amounts, splits) merged with SEC EDGAR dividends per share by fiscal period and splits disclosed in filings. A source that fails leaves only its part NOT AVAILABLE. |
+| WEI | Index levels aren't available from free sources, so each index row shows a labeled US-listed ETF proxy (e.g. S&P 500 → SPY, Nikkei 225 → EWJ) quoted through Alpaca. |
+| FA | As-reported EDGAR statements; a value restated in a later filing wins, even under a different concept. A split disclosed inside the displayed window adds a notice that per-share values aren't adjusted. |
 
 ### Conflicts with the brief
 

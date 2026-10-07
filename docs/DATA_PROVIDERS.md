@@ -113,7 +113,7 @@ Anthropic API usage is billed per token: `claude-opus-5-5` costs $4 input / $20 
 | ERN | Actuals only (EDGAR); consensus NOT AVAILABLE | same | EODHD |
 | ANR | Recommendation counts (Finnhub); targets NOT AVAILABLE | same | EODHD ratings + targets |
 | HDS | EDGAR 13F/Form 4 (we parse) | same | EODHD |
-| DVD | Massive Basic / Alpaca corporate actions | same | EODHD |
+| DVD | Alpaca corporate actions (ex/record/pay dates, splits) + EDGAR XBRL dividends per share by fiscal period (implemented 2026-10-07) | same | EODHD |
 | N / CN / TOP | Headlines + summaries (Finnhub, RSS) | same | **Full text** (Benzinga) |
 | CF | EDGAR | EDGAR | EDGAR |
 | OMON | EOD only | **Real-time OPRA** | Real-time + history |
@@ -121,7 +121,7 @@ Anthropic API usage is billed per token: `claude-opus-5-5` costs $4 input / $20 
 | OVME | Our models | Our models | Our models |
 | EQS / RV | EDGAR frames (as-reported, all filers) | same | + EODHD |
 | CORR / PORT / BTST | From bars | From bars | From bars |
-| WEI | **Not yet researched** (see gaps) | | |
+| WEI | Labeled US-listed ETF proxies via Alpaca (no free index levels; see gaps) | same | Licensed index data (not priced) |
 | ECO | FRED values + release dates; consensus NOT AVAILABLE | same | same |
 | FXC | OANDA real-time | same | + Massive Currencies |
 | CRYP | Coinbase + Kraken real-time | same | + Massive Currencies |
@@ -139,7 +139,7 @@ Anthropic API usage is billed per token: `claude-opus-5-5` costs $4 input / $20 
 
 ## Gaps in this research
 
-- **Index data (WEI) was not researched.** Real-time index levels (S&P, Dow, Nasdaq, international) are separately licensed. I'll research this before Phase 7. Fallbacks are FRED's daily index series (with its licensing limits) or clearly labeled ETF proxies.
+- **Index data (WEI).** Real-time index levels (S&P, Dow, Nasdaq, international) are separately licensed and no free source in this stack provides them; FRED's daily index series (with their licensing limits) cover only some of these indices and no intraday moves, so they weren't used. Alpaca's 2026-06-03 changelog briefly listed index-value endpoints, then withdrew them on 2026-07-24 as "not publicly available" (https://docs.alpaca.markets/us/v1.1/changelog/2026-06-03-market-data-9dddd18). LIVE WEI therefore shows liquid US-listed ETF proxies (SPY, DIA, QQQ, ONEQ, IWM, MSCI country ETFs, FEZ), clearly labeled; their % change approximates the index's.
 - Several providers blocked verification: Schwab (all), IBKR (prices), FMP (all), Finnhub paid tiers. See each research file's "not verified" list.
 
 ## Licensing constraints the design enforces

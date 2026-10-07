@@ -203,7 +203,7 @@ impl Inner {
             });
         }
         v.sort_by(|a, b| b.ex_date.cmp(&a.ex_date));
-        Some(Dividends { key: s.key().clone(), dividends: v, provenance: Provenance::synthetic(now) })
+        Some(Dividends { key: s.key().clone(), dividends: v, per_period: Vec::new(), reported_splits: Vec::new(), provenance: Provenance::synthetic(now) })
     }
 
     pub(crate) fn recommendations_for(&self, s: &Sym, now: UnixNanos) -> Option<Recommendations> {

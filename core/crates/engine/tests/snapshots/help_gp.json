@@ -1,0 +1,448 @@
+{
+  "args": [
+    [
+      "topic",
+      "GP"
+    ]
+  ],
+  "blocks": [
+    {
+      "Inputs": {
+        "inputs": [
+          {
+            "id": "topic",
+            "kind": "Choice",
+            "label": "Help on",
+            "options": [
+              "Overview",
+              "DES",
+              "GP",
+              "GIP",
+              "HP",
+              "W",
+              "BLP",
+              "SECF",
+              "MOST",
+              "N",
+              "CN",
+              "TOP",
+              "FA",
+              "EE",
+              "ERN",
+              "ANR",
+              "HDS",
+              "DVD",
+              "CF",
+              "OMON",
+              "OVDV",
+              "OVME",
+              "EQS",
+              "RV",
+              "CORR",
+              "PORT",
+              "BTST",
+              "ALRT",
+              "WEI",
+              "ECO",
+              "FXC",
+              "CRYP",
+              "ASK",
+              "HELP"
+            ],
+            "value": "GP"
+          }
+        ],
+        "title": null
+      }
+    },
+    {
+      "Fields": {
+        "columns": 2,
+        "fields": [
+          {
+            "format": "Text",
+            "label": "Function",
+            "style": "Emphasis",
+            "text": "GP",
+            "value": null
+          },
+          {
+            "format": "Text",
+            "label": "Title",
+            "style": "Normal",
+            "text": "Historical Price Graph",
+            "value": null
+          },
+          {
+            "format": "Text",
+            "label": "Area",
+            "style": "Normal",
+            "text": "Charts & Prices",
+            "value": null
+          },
+          {
+            "format": "Text",
+            "label": "Security",
+            "style": "Normal",
+            "text": "Required",
+            "value": null
+          },
+          {
+            "format": "Text",
+            "label": "Example",
+            "style": "Normal",
+            "text": "AAPL US <EQUITY> GP <GO>",
+            "value": null
+          }
+        ],
+        "title": null
+      }
+    },
+    {
+      "Text": {
+        "body": "Historical price chart with technical indicators and drawing tools.\n\nType a range after the mnemonic: AAPL US <EQUITY> GP 5Y <GO>",
+        "title": "Description"
+      }
+    },
+    {
+      "Table": {
+        "columns": [
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Argument",
+            "width": 22
+          },
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Values",
+            "width": 100
+          }
+        ],
+        "numbered": false,
+        "page_size": null,
+        "rows": [
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "range",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "1D 5D 1M 3M 6M YTD 1Y 2Y 3Y 5Y 10Y 20Y MAX (default 1Y)",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "interval",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "bar size: 1m 5m 15m 30m 1h 1d 1w 1mo (default depends on the range)",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "style",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Candles, Line, Mountain or Bars (default Candles)",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "studies",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "comma list: SMA:n EMA:n BB:n:k VWAP RSI:n MACD:a:b:c ATR:n STOCH:k:d OBV (default SMA:50,SMA:200)",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          }
+        ],
+        "title": "Arguments (set by the screen's inputs and menus)"
+      }
+    },
+    {
+      "Table": {
+        "columns": [
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Source",
+            "width": 12
+          },
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Provides",
+            "width": 110
+          }
+        ],
+        "numbered": false,
+        "page_size": null,
+        "rows": [
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "Alpaca",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "US stocks and ETFs (consolidated history; on the free plan it ends 15 minutes before now)",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "Keyless",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "crypto from Coinbase and Kraken; FX daily reference rates from Frankfurter (ECB)",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          }
+        ],
+        "title": "Data in LIVE Mode (Settings → Setup)"
+      }
+    },
+    {
+      "Table": {
+        "columns": [
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Function",
+            "width": 9
+          },
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Title",
+            "width": 28
+          },
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Security",
+            "width": 20
+          }
+        ],
+        "numbered": true,
+        "page_size": null,
+        "rows": [
+          {
+            "action": {
+              "args": [],
+              "function": "GIP",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "GIP",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Intraday Price Graph",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Required",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "HP",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "HP",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Historical Prices",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Required",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "DES",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Security Description",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Required",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "BTST",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "BTST",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Backtester",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Required",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          }
+        ],
+        "title": "Related Functions"
+      }
+    }
+  ],
+  "function": "HELP",
+  "menu": [
+    {
+      "action": {
+        "args": [],
+        "function": "GP",
+        "security": null
+      },
+      "label": "Open GP",
+      "number": 1,
+      "selected": false
+    },
+    {
+      "action": {
+        "args": [
+          [
+            "topic",
+            "Overview"
+          ]
+        ],
+        "function": "HELP",
+        "security": null
+      },
+      "label": "Help Overview",
+      "number": 2,
+      "selected": false
+    }
+  ],
+  "refresh_ms": null,
+  "security": null,
+  "sources": [
+    {
+      "as_of": 1791216000000000000,
+      "attribution": null,
+      "delay": "MOCK",
+      "provider": "mock",
+      "source": "MOCK",
+      "synthetic": true
+    }
+  ],
+  "status": "Ok",
+  "title": "Help — GP Historical Price Graph"
+}

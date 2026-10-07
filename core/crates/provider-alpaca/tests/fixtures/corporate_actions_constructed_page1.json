@@ -1,0 +1,52 @@
+{
+  "corporate_actions": {
+    "cash_dividends": [
+      {
+        "id": "00000000-0000-4000-8000-000000000001",
+        "symbol": "TESTA",
+        "cusip": "000000001",
+        "isin": "US0000000001",
+        "rate": 0.51,
+        "special": false,
+        "foreign": false,
+        "process_date": "2026-10-01",
+        "ex_date": "2026-09-12",
+        "record_date": "2026-09-12",
+        "payable_date": "2026-10-01",
+        "currency": "USD"
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000002",
+        "symbol": "TESTA",
+        "cusip": "000000001",
+        "rate": 1.25,
+        "special": true,
+        "foreign": false,
+        "process_date": "2025-12-15",
+        "ex_date": "2025-12-01",
+        "payable_date": "2025-12-15",
+        "currency": ""
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000003",
+        "symbol": "TESTA",
+        "cusip": "000000001",
+        "rate": 0.5,
+        "special": false,
+        "foreign": false,
+        "process_date": "2025-06-15"
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000004",
+        "symbol": "TESTB",
+        "cusip": "000000002",
+        "rate": 9.99,
+        "special": false,
+        "foreign": false,
+        "process_date": "2025-06-15",
+        "ex_date": "2025-06-01"
+      }
+    ]
+  },
+  "next_page_token": "page-2"
+}
