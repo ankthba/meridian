@@ -32,7 +32,9 @@ pub struct Engine {
     handle: tokio::runtime::Handle,
     mode: DataMode,
     clock: Arc<dyn Clock>,
-    router: Arc<ProviderRouter>,
+    /// Swapped wholesale when credentials change (`replace_providers`);
+    /// readers take a cheap `Arc` clone.
+    router: RwLock<Arc<ProviderRouter>>,
     hub: Arc<StreamHub>,
     stores: Arc<Stores>,
     events: Arc<dyn EngineEvents>,
@@ -52,16 +54,7 @@ impl Engine {
     /// Builds the engine. `providers` must all belong to `config.mode`: the
     /// composition root passes either the mock provider or real providers.
     pub fn new(config: &EngineConfig, providers: Vec<Arc<dyn Provider>>, events: Arc<dyn EngineEvents>) -> EngineResult<Arc<Self>> {
-        for p in &providers {
-            let synthetic = p.id().as_str() == "mock";
-            if synthetic != (config.mode == DataMode::Mock) {
-                return Err(EngineError::Internal(format!(
-                    "provider {} does not belong to {:?} mode; mock and live data must never mix",
-                    p.id(),
-                    config.mode
-                )));
-            }
-        }
+        Self::check_mode(config.mode, &providers)?;
         let runtime = tokio::runtime::Builder::new_multi_thread()
             .worker_threads(config.worker_threads.max(1))
             .thread_name("meridian-io")
@@ -80,7 +73,7 @@ impl Engine {
             handle,
             mode: config.mode,
             clock,
-            router: Arc::new(ProviderRouter::new(providers)),
+            router: RwLock::new(Arc::new(ProviderRouter::new(providers))),
             hub,
             stores: Arc::new(stores),
             events,
@@ -101,7 +94,10 @@ impl Engine {
     /// immediately; work happens on the engine runtime.
     pub fn start(self: &Arc<Self>) {
         let me = self.clone();
-        self.handle.spawn(async move { me.connect_streams().await });
+        self.handle.spawn(async move {
+            me.clone().connect_feeds().await;
+            me.feed_status_loop().await;
+        });
         let me = self.clone();
         self.handle.spawn(async move { me.load_universe().await });
         let me = self.clone();
@@ -145,8 +141,37 @@ impl Engine {
     }
 
     #[must_use]
-    pub fn router(&self) -> &Arc<ProviderRouter> {
-        &self.router
+    pub fn router(&self) -> Arc<ProviderRouter> {
+        self.router.read().clone()
+    }
+
+    /// Replaces the data sources (after the user changes credentials):
+    /// swaps the router, closes the old feeds and connects the new ones, and
+    /// reloads reference data. Live subscriptions carry over.
+    pub fn replace_providers(self: &Arc<Self>, providers: Vec<Arc<dyn Provider>>) -> EngineResult<()> {
+        Self::check_mode(self.mode, &providers)?;
+        *self.router.write() = Arc::new(ProviderRouter::new(providers));
+        self.hub.reset_feeds();
+        let me = self.clone();
+        self.handle.spawn(async move {
+            me.clone().connect_feeds().await;
+            me.load_universe().await;
+        });
+        Ok(())
+    }
+
+    fn check_mode(mode: DataMode, providers: &[Arc<dyn Provider>]) -> EngineResult<()> {
+        for p in providers {
+            let synthetic = p.id().as_str() == "mock";
+            if synthetic != (mode == DataMode::Mock) {
+                return Err(EngineError::Internal(format!(
+                    "provider {} does not belong to {:?} mode; mock and live data must never mix",
+                    p.id(),
+                    mode
+                )));
+            }
+        }
+        Ok(())
     }
 
     #[must_use]
@@ -179,8 +204,9 @@ impl Engine {
 
     // --- streaming ------------------------------------------------------
 
-    async fn connect_streams(self: Arc<Self>) {
-        for p in self.router.providers() {
+    /// Connects every streaming provider in the current router.
+    async fn connect_feeds(self: Arc<Self>) {
+        for p in self.router().providers() {
             let Some(streaming) = p.streaming() else { continue };
             let sink = self.hub.sink_for(&p.id());
             match streaming.connect(sink).await {
@@ -194,6 +220,10 @@ impl Engine {
                 }
             }
         }
+    }
+
+    /// Forwards feed status changes to the app until shutdown.
+    async fn feed_status_loop(self: Arc<Self>) {
         let mut last: Vec<FeedStatus> = Vec::new();
         loop {
             tokio::select! {
@@ -222,7 +252,7 @@ impl Engine {
                 .filter(|k| me.hub.registry().get(k).and_then(|id| me.hub.state().snapshot(id)).is_none())
                 .collect();
             for chunk in missing.chunks(100) {
-                if let Ok(quotes) = me.router.quotes(chunk).await {
+                if let Ok(quotes) = me.router().quotes(chunk).await {
                     for q in &quotes {
                         me.hub.apply_snapshot(q);
                     }
@@ -244,7 +274,7 @@ impl Engine {
             }
             let keys = self.hub.unstreamed();
             for chunk in keys.chunks(100) {
-                match self.router.quotes(chunk).await {
+                match self.router().quotes(chunk).await {
                     Ok(quotes) => {
                         for q in &quotes {
                             self.hub.apply_snapshot(q);
@@ -265,7 +295,7 @@ impl Engine {
 
     async fn load_universe(self: Arc<Self>) {
         let q = InstrumentQuery { text: String::new(), sector: None, limit: 200_000 };
-        match self.router.search(q).await {
+        match self.router().search(q).await {
             Ok(list) => {
                 let n = list.len() as u64;
                 {
@@ -298,7 +328,7 @@ impl Engine {
         if let Some(i) = self.instruments.read().get(key) {
             return Ok(i.clone());
         }
-        let routed = self.router.instrument(key).await?;
+        let routed = self.router().instrument(key).await?;
         self.instruments.write().insert(key.clone(), routed.value.clone());
         Ok(routed.value)
     }
@@ -319,7 +349,7 @@ impl Engine {
 
     #[must_use]
     pub fn data_sources(&self) -> Vec<DataSourceInfo> {
-        self.router.capabilities().into_iter().map(|(provider, capabilities)| DataSourceInfo { provider, capabilities }).collect()
+        self.router().capabilities().into_iter().map(|(provider, capabilities)| DataSourceInfo { provider, capabilities }).collect()
     }
 
     #[must_use]
@@ -436,7 +466,7 @@ impl Engine {
             to: None,
             limit: 100,
         };
-        let Ok(page) = self.router.news(q).await else { return Vec::new() };
+        let Ok(page) = self.router().news(q).await else { return Vec::new() };
         let mut out = Vec::new();
         let mut alerts = self.alerts.lock();
         for item in &page.items {

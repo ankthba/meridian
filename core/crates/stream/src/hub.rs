@@ -151,14 +151,37 @@ impl StreamHub {
     pub fn sink_for(&self, provider: &ProviderId) -> Arc<dyn EventSink> {
         let mut map = self.feed_index.lock();
         let next = FeedIndex::try_from(map.len()).unwrap_or(NO_FEED - 1);
-        map.entry(provider.clone()).or_insert(next);
-        self.statuses.lock().push(FeedStatus { provider: provider.clone(), connected: false, message: "idle: no subscriptions yet".into() });
+        let idx = *map.entry(provider.clone()).or_insert(next);
+        // A provider reconnecting after `reset_feeds` keeps its index and
+        // status slot.
+        let status = FeedStatus { provider: provider.clone(), connected: false, message: "idle: no subscriptions yet".into() };
+        let mut st = self.statuses.lock();
+        match st.get_mut(idx as usize) {
+            Some(slot) => *slot = status,
+            None => st.push(status),
+        }
         Arc::new(HubSink {
             tx: self.tx.clone(),
             overflow: self.overflow.clone(),
             feed_index: self.feed_index.clone(),
             stats: self.stats.clone(),
         })
+    }
+
+    /// Closes every feed (credentials changed). Subscribed instruments stay
+    /// subscribed and are routed again as new feeds are added.
+    pub fn reset_feeds(&self) {
+        let old = std::mem::take(&mut *self.feeds.lock());
+        for f in &old {
+            f.handle.close();
+        }
+        for feed in self.routed.lock().values_mut() {
+            *feed = None;
+        }
+        for s in self.statuses.lock().iter_mut() {
+            s.connected = false;
+            "reconnecting with new settings".clone_into(&mut s.message);
+        }
     }
 
     /// Registers an open feed. Instruments already subscribed and covered by

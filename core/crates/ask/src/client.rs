@@ -93,6 +93,34 @@ impl AnthropicClient {
         self
     }
 
+    /// Checks the key with `GET /v1/models/{model}`, which spends no tokens,
+    /// and returns the model's display name. Documented at
+    /// <https://platform.claude.com/docs/en/about-claude/models/overview>.
+    pub async fn verify_key(&self, model: &str) -> Result<String, AskError> {
+        let client = reqwest::Client::builder()
+            .timeout(Duration::from_secs(15))
+            .build()
+            .map_err(|e| AskError::Stream(format!("HTTP client setup failed: {e}")))?;
+        let resp = client
+            .get(format!("{}/v1/models/{model}", self.base_url))
+            .header("x-api-key", self.api_key.expose_secret())
+            .header("anthropic-version", ANTHROPIC_VERSION)
+            .send()
+            .await
+            .map_err(|e| AskError::Stream(format!("could not reach the Anthropic API: {e}")))?;
+        let status = resp.status().as_u16();
+        let body = resp.text().await.unwrap_or_default();
+        if (200..300).contains(&status) {
+            let v: Value = serde_json::from_str(&body).unwrap_or(Value::Null);
+            return Ok(v.get("display_name").and_then(Value::as_str).unwrap_or(model).to_owned());
+        }
+        let message = serde_json::from_str::<Value>(&body)
+            .ok()
+            .and_then(|v| v.pointer("/error/message").and_then(Value::as_str).map(str::to_owned))
+            .unwrap_or_else(|| "request failed".to_owned());
+        Err(AskError::Http { status, message })
+    }
+
     fn request(&self, body: &[u8], betas: &[&str]) -> HttpRequest {
         let mut headers = vec![
             ("anthropic-version".to_owned(), ANTHROPIC_VERSION.to_owned()),
@@ -284,5 +312,34 @@ mod tests {
         }
         let err = AnthropicClient::with_transport(SecretString::from("  "), Arc::new(Never)).unwrap_err();
         assert_eq!(err, AskError::MissingApiKey);
+    }
+
+    /// Serves one canned HTTP response per connection on a local port.
+    async fn serve_once(status: u16, body: &'static str) -> String {
+        use tokio::io::{AsyncReadExt, AsyncWriteExt};
+        let listener = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let addr = listener.local_addr().unwrap();
+        tokio::spawn(async move {
+            let (mut sock, _) = listener.accept().await.unwrap();
+            let mut buf = vec![0u8; 4096];
+            let n = sock.read(&mut buf).await.unwrap();
+            let head = String::from_utf8_lossy(&buf[..n]).to_string();
+            assert!(head.starts_with("GET /v1/models/claude-opus-5-5 "), "{head}");
+            assert!(head.to_ascii_lowercase().contains("x-api-key: test-key"), "{head}");
+            let resp = format!("HTTP/1.1 {status} X\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{body}", body.len());
+            sock.write_all(resp.as_bytes()).await.unwrap();
+        });
+        format!("http://{addr}")
+    }
+
+    #[tokio::test]
+    async fn verify_key_reports_model_or_api_error() {
+        let ok = serve_once(200, r#"{"id":"claude-opus-5-5","display_name":"Claude Opus 5.5"}"#).await;
+        let c = AnthropicClient::new(SecretString::from("test-key")).unwrap().with_base_url(ok);
+        assert_eq!(c.verify_key("claude-opus-5-5").await.unwrap(), "Claude Opus 5.5");
+
+        let bad = serve_once(401, r#"{"type":"error","error":{"type":"authentication_error","message":"invalid x-api-key"}}"#).await;
+        let c = AnthropicClient::new(SecretString::from("test-key")).unwrap().with_base_url(bad);
+        assert_eq!(c.verify_key("claude-opus-5-5").await.unwrap_err(), AskError::Http { status: 401, message: "invalid x-api-key".into() });
     }
 }

@@ -121,7 +121,11 @@ impl meridian_ask::AskObserver for AskObserverBridge {
 #[derive(uniffi::Object)]
 pub struct Core {
     engine: Arc<Engine>,
-    ask: Option<Arc<meridian_engine::ask_tools::AskService>>,
+    /// Rebuilt by `reload_providers` when the Anthropic key changes.
+    ask: parking_lot::RwLock<Option<Arc<meridian_engine::ask_tools::AskService>>>,
+    config: CoreConfigFfi,
+    econf: EngineConfig,
+    secrets: Arc<dyn SecretSource>,
 }
 
 fn parse_key(s: &str) -> CoreResult<SecurityKey> {
@@ -158,7 +162,53 @@ impl Core {
             engine.set_ai(Some(ai));
         }
         let ask = built.anthropic.map(|c| Arc::new(meridian_engine::ask_tools::AskService::new(engine.clone(), c)));
-        Ok(Arc::new(Self { engine, ask }))
+        Ok(Arc::new(Self { engine, ask: parking_lot::RwLock::new(ask), config, econf, secrets }))
+    }
+
+    /// Rebuilds the data sources from the current Keychain credentials and
+    /// provider settings and swaps them in without restarting: feeds
+    /// reconnect, open subscriptions carry over. No-op in MOCK mode.
+    pub fn reload_providers(&self) -> CoreResult<()> {
+        if self.econf.mode == DataMode::Mock {
+            return Ok(());
+        }
+        let built = providers::build(&self.config, &self.econf, self.secrets.as_ref());
+        self.engine.replace_providers(built.providers)?;
+        self.engine.set_ai(built.ai);
+        *self.ask.write() = built.anthropic.map(|c| Arc::new(meridian_engine::ask_tools::AskService::new(self.engine.clone(), c)));
+        Ok(())
+    }
+
+    /// Makes one cheap real request against a data source (`alpaca`,
+    /// `edgar`, `fred`, `finnhub`, `anthropic`, `coinbase`, `kraken`,
+    /// `frankfurter`, `treasury`, `rss`) with the current settings and
+    /// describes the result. Fails with the source's own error message.
+    pub async fn test_provider(&self, provider: String) -> CoreResult<String> {
+        const TIMEOUT: std::time::Duration = std::time::Duration::from_secs(20);
+        let timed_out = || CoreError::Provider { message: "No response within 20 seconds".into() };
+        if provider == "anthropic" {
+            let Some(client) = providers::anthropic(self.secrets.as_ref()) else {
+                return Err(CoreError::NotAvailable { reason: "Anthropic API key not set".into() });
+            };
+            let fut = async move { client.verify_key(meridian_ask::DEFAULT_MODEL).await };
+            return match self.on_runtime(async move { tokio::time::timeout(TIMEOUT, fut).await }).await? {
+                Ok(Ok(name)) => Ok(format!("Connected · {name} available")),
+                Ok(Err(meridian_ask::AskError::Http { status: 401, .. })) => Err(CoreError::Provider { message: "Anthropic rejected the API key".into() }),
+                Ok(Err(e)) => Err(CoreError::Provider { message: e.to_string() }),
+                Err(_) => Err(timed_out()),
+            };
+        }
+        let p = match providers::single(&provider, &self.econf, self.secrets.as_ref()) {
+            Some(Ok(p)) => p,
+            Some(Err(e)) => return Err(CoreError::Provider { message: e }),
+            None => return Err(CoreError::InvalidInput { message: format!("unknown data source {provider}") }),
+        };
+        let fut = async move { providers::probe(&provider, p).await };
+        match self.on_runtime(async move { tokio::time::timeout(TIMEOUT, fut).await }).await? {
+            Ok(Ok(msg)) => Ok(msg),
+            Ok(Err(e)) => Err(CoreError::from(meridian_engine::EngineError::Provider(e))),
+            Err(_) => Err(timed_out()),
+        }
     }
 
     /// Connects feeds and starts background loops; returns immediately.
@@ -270,13 +320,13 @@ impl Core {
 
     /// Whether an Anthropic API key is configured.
     pub fn ask_available(&self) -> CoreResult<bool> {
-        Ok(self.ask.is_some())
+        Ok(self.ask.read().is_some())
     }
 
     /// Answers a question with tool use over local data. Streams through
     /// `observer`; returns the finished turn (answer, sources, number checks).
     pub async fn ask(&self, session_id: String, question: String, security: Option<String>, observer: Arc<dyn AskObserverFfi>) -> CoreResult<AskTurnFfi> {
-        let Some(svc) = self.ask.clone() else {
+        let Some(svc) = self.ask.read().clone() else {
             return Err(CoreError::NotAvailable { reason: "add an Anthropic API key in Settings → API Keys, then restart".into() });
         };
         let security = security.as_deref().map(parse_key).transpose()?;
@@ -291,7 +341,7 @@ impl Core {
     }
 
     pub fn ask_cancel(&self, session_id: String) -> CoreResult<()> {
-        if let Some(s) = &self.ask {
+        if let Some(s) = self.ask.read().clone() {
             s.cancel(&session_id);
         }
         Ok(())
