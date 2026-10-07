@@ -745,7 +745,9 @@ mod tests {
             conn.execute("INSERT INTO settings(key, value) VALUES ('k', 'v')", []).unwrap();
         }
         let s = AppStore::open(&p).unwrap();
-        assert_eq!(s.schema_version(), 2);
+        // A 1.0 database runs every later migration (transactions, then
+        // filing read state) and keeps its data.
+        assert_eq!(s.schema_version(), MIGRATIONS.len() as u32);
         assert_eq!(s.setting("k").unwrap().as_deref(), Some("v"));
         s.mark_filings_read(&["x".into()], 1).unwrap();
     }

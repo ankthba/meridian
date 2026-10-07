@@ -1593,8 +1593,10 @@ mod tests {
             if let ParsedCommand::Run(a) = run(&input) {
                 prop_assert!(lookup(&a.function).is_some() || a.is_app_action());
                 if a.function == "COMPARE" {
+                    // Bare `compare` opens the screen to pick securities;
+                    // otherwise a comparison names 2 to MAX_COMPARE.
                     let keys = compare_keys_of(&a);
-                    prop_assert!((2..=MAX_COMPARE).contains(&keys.len()));
+                    prop_assert!(keys.is_empty() || (2..=MAX_COMPARE).contains(&keys.len()));
                 }
             }
         }
