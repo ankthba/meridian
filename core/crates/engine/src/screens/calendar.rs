@@ -373,11 +373,11 @@ impl Engine {
         high_only: bool,
     ) -> CalendarData {
         let company_keys: Option<Vec<SecurityKey>> = keys.map(|k| k.iter().filter(|k| is_company_key(k)).cloned().collect());
-        let no_stocks = |what: &str| {
+        let no_stocks = || {
             if keys.is_some_and(<[SecurityKey]>::is_empty) {
-                SectionStatus::Empty("your holdings and watchlists are empty".into())
+                SectionStatus::Empty("no securities in scope".into())
             } else {
-                SectionStatus::Empty(format!("no stocks in scope have {what}"))
+                SectionStatus::Empty("no stocks in scope".into())
             }
         };
         let ask = |on: bool| on && company_keys.as_ref().is_none_or(|k| !k.is_empty());
@@ -420,7 +420,7 @@ impl Engine {
         };
 
         let status = match earnings {
-            None if kinds.earnings => no_stocks("earnings"),
+            None if kinds.earnings => no_stocks(),
             None => SectionStatus::Off,
             Some(Err(e)) => failed(&e, self, Capability::EarningsCalendar),
             Some(Ok(f)) => {
@@ -433,7 +433,7 @@ impl Engine {
         data.sections.push(Section { name: "Earnings", status, note: "estimates are the source's consensus" });
 
         let status = match dividends {
-            None if kinds.dividends => no_stocks("dividends"),
+            None if kinds.dividends => no_stocks(),
             None => SectionStatus::Off,
             Some(Err(e)) => failed(&e, self, Capability::DividendCalendar),
             Some(Ok(f)) => {
