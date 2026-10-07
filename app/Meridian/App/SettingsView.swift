@@ -1,133 +1,230 @@
+import AppKit
 import MeridianCore
 import SwiftUI
 
-/// Data-source setup (credentials in the Keychain, provider settings) and
-/// the Data Sources table (capabilities, terms, attribution, purge).
+/// The Settings window: data sources, general behavior, storage, the key
+/// map, and about / data credits.
 struct SettingsView: View {
-    @State private var sources: [DataSourceFfi] = []
-    @State private var status = ""
+    enum Tab: Hashable { case sources, general, storage, keyboard, about }
+    @State private var tab: Tab = .sources
 
     var body: some View {
-        TabView {
-            SetupView().tabItem { Text("Setup") }
-            dataSources.tabItem { Text("Data Sources") }
+        TabView(selection: $tab) {
+            DataSourcesPane()
+                .tabItem { Label("Data Sources", systemImage: "antenna.radiowaves.left.and.right") }
+                .tag(Tab.sources)
+            GeneralPane()
+                .tabItem { Label("General", systemImage: "gearshape") }
+                .tag(Tab.general)
+            StoragePane()
+                .tabItem { Label("Storage", systemImage: "internaldrive") }
+                .tag(Tab.storage)
+            KeyboardPane()
+                .tabItem { Label("Keyboard", systemImage: "keyboard") }
+                .tag(Tab.keyboard)
+            AboutPane()
+                .tabItem { Label("About", systemImage: "info.circle") }
+                .tag(Tab.about)
         }
-        .padding(14)
-        .frame(width: 900, height: 680)
-        .onAppear { sources = (try? AppModel.shared.core?.dataSources()) ?? [] }
+        .frame(width: 860, height: 600)
     }
+}
 
-    private var dataSources: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 14) {
-                ForEach(sources, id: \.provider) { s in
-                    VStack(alignment: .leading, spacing: 4) {
-                        HStack {
-                            Text(s.provider.uppercased()).font(.headline)
-                            if let c = s.connected { Text(c ? "● connected" : "● disconnected").foregroundStyle(c ? .green : .red) }
-                            Spacer()
-                            Text(s.cachePolicy).foregroundStyle(.secondary)
-                            Text(s.aiPolicy).foregroundStyle(.secondary)
-                            Button("Delete cached data") {
-                                status = (try? AppModel.shared.core?.purgeProvider(provider: s.provider)) ?? "failed"
-                            }
-                        }
-                        Text(s.termsNote).font(.callout)
-                        if let a = s.attribution { Text(a).font(.callout).italic() }
-                        if !s.docsUrl.isEmpty { Text(s.docsUrl).font(.caption).foregroundStyle(.secondary).textSelection(.enabled) }
-                        ForEach(Array(s.capabilities.enumerated()), id: \.offset) { _, c in
-                            HStack {
-                                Text(c.capability).frame(width: 190, alignment: .leading)
-                                Text(c.assetClasses).frame(width: 220, alignment: .leading).foregroundStyle(.secondary)
-                                Text(c.delay).frame(width: 70, alignment: .leading)
-                                Text(c.source).frame(width: 110, alignment: .leading).foregroundStyle(.secondary)
-                                Text(c.history ?? "").foregroundStyle(.secondary)
-                            }
-                            .font(.system(.caption, design: .monospaced))
+/// UserDefaults keys shared by Settings and the shell.
+enum Preference {
+    static let openSetupAtLaunch = "openSetupAtLaunch"
+    static let restoreWorkspace = "restoreWorkspace"
+}
+
+struct GeneralPane: View {
+    @AppStorage(Preference.openSetupAtLaunch) private var openSetupAtLaunch = true
+    @AppStorage(Preference.restoreWorkspace) private var restoreWorkspace = true
+    @State private var resetDone = false
+
+    var body: some View {
+        Form {
+            Section("Startup") {
+                Toggle("Restore panels from the last session", isOn: $restoreWorkspace)
+                Toggle("Open Settings when stock data or SEC filings aren't set up", isOn: $openSetupAtLaunch)
+            }
+            Section {
+                LabeledContent("Panel layout") {
+                    HStack {
+                        if resetDone { Text("Reset").foregroundStyle(.secondary) }
+                        Button("Reset to Default") {
+                            AppModel.shared.workspace.resetToDefaults()
+                            resetDone = true
                         }
                     }
-                    Divider()
                 }
-                if !status.isEmpty { Text(status).foregroundStyle(.orange) }
+                LabeledContent("Launchpad") {
+                    Button("Open Launchpad") { NotificationCenter.default.post(name: .openLaunchpad, object: nil) }
+                }
+            } header: {
+                Text("Panels")
+            } footer: {
+                Text("The default layout opens HELP, a worksheet, a price graph and top news. Panels in link group A follow each other's security.")
+            }
+            Section("Help") {
+                LabeledContent("Function directory") {
+                    Button("Open HELP") {
+                        let ws = AppModel.shared.workspace
+                        ws.focusedPanel.run(ActionFfi(function: "HELP", security: nil, args: []))
+                    }
+                }
+                LabeledContent("Keyboard reference") {
+                    Button("Show") { AppModel.shared.showKeyboardOverlay = true }
+                }
+            }
+            Section {
+                LabeledContent("Data mode", value: AppModel.shared.mode == .live ? "Live: real data only" : "Mock: synthetic test data")
+            } footer: {
+                Text("Meridian always runs on real data. Screens whose source isn't set up say NOT AVAILABLE with the reason instead of filling in.")
             }
         }
+        .formStyle(.grouped)
     }
 }
 
-struct SecretRow: View {
-    let provider: String
-    let field: String
-    let label: String
-    var onChange: () -> Void = {}
-    @State private var value = ""
-    @State private var saved = false
+struct StoragePane: View {
+    @State private var size: String = "Calculating…"
+    @State private var sources: [DataSourceFfi] = []
+    @State private var message: String?
+
+    private var dir: URL { AppModel.dataDirectory }
 
     var body: some View {
-        HStack {
-            // Return saves too, and so does closing Settings with text
-            // still in the field, so a pasted key is never silently lost.
-            SecureField(label, text: $value)
-                .onSubmit(save)
-            Button("Save", action: save)
-                .disabled(value.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
-            Button("Remove") { Keychain.delete(provider: provider, field: field); saved = false; onChange() }
-            Text(Keychain.read(provider: provider, field: field) != nil || saved ? "set" : "not set")
-                .foregroundStyle(.secondary)
-                .frame(width: 50)
+        Form {
+            Section {
+                LabeledContent("Location") {
+                    Text(dir.path(percentEncoded: false)).textSelection(.enabled).foregroundStyle(.secondary).lineLimit(1).truncationMode(.middle)
+                }
+                LabeledContent("Size on disk", value: size)
+                HStack {
+                    Spacer()
+                    Button("Show in Finder") { NSWorkspace.shared.activateFileViewerSelecting([dir]) }
+                }
+            } header: {
+                Text("Data folder")
+            } footer: {
+                Text("Cached market data (DuckDB and Parquet), watchlists, workspaces, alerts, portfolios and ASK history. API keys are stored only in your macOS Keychain, never here.")
+            }
+            Section {
+                ForEach(sources, id: \.provider) { s in
+                    LabeledContent(DataSource.all.first { $0.id == s.provider }?.name ?? s.provider) {
+                        HStack {
+                            Text(s.cachePolicy).foregroundStyle(.secondary)
+                            Button("Delete") { purge([s.provider]) }
+                        }
+                    }
+                }
+                HStack {
+                    if let message { Text(message).font(.callout).foregroundStyle(.secondary) }
+                    Spacer()
+                    Button("Delete All Cached Market Data", role: .destructive) { purge(sources.map(\.provider)) }
+                }
+            } header: {
+                Text("Cached market data")
+            } footer: {
+                Text("Deleting a cache only removes local copies; data is fetched again when needed. Some providers' terms limit how long data may be kept, and the cache follows them.")
+            }
         }
-        .onDisappear(perform: save)
+        .formStyle(.grouped)
+        .onAppear {
+            sources = (try? AppModel.shared.core?.dataSources()) ?? []
+            refreshSize()
+        }
     }
 
-    private func save() {
-        let v = value.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !v.isEmpty else { return }
-        saved = Keychain.write(provider: provider, field: field, value: v)
-        value = ""
-        onChange()
+    private func purge(_ providers: [String]) {
+        var notes: [String] = []
+        for p in providers {
+            if let m = try? AppModel.shared.core?.purgeProvider(provider: p) { notes.append(m) }
+        }
+        message = providers.count == 1 ? notes.first : "Deleted cached data for \(providers.count) sources"
+        refreshSize()
+    }
+
+    private func refreshSize() {
+        let dir = self.dir
+        Task.detached(priority: .utility) {
+            let text = ByteCountFormatter.string(fromByteCount: Self.allocatedSize(of: dir), countStyle: .file)
+            await MainActor.run { size = text }
+        }
+    }
+
+    nonisolated private static func allocatedSize(of dir: URL) -> Int64 {
+        var total: Int64 = 0
+        guard let e = FileManager.default.enumerator(at: dir, includingPropertiesForKeys: [.totalFileAllocatedSizeKey]) else { return 0 }
+        while let url = e.nextObject() as? URL {
+            total += Int64((try? url.resourceValues(forKeys: [.totalFileAllocatedSizeKey]).totalFileAllocatedSize) ?? 0)
+        }
+        return total
     }
 }
 
-/// Non-secret provider settings stored as JSON in SQLite.
-struct ProviderSettingField: View {
-    let provider: String
-    let key: String
-    let label: String
-    var onChange: () -> Void = {}
-    @State private var value = ""
-    @State private var stored = ""
-
-    static func read(_ provider: String, _ key: String) -> String? {
-        guard let j = try? AppModel.shared.core?.providerSettings(provider: provider),
-              let d = j.data(using: .utf8),
-              let obj = try? JSONSerialization.jsonObject(with: d) as? [String: Any] else { return nil }
-        return obj[key] as? String
-    }
-
-    static func write(_ provider: String, _ key: String, _ value: String) {
-        var obj: [String: Any] = [:]
-        if let j = try? AppModel.shared.core?.providerSettings(provider: provider), let d = j.data(using: .utf8),
-           let o = try? JSONSerialization.jsonObject(with: d) as? [String: Any] { obj = o }
-        obj[key] = value
-        if let d = try? JSONSerialization.data(withJSONObject: obj), let j = String(data: d, encoding: .utf8) {
-            try? AppModel.shared.core?.setProviderSettings(provider: provider, json: j)
+struct KeyboardPane: View {
+    var body: some View {
+        Form {
+            Section {
+                ForEach(KeyboardOverlay.rows, id: \.0) { r in
+                    LabeledContent(r.0) {
+                        Text(r.1).font(.system(.body, design: .monospaced)).foregroundStyle(.secondary)
+                    }
+                }
+            } header: {
+                Text("Keys")
+            } footer: {
+                Text("Mac F-keys send media keys unless you hold fn or turn on “Use F1, F2, etc. keys as standard function keys” in System Settings → Keyboard. ⌥1–⌥0 always work for the sector keys. HELP once opens help for the screen in the focused panel. Commands: type a security, a yellow key and a function, then Return, e.g. AAPL US <EQUITY> DES.")
+            }
         }
+        .formStyle(.grouped)
+    }
+}
+
+struct AboutPane: View {
+    @State private var attributions: [String] = []
+
+    private var version: String {
+        let v = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "?"
+        let b = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "?"
+        return "Version \(v) (\(b))"
     }
 
     var body: some View {
-        HStack {
-            TextField(label, text: $value)
-                .onSubmit(save)
-            Button("Save", action: save)
-                .disabled(value.trimmingCharacters(in: .whitespaces) == stored)
+        Form {
+            Section {
+                HStack(spacing: 16) {
+                    Image(nsImage: NSApp.applicationIconImage).resizable().frame(width: 84, height: 84)
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Meridian").font(.largeTitle.weight(.semibold))
+                        Text("A market terminal for macOS, driven from a command line.").foregroundStyle(.secondary)
+                        Text(version).font(.callout).foregroundStyle(.secondary)
+                    }
+                }
+                .padding(.vertical, 6)
+                LabeledContent("Source code") { Link("github.com/ankthba/meridian", destination: URL(string: "https://github.com/ankthba/meridian")!) }
+                LabeledContent("Author") { Link("Aniketh Bandlamudi · aniketh.net", destination: URL(string: "https://aniketh.net/projects/")!) }
+            }
+            Section {
+                Text("Market data from Alpaca, SEC EDGAR, FRED, Finnhub, Coinbase, Kraken, the European Central Bank via Frankfurter, the U.S. Treasury, and GlobeNewswire, PR Newswire and Business Wire press-release feeds. Each provider's terms apply to data fetched with your keys.")
+                ForEach(attributions, id: \.self) { Text($0).italic() }
+            } header: {
+                Text("Data credits")
+            }
+            Section("Fonts") {
+                Text("Iosevka by Renzhi Li (Belleve Invis), licensed under the SIL Open Font License 1.1.")
+            }
+            Section {
+                Text("For personal use. Meridian doesn't redistribute market data and isn't affiliated with any market-data or terminal vendor.")
+                    .foregroundStyle(.secondary)
+            }
         }
-        .onAppear { value = Self.read(provider, key) ?? ""; stored = value }
-        .onDisappear { if value.trimmingCharacters(in: .whitespaces) != stored { save() } }
-    }
-
-    private func save() {
-        let v = value.trimmingCharacters(in: .whitespaces)
-        Self.write(provider, key, v)
-        stored = v
-        onChange()
+        .formStyle(.grouped)
+        .onAppear {
+            let all = (try? AppModel.shared.core?.dataSources()) ?? []
+            var seen = Set<String>()
+            attributions = all.compactMap(\.attribution).filter { seen.insert($0).inserted }
+        }
     }
 }

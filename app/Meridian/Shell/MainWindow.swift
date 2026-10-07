@@ -28,7 +28,8 @@ struct MainWindow: View {
         }
         .task {
             // Without stock data or EDGAR most screens are empty: open Setup.
-            if app.mode == .live, !SnapshotMode.enabled, !PerfHarness.enabled, SetupItem.essentialMissing {
+            let wanted = UserDefaults.standard.object(forKey: Preference.openSetupAtLaunch) as? Bool ?? true
+            if wanted, app.mode == .live, !SnapshotMode.enabled, !PerfHarness.enabled, DataSource.essentialMissing {
                 openSettings()
             }
         }
@@ -82,12 +83,7 @@ struct StatusBar: View {
             } else {
                 Text("LIVE").font(Theme.swiftFont(weight: .bold)).foregroundStyle(.black)
                     .padding(.horizontal, 6).background(Theme.up.swiftUI)
-                if app.restartNeeded {
-                    Button { SetupItem.relaunch() } label: {
-                        Text("RESTART TO APPLY KEYS").font(Theme.swiftFont(11, weight: .bold)).foregroundStyle(Theme.warning.swiftUI)
-                    }
-                    .buttonStyle(.plain)
-                } else if app.missingSetup > 0 {
+                if app.missingSetup > 0 {
                     Button { openSettings() } label: {
                         Text("SETUP: \(app.missingSetup) SOURCE\(app.missingSetup == 1 ? "" : "S") NOT SET").font(Theme.swiftFont(11, weight: .bold)).foregroundStyle(Theme.warning.swiftUI)
                     }

@@ -109,6 +109,7 @@ final class PanelModel: Identifiable {
         case "N", "CN", "TOP", "SECF": return [KeyValue(key: "q", value: args.joined(separator: " "))]
         case "FA": return [KeyValue(key: "stmt", value: args[0])]
         case "HP": return [KeyValue(key: "period", value: args[0].capitalized)]
+        case "HELP": return [KeyValue(key: "topic", value: args[0].uppercased())]
         default: return []
         }
     }
@@ -153,6 +154,11 @@ final class PanelModel: Identifiable {
         if let cur = current, cur.security != nil {
             run(ActionFfi(function: cur.function, security: s, args: []), push: true)
         }
+    }
+
+    /// Re-runs the current screen (data sources changed).
+    func reload() {
+        if let current { run(current, push: false) }
     }
 
     func run(_ action: ActionFfi, push: Bool = true) {

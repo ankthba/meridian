@@ -57,7 +57,9 @@ final class Workspace {
                 p.linkedSecurityChanged(security)
             }
         }
-        if let json = try? core.loadWorkspace(id: "main"),
+        let restoreSaved = UserDefaults.standard.object(forKey: Preference.restoreWorkspace) as? Bool ?? true
+        if restoreSaved,
+           let json = try? core.loadWorkspace(id: "main"),
            let data = json.data(using: .utf8),
            let snaps = try? JSONDecoder().decode([PanelModel.Snapshot].self, from: data),
            snaps.count == panels.count,
@@ -65,8 +67,13 @@ final class Workspace {
             for (p, s) in zip(panels, snaps) { p.restore(s) }
             return
         }
+        resetToDefaults()
+    }
+
+    /// HELP, a worksheet, a price graph and top news.
+    func resetToDefaults() {
         let defaults: [(String, String?, String?)] = [
-            ("DES", "AAPL US Equity", "A"),
+            ("HELP", nil, nil),
             ("W", nil, "A"),
             ("GP", "AAPL US Equity", "A"),
             ("TOP", nil, "B"),
@@ -75,6 +82,7 @@ final class Workspace {
             p.linkGroup = d.2
             p.run(ActionFfi(function: d.0, security: d.1, args: []), push: false)
         }
+        focused = 0
     }
 
     func save() {

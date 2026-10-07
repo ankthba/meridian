@@ -77,8 +77,14 @@ enum SnapshotMode {
                 await render(view, size: size, to: out.appendingPathComponent(spec.fileName))
             }
             if env["MERIDIAN_SNAPSHOT_SETUP"] == "1" {
-                let setup = SetupView().padding(14).frame(width: 900, height: 1180).background(Color(nsColor: .windowBackgroundColor))
-                await render(setup, size: CGSize(width: 900, height: 1180), to: out.appendingPathComponent("settings-setup.png"))
+                let panes: [(String, AnyView)] = [
+                    ("sources", AnyView(DataSourcesPane())), ("general", AnyView(GeneralPane())),
+                    ("storage", AnyView(StoragePane())), ("keyboard", AnyView(KeyboardPane())), ("about", AnyView(AboutPane())),
+                ]
+                for (name, pane) in panes {
+                    let v = pane.frame(width: 860, height: 600).background(Color(nsColor: .windowBackgroundColor))
+                    await render(v, size: CGSize(width: 860, height: 600), to: out.appendingPathComponent("settings-\(name).png"))
+                }
             }
             if env["MERIDIAN_SNAPSHOT_MAIN"] == "1" {
                 try? await Task.sleep(nanoseconds: 1_500_000_000)

@@ -126,12 +126,14 @@ enum KeyRouter {
         case .cancel: panel.cancel()
         case .menu: panel.menuBack()
         case .help:
+            // Once: help for the screen in the focused panel. Twice: the
+            // directory of all functions.
             let now = CACurrentMediaTime()
-            if now - lastHelp < 1.2 {
-                panel.run(ActionFfi(function: "MENU", security: panel.security, args: []))
-                AppModel.shared.showKeyboardOverlay = false
-            } else {
-                AppModel.shared.showKeyboardOverlay = true
+            let fn = panel.current?.function
+            if now - lastHelp < 1.2 || fn == nil || fn == "HELP" || fn == "MENU" {
+                panel.run(ActionFfi(function: "HELP", security: nil, args: []))
+            } else if let fn {
+                panel.run(ActionFfi(function: "HELP", security: nil, args: [KeyValue(key: "topic", value: fn)]))
             }
             lastHelp = now
         case .pageForward: panel.pageForward()

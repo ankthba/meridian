@@ -39,9 +39,6 @@ final class AppModel {
         return base.appendingPathComponent("Meridian", isDirectory: true)
     }
 
-    /// Credentials changed in Setup since launch (providers are built at
-    /// startup).
-    var restartNeeded = false
     /// Live sources without credentials (status bar); computed once the core
     /// is up, since the EDGAR contact lives in the core's settings store.
     var missingSetup = 0
@@ -74,12 +71,25 @@ final class AppModel {
             try c.start()
             core = c
             self.mode = (try? c.dataMode()) ?? mode
-            if self.mode == .live { missingSetup = SetupItem.missingCount }
+            if self.mode == .live { missingSetup = DataSource.missingCount }
             workspace.restore(core: c)
         } catch {
             startupError = "Core failed to start: \(error)"
         }
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { _, _ in }
+    }
+
+    /// Credentials or provider settings changed in Settings: swap the data
+    /// sources in the running core and re-run every open screen.
+    func sourcesChanged() {
+        guard let core else { return }
+        do {
+            try core.reloadProviders()
+        } catch {
+            statusMessage = "Couldn't apply data source changes: \(error.userMessage)"
+        }
+        missingSetup = DataSource.missingCount
+        for p in workspace.panels { p.reload() }
     }
 
     func shutdown() {
