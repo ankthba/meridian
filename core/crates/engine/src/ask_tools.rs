@@ -164,7 +164,7 @@ impl ToolExecutor for EngineTools {
             def("get_earnings", "Earnings history: reported EPS/revenue vs estimates and surprise %.", json!({"security": s("Security key")}), &["security"]),
             def("get_recommendations", "Analyst rating counts and price targets.", json!({"security": s("Security key")}), &["security"]),
             def("get_holders", "Largest institutional, fund and insider holders.", json!({"security": s("Security key")}), &["security"]),
-            def("get_dividends", "Dividend and split history.", json!({"security": s("Security key")}), &["security"]),
+            def("get_dividends", "Dividend and split events (ex, record and pay dates) and dividends per share by fiscal period.", json!({"security": s("Security key")}), &["security"]),
             def("search_news", "Recent news headlines. Pass security '' for market news; query '' for no text filter.", json!({"security": s("Security key or ''"), "query": s("Text filter or ''")}), &["security", "query"]),
             def("search_filings", "SEC filings list for a company. form '' for all forms (e.g. '10-K', '10-Q', '8-K').", json!({"security": s("Security key"), "form": s("Form type or ''")}), &["security", "form"]),
             def("get_filing_section", "Text of one section of a filing (first 8,000 characters). section matches a heading substring, e.g. 'Risk Factors'.", json!({"security": s("Security key"), "accession": s("Accession number from search_filings"), "section": s("Heading substring")}), &["security", "accession", "section"]),
@@ -273,7 +273,54 @@ impl EngineTools {
                 let v = json!({"security": key.to_string(), "statement": i.statement, "period": i.period, "periods": periods, "source": f.value.provenance.provider.to_string(), "synthetic": f.value.provenance.synthetic});
                 Ok(ToolOutcome::json(&v, audit(name, input, &[&f.value.provenance], Some(rows))))
             }
-            "get_estimates" | "get_earnings" | "get_recommendations" | "get_holders" | "get_dividends" => {
+            "get_dividends" => {
+                let i = parse_in!(SecIn, input);
+                let key = Self::key(&i.security)?;
+                // Every source, keeping only those whose terms allow AI use.
+                let mut first_err = None;
+                let mut blocked = None;
+                let (mut events, mut per_period, mut splits, mut provs) = (Vec::new(), Vec::new(), Vec::new(), Vec::new());
+                for (_, r) in e.dividends_by_source(&key).await {
+                    match r {
+                        Ok(f) if self.ai_allowed(&f.value.provenance) => {
+                            events.extend(f.value.dividends.iter().cloned());
+                            if per_period.is_empty() {
+                                per_period.clone_from(&f.value.per_period);
+                            }
+                            if splits.is_empty() {
+                                splits.clone_from(&f.value.reported_splits);
+                            }
+                            provs.push(f.value.provenance.clone());
+                        }
+                        Ok(f) => blocked = blocked.or(Some(f.value.provenance.clone())),
+                        Err(x) => first_err = first_err.or(Some(x)),
+                    }
+                }
+                if provs.is_empty() {
+                    if let Some(p) = blocked {
+                        self.guard(&p)?;
+                    }
+                    return Err(err(first_err.unwrap_or_else(|| {
+                        meridian_provider::ProviderError::Unsupported { capability: meridian_provider::Capability::Dividends }.into()
+                    })));
+                }
+                events.sort_by(|a, b| b.ex_date.cmp(&a.ex_date));
+                events.truncate(40);
+                per_period.truncate(24);
+                let rows = (events.len() + per_period.len()) as u64;
+                let sources: Vec<String> = provs.iter().map(|p| p.provider.to_string()).collect();
+                let v = json!({
+                    "security": key.to_string(),
+                    "events": events,
+                    "per_share_by_fiscal_period": per_period,
+                    "splits_reported_in_filings": splits,
+                    "sources": sources,
+                    "synthetic": provs.iter().any(|p| p.synthetic),
+                });
+                let refs: Vec<&Provenance> = provs.iter().collect();
+                Ok(ToolOutcome::json(&v, audit(name, input, &refs, Some(rows))))
+            }
+            "get_estimates" | "get_earnings" | "get_recommendations" | "get_holders" => {
                 let i = parse_in!(SecIn, input);
                 let key = Self::key(&i.security)?;
                 let r = e.router();
@@ -285,17 +332,11 @@ impl EngineTools {
                         v.ratings.truncate(15);
                         (serde_json::to_value(&v), x.value.provenance)
                     }),
-                    "get_holders" => r.holders(&key).await.map(|x| {
+                    _ => r.holders(&key).await.map(|x| {
                         let mut h = x.value.holders.clone();
                         h.sort_by(|a, b| b.shares.total_cmp(&a.shares));
                         h.truncate(25);
                         (serde_json::to_value(&h), x.value.provenance)
-                    }),
-                    _ => r.dividends(&key).await.map(|x| {
-                        let mut d = x.value.dividends.clone();
-                        d.sort_by(|a, b| b.ex_date.cmp(&a.ex_date));
-                        d.truncate(40);
-                        (serde_json::to_value(&d), x.value.provenance)
                     }),
                 }
                 .map_err(|x| err(x.into()))?;

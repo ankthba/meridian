@@ -1,11 +1,9 @@
-//! FA, EE, ERN, ANR, HDS, DVD — company data screens.
+//! FA, EE, ERN, ANR, HDS — company data screens (DVD is in `dividends`).
 
 use std::sync::Arc;
 
 use meridian_provider::FundamentalsRequest;
-use meridian_types::{
-    DividendKind, EstimateMetric, Fundamentals, HolderKind, PeriodType, SecurityKey, Statement, StatementKind,
-};
+use meridian_types::{EstimateMetric, Fundamentals, HolderKind, PeriodType, SecurityKey, Statement, StatementKind};
 
 use super::{ScreenRequest, error_screen, require_security, stale_notice};
 use crate::cache::{Fetched, ttl};
@@ -78,6 +76,22 @@ pub(crate) async fn fa(engine: Arc<Engine>, req: ScreenRequest) -> Screen {
         }],
     });
 
+    // Per-share values (EPS, EPS growth) appear on the income statement and
+    // ratios (any `stmt` other than BS/CF); flag a split that falls between
+    // the displayed periods.
+    if !matches!(stmt.as_str(), "BS" | "CF") {
+        let shown = statements_of(&f.value, StatementKind::Income, n);
+        let period_days = if per == PeriodType::Annual { 365 } else { 92 };
+        if let (Some(first), Some(last)) = (shown.first(), shown.last())
+            && let Some(notice) = super::dividends::split_notice(
+                &f.value.reported_splits,
+                first.period_end - chrono::Duration::days(period_days),
+                last.period_end,
+            )
+        {
+            s.push(notice);
+        }
+    }
     if stmt == "RATIOS" {
         s.push(ratios_table(&f.value, n));
         return s;
@@ -520,83 +534,6 @@ pub(crate) async fn hds(engine: Arc<Engine>, req: ScreenRequest) -> Screen {
         rows,
         page_size: Some(20),
         numbered: true,
-    }));
-    s
-}
-
-// --- DVD ------------------------------------------------------------------
-
-pub(crate) async fn dvd(engine: Arc<Engine>, req: ScreenRequest) -> Screen {
-    const T: &str = "Dividends & Splits";
-    let key = match require_security("DVD", T, &req) {
-        Ok(k) => k,
-        Err(s) => return *s,
-    };
-    let ks = key.to_string();
-    let router = engine.router().clone();
-    let k2 = key.clone();
-    let (d, quote) = tokio::join!(
-        engine.cached("dividends", &ks, ttl::HOLDERS, async move { router.dividends(&k2).await }),
-        engine.quote_row(&key)
-    );
-    let d = match d {
-        Ok(d) => d,
-        Err(e) => return error_screen("DVD", T, Some(&key), &e),
-    };
-    let mut s = Screen::new("DVD", format!("{ks} — {T}"), Some(ks.clone()));
-    s.source(&d.value.provenance);
-    stale_notice(&mut s, &d);
-    let mut list = d.value.dividends.clone();
-    list.sort_by(|a, b| b.ex_date.cmp(&a.ex_date));
-    let cash: Vec<_> = list.iter().filter(|x| !matches!(x.kind, DividendKind::Split)).collect();
-    let now = meridian_types::nanos_to_date(engine.now());
-    let year_ago = now - chrono::Duration::days(365);
-    let ttm: f64 = cash.iter().filter(|x| x.ex_date > year_ago).map(|x| x.amount).sum();
-    let last = quote.map(|q| q.last).filter(|x| x.is_finite());
-    let mut fields = vec![Field::num("Div (TTM)", Some(ttm), Format::Number { decimals: 4 })];
-    if let Some(px) = last
-        && ttm > 0.0
-    {
-        fields.push(Field::num("Yield (TTM) %", Some(ttm / px * 100.0), Format::Percent { decimals: 2 }));
-    }
-    if let Some(l) = cash.first() {
-        fields.push(Field::num("Last Amount", Some(l.amount), Format::Number { decimals: 4 }));
-        fields.push(Field::text("Last Ex-Date", l.ex_date.format("%m/%d/%Y").to_string()));
-        fields.push(Field::opt_text("Frequency", l.frequency.clone()));
-    }
-    s.push(Block::Fields { title: None, columns: 3, fields });
-    let rows = list
-        .iter()
-        .map(|x| {
-            let (kind, amount) = match x.kind {
-                DividendKind::Regular => ("Regular Cash", Cell::num(Some(x.amount))),
-                DividendKind::Special => ("Special Cash", Cell::num(Some(x.amount))),
-                DividendKind::Split => ("Stock Split", Cell::text(format!("{}:1", x.amount)).styled(Style::Emphasis)),
-            };
-            let d = |o: Option<chrono::NaiveDate>| o.map(|d| d.format("%m/%d/%y").to_string()).unwrap_or_default();
-            Row::new(vec![
-                Cell::text(d(x.declared_date)),
-                Cell::text(x.ex_date.format("%m/%d/%y").to_string()),
-                Cell::text(d(x.record_date)),
-                Cell::text(d(x.pay_date)),
-                amount,
-                Cell::text(kind),
-            ])
-        })
-        .collect();
-    s.push(Block::Table(Table {
-        title: None,
-        columns: vec![
-            Column::text("Declared", 9),
-            Column::text("Ex-Date", 9),
-            Column::text("Record", 9),
-            Column::text("Payable", 9),
-            Column::num("Amount", Format::Number { decimals: 4 }, 9),
-            Column::text("Type", 14),
-        ],
-        rows,
-        page_size: Some(20),
-        numbered: false,
     }));
     s
 }
