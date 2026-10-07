@@ -6,7 +6,7 @@ use std::sync::Arc;
 use meridian_analytics::backtest::{BacktestConfig, Direction, Strategy, run_backtest};
 use meridian_analytics::{returns, risk, stats};
 use meridian_store::Transaction;
-use meridian_types::{AssetClass, BarInterval, MarketSector, NANOS_PER_DAY, PeriodType, SecurityKey, StatementKind, nanos_to_date};
+use meridian_types::{AssetClass, BarInterval, Fundamentals, MarketSector, NANOS_PER_DAY, PeriodType, SecurityKey, StatementKind, nanos_to_date};
 
 use super::{ScreenRequest, parse_range, require_security};
 use crate::config::DataMode;
@@ -34,6 +34,57 @@ pub struct Metrics {
     pub ret_1y: Option<f64>,
 }
 
+impl Metrics {
+    /// Fills the valuation and quality figures from annual statements,
+    /// using `self.price` for market cap, P/E, P/S and dividend yield.
+    pub(crate) fn apply_fundamentals(&mut self, f: &Fundamentals) {
+        let mut inc: Vec<_> = f.statements.iter().filter(|s| s.kind == StatementKind::Income).collect();
+        inc.sort_by_key(|s| s.period_end);
+        let bal = f.statements.iter().filter(|s| s.kind == StatementKind::Balance).max_by_key(|s| s.period_end);
+        let Some(last) = inc.last() else { return };
+        let rev = last.value("revenue");
+        let ni = last.value("net_income");
+        let eps = last.value("eps_diluted");
+        let shares = last.value("shares_diluted");
+        if let (Some(px), Some(sh)) = (self.price, shares) {
+            self.market_cap = Some(px * sh);
+        }
+        if let (Some(px), Some(e)) = (self.price, eps)
+            && e > 0.0
+        {
+            self.pe = Some(px / e);
+        }
+        if let (Some(mc), Some(r)) = (self.market_cap, rev)
+            && r > 0.0
+        {
+            self.ps = Some(mc / r);
+        }
+        if let (Some(n), Some(r)) = (ni, rev)
+            && r != 0.0
+        {
+            self.net_margin = Some(n / r * 100.0);
+        }
+        if inc.len() >= 2
+            && let (Some(r1), Some(r0)) = (rev, inc[inc.len() - 2].value("revenue"))
+            && r0 != 0.0
+        {
+            self.rev_growth = Some((r1 / r0 - 1.0) * 100.0);
+        }
+        if let (Some(n), Some(eq)) = (ni, bal.and_then(|b| b.value("total_equity")))
+            && eq > 0.0
+        {
+            self.roe = Some(n / eq * 100.0);
+        }
+        if let (Some(dp), Some(sh), Some(px)) =
+            (f.statements.iter().filter(|s| s.kind == StatementKind::CashFlow).max_by_key(|s| s.period_end).and_then(|c| c.value("dividends_paid")), shares, self.price)
+            && sh > 0.0
+            && px > 0.0
+        {
+            self.div_yield = Some(dp.abs() / sh / px * 100.0);
+        }
+    }
+}
+
 impl Engine {
     /// Computes [`Metrics`] from fundamentals, quote, and history.
     pub async fn company_metrics(&self, key: &SecurityKey) -> Metrics {
@@ -58,51 +109,7 @@ impl Engine {
             m.price = m.price.or(Some(*l));
         }
         if let Ok(f) = fund {
-            let mut inc: Vec<_> = f.value.statements.iter().filter(|s| s.kind == StatementKind::Income).collect();
-            inc.sort_by_key(|s| s.period_end);
-            let bal = f.value.statements.iter().filter(|s| s.kind == StatementKind::Balance).max_by_key(|s| s.period_end);
-            if let Some(last) = inc.last() {
-                let rev = last.value("revenue");
-                let ni = last.value("net_income");
-                let eps = last.value("eps_diluted");
-                let shares = last.value("shares_diluted");
-                if let (Some(px), Some(sh)) = (m.price, shares) {
-                    m.market_cap = Some(px * sh);
-                }
-                if let (Some(px), Some(e)) = (m.price, eps)
-                    && e > 0.0
-                {
-                    m.pe = Some(px / e);
-                }
-                if let (Some(mc), Some(r)) = (m.market_cap, rev)
-                    && r > 0.0
-                {
-                    m.ps = Some(mc / r);
-                }
-                if let (Some(n), Some(r)) = (ni, rev)
-                    && r != 0.0
-                {
-                    m.net_margin = Some(n / r * 100.0);
-                }
-                if inc.len() >= 2
-                    && let (Some(r1), Some(r0)) = (rev, inc[inc.len() - 2].value("revenue"))
-                    && r0 != 0.0
-                {
-                    m.rev_growth = Some((r1 / r0 - 1.0) * 100.0);
-                }
-                if let (Some(n), Some(eq)) = (ni, bal.and_then(|b| b.value("total_equity")))
-                    && eq > 0.0
-                {
-                    m.roe = Some(n / eq * 100.0);
-                }
-                if let (Some(dp), Some(sh), Some(px)) =
-                    (f.value.statements.iter().filter(|s| s.kind == StatementKind::CashFlow).max_by_key(|s| s.period_end).and_then(|c| c.value("dividends_paid")), shares, m.price)
-                    && sh > 0.0
-                    && px > 0.0
-                {
-                    m.div_yield = Some(dp.abs() / sh / px * 100.0);
-                }
-            }
+            m.apply_fundamentals(&f.value);
         }
         m
     }

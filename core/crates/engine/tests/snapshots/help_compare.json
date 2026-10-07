@@ -1,0 +1,414 @@
+{
+  "args": [
+    [
+      "topic",
+      "COMPARE"
+    ]
+  ],
+  "blocks": [
+    {
+      "Inputs": {
+        "inputs": [
+          {
+            "id": "topic",
+            "kind": "Choice",
+            "label": "Help on",
+            "options": [
+              "Overview",
+              "DES",
+              "GP",
+              "GIP",
+              "HP",
+              "TODAY",
+              "W",
+              "BLP",
+              "SECF",
+              "MOST",
+              "N",
+              "CN",
+              "TOP",
+              "FA",
+              "EE",
+              "ERN",
+              "ANR",
+              "HDS",
+              "DVD",
+              "CALENDAR",
+              "CF",
+              "FILINGS",
+              "OMON",
+              "OVDV",
+              "OVME",
+              "EQS",
+              "RV",
+              "COMPARE",
+              "CORR",
+              "PORT",
+              "BTST",
+              "ALRT",
+              "WEI",
+              "ECO",
+              "FXC",
+              "CRYP",
+              "ASK",
+              "HELP"
+            ],
+            "value": "COMPARE"
+          }
+        ],
+        "title": null
+      }
+    },
+    {
+      "Fields": {
+        "columns": 2,
+        "fields": [
+          {
+            "format": "Text",
+            "label": "Function",
+            "style": "Emphasis",
+            "text": "COMPARE",
+            "value": null
+          },
+          {
+            "format": "Text",
+            "label": "Title",
+            "style": "Normal",
+            "text": "Compare",
+            "value": null
+          },
+          {
+            "format": "Text",
+            "label": "Area",
+            "style": "Normal",
+            "text": "Analytics",
+            "value": null
+          },
+          {
+            "format": "Text",
+            "label": "Security",
+            "style": "Normal",
+            "text": "Optional",
+            "value": null
+          },
+          {
+            "format": "Text",
+            "label": "Plain phrase",
+            "style": "Normal",
+            "text": "aapl vs msft 5y",
+            "value": null
+          },
+          {
+            "format": "Text",
+            "label": "Example",
+            "style": "Normal",
+            "text": "COMPARE <GO>",
+            "value": null
+          }
+        ],
+        "title": null
+      }
+    },
+    {
+      "Text": {
+        "body": "Performance of two or more securities rebased to 100, with price changes and key figures side by side.\n\nName the securities with vs and an optional range: aapl vs msft, aapl vs msft vs googl 5y, compare aapl with btc.",
+        "title": "Description"
+      }
+    },
+    {
+      "Table": {
+        "columns": [
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Argument",
+            "width": 22
+          },
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Values",
+            "width": 100
+          }
+        ],
+        "numbered": false,
+        "page_size": null,
+        "rows": [
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "securities",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "comma-separated security keys (typing aapl vs msft sets them; up to 8)",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "range",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "1D 5D 1M 3M 6M YTD 1Y 2Y 3Y 5Y 10Y 20Y MAX (default 1Y)",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          }
+        ],
+        "title": "Arguments (set by the screen's inputs and menus)"
+      }
+    },
+    {
+      "Table": {
+        "columns": [
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Source",
+            "width": 12
+          },
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Provides",
+            "width": 110
+          }
+        ],
+        "numbered": false,
+        "page_size": null,
+        "rows": [
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "Alpaca",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "prices and history for US stocks and ETFs",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "Keyless",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "crypto prices from Coinbase and Kraken; FX daily reference rates from Frankfurter (ECB)",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "SEC EDGAR",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "financial statements for market cap, P/E, net margin and dividend yield",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          }
+        ],
+        "title": "Data in LIVE Mode (Settings → Setup)"
+      }
+    },
+    {
+      "Table": {
+        "columns": [
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Function",
+            "width": 9
+          },
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Title",
+            "width": 28
+          },
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Security",
+            "width": 20
+          }
+        ],
+        "numbered": true,
+        "page_size": null,
+        "rows": [
+          {
+            "action": {
+              "args": [],
+              "function": "GP",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "GP",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Historical Price Graph",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Required",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "RV",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "RV",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Relative Valuation",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Required (EQUITY)",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "CORR",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "CORR",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Correlation Matrix",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Optional",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          }
+        ],
+        "title": "Related Functions"
+      }
+    }
+  ],
+  "function": "HELP",
+  "menu": [
+    {
+      "action": {
+        "args": [],
+        "function": "COMPARE",
+        "security": null
+      },
+      "label": "Open COMPARE",
+      "number": 1,
+      "selected": false
+    },
+    {
+      "action": {
+        "args": [
+          [
+            "topic",
+            "Overview"
+          ]
+        ],
+        "function": "HELP",
+        "security": null
+      },
+      "label": "Help Overview",
+      "number": 2,
+      "selected": false
+    }
+  ],
+  "refresh_ms": null,
+  "security": null,
+  "sources": [
+    {
+      "as_of": 1791216000000000000,
+      "attribution": null,
+      "delay": "MOCK",
+      "provider": "mock",
+      "source": "MOCK",
+      "synthetic": true
+    }
+  ],
+  "status": "Ok",
+  "title": "Help — COMPARE Compare"
+}
