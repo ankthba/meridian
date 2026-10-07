@@ -1,7 +1,7 @@
 // Renders Meridian's app icon into app/Meridian/Assets.xcassets/AppIcon.appiconset.
 // Original artwork in the app's own palette (Design/Theme.swift): a terminal
-// screen with the function bar, an amber monospace "M", candles and a
-// command line. Run: swift scripts/make-icon.swift
+// screen with the panel function bar, a large amber monospace "M" and an
+// underscore cursor. Run: swift scripts/make-icon.swift
 import AppKit
 import CoreText
 
@@ -16,7 +16,7 @@ for f in ["IosevkaFixedSS08-Bold.ttf", "IosevkaFixedSS08-Regular.ttf"] {
 func rgb(_ hex: UInt32, _ a: CGFloat = 1) -> CGColor {
     CGColor(srgbRed: CGFloat((hex >> 16) & 0xFF) / 255, green: CGFloat((hex >> 8) & 0xFF) / 255, blue: CGFloat(hex & 0xFF) / 255, alpha: a)
 }
-let amber = rgb(0xFFA028), up = rgb(0x2FD36B), down = rgb(0xFF4D4D), bar = rgb(0x7A0F0F), white = rgb(0xF2F2F2)
+let amber = rgb(0xFFA028), bar = rgb(0x7A0F0F), white = rgb(0xF2F2F2)
 
 func font(_ name: String, _ size: CGFloat) -> CTFont {
     let f = CTFontCreateWithName(name as CFString, size, nil)
@@ -38,78 +38,80 @@ func text(_ ctx: CGContext, _ s: String, _ f: CTFont, _ color: CGColor, x: CGFlo
     return CGFloat(CTLineGetTypographicBounds(line, nil, nil, nil))
 }
 
+let space = CGColorSpace(name: CGColorSpace.sRGB)!
+func gradient(_ colors: [CGColor]) -> CGGradient {
+    CGGradient(colorsSpace: space, colors: colors as CFArray, locations: nil)!
+}
+
+/// Continuous-corner (superellipse) body, closer to macOS icon geometry than
+/// a circular-cornered rounded rect.
+func squircle(_ r: CGRect) -> CGPath {
+    let p = CGMutablePath()
+    let n: CGFloat = 5, steps = 720
+    for i in 0...steps {
+        let t = CGFloat(i) / CGFloat(steps) * 2 * .pi
+        let c = cos(t), s = sin(t)
+        let x = r.midX + r.width / 2 * (c < 0 ? -1 : 1) * pow(abs(c), 2 / n)
+        let y = r.midY + r.height / 2 * (s < 0 ? -1 : 1) * pow(abs(s), 2 / n)
+        i == 0 ? p.move(to: CGPoint(x: x, y: y)) : p.addLine(to: CGPoint(x: x, y: y))
+    }
+    p.closeSubpath()
+    return p
+}
+
 /// The 1024-pt master, in top-left coordinates.
 func draw(_ ctx: CGContext) {
     // macOS icon grid: 824-pt body centred on the 1024 canvas.
     let body = CGRect(x: 100, y: 100, width: 824, height: 824)
-    let shape = CGPath(roundedRect: body, cornerWidth: 185, cornerHeight: 185, transform: nil)
+    let shape = squircle(body)
 
-    // Soft drop shadow below the body.
     ctx.saveGState()
-    ctx.setShadow(offset: CGSize(width: 0, height: 12), blur: 28, color: rgb(0x000000, 0.45))
+    ctx.setShadow(offset: CGSize(width: 0, height: 14), blur: 30, color: rgb(0x000000, 0.5))
     ctx.addPath(shape)
-    ctx.setFillColor(rgb(0x0B0B0B))
+    ctx.setFillColor(rgb(0x050506))
     ctx.fillPath()
     ctx.restoreGState()
 
     ctx.saveGState()
     ctx.addPath(shape)
     ctx.clip()
+    ctx.drawLinearGradient(gradient([rgb(0x1A1B1F), rgb(0x050506)]), start: CGPoint(x: 512, y: 100), end: CGPoint(x: 512, y: 924), options: [])
 
-    // Screen: near-black with a faint vertical falloff.
-    let grad = CGGradient(colorsSpace: CGColorSpace(name: CGColorSpace.sRGB), colors: [rgb(0x1A1A1A), rgb(0x030303)] as CFArray, locations: [0, 1])!
-    ctx.drawLinearGradient(grad, start: CGPoint(x: 512, y: 100), end: CGPoint(x: 512, y: 924), options: [])
-
-    // Function bar with a selected tab, as in every panel.
+    // Panel function bar with the selected tab and two more.
     ctx.setFillColor(bar)
     ctx.fill(CGRect(x: 100, y: 100, width: 824, height: 150))
+    ctx.setFillColor(rgb(0x000000, 0.25))
+    ctx.fill(CGRect(x: 100, y: 244, width: 824, height: 6))
     ctx.setFillColor(white)
-    ctx.fill(CGRect(x: 214, y: 148, width: 150, height: 68))
-    let barFont = font("Iosevka-Fixed-SS08-Bold", 56)
-    text(ctx, "1)", barFont, bar, x: 236, y: 202)
-    text(ctx, "2)", barFont, amber, x: 404, y: 202)
-    text(ctx, "3)", barFont, amber, x: 544, y: 202)
+    ctx.fill(CGRect(x: 214, y: 156, width: 120, height: 40))
+    ctx.setFillColor(rgb(0xFFA028, 0.9))
+    ctx.fill(CGRect(x: 364, y: 156, width: 120, height: 40))
+    ctx.fill(CGRect(x: 514, y: 156, width: 120, height: 40))
 
-    // Amber monospace M.
-    text(ctx, "M", font("Iosevka-Fixed-SS08-Bold", 580), amber, x: 140, y: 712)
+    // Amber M and a block cursor, centred together in the screen area,
+    // over a faint amber glow.
+    let mFont = font("Iosevka-Fixed-SS08-Bold", 560)
+    let line = CTLineCreateWithAttributedString(NSAttributedString(string: "M", attributes: [.font: mFont]))
+    let mWidth = CGFloat(CTLineGetTypographicBounds(line, nil, nil, nil))
+    let cap = CTFontGetCapHeight(mFont)
+    // Underscore cursor after the M ("M_"): a prompt waiting for input. A
+    // full-height block reads as a second letter at icon sizes.
+    let gap: CGFloat = 26, cursorW: CGFloat = 170, cursorH: CGFloat = 52
+    let groupW = mWidth + gap + cursorW
+    let x0 = 512 - groupW / 2
+    let baseline = 580 + cap / 2
+    ctx.drawRadialGradient(gradient([rgb(0xFFA028, 0.16), rgb(0xFFA028, 0)]), startCenter: CGPoint(x: 512, y: 590), startRadius: 0, endCenter: CGPoint(x: 512, y: 590), endRadius: 400, options: [])
+    text(ctx, "M", mFont, amber, x: x0, y: baseline)
+    ctx.setFillColor(rgb(0xFFA028, 0.9))
+    ctx.fill(CGRect(x: x0 + mWidth + gap, y: baseline - cursorH, width: cursorW, height: cursorH))
 
-    // Candles trending up, with an amber average through them.
-    let candles: [(o: CGFloat, c: CGFloat, h: CGFloat, l: CGFloat)] = [
-        (655, 581, 551, 700), (588, 625, 563, 658), (622, 521, 491, 640),
-        (524, 447, 417, 551), (450, 488, 424, 521), (484, 357, 320, 503),
-    ]
-    let x0: CGFloat = 482, step: CGFloat = 68, w: CGFloat = 42
-    for (i, k) in candles.enumerated() {
-        let x = x0 + CGFloat(i) * step
-        let rising = k.c < k.o   // y grows downward
-        let color = rising ? up : down
-        ctx.setFillColor(color)
-        ctx.fill(CGRect(x: x + w / 2 - 4, y: k.h, width: 8, height: k.l - k.h))
-        ctx.fill(CGRect(x: x, y: min(k.o, k.c), width: w, height: max(8, abs(k.c - k.o))))
-    }
-    ctx.setStrokeColor(amber)
-    ctx.setLineWidth(9)
-    ctx.setLineCap(.round)
-    ctx.setLineJoin(.round)
-    ctx.move(to: CGPoint(x: 500, y: 660))
-    ctx.addCurve(to: CGPoint(x: 850, y: 400), control1: CGPoint(x: 620, y: 645), control2: CGPoint(x: 740, y: 520))
-    ctx.strokePath()
-
-    // Command line: prompt and block cursor.
-    ctx.setFillColor(rgb(0x141414))
-    ctx.fill(CGRect(x: 100, y: 770, width: 824, height: 154))
-    ctx.setFillColor(rgb(0x2A2A2A))
-    ctx.fill(CGRect(x: 100, y: 770, width: 824, height: 4))
-    let cmdFont = font("Iosevka-Fixed-SS08-Bold", 84)
-    text(ctx, ">", cmdFont, amber, x: 196, y: 876)
-    let go = text(ctx, "GO", cmdFont, up, x: 290, y: 876)
-    ctx.setFillColor(amber)
-    ctx.fill(CGRect(x: 290 + go + 18, y: 806, width: 42, height: 84))
+    // Top sheen.
+    ctx.drawLinearGradient(gradient([rgb(0xFFFFFF, 0.09), rgb(0xFFFFFF, 0)]), start: CGPoint(x: 512, y: 250), end: CGPoint(x: 512, y: 520), options: [])
     ctx.restoreGState()
 
-    // Hairline edge so the body reads on dark Docks.
-    ctx.addPath(CGPath(roundedRect: body.insetBy(dx: 1.5, dy: 1.5), cornerWidth: 184, cornerHeight: 184, transform: nil))
-    ctx.setStrokeColor(rgb(0xFFFFFF, 0.10))
+    // Hairline rim so the body reads on dark Docks.
+    ctx.addPath(squircle(body.insetBy(dx: 1.5, dy: 1.5)))
+    ctx.setStrokeColor(rgb(0xFFFFFF, 0.12))
     ctx.setLineWidth(3)
     ctx.strokePath()
 }
@@ -143,4 +145,5 @@ try! JSONSerialization.data(withJSONObject: contents, options: [.prettyPrinted, 
 let catalog = out.deletingLastPathComponent().appendingPathComponent("Contents.json")
 try! JSONSerialization.data(withJSONObject: ["info": ["author": "xcode", "version": 1]], options: [.prettyPrinted]).write(to: catalog)
 try! render(1024).write(to: root.appendingPathComponent("docs/preview/app-icon.png"))
+try! render(256).write(to: root.appendingPathComponent("docs/screenshots/icon.png"))
 print("icon → \(out.path)")
