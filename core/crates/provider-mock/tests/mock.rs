@@ -6,8 +6,8 @@ use std::time::{Duration, Instant};
 
 use chrono::{Datelike, NaiveDate, TimeZone, Utc, Weekday};
 use meridian_provider::{
-    BarsRequest, CalendarRequest, Capability, ChainRequest, CurveRequest, EventSink, FilingsRequest,
-    FundamentalsRequest, InstrumentQuery, NewsQuery, NewsScope, Provider, SeriesRequest,
+    BarsRequest, CalendarRequest, Capability, ChainRequest, CurveRequest, EventCalendarRequest, EventSink,
+    FilingsRequest, FundamentalsRequest, InstrumentQuery, NewsQuery, NewsScope, Provider, SeriesRequest,
 };
 use meridian_provider_mock::{FILING_BANNER, MOCK_PREFIX, MockConfig, MockProvider};
 use meridian_types::{
@@ -293,6 +293,51 @@ async fn estimates_earnings_and_company_data() {
     let prof = p.profile(&key).await.unwrap();
     assert!(prof.description.unwrap().starts_with("[MOCK]"));
     assert!(p.fundamentals(&FundamentalsRequest { key: SecurityKey::currency("EURUSD"), period_type: PeriodType::Annual, periods: 1 }).await.is_err());
+}
+
+#[tokio::test]
+async fn earnings_and_dividend_calendars_match_the_per_security_data() {
+    let p = provider_at(6, t_open());
+    let today = nanos_to_date(t_open());
+    assert!(p.capabilities().supports(Capability::EarningsCalendar, None));
+    assert!(p.capabilities().supports(Capability::DividendCalendar, None));
+
+    // A year around today for one company: the same releases as ERN.
+    let aapl = SecurityKey::equity("AAPL");
+    let req = EventCalendarRequest { from: today - chrono::Duration::days(200), to: today + chrono::Duration::days(150), keys: vec![aapl.clone()] };
+    let cal = p.earnings_calendar(&req).await.unwrap();
+    assert!(cal.provenance.synthetic);
+    assert!(cal.events.len() >= 3, "{}", cal.events.len());
+    let ern = p.earnings(&aapl).await.unwrap();
+    for e in &cal.events {
+        assert_eq!(e.key, aapl);
+        assert!(e.date >= req.from && e.date <= req.to);
+        assert!(e.session.is_some() && e.eps_estimate.is_some());
+        assert_eq!(e.eps_actual.is_some(), e.date <= today, "{e:?}");
+        if let Some(r) = ern.records.iter().find(|r| r.announce_date == Some(e.date)) {
+            assert_eq!((r.eps_actual, r.eps_estimate), (e.eps_actual, e.eps_estimate));
+        }
+    }
+    assert!(cal.events.windows(2).all(|w| w[0].date <= w[1].date));
+
+    // No keys = the whole universe; unknown and non-company keys are skipped.
+    let wide = EventCalendarRequest { from: today, to: today + chrono::Duration::days(30), keys: vec![] };
+    let all = p.earnings_calendar(&wide).await.unwrap();
+    assert!(all.events.iter().map(|e| &e.key).collect::<HashSet<_>>().len() > 5);
+    let odd = EventCalendarRequest { keys: vec![SecurityKey::equity("NOPE"), SecurityKey::currency("EURUSD")], ..wide.clone() };
+    assert!(p.earnings_calendar(&odd).await.unwrap().events.is_empty());
+
+    // Dividends: the ex-dates DVD reports inside the window, oldest first.
+    let ko = SecurityKey::equity("KO");
+    let dreq = EventCalendarRequest { from: today - chrono::Duration::days(365), to: today + chrono::Duration::days(60), keys: vec![ko.clone()] };
+    let dc = p.dividend_calendar(&dreq).await.unwrap();
+    let dvd = p.dividends(&ko).await.unwrap();
+    let mut want: Vec<_> = dvd.dividends.iter().filter(|d| d.ex_date >= dreq.from && d.ex_date <= dreq.to).cloned().collect();
+    want.reverse();
+    assert_eq!(dc.events.iter().map(|e| e.dividend.clone()).collect::<Vec<_>>(), want);
+    assert!(!dc.events.is_empty() && dc.events.iter().all(|e| e.key == ko));
+    let market = p.dividend_calendar(&EventCalendarRequest { keys: vec![], ..dreq }).await.unwrap();
+    assert!(market.events.iter().map(|e| &e.key).collect::<HashSet<_>>().len() > 5);
 }
 
 #[tokio::test]

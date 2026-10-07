@@ -33,13 +33,14 @@ use async_trait::async_trait;
 use chrono::NaiveDate;
 use meridian_provider::{
     AiPolicy, BarsRequest, CachePolicy, CalendarRequest, Capabilities, Capability, CapabilityEntry, ChainRequest,
-    CurveRequest, FilingsRequest, FundamentalsRequest, InstrumentQuery, NewsQuery, Provider, ProviderError,
-    ProviderResult, SeriesRequest, StreamHandle, StreamSink, StreamingProvider,
+    CurveRequest, EventCalendarRequest, FilingsRequest, FundamentalsRequest, InstrumentQuery, NewsQuery, Provider,
+    ProviderError, ProviderResult, SeriesRequest, StreamHandle, StreamSink, StreamingProvider,
 };
 use meridian_types::{
-    AssetClass, BarSeries, Clock, CompanyProfile, DataDelay, Dividends, EarningsHistory, EconomicEvent,
-    EconomicSeries, Estimates, FeedSource, Filing, FilingDocument, FilingsPage, Fundamentals, Holders, Instrument,
-    OptionChain, ProviderId, Quote, Recommendations, SecurityKey, SystemClock, Transcript, YieldCurve,
+    AssetClass, BarSeries, Clock, CompanyProfile, DataDelay, DividendCalendar, DividendEvent, Dividends,
+    EarningsCalendar, EarningsHistory, EconomicEvent, EconomicSeries, Estimates, FeedSource, Filing, FilingDocument,
+    FilingsPage, Fundamentals, Holders, Instrument, OptionChain, Provenance, ProviderId, Quote, Recommendations,
+    SecurityKey, SystemClock, Transcript, YieldCurve,
 };
 use parking_lot::{Mutex, RwLock};
 
@@ -120,7 +121,7 @@ impl std::fmt::Debug for MockProvider {
     }
 }
 
-const ALL_CAPABILITIES: [Capability; 20] = [
+const ALL_CAPABILITIES: [Capability; 22] = [
     Capability::Search,
     Capability::Reference,
     Capability::Profile,
@@ -141,6 +142,8 @@ const ALL_CAPABILITIES: [Capability; 20] = [
     Capability::EconomicSeries,
     Capability::EconomicCalendar,
     Capability::YieldCurve,
+    Capability::EarningsCalendar,
+    Capability::DividendCalendar,
 ];
 
 const ALL_ASSETS: [AssetClass; 10] = [
@@ -165,6 +168,7 @@ fn capabilities() -> Capabilities {
                 Capability::Fundamentals => "synthetic, 10 annual / 40 quarterly periods",
                 Capability::EconomicSeries => "synthetic, from 1990",
                 Capability::Filings | Capability::News => "synthetic, recent",
+                Capability::EarningsCalendar | Capability::DividendCalendar => "synthetic, past and scheduled events",
                 _ => "synthetic",
             }
             .to_string(),
@@ -253,6 +257,32 @@ impl MockProvider {
             return not_found(format!("no {what} for {key}: not an operating company"));
         }
         Ok(s)
+    }
+
+    /// Securities a calendar request covers: the requested keys that are in
+    /// the universe and of `kinds` (unknown ones are skipped), or every
+    /// non-filler security of those kinds when no keys are given.
+    fn calendar_syms(&self, req: &EventCalendarRequest, kinds: &[Kind]) -> Vec<std::borrow::Cow<'_, Sym>> {
+        if req.keys.is_empty() {
+            return self
+                .inner
+                .universe
+                .syms
+                .iter()
+                .filter(|s| kinds.contains(&s.p.kind) && !s.p.filler)
+                .map(std::borrow::Cow::Borrowed)
+                .collect();
+        }
+        let mut out: Vec<std::borrow::Cow<'_, Sym>> = Vec::new();
+        for k in &req.keys {
+            if let Ok(s) = self.inner.resolve(k)
+                && kinds.contains(&s.p.kind)
+                && !out.iter().any(|o| o.key() == s.key())
+            {
+                out.push(s);
+            }
+        }
+        out
     }
 
     fn search_sync(&self, q: &InstrumentQuery) -> Vec<Instrument> {
@@ -416,6 +446,37 @@ impl Provider for MockProvider {
 
     async fn yield_curve(&self, req: &CurveRequest) -> ProviderResult<YieldCurve> {
         self.inner.yield_curve_for(req)
+    }
+
+    async fn earnings_calendar(&self, req: &EventCalendarRequest) -> ProviderResult<EarningsCalendar> {
+        let now = self.inner.clock.now();
+        let mut events: Vec<_> = self
+            .calendar_syms(req, &[Kind::Equity])
+            .iter()
+            .flat_map(|s| self.inner.earnings_events_for(s, req.from, req.to, now))
+            .collect();
+        events.sort_by(|a, b| a.date.cmp(&b.date).then_with(|| a.key.symbol.cmp(&b.key.symbol)));
+        let mut provenance = Provenance::synthetic(now);
+        provenance.source_ref = Some("mock earnings calendar (synthetic)".into());
+        Ok(EarningsCalendar { events, provenance })
+    }
+
+    async fn dividend_calendar(&self, req: &EventCalendarRequest) -> ProviderResult<DividendCalendar> {
+        let now = self.inner.clock.now();
+        let mut events: Vec<DividendEvent> = self
+            .calendar_syms(req, &[Kind::Equity, Kind::Etf])
+            .iter()
+            .flat_map(|s| {
+                self.inner
+                    .dividend_events_in(s, req.from, req.to, now)
+                    .into_iter()
+                    .map(|dividend| DividendEvent { key: s.key().clone(), dividend })
+            })
+            .collect();
+        events.sort_by(|a, b| a.dividend.ex_date.cmp(&b.dividend.ex_date).then_with(|| a.key.symbol.cmp(&b.key.symbol)));
+        let mut provenance = Provenance::synthetic(now);
+        provenance.source_ref = Some("mock corporate actions (synthetic)".into());
+        Ok(DividendCalendar { events, provenance })
     }
 
     fn streaming(&self) -> Option<&dyn StreamingProvider> {

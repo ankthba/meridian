@@ -11,9 +11,9 @@ use std::sync::Arc;
 use std::time::Duration;
 
 use meridian_types::{
-    AssetClass, BarSeries, CompanyProfile, Dividends, EarningsHistory, EconomicEvent, EconomicSeries, Estimates,
-    Filing, FilingDocument, FilingsPage, Fundamentals, Holders, Instrument, MarketSector, NewsPage, OptionChain,
-    ProviderId, Quote, Recommendations, SecurityKey, Transcript, YieldCurve,
+    AssetClass, BarSeries, CompanyProfile, DividendCalendar, Dividends, EarningsCalendar, EarningsHistory,
+    EconomicEvent, EconomicSeries, Estimates, Filing, FilingDocument, FilingsPage, Fundamentals, Holders, Instrument,
+    MarketSector, NewsPage, OptionChain, ProviderId, Quote, Recommendations, SecurityKey, Transcript, YieldCurve,
 };
 use parking_lot::Mutex;
 use tokio::time::Instant;
@@ -22,8 +22,8 @@ use crate::capability::{Capabilities, Capability};
 use crate::error::{ProviderError, ProviderResult};
 use crate::rate_limit::TokenBucket;
 use crate::request::{
-    BarsRequest, CalendarRequest, ChainRequest, CurveRequest, FilingsRequest, FundamentalsRequest,
-    InstrumentQuery, NewsQuery, SeriesRequest,
+    BarsRequest, CalendarRequest, ChainRequest, CurveRequest, EventCalendarRequest, FilingsRequest,
+    FundamentalsRequest, InstrumentQuery, NewsQuery, SeriesRequest,
 };
 use crate::traits::Provider;
 
@@ -473,6 +473,26 @@ impl ProviderRouter {
         self.call(Capability::YieldCurve, None, move |p| {
             let r = req.clone();
             Box::pin(async move { p.yield_curve(&r).await })
+        })
+        .await
+    }
+
+    /// Earnings releases in a window from the first provider that offers an
+    /// earnings calendar.
+    pub async fn earnings_calendar(&self, req: EventCalendarRequest) -> ProviderResult<Routed<EarningsCalendar>> {
+        self.call(Capability::EarningsCalendar, None, move |p| {
+            let r = req.clone();
+            Box::pin(async move { p.earnings_calendar(&r).await })
+        })
+        .await
+    }
+
+    /// Dividend ex-dates in a window from the first provider that offers a
+    /// dividend calendar.
+    pub async fn dividend_calendar(&self, req: EventCalendarRequest) -> ProviderResult<Routed<DividendCalendar>> {
+        self.call(Capability::DividendCalendar, None, move |p| {
+            let r = req.clone();
+            Box::pin(async move { p.dividend_calendar(&r).await })
         })
         .await
     }

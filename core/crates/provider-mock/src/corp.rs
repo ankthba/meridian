@@ -162,9 +162,28 @@ impl Inner {
         out
     }
 
+    /// Dividend and split events (as `dividends_for` reports them) with an
+    /// ex-date in `[from, to]`, oldest first; only those declared by now.
+    pub(crate) fn dividend_events_in(&self, s: &Sym, from: NaiveDate, to: NaiveDate, now: UnixNanos) -> Vec<Dividend> {
+        let mut v = self.dividend_records(s, now);
+        v.retain(|d| d.ex_date >= from && d.ex_date <= to);
+        v.reverse();
+        v
+    }
+
     pub(crate) fn dividends_for(&self, s: &Sym, now: UnixNanos) -> Option<Dividends> {
         if !matches!(s.p.kind, Kind::Equity | Kind::Etf) {
             return None;
+        }
+        let v = self.dividend_records(s, now);
+        Some(Dividends { key: s.key().clone(), dividends: v, per_period: Vec::new(), reported_splits: Vec::new(), provenance: Provenance::synthetic(now) })
+    }
+
+    /// Ten years of dividends and splits plus declared future ones, newest
+    /// first. Empty for anything but equities and ETFs.
+    fn dividend_records(&self, s: &Sym, now: UnixNanos) -> Vec<Dividend> {
+        if !matches!(s.p.kind, Kind::Equity | Kind::Etf) {
+            return Vec::new();
         }
         let today = meridian_types::nanos_to_date(now);
         let splits = splits_of(s);
@@ -203,7 +222,7 @@ impl Inner {
             });
         }
         v.sort_by(|a, b| b.ex_date.cmp(&a.ex_date));
-        Some(Dividends { key: s.key().clone(), dividends: v, per_period: Vec::new(), reported_splits: Vec::new(), provenance: Provenance::synthetic(now) })
+        v
     }
 
     pub(crate) fn recommendations_for(&self, s: &Sym, now: UnixNanos) -> Option<Recommendations> {

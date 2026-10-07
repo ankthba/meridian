@@ -11,8 +11,8 @@
 
 use chrono::{Datelike, Duration, NaiveDate, Weekday};
 use meridian_types::{
-    EarningsHistory, EarningsRecord, Estimate, EstimateMetric, Estimates, Fundamentals, PeriodType, Provenance,
-    Statement, StatementKind, StatementLine, UnixNanos,
+    EarningsEvent, EarningsHistory, EarningsRecord, EarningsSession, Estimate, EstimateMetric, Estimates,
+    Fundamentals, PeriodType, Provenance, Statement, StatementKind, StatementLine, UnixNanos,
 };
 
 use crate::Inner;
@@ -551,6 +551,51 @@ impl Inner {
             });
         }
         Some(EarningsHistory { key: s.key().clone(), records, provenance: Provenance::synthetic(now) })
+    }
+}
+
+impl Inner {
+    /// Earnings releases dated in `[from, to]`: reported ones with actual
+    /// and estimate (as in `earnings_for`), upcoming ones with the
+    /// consensus EPS estimate. The session (before open / after close) is a
+    /// fixed per-company habit.
+    pub(crate) fn earnings_events_for(&self, s: &Sym, from: NaiveDate, to: NaiveDate, now: UnixNanos) -> Vec<EarningsEvent> {
+        let today = meridian_types::nanos_to_date(now);
+        let Some(model) = self.company(s, today) else { return Vec::new() };
+        let k = split_factor_after(&splits_of(s), today);
+        let session = if Cell::new(&[self.seed, s.hash, tag("session")]).u01() < 0.55 {
+            EarningsSession::AfterClose
+        } else {
+            EarningsSession::BeforeOpen
+        };
+        let mut out = Vec::new();
+        for q in model.quarters.iter().filter(|q| q.announce >= from && q.announce <= to) {
+            let p = Period::single(q, PeriodType::Quarterly, format!("Q{}", q.fq));
+            let (eps_actual, eps_estimate, revenue_actual, revenue_estimate) = if q.announce <= today {
+                let mut c = Cell::new(&[self.seed, s.hash, tag("surprise"), crate::daily::day_num(q.end)]);
+                let eps = round2(p.eps_diluted() * k);
+                let s_eps = (0.03 + 0.06 * c.normal()).clamp(-0.4, 0.4);
+                let s_rev = (0.008 + 0.015 * c.normal()).clamp(-0.1, 0.1);
+                let rev_est = ((q.revenue / (1.0 + s_rev)) / model.unit).round() * model.unit;
+                (Some(eps), Some(round2(eps / (1.0 + s_eps))), Some(q.revenue), Some(rev_est))
+            } else {
+                let e = self.estimate(s, &model, &p, EstimateMetric::Eps, 0.0, k, q.label());
+                let rv = self.estimate(s, &model, &p, EstimateMetric::Revenue, 0.0, k, q.label());
+                (None, e.mean, None, rv.mean)
+            };
+            out.push(EarningsEvent {
+                key: s.key().clone(),
+                date: q.announce,
+                session: Some(session),
+                fiscal_year: Some(q.fy),
+                fiscal_quarter: Some(q.fq),
+                eps_estimate,
+                eps_actual,
+                revenue_estimate,
+                revenue_actual,
+            });
+        }
+        out
     }
 }
 

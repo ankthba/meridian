@@ -88,3 +88,15 @@ pub struct CurveRequest {
     /// `None` = latest.
     pub date: Option<NaiveDate>,
 }
+
+/// A date window of corporate events (earnings releases, dividend
+/// ex-dates) for some securities.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct EventCalendarRequest {
+    /// Inclusive.
+    pub from: NaiveDate,
+    /// Inclusive.
+    pub to: NaiveDate,
+    /// Securities to include. Empty = every security the provider covers.
+    pub keys: Vec<SecurityKey>,
+}
