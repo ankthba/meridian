@@ -98,6 +98,8 @@ final class PanelModel: Identifiable {
             select(number: Int(n))
         case let .search(text):
             run(ActionFfi(function: "SECF", security: nil, args: [KeyValue(key: "q", value: text)]))
+        case let .run(action):
+            run(action)
         }
     }
 
