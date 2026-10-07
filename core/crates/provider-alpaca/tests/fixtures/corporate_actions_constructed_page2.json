@@ -1,0 +1,32 @@
+{
+  "corporate_actions": {
+    "forward_splits": [
+      {
+        "id": "00000000-0000-4000-8000-000000000005",
+        "symbol": "TESTA",
+        "cusip": "000000001",
+        "new_rate": 3,
+        "old_rate": 2,
+        "process_date": "2024-06-10",
+        "ex_date": "2024-06-10",
+        "record_date": "2024-06-03",
+        "payable_date": "2024-06-07"
+      }
+    ],
+    "reverse_splits": [
+      {
+        "id": "00000000-0000-4000-8000-000000000006",
+        "symbol": "TESTA",
+        "old_cusip": "000000000",
+        "new_cusip": "000000001",
+        "new_rate": 1,
+        "old_rate": 10,
+        "process_date": "2023-01-05",
+        "ex_date": "2023-01-05",
+        "record_date": "2023-01-05",
+        "new_symbol": ""
+      }
+    ]
+  },
+  "next_page_token": null
+}

@@ -6,9 +6,9 @@ use std::collections::HashSet;
 use chrono::{DateTime, NaiveDate, SecondsFormat, Utc};
 use meridian_provider::{ProviderError, ProviderResult};
 use meridian_types::{
-    Adjustment, BarInterval, BarSeries, DataDelay, ExerciseStyle, FeedSource, Greeks, GreeksSource, MarketSector,
-    NewsItem, OptionContract, Provenance, ProviderId, Quote, SecurityKey, UnixNanos, datetime_to_nanos,
-    nanos_to_datetime,
+    Adjustment, BarInterval, BarSeries, DataDelay, Dividend, DividendKind, ExerciseStyle, FeedSource, Greeks,
+    GreeksSource, MarketSector, NewsItem, OptionContract, Provenance, ProviderId, Quote, SecurityKey, UnixNanos,
+    datetime_to_nanos, nanos_to_datetime,
 };
 
 use crate::dto;
@@ -394,6 +394,97 @@ fn entity(name: &str) -> Option<char> {
     })
 }
 
+// ---------------------------------------------------------------------------
+// Corporate actions
+// ---------------------------------------------------------------------------
+
+/// Action types requested from `GET /v1/corporate-actions`.
+pub(crate) const CORPORATE_ACTION_TYPES: &str = "cash_dividend,forward_split,reverse_split";
+
+/// Documented maximum `limit` for corporate actions.
+pub(crate) const CORPORATE_ACTIONS_PAGE_LIMIT: u32 = 1000;
+
+/// Query string for `GET /v1/corporate-actions`. `start`/`end` filter on
+/// Alpaca's `process_date` (inclusive). Newest first.
+pub(crate) fn corporate_actions_query(
+    symbol: &str,
+    start: NaiveDate,
+    end: NaiveDate,
+    page_token: Option<&str>,
+) -> Vec<(&'static str, String)> {
+    let mut q = vec![
+        ("symbols", symbol.to_owned()),
+        ("types", CORPORATE_ACTION_TYPES.to_owned()),
+        ("start", start.format("%Y-%m-%d").to_string()),
+        ("end", end.format("%Y-%m-%d").to_string()),
+        ("limit", CORPORATE_ACTIONS_PAGE_LIMIT.to_string()),
+        ("sort", "desc".to_owned()),
+    ];
+    if let Some(t) = page_token {
+        q.push(("page_token", t.to_owned()));
+    }
+    q
+}
+
+fn ymd(s: Option<&str>) -> Option<NaiveDate> {
+    NaiveDate::parse_from_str(s?.trim(), "%Y-%m-%d").ok()
+}
+
+fn same_symbol(record: Option<&str>, symbol: &str) -> bool {
+    record.is_some_and(|r| r.trim().eq_ignore_ascii_case(symbol))
+}
+
+/// Corporate actions for `symbol` → dividend and split events. Records for
+/// other symbols are ignored. Returns the events and the number of records
+/// skipped because the ex-date or amount was missing or invalid.
+///
+/// - Cash dividend → `Regular`, or `Special` when `special`; `amount` = `rate`
+///   (per share); `currency` as sent, empty when Alpaca leaves it empty
+///   (documented as possibly USD, not applicable, or unknown). There is no
+///   declaration date or frequency in the response.
+/// - Forward and reverse splits → `Split` with `amount` = `new_rate /
+///   old_rate` (2.0 for 2-for-1, 0.1 for 1-for-10).
+pub(crate) fn corporate_action_events(ca: &dto::CorporateActions, symbol: &str) -> (Vec<Dividend>, usize) {
+    let mut out = Vec::new();
+    let mut skipped = 0;
+    for c in ca.cash_dividends.iter().flatten().filter(|c| same_symbol(c.symbol.as_deref(), symbol)) {
+        match (ymd(c.ex_date.as_deref()), c.rate.filter(|r| r.is_finite() && *r >= 0.0)) {
+            (Some(ex_date), Some(rate)) => out.push(Dividend {
+                declared_date: None,
+                ex_date,
+                record_date: ymd(c.record_date.as_deref()),
+                pay_date: ymd(c.payable_date.as_deref()),
+                amount: rate,
+                currency: c.currency.as_deref().map(str::trim).unwrap_or_default().to_owned(),
+                frequency: None,
+                kind: if c.special == Some(true) { DividendKind::Special } else { DividendKind::Regular },
+            }),
+            _ => skipped += 1,
+        }
+    }
+    let splits = ca.forward_splits.iter().flatten().chain(ca.reverse_splits.iter().flatten());
+    for s in splits.filter(|s| same_symbol(s.symbol.as_deref(), symbol)) {
+        let ratio = match (s.new_rate, s.old_rate) {
+            (Some(n), Some(o)) if n > 0.0 && o > 0.0 && (n / o).is_finite() => Some(n / o),
+            _ => None,
+        };
+        match (ymd(s.ex_date.as_deref()), ratio) {
+            (Some(ex_date), Some(ratio)) => out.push(Dividend {
+                declared_date: None,
+                ex_date,
+                record_date: ymd(s.record_date.as_deref()),
+                pay_date: ymd(s.payable_date.as_deref()),
+                amount: ratio,
+                currency: String::new(),
+                frequency: None,
+                kind: DividendKind::Split,
+            }),
+            _ => skipped += 1,
+        }
+    }
+    (out, skipped)
+}
+
 #[cfg(test)]
 mod tests {
     use std::collections::HashMap;
@@ -695,5 +786,95 @@ mod tests {
             "Corsair Gaming, Inc. (NASDAQ:CRSR) (\u{201C}Corsair\u{201D}) & co"
         );
         assert_eq!(strip_html("AT&T &#36;5 &#x41; &bogus; a&b"), "AT&T $5 A &bogus; a&b");
+    }
+
+    fn d(y: i32, m: u32, day: u32) -> NaiveDate {
+        NaiveDate::from_ymd_opt(y, m, day).unwrap()
+    }
+
+    #[test]
+    fn documented_corporate_action_examples() {
+        let body = include_str!("../tests/fixtures/corporate_actions_examples.json");
+        let resp: dto::CorporateActionsResp = parse_json(body, "corporate actions").unwrap();
+        assert_eq!(resp.next_page_token, None);
+        let ca = resp.corporate_actions.unwrap();
+
+        let (fcf, skipped) = corporate_action_events(&ca, "FCF");
+        assert_eq!(skipped, 0);
+        assert_eq!(
+            fcf,
+            vec![Dividend {
+                declared_date: None,
+                ex_date: d(2023, 5, 4),
+                record_date: Some(d(2023, 5, 5)),
+                pay_date: Some(d(2023, 5, 19)),
+                amount: 0.125,
+                // The example predates the `currency` field: unknown, not assumed USD.
+                currency: String::new(),
+                frequency: None,
+                kind: DividendKind::Regular,
+            }]
+        );
+
+        let (sre, _) = corporate_action_events(&ca, "sre");
+        assert_eq!(sre.len(), 1);
+        assert_eq!(sre[0].kind, DividendKind::Split);
+        assert_eq!(sre[0].amount, 2.0);
+        assert_eq!(sre[0].ex_date, d(2023, 8, 22));
+        assert_eq!(sre[0].record_date, Some(d(2023, 8, 14)));
+        assert_eq!(sre[0].pay_date, Some(d(2023, 8, 21)));
+
+        // 1-for-50 reverse split.
+        let (mnts, _) = corporate_action_events(&ca, "MNTS");
+        assert_eq!(mnts.len(), 1);
+        assert_eq!(mnts[0].kind, DividendKind::Split);
+        assert!((mnts[0].amount - 0.02).abs() < 1e-12);
+        assert_eq!(mnts[0].pay_date, None);
+
+        assert!(corporate_action_events(&ca, "AAPL").0.is_empty());
+    }
+
+    #[test]
+    fn corporate_actions_skip_invalid_records() {
+        let body = include_str!("../tests/fixtures/corporate_actions_constructed_page1.json");
+        let resp: dto::CorporateActionsResp = parse_json(body, "corporate actions").unwrap();
+        let (events, skipped) = corporate_action_events(&resp.corporate_actions.unwrap(), "TESTA");
+        // The record without an ex-date is skipped; TESTB's is someone else's.
+        assert_eq!(skipped, 1);
+        assert_eq!(events.len(), 2);
+        assert_eq!(events[0].kind, DividendKind::Regular);
+        assert_eq!(events[0].currency, "USD");
+        assert_eq!(events[1].kind, DividendKind::Special);
+        assert_eq!(events[1].amount, 1.25);
+        assert_eq!(events[1].currency, "");
+        assert_eq!(events[1].record_date, None);
+
+        let bad = dto::CorporateActions {
+            cash_dividends: None,
+            forward_splits: Some(vec![dto::Split {
+                symbol: Some("TESTA".into()),
+                new_rate: Some(2.0),
+                old_rate: Some(0.0),
+                ex_date: Some("2024-01-02".into()),
+                record_date: None,
+                payable_date: None,
+            }]),
+            reverse_splits: None,
+        };
+        assert_eq!(corporate_action_events(&bad, "TESTA"), (Vec::new(), 1));
+    }
+
+    #[test]
+    fn corporate_actions_query_shape() {
+        let q = corporate_actions_query("BRK.B", d(2016, 10, 7), d(2027, 1, 5), Some("tok"));
+        let q: HashMap<&str, &str> = q.iter().map(|(k, v)| (*k, v.as_str())).collect();
+        assert_eq!(q["symbols"], "BRK.B");
+        assert_eq!(q["types"], "cash_dividend,forward_split,reverse_split");
+        assert_eq!(q["start"], "2016-10-07");
+        assert_eq!(q["end"], "2027-01-05");
+        assert_eq!(q["limit"], "1000");
+        assert_eq!(q["sort"], "desc");
+        assert_eq!(q["page_token"], "tok");
+        assert!(!corporate_actions_query("X", d(2020, 1, 1), d(2020, 1, 2), None).iter().any(|(k, _)| *k == "page_token"));
     }
 }

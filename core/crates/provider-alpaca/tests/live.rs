@@ -80,3 +80,17 @@ async fn live_news() {
     let page = p.news(&q).await.unwrap();
     assert!(page.items.len() <= 5);
 }
+
+/// Confirms the corporate actions endpoint works on the keys' plan (the docs
+/// name no plan requirement) and that a future `end` date is accepted.
+#[tokio::test]
+#[ignore = "needs ALPACA_KEY_ID / ALPACA_SECRET_KEY and network"]
+async fn live_corporate_actions() {
+    let Some(p) = live_provider() else { return };
+    // Coca-Cola pays quarterly dividends. How far back Alpaca's history goes
+    // isn't documented, so only a few years are required.
+    let d = p.dividends(&SecurityKey::equity("KO")).await.unwrap();
+    let cash = d.dividends.iter().filter(|x| x.kind != meridian_types::DividendKind::Split).count();
+    assert!(cash >= 12, "expected several years of quarterly dividends, got {cash}");
+    assert!(d.dividends.windows(2).all(|w| w[0].ex_date >= w[1].ex_date));
+}

@@ -19,14 +19,14 @@ use std::collections::{BTreeMap, HashSet};
 use std::time::Duration;
 
 use async_trait::async_trait;
-use chrono::Utc;
+use chrono::{NaiveDate, Utc};
 use meridian_provider::{
     AiPolicy, BarsRequest, CachePolicy, Capabilities, Capability, CapabilityEntry, ChainRequest, NewsQuery, NewsScope,
     Provider, ProviderError, ProviderResult, RateLimit, StreamHandle, StreamSink, StreamingProvider, TokenBucket,
 };
 use meridian_types::{
-    AssetClass, BarSeries, DataDelay, FeedSource, NewsPage, OptionChain, ProviderId, Quote, SecurityKey, UnixNanos,
-    datetime_to_nanos,
+    AssetClass, BarSeries, DataDelay, Dividends, FeedSource, NewsPage, OptionChain, ProviderId, Quote, SecurityKey,
+    UnixNanos, datetime_to_nanos,
 };
 use reqwest::Url;
 use reqwest::header::{HeaderMap, HeaderName, HeaderValue};
@@ -34,7 +34,8 @@ use secrecy::{ExposeSecret, SecretString};
 use serde::de::DeserializeOwned;
 
 use crate::normalize::{
-    BarsParams, PROVIDER_ID, alpaca_symbol, bars_query, next_page, option_contract, provenance, push_bars, rfc3339,
+    BarsParams, PROVIDER_ID, alpaca_symbol, bars_query, corporate_action_events, corporate_actions_query, next_page,
+    option_contract, provenance, push_bars, rfc3339,
 };
 
 const DATA_BASE: &str = "https://data.alpaca.markets";
@@ -61,6 +62,13 @@ const MAX_PAGES: usize = 2000;
 /// Basic plan: SIP history must end at least 15 minutes ago. One extra
 /// minute of margin for clock skew.
 const BASIC_SIP_EMBARGO: Duration = Duration::from_secs(16 * 60);
+/// Corporate actions history requested for DVD (by process date).
+const CORPORATE_ACTIONS_LOOKBACK_DAYS: i64 = 3653;
+/// Announced actions are processed around their pay date, so the window
+/// reaches this far ahead to include declared, not yet paid dividends.
+const CORPORATE_ACTIONS_LOOKAHEAD_DAYS: i64 = 90;
+/// Pages read per corporate actions call (1,000 records each).
+const MAX_CORPORATE_ACTION_PAGES: usize = 10;
 
 /// Which Alpaca market data plan the configured keys have.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
@@ -211,6 +219,47 @@ impl AlpacaProvider {
         http::parse_json(&body, context)
     }
 
+    /// `GET /v1/corporate-actions` for one symbol over `[start, end]` (by
+    /// process date), all pages up to [`MAX_CORPORATE_ACTION_PAGES`].
+    async fn corporate_actions(
+        &self,
+        key: &SecurityKey,
+        symbol: &str,
+        start: NaiveDate,
+        end: NaiveDate,
+    ) -> ProviderResult<Dividends> {
+        let context = "Alpaca corporate actions";
+        let first_url = self.endpoint(&["v1", "corporate-actions"], &corporate_actions_query(symbol, start, end, None))?;
+        let fetched = now();
+        let mut url = first_url.clone();
+        let mut events = Vec::new();
+        let mut skipped = 0;
+        let mut seen = HashSet::new();
+        for page in 1..=MAX_CORPORATE_ACTION_PAGES {
+            let resp: dto::CorporateActionsResp = self.get(&url, context, Capability::Dividends).await?;
+            let (mut e, s) = corporate_action_events(&resp.corporate_actions.unwrap_or_default(), symbol);
+            events.append(&mut e);
+            skipped += s;
+            let Some(token) = next_page(resp.next_page_token, &mut seen, context)? else { break };
+            if page == MAX_CORPORATE_ACTION_PAGES {
+                tracing::warn!(symbol, "Alpaca corporate actions: page limit reached; older actions not loaded");
+                break;
+            }
+            url = self.endpoint(&["v1", "corporate-actions"], &corporate_actions_query(symbol, start, end, Some(&token)))?;
+        }
+        if skipped > 0 {
+            tracing::warn!(skipped, symbol, "Alpaca corporate actions: skipped records without a valid ex-date or amount");
+        }
+        events.sort_by(|a, b| b.ex_date.cmp(&a.ex_date));
+        Ok(Dividends {
+            key: key.clone(),
+            dividends: events,
+            per_period: Vec::new(),
+            reported_splits: Vec::new(),
+            provenance: provenance(DataDelay::EndOfDay, FeedSource::Aggregated, fetched, first_url.as_str()),
+        })
+    }
+
     /// Latest trade price of the underlying from the configured stock feed.
     async fn underlying_last(&self, symbol: &str) -> Option<f64> {
         let query = [("symbols", symbol.to_owned()), ("feed", self.feed.stock_feed().to_owned())];
@@ -346,7 +395,17 @@ fn capabilities_for(feed: AlpacaFeed) -> Capabilities {
                 feed.option_source(),
                 None,
             ),
-            entry(Capability::News, equities, DataDelay::RealTime, FeedSource::Aggregated, Some("since 2015")),
+            entry(Capability::News, equities.clone(), DataDelay::RealTime, FeedSource::Aggregated, Some("since 2015")),
+            // Corporate actions: cash dividends and splits with ex/record/pay
+            // dates. Alpaca gives no guarantee on how soon an announced action
+            // appears, so it is labelled end-of-day rather than real time.
+            entry(
+                Capability::Dividends,
+                equities,
+                DataDelay::EndOfDay,
+                FeedSource::Aggregated,
+                Some("corporate actions (cash dividends, splits): up to 10 years back, plus announced actions"),
+            ),
         ],
         rate_limit: Some(rate_limit),
         max_stream_symbols,
@@ -560,6 +619,27 @@ impl Provider for AlpacaProvider {
         }
         items.truncate(q.limit);
         Ok(NewsPage { items, next: token })
+    }
+
+    /// Cash dividends and splits from `GET /v1/corporate-actions`, newest
+    /// first: up to 10 years back (Alpaca doesn't document how far its
+    /// history goes) plus actions processed up to 90 days ahead (declared,
+    /// not yet paid). The docs don't say whether a future `end` is accepted;
+    /// if the request is rejected as invalid (400/422), it is retried once
+    /// with `end` = today.
+    async fn dividends(&self, key: &SecurityKey) -> ProviderResult<Dividends> {
+        let symbol = alpaca_symbol(key).ok_or_else(|| not_served(key))?;
+        self.creds()?;
+        let today = Utc::now().date_naive();
+        let start = today - chrono::Duration::days(CORPORATE_ACTIONS_LOOKBACK_DAYS);
+        let ahead = today + chrono::Duration::days(CORPORATE_ACTIONS_LOOKAHEAD_DAYS);
+        match self.corporate_actions(key, &symbol, start, ahead).await {
+            Err(ProviderError::Http { status: 400 | 422, .. }) => {
+                tracing::debug!("Alpaca corporate actions: future end date rejected; retrying with end = today");
+                self.corporate_actions(key, &symbol, start, today).await
+            }
+            other => other,
+        }
     }
 
     fn streaming(&self) -> Option<&dyn StreamingProvider> {

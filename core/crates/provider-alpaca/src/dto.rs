@@ -143,3 +143,45 @@ pub(crate) struct NewsResp {
     pub news: Option<Vec<NewsArticle>>,
     pub next_page_token: Option<String>,
 }
+
+/// `cash_dividend`. Dates are `YYYY-MM-DD` strings, parsed by the
+/// normalizer so one malformed record can't fail the response.
+#[derive(Debug, Clone, Deserialize)]
+pub(crate) struct CashDividend {
+    pub symbol: Option<String>,
+    pub rate: Option<f64>,
+    pub special: Option<bool>,
+    pub ex_date: Option<String>,
+    pub record_date: Option<String>,
+    pub payable_date: Option<String>,
+    /// ISO 4217; "Empty value can mean USD, non-applicable … or unknown".
+    pub currency: Option<String>,
+}
+
+/// `forward_split` and `reverse_split` share the fields we use: shares
+/// after (`new_rate`) per shares before (`old_rate`).
+#[derive(Debug, Clone, Deserialize)]
+pub(crate) struct Split {
+    pub symbol: Option<String>,
+    pub new_rate: Option<f64>,
+    pub old_rate: Option<f64>,
+    pub ex_date: Option<String>,
+    pub record_date: Option<String>,
+    pub payable_date: Option<String>,
+}
+
+/// `corporate_actions`: one array per action type; types we don't request
+/// are ignored.
+#[derive(Debug, Clone, Default, Deserialize)]
+pub(crate) struct CorporateActions {
+    pub cash_dividends: Option<Vec<CashDividend>>,
+    pub forward_splits: Option<Vec<Split>>,
+    pub reverse_splits: Option<Vec<Split>>,
+}
+
+/// `GET /v1/corporate-actions` (`corporate_actions_resp`).
+#[derive(Debug, Clone, Deserialize)]
+pub(crate) struct CorporateActionsResp {
+    pub corporate_actions: Option<CorporateActions>,
+    pub next_page_token: Option<String>,
+}
