@@ -330,6 +330,14 @@ struct XyChartView: View {
 
     private var isTime: Bool { chart.xLabel == "Date" }
 
+    /// Bar x value → category label from Rust (e.g. "Strong Buy", "Q1 26"),
+    /// falling back to the index when no label is given.
+    private func barKey(_ x: Double) -> String {
+        let i = Int(x)
+        if let c = chart.xCategories, c.indices.contains(i) { return c[i] }
+        return "\(i)"
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 2) {
             HStack {
@@ -344,7 +352,7 @@ struct XyChartView: View {
                     ForEach(Array(zip(s.x, s.y).enumerated()), id: \.offset) { _, p in
                         if p.1.isFinite {
                             if s.bars {
-                                BarMark(x: .value("x", "\(Int(p.0))"), y: .value("y", p.1))
+                                BarMark(x: .value("x", barKey(p.0)), y: .value("y", p.1))
                                     .foregroundStyle(color(si, s).swiftUI)
                                     .position(by: .value("series", s.name))
                             } else if isTime {
@@ -385,14 +393,19 @@ struct XyChartView: View {
     }
 }
 
-/// Fits the x axis to the data (Swift Charts otherwise includes zero).
+/// Fits the x axis to the data (Swift Charts otherwise includes zero). Bar
+/// charts with category labels keep every category, in Rust's order, even
+/// when a category has no finite value.
 private struct XDomain: ViewModifier {
     let chart: XyChartFfi
     let isTime: Bool
 
     func body(content: Content) -> some View {
         let xs = chart.series.filter { !$0.bars }.flatMap(\.x).filter(\.isFinite)
-        if !isTime, let lo = xs.min(), let hi = xs.max(), hi > lo {
+        if let cats = chart.xCategories, !cats.isEmpty, chart.series.allSatisfy(\.bars) {
+            var seen = Set<String>()
+            content.chartXScale(domain: cats.filter { seen.insert($0).inserted })
+        } else if !isTime, let lo = xs.min(), let hi = xs.max(), hi > lo {
             content.chartXScale(domain: lo...hi)
         } else {
             content

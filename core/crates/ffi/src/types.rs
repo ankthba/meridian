@@ -304,6 +304,8 @@ pub struct XyChartFfi {
     pub series: Vec<XySeriesFfi>,
     pub x_marker: Option<f64>,
     pub height_rows: u16,
+    /// Bar charts: label for x value `i`, shown instead of numeric ticks.
+    pub x_categories: Option<Vec<String>>,
 }
 
 #[derive(Debug, Clone, uniffi::Record)]
@@ -383,6 +385,7 @@ impl From<s::Block> for BlockFfi {
                         .collect(),
                     x_marker: x.x_marker,
                     height_rows: x.height_rows,
+                    x_categories: x.x_categories,
                 },
             },
             s::Block::Heat(h) => Self::Heat {

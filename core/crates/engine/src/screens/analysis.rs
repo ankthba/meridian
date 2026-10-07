@@ -578,6 +578,7 @@ pub(crate) async fn port(engine: Arc<Engine>, req: ScreenRequest) -> Screen {
         }],
         x_marker: None,
         height_rows: 6,
+        x_categories: None,
     }));
 
     // Risk from 1Y of daily history on current weights.
@@ -674,6 +675,7 @@ pub(crate) async fn port(engine: Arc<Engine>, req: ScreenRequest) -> Screen {
         }],
         x_marker: None,
         height_rows: 8,
+        x_categories: None,
     }));
     // Transactions table.
     let trows = txs
@@ -820,6 +822,7 @@ pub(crate) async fn btst(engine: Arc<Engine>, req: ScreenRequest) -> Screen {
         ],
         x_marker: None,
         height_rows: 12,
+        x_categories: None,
     }));
     let rows = res
         .trades

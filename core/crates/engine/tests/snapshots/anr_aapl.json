@@ -114,7 +114,14 @@
           }
         ],
         "title": "Rating Distribution",
-        "x_label": "Strong Buy | Buy | Hold | Sell | Strong Sell",
+        "x_categories": [
+          "Strong Buy",
+          "Buy",
+          "Hold",
+          "Sell",
+          "Strong Sell"
+        ],
+        "x_label": "Rating",
         "x_marker": null,
         "y_label": "Analysts"
       }

@@ -327,6 +327,7 @@ pub(crate) async fn ern(engine: Arc<Engine>, req: ScreenRequest) -> Screen {
         ],
         x_marker: None,
         height_rows: 8,
+        x_categories: Some(recs.iter().map(|r| r.fiscal_label.clone()).collect()),
     }));
     let rows: Vec<Row> = recs
         .iter()
@@ -404,11 +405,12 @@ pub(crate) async fn anr(engine: Arc<Engine>, req: ScreenRequest) -> Screen {
     let counts = [v.strong_buy, v.buy, v.hold, v.sell, v.strong_sell];
     s.push(Block::Xy(XyChart {
         title: "Rating Distribution".into(),
-        x_label: labels.join(" | "),
+        x_label: "Rating".into(),
         y_label: "Analysts".into(),
         series: vec![XySeries { name: "Count".into(), x: (0..5).map(f64::from).collect(), y: counts.iter().map(|c| f64::from(*c)).collect(), style: Style::Emphasis, bars: true }],
         x_marker: None,
         height_rows: 6,
+        x_categories: Some(labels.iter().map(|l| (*l).to_owned()).collect()),
     }));
     if !v.ratings.is_empty() {
         let mut ratings = v.ratings.clone();

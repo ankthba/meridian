@@ -299,6 +299,10 @@ pub struct XyChart {
     /// Vertical reference line (e.g. spot).
     pub x_marker: Option<f64>,
     pub height_rows: u16,
+    /// Category labels for bar charts: x value `i` is shown as
+    /// `x_categories[i]` instead of a numeric tick.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub x_categories: Option<Vec<String>>,
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]

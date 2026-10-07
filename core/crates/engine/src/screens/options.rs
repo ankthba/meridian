@@ -354,6 +354,7 @@ pub(crate) async fn ovdv(engine: Arc<Engine>, req: ScreenRequest) -> Screen {
             series: vec![XySeries { name: "IV".into(), x: smile.iter().map(|p| p.0).collect(), y: smile.iter().map(|p| p.1 * 100.0).collect(), style: Style::Emphasis, bars: false }],
             x_marker: Some(params.spot),
             height_rows: 9,
+            x_categories: None,
         }));
     }
     let ts = surface.term_structure(params.spot);
@@ -364,6 +365,7 @@ pub(crate) async fn ovdv(engine: Arc<Engine>, req: ScreenRequest) -> Screen {
         series: vec![XySeries { name: "ATM IV".into(), x: ts.iter().map(|p| p.0).collect(), y: ts.iter().map(|p| p.1 * 100.0).collect(), style: Style::Up, bars: false }],
         x_marker: None,
         height_rows: 7,
+        x_categories: None,
     }));
     s.push(Block::Inputs {
         title: None,
@@ -583,6 +585,7 @@ pub(crate) async fn ovme(engine: Arc<Engine>, req: ScreenRequest) -> Screen {
         ],
         x_marker: Some(spot),
         height_rows: 12,
+        x_categories: None,
     }));
 
     // Scenario grid: spot moves × time elapsed.
