@@ -135,7 +135,7 @@ For CALENDAR and TODAY: dividend and split events whose **ex-date** is in `[from
 
 - Query: as for `dividends`, but `symbols=A,B,…` with up to 100 symbols per request (the docs give no maximum; our choice), or no `symbols` at all when the request has no keys (the parameter is optional: every symbol). Keys Alpaca doesn't serve are skipped; if none is served → `NotFound`, no request.
 - Window: `start` = `from` − 7 days, `end` = `to` + 75 days. `start`/`end` filter on process date, which trails the ex-date (actions are processed around the pay date); the extra week before `from` covers large special dividends paid before their ex-date. The ex-date filter is applied here. If a future `end` is rejected (400/422), the request is retried once with `end` = today (announced future dividends are then missing).
-- Records map exactly as for `dividends`; each is keyed back to the caller's key (`BRK.B` → `BRK/B US Equity`), or, without keys, `<symbol> US Equity`. Records without a symbol, ex-date or amount are skipped and counted in a warning. Up to 10 pages per request; oldest first; duplicates removed.
+- Records map exactly as for `dividends`; each is keyed back to the caller's key (`BRK.B` → `BRK/B US Equity`), or, without keys, `<symbol> US Equity`. Records without a symbol, ex-date or amount are skipped and counted in a warning. Up to 50 pages (50,000 records) per request; a window that needs more is refused with an `Upstream` error ("choose a shorter range or fewer securities") rather than shown incomplete. Oldest first; duplicates removed.
 - Capability `DividendCalendar` (equities and ETFs), `EndOfDay`, `Aggregated`.
 
 ## Streaming

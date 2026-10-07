@@ -637,3 +637,19 @@ async fn dividend_calendar_retries_without_a_future_end_and_skips_unserved_keys(
     );
     assert_eq!(server.requests().len(), before);
 }
+
+#[tokio::test]
+async fn dividend_calendar_refuses_a_window_too_large_to_load_whole() {
+    let pages: Vec<(u16, &'static str)> = (1..=MAX_CALENDAR_PAGES)
+        .map(|i| {
+            let body = format!(r#"{{"corporate_actions":{{}},"next_page_token":"p{i}"}}"#);
+            (200, &*Box::leak(body.into_boxed_str()))
+        })
+        .collect();
+    let server = TestServer::start(pages).await;
+    // The Algo Trader Plus rate keeps 50 requests quick.
+    let p = provider(AlpacaFeed::Sip, &server.base);
+    let err = p.dividend_calendar(&calendar_req("2026-01-01", "2026-03-31", &[])).await.unwrap_err();
+    assert!(matches!(err, ProviderError::Upstream(ref m) if m.contains("more than 50000 corporate actions")), "{err:?}");
+    assert_eq!(server.requests().len(), MAX_CALENDAR_PAGES as usize);
+}

@@ -70,6 +70,9 @@ const CORPORATE_ACTIONS_LOOKBACK_DAYS: i64 = 3653;
 const CORPORATE_ACTIONS_LOOKAHEAD_DAYS: i64 = 90;
 /// Pages read per corporate actions call (1,000 records each).
 const MAX_CORPORATE_ACTION_PAGES: usize = 10;
+/// Pages read per calendar request. A window that needs more is refused
+/// rather than shown incomplete.
+const MAX_CALENDAR_PAGES: u32 = 50;
 /// Symbols per corporate actions calendar request (`symbols` is a
 /// comma-separated list; the docs give no maximum, 100 keeps URLs short).
 const CALENDAR_SYMBOL_CHUNK: usize = 100;
@@ -276,9 +279,9 @@ impl AlpacaProvider {
     }
 
     /// `GET /v1/corporate-actions` for many symbols (or all, `None`) over
-    /// `[start, end]` by process date, all pages up to
-    /// [`MAX_CORPORATE_ACTION_PAGES`]. Returns `(SYMBOL, event)` pairs and the
-    /// first page's URL.
+    /// `[start, end]` by process date, every page. More than
+    /// [`MAX_CALENDAR_PAGES`] is an error, never a silently partial calendar.
+    /// Returns `(SYMBOL, event)` pairs and the first page's URL.
     async fn corporate_actions_many(
         &self,
         symbols: Option<&str>,
@@ -292,15 +295,17 @@ impl AlpacaProvider {
         let mut events = Vec::new();
         let mut skipped = 0;
         let mut seen = HashSet::new();
-        for page in 1..=MAX_CORPORATE_ACTION_PAGES {
+        for page in 1..=MAX_CALENDAR_PAGES {
             let resp: dto::CorporateActionsResp = self.get(&url, context, Capability::DividendCalendar).await?;
             let (mut e, s) = corporate_action_events_by_symbol(&resp.corporate_actions.unwrap_or_default());
             events.append(&mut e);
             skipped += s;
             let Some(token) = next_page(resp.next_page_token, &mut seen, context)? else { break };
-            if page == MAX_CORPORATE_ACTION_PAGES {
-                tracing::warn!("Alpaca corporate actions calendar: page limit reached; some actions not loaded");
-                break;
+            if page == MAX_CALENDAR_PAGES {
+                return Err(ProviderError::Upstream(format!(
+                    "more than {} corporate actions in this window; choose a shorter range or fewer securities",
+                    MAX_CALENDAR_PAGES * normalize::CORPORATE_ACTIONS_PAGE_LIMIT
+                )));
             }
             url = self.endpoint(&path, &corporate_actions_query(symbols, start, end, Some(&token)))?;
         }
