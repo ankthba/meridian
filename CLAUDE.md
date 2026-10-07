@@ -2,7 +2,7 @@
 
 Native macOS financial terminal for personal use. SwiftUI + AppKit UI, Rust core via UniFFI, DuckDB / SQLite / Parquet storage, Anthropic API for the ASK analyst. Read `ARCHITECTURE.md` before changing module boundaries, data contracts, threading, or the FFI.
 
-**Current phase:** 1.0.0 released (2026-10-07); phases 1–9 implemented. The user asked for the whole build without per-phase check-ins, so defaults were taken where decisions were open: free data tier only, `W` and Launchpad Monitor both, MENU = ⌘[ / End / Delete on an empty line, PANEL = ⌃Tab, layouts from documented conventions (no references exist). **The app runs on real data only** (user decision, 2026-10-05); see Hard rules. Remaining work is in Known gaps.
+**Current phase:** 1.1 in progress: original "Instrument" redesign (user decision, 2026-10-07: the 1.0 look read as a copy of another terminal) plus Today home, broker CSV import, Filings inbox and plain-language commands. 1.0.0 released 2026-10-07; phases 1–9 implemented. The user asked for the whole build without per-phase check-ins, so defaults were taken where decisions were open: free data tier only, `W` and Launchpad Monitor both, MENU = ⌘[ / End / Delete on an empty line, PANEL = ⌃Tab, layouts from documented conventions (no references exist). **The app runs on real data only** (user decision, 2026-10-05); see Hard rules. Remaining work is in Known gaps.
 
 Key docs: `docs/DATA_PROVIDERS.md` (provider comparison and budget stacks), `docs/research/*` (cited research), `docs/FUNCTIONS.md` (mnemonic registry and status), `reference/README.md` (reference inventory).
 
@@ -14,8 +14,8 @@ Key docs: `docs/DATA_PROVIDERS.md` (provider comparison and budget stacks), `doc
 - **Personal use only.** Don't design features that redistribute market data.
 - **Secrets only in the macOS Keychain.** Never in code, config, logs, env files, or tests.
 - **Don't guess APIs.** Check the vendor's current docs before writing integration code; cite the doc URL in the provider crate's README.
-- **Don't invent layouts.** Every function screen is built from `reference/<FUNCTION>/*.png`. None exist yet, so current screens follow documented conventions; when references arrive, run the fidelity loop.
-- **Don't invent mnemonics.** Use standard ones; if unsure, flag it in `docs/FUNCTIONS.md` and ask.
+- **Original design only.** Follow `docs/DESIGN.md` (the Instrument design system). Never imitate another terminal's look: no black-and-amber palette, colored function bars or yellow-key chrome. No generic AI-styled UI: no gradients, glass, purple accents, emoji or pill badges everywhere.
+- **Commands:** existing mnemonics stay for compatibility, but plain language comes first (`aapl 5y`, `aapl filings`, `earnings this week`). New features get plain-word function ids (e.g. `TODAY`, `FILINGS`, `CALENDAR`), not new cryptic mnemonics.
 - **Don't integrate a paid provider.** The chosen tier is free ($0); ask before adding anything paid (see `docs/DATA_PROVIDERS.md`).
 - **Don't fill in the user's personal details** (e.g. their email as the SEC EDGAR contact). They enter them in Settings → Setup.
 
@@ -23,7 +23,7 @@ Key docs: `docs/DATA_PROVIDERS.md` (provider comparison and budget stacks), `doc
 
 1. **Plan before each phase.** (Waived for the initial build at the user's request; resume for new work of similar size.)
 2. Implement, then test: Rust unit tests for all analytics and parsers; snapshot tests for every function screen.
-3. **Fidelity loop** for each screen: build → render → `scripts/capture` → `scripts/compare` against the reference → list differences → iterate until only data differs (not layout, typography, or color). Commit the side-by-side to `reference/compare/`.
+3. **Design check** for each screen: build → render with `scripts/capture` → compare against `docs/DESIGN.md` and the mockup → fix spacing, type and color until it matches.
 4. **Measure budgets** (ARCHITECTURE §12). A phase fails if any budget regresses.
 5. **End of phase:** update this file and `ARCHITECTURE.md`, list known gaps, say what's next, commit.
 
@@ -67,7 +67,7 @@ Key docs: `docs/DATA_PROVIDERS.md` (provider comparison and budget stacks), `doc
 - Views contain layout only. Formatting goes through `Design/TerminalNumberFormatter` using display hints from Rust.
 - Only `Bridge/` imports the generated UniFFI module.
 - Streaming grids use `Render/TerminalGridView`, not `List`/`Table`/`NSTableView`.
-- No rounded corners, shadows, materials, or system-styled controls inside panels.
+- Inside panes follow `docs/DESIGN.md`: no cards, fills or rounded boxes; the only shadow and rounding is on popovers. Settings stays a native macOS window.
 
 **General**
 - Commits: imperative subject, scope prefix (`core:`, `app:`, `docs:`, `ci:`), body says why.
