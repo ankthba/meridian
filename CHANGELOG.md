@@ -21,6 +21,8 @@ A new look of its own, and features built around your own portfolio.
 ### Changes
 - The default layout is Today, a watchlist, a chart and the filings inbox. Layouts saved by 1.0 are reset once.
 - `MERIDIAN_LAYOUT=showcase` opens Today, crypto, a 5-day NVDA chart and world indices.
+- Today shows prices and holdings at once; the calendar, filings and news fill in as each arrives, and stay up while they refresh.
+- The macro calendar no longer marks releases FRED dates every day as high importance (FRED lists the FOMC Press Release daily, so it isn't a meeting calendar).
 - The local database gains a transaction ledger (schema v2) and filing read state (v3); 1.0 databases migrate on launch.
 
 ## 1.0.0 — 2026-10-07
