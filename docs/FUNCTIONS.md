@@ -54,6 +54,7 @@ The brief's **AI summary and diff vs prior filing** are our own additions. They 
 | RV | Relative valuation / comps | Verified | ISEG; CFI |
 | CORR | Correlation matrix | Verified | UDel |
 | PORT | Portfolio and risk analytics | Verified | ISEG |
+| IMPORT | Import a broker CSV into a portfolio (from PORT's menu; the app opens a file picker) | Meridian's own plain-word id (1.1 rule), not a mnemonic | n/a |
 | BTST | Backtester | Verified, weak source (video title) | Bloomberg Pro Tips short |
 | ALRT | Alerts | Verified | UDel; Stanford |
 
