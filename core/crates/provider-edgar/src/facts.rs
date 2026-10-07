@@ -13,11 +13,14 @@
 //! - Only facts from 10-K, 10-K/A, 10-Q, 10-Q/A count. For each
 //!   (concept, start, end) the most recently filed value wins, so
 //!   restatements replace originals.
+//! - When several of a line's concepts have a value for a period, the one
+//!   from the most recently filed report wins (a restatement can move a value
+//!   to another concept, e.g. revenue recast under ASC 606); concept order
+//!   only breaks ties between facts filed on the same day.
 //! - Durations of 350–380 days are fiscal years, 80–100 days are quarters;
 //!   instants (no `start`) are balance-sheet values.
-//! - Each line has an ordered list of us-gaap concepts; the first concept
-//!   with a value for the period wins and is recorded in `source_tag`.
-//!   As-reported values beat derived ones.
+//! - Each line has an ordered list of us-gaap concepts; the chosen concept
+//!   is recorded in `source_tag`. As-reported values beat derived ones.
 //! - Additive flow items may be derived: Q4 = FY − 9-month YTD (or FY −
 //!   Q1 − Q2 − Q3), Q2/Q3 = YTD − prior YTD (10-Q cash-flow statements are
 //!   usually YTD only). EPS and weighted-average share counts are never
@@ -28,7 +31,9 @@ use std::fmt;
 
 use chrono::{Datelike, Duration, NaiveDate};
 use meridian_provider::{ProviderError, ProviderResult};
-use meridian_types::{PeriodType, Statement, StatementKind, StatementLine};
+use meridian_types::{
+    PeriodDividend, PeriodType, ReportedSplit, Statement, StatementKind, StatementLine,
+};
 use serde::de::{IgnoredAny, MapAccess, Visitor};
 use serde::{Deserialize, Deserializer};
 
@@ -56,6 +61,8 @@ enum UnitKind {
     /// `<currency>/shares`.
     PerShare,
     Shares,
+    /// `pure`, XBRL's default unit for plain numbers and ratios.
+    Pure,
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -397,8 +404,31 @@ fn line_unit(l: &LineDef) -> UnitKind {
     }
 }
 
+/// `us-gaap:CommonStockDividendsPerShareDeclared`. FASB US GAAP taxonomy
+/// 2026: "Aggregate dividends declared during the period for each share of
+/// common stock outstanding." Per-share item, duration.
+pub(crate) const DPS_DECLARED: &str = "CommonStockDividendsPerShareDeclared";
+/// `us-gaap:CommonStockDividendsPerShareCashPaid`: "Aggregate dividends paid
+/// during the period for each share of common stock outstanding." Per-share
+/// item, duration.
+pub(crate) const DPS_PAID: &str = "CommonStockDividendsPerShareCashPaid";
+/// `us-gaap:StockholdersEquityNoteStockSplitConversionRatio1`: "Ratio applied
+/// to the conversion of stock split, for example but not limited to, one
+/// share converted to two or two shares converted to one." Pure item,
+/// duration.
+pub(crate) const SPLIT_RATIO: &str = "StockholdersEquityNoteStockSplitConversionRatio1";
+
+/// Concepts read besides the statement lines. They don't feed the fiscal
+/// calendar, so reading them can't move statement periods.
+const EXTRA_CONCEPTS: &[(&str, UnitKind)] = &[
+    (DPS_DECLARED, UnitKind::PerShare),
+    (DPS_PAID, UnitKind::PerShare),
+    (SPLIT_RATIO, UnitKind::Pure),
+];
+
 fn is_wanted(concept: &str) -> bool {
     LINES.iter().any(|l| line_tags(l).contains(&concept))
+        || EXTRA_CONCEPTS.iter().any(|(c, _)| *c == concept)
 }
 
 // ---------------------------------------------------------------------------
@@ -538,6 +568,68 @@ fn detect_currency(concepts: &HashMap<String, ConceptDto>) -> String {
         .map_or_else(|| "USD".into(), |(u, _)| u.to_owned())
 }
 
+impl ConceptFacts {
+    /// The end date of every indexed fact (one entry per fact).
+    fn end_dates(&self) -> impl Iterator<Item = NaiveDate> + '_ {
+        self.durations
+            .iter()
+            .flat_map(|(end, list)| list.iter().map(move |_| *end))
+            .chain(self.instants.keys().copied())
+    }
+}
+
+/// Indexes one concept's facts in one unit: periodic forms only, and the most
+/// recently filed value per (start, end), ties broken by the larger accession
+/// number. Annual 10-K periods are recorded in `annual` when given.
+fn index_concept(
+    tag: &str,
+    facts: &[FactDto],
+    mut annual: Option<&mut Vec<AnnualObs>>,
+) -> ProviderResult<ConceptFacts> {
+    let mut latest: HashMap<(Option<NaiveDate>, NaiveDate), (Fact, &str)> = HashMap::new();
+    for f in facts {
+        if !ALLOWED_FORMS.contains(&f.form.trim()) {
+            continue;
+        }
+        let end = parse_date(&f.end, tag)?;
+        let start = f.start.as_deref().map(|s| parse_date(s, tag)).transpose()?;
+        let filed = parse_date(&f.filed, tag)?;
+        if start.is_some_and(|s| s > end) {
+            continue;
+        }
+        if let (Some(s), Some(annual)) = (start, annual.as_deref_mut())
+            && f.form.trim().starts_with("10-K")
+            && f.fp.as_deref() == Some("FY")
+            && ANNUAL_DAYS.contains(&days(s, end))
+        {
+            annual.push(AnnualObs {
+                start: s,
+                end,
+                filed,
+                fy: f.fy,
+            });
+        }
+        let fact = Fact { val: f.val, filed };
+        let newer = |old: &(Fact, &str)| (filed, f.accn.as_str()) > (old.0.filed, old.1);
+        match latest.get(&(start, end)) {
+            Some(old) if !newer(old) => {}
+            _ => {
+                latest.insert((start, end), (fact, f.accn.as_str()));
+            }
+        }
+    }
+    let mut cf = ConceptFacts::default();
+    for ((start, end), (fact, _)) in latest {
+        match start {
+            Some(s) => cf.durations.entry(end).or_default().push((s, fact)),
+            None => {
+                cf.instants.insert(end, fact);
+            }
+        }
+    }
+    Ok(cf)
+}
+
 impl FactsIndex {
     pub(crate) fn parse(body: &str) -> ProviderResult<Self> {
         let dto: CompanyFactsDto = crate::http::parse_json(body, "companyfacts")?;
@@ -547,15 +639,17 @@ impl FactsIndex {
     fn from_dto(raw: &HashMap<String, ConceptDto>) -> ProviderResult<Self> {
         let currency = detect_currency(raw);
         let per_share = format!("{currency}/shares");
+        let unit_name = |u: UnitKind| match u {
+            UnitKind::Currency => currency.as_str(),
+            UnitKind::PerShare => per_share.as_str(),
+            UnitKind::Shares => "shares",
+            UnitKind::Pure => "pure",
+        };
         let mut concepts = HashMap::new();
         let mut annual = Vec::new();
         let mut end_counts: HashMap<NaiveDate, usize> = HashMap::new();
         for l in LINES {
-            let unit = match line_unit(l) {
-                UnitKind::Currency => currency.as_str(),
-                UnitKind::PerShare => per_share.as_str(),
-                UnitKind::Shares => "shares",
-            };
+            let unit = unit_name(line_unit(l));
             for &tag in line_tags(l) {
                 if concepts.contains_key(tag) {
                     continue;
@@ -563,51 +657,16 @@ impl FactsIndex {
                 let Some(facts) = raw.get(tag).and_then(|c| c.units.get(unit)) else {
                     continue;
                 };
-                let mut latest: HashMap<(Option<NaiveDate>, NaiveDate), (Fact, &str)> =
-                    HashMap::new();
-                for f in facts {
-                    if !ALLOWED_FORMS.contains(&f.form.trim()) {
-                        continue;
-                    }
-                    let end = parse_date(&f.end, tag)?;
-                    let start = f.start.as_deref().map(|s| parse_date(s, tag)).transpose()?;
-                    let filed = parse_date(&f.filed, tag)?;
-                    if start.is_some_and(|s| s > end) {
-                        continue;
-                    }
-                    if let Some(s) = start
-                        && f.form.trim().starts_with("10-K")
-                        && f.fp.as_deref() == Some("FY")
-                        && ANNUAL_DAYS.contains(&days(s, end))
-                    {
-                        annual.push(AnnualObs {
-                            start: s,
-                            end,
-                            filed,
-                            fy: f.fy,
-                        });
-                    }
-                    let fact = Fact { val: f.val, filed };
-                    let newer =
-                        |old: &(Fact, &str)| (filed, f.accn.as_str()) > (old.0.filed, old.1);
-                    match latest.get(&(start, end)) {
-                        Some(old) if !newer(old) => {}
-                        _ => {
-                            latest.insert((start, end), (fact, f.accn.as_str()));
-                        }
-                    }
-                }
-                let mut cf = ConceptFacts::default();
-                for ((start, end), (fact, _)) in latest {
+                let cf = index_concept(tag, facts, Some(&mut annual))?;
+                for end in cf.end_dates() {
                     *end_counts.entry(end).or_default() += 1;
-                    match start {
-                        Some(s) => cf.durations.entry(end).or_default().push((s, fact)),
-                        None => {
-                            cf.instants.insert(end, fact);
-                        }
-                    }
                 }
                 concepts.insert(tag, cf);
+            }
+        }
+        for &(tag, unit) in EXTRA_CONCEPTS {
+            if let Some(facts) = raw.get(tag).and_then(|c| c.units.get(unit_name(unit))) {
+                concepts.insert(tag, index_concept(tag, facts, None)?);
             }
         }
         Ok(Self {
@@ -675,28 +734,28 @@ impl FactsIndex {
         end: NaiveDate,
         range: &std::ops::RangeInclusive<i64>,
         start: Option<NaiveDate>,
-    ) -> Option<f64> {
+    ) -> Option<Fact> {
         let list = self.concept(tag)?.durations.get(&end)?;
         let fits = || list.iter().filter(|(s, _)| range.contains(&days(*s, end)));
         if let Some(want) = start
             && let Some((_, f)) = fits().find(|(s, _)| *s == want)
         {
-            return Some(f.val);
+            return Some(*f);
         }
-        fits().max_by_key(|(_, f)| f.filed).map(|(_, f)| f.val)
+        fits().max_by_key(|(_, f)| f.filed).map(|(_, f)| *f)
     }
 
-    fn instant(&self, tag: &str, date: NaiveDate) -> Option<f64> {
-        self.concept(tag)?.instants.get(&date).map(|f| f.val)
+    fn instant(&self, tag: &str, date: NaiveDate) -> Option<Fact> {
+        self.concept(tag)?.instants.get(&date).copied()
     }
 
     /// Year-to-date duration starting at the fiscal year start (±3 days).
-    fn ytd_fact(&self, tag: &str, fy_start: NaiveDate, end: NaiveDate) -> Option<f64> {
+    fn ytd_fact(&self, tag: &str, fy_start: NaiveDate, end: NaiveDate) -> Option<Fact> {
         let list = self.concept(tag)?.durations.get(&end)?;
         list.iter()
             .filter(|(s, _)| days(fy_start, *s).abs() <= 3)
             .max_by_key(|(_, f)| f.filed)
-            .map(|(_, f)| f.val)
+            .map(|(_, f)| *f)
     }
 }
 
@@ -914,22 +973,38 @@ fn tagged(v: f64, tag: &str) -> Value {
     (v, format!("us-gaap:{tag}"))
 }
 
+/// Of the candidates (in the line's concept order), the one from the most
+/// recently filed report. Ties keep concept order.
+fn most_recent<T>(candidates: impl Iterator<Item = (T, Fact)>) -> Option<(T, Fact)> {
+    let mut best: Option<(T, Fact)> = None;
+    for (t, f) in candidates {
+        if best.as_ref().is_none_or(|(_, b)| f.filed > b.filed) {
+            best = Some((t, f));
+        }
+    }
+    best
+}
+
+/// The most recently filed value among `tags`, tagged with its concept.
+fn latest_tagged(tags: &[&str], fact: impl Fn(&str) -> Option<Fact>) -> Option<Value> {
+    most_recent(tags.iter().filter_map(|t| fact(t).map(|f| (*t, f))))
+        .map(|(t, f)| tagged(f.val, t))
+}
+
 /// Annual value of a base line for fiscal year `fy`.
 fn annual_value(ix: &FactsIndex, l: &LineDef, fy: &FiscalYear) -> Option<Value> {
     match l.source {
-        Source::Flow { tags, .. } => tags.iter().find_map(|t| {
+        Source::Flow { tags, .. } => latest_tagged(tags, |t| {
             ix.duration(t, fy.end, &ANNUAL_DAYS, Some(fy.start))
-                .map(|v| tagged(v, t))
         }),
-        Source::Instant { tags } => tags
-            .iter()
-            .find_map(|t| ix.instant(t, fy.period_end()).map(|v| tagged(v, t))),
+        Source::Instant { tags } => latest_tagged(tags, |t| ix.instant(t, fy.period_end())),
         Source::Ebitda | Source::Fcf => None,
     }
 }
 
-/// Year-to-date value through quarter `n` (4 = full year) for one concept.
-fn ytd(ix: &FactsIndex, tag: &str, fy: &FiscalYear, n: u8) -> Option<f64> {
+/// Year-to-date value through quarter `n` (4 = full year) for one concept;
+/// `filed` is the latest filing date among the facts used.
+fn ytd(ix: &FactsIndex, tag: &str, fy: &FiscalYear, n: u8) -> Option<Fact> {
     if n == 4 {
         return ix.duration(tag, fy.end, &ANNUAL_DAYS, Some(fy.start));
     }
@@ -937,17 +1012,22 @@ fn ytd(ix: &FactsIndex, tag: &str, fy: &FiscalYear, n: u8) -> Option<f64> {
     if n == 1 {
         return ix.duration(tag, end, &QUARTER_DAYS, None);
     }
-    if let Some(v) = ix.ytd_fact(tag, fy.start, end) {
-        return Some(v);
+    if let Some(f) = ix.ytd_fact(tag, fy.start, end) {
+        return Some(f);
     }
-    let mut sum = 0.0;
+    let mut sum = Fact {
+        val: 0.0,
+        filed: NaiveDate::MIN,
+    };
     for k in 1..=n {
-        sum += ix.duration(
+        let q = ix.duration(
             tag,
             fy.quarter_ends[usize::from(k - 1)]?,
             &QUARTER_DAYS,
             None,
         )?;
+        sum.val += q.val;
+        sum.filed = sum.filed.max(q.filed);
     }
     Some(sum)
 }
@@ -957,22 +1037,25 @@ fn quarter_value(ix: &FactsIndex, l: &LineDef, fy: &FiscalYear, n: u8) -> Option
     let end = fy.quarter_ends[usize::from(n - 1)]?;
     match l.source {
         Source::Flow { tags, additive, .. } => {
-            if let Some(v) = tags.iter().find_map(|t| {
-                ix.duration(t, end, &QUARTER_DAYS, None)
-                    .map(|v| tagged(v, t))
-            }) {
+            if let Some(v) = latest_tagged(tags, |t| ix.duration(t, end, &QUARTER_DAYS, None)) {
                 return Some(v);
             }
             if !additive || n == 1 {
                 return None;
             }
+            // Both terms come from one concept: the one filed most recently.
+            let derived = tags.iter().filter_map(|t| {
+                let (a, b) = (ytd(ix, t, fy, n)?, ytd(ix, t, fy, n - 1)?);
+                let f = Fact {
+                    val: a.val - b.val,
+                    filed: a.filed.max(b.filed),
+                };
+                Some(((), f))
+            });
             let tag = if n == 4 { TAG_Q4 } else { TAG_YTD };
-            tags.iter()
-                .find_map(|t| Some((ytd(ix, t, fy, n)? - ytd(ix, t, fy, n - 1)?, tag.to_owned())))
+            most_recent(derived).map(|((), f)| (f.val, tag.to_owned()))
         }
-        Source::Instant { tags } => tags
-            .iter()
-            .find_map(|t| ix.instant(t, end).map(|v| tagged(v, t))),
+        Source::Instant { tags } => latest_tagged(tags, |t| ix.instant(t, end)),
         Source::Ebitda | Source::Fcf => None,
     }
 }
@@ -1169,6 +1252,107 @@ pub(crate) fn build_statements(
         }
     }
     out
+}
+
+// ---------------------------------------------------------------------------
+// Dividends per share and splits.
+
+/// Dividends per share declared and paid, by fiscal year (newest first), then
+/// by fiscal quarter (newest first). Reported facts only: nothing is derived,
+/// because per-share amounts summed across a split would mix share bases.
+pub(crate) fn dividend_periods(ix: &FactsIndex, cal: &FiscalCalendar) -> Vec<PeriodDividend> {
+    let row = |period_type, fy: &FiscalYear, fiscal_period: String, end, d: Option<Fact>, p: Option<Fact>| {
+        (d.is_some() || p.is_some()).then(|| PeriodDividend {
+            period_type,
+            fiscal_year: fy.label,
+            fiscal_period,
+            period_end: end,
+            declared_per_share: d.map(|f| f.val),
+            paid_per_share: p.map(|f| f.val),
+            currency: ix.currency.clone(),
+        })
+    };
+    let mut out = Vec::new();
+    for fy in cal.years.iter().rev() {
+        let annual = |t| ix.duration(t, fy.end, &ANNUAL_DAYS, Some(fy.start));
+        out.extend(row(
+            PeriodType::Annual,
+            fy,
+            "FY".into(),
+            fy.period_end(),
+            annual(DPS_DECLARED),
+            annual(DPS_PAID),
+        ));
+    }
+    for fy in cal.years.iter().rev() {
+        for n in (1..=4u8).rev() {
+            let Some(end) = fy.quarter_ends[usize::from(n - 1)] else {
+                continue;
+            };
+            let quarter = |t| ix.duration(t, end, &QUARTER_DAYS, None);
+            out.extend(row(
+                PeriodType::Quarterly,
+                fy,
+                format!("Q{n}"),
+                end,
+                quarter(DPS_DECLARED),
+                quarter(DPS_PAID),
+            ));
+        }
+    }
+    out
+}
+
+/// Stock splits disclosed with `us-gaap:StockholdersEquityNoteStockSplitConversionRatio1`,
+/// newest first. A ratio of 1 (no split) is ignored. When the same ratio is
+/// reported for overlapping periods (e.g. the split date in a 10-Q and the
+/// whole year in the 10-K), only the narrowest period is kept.
+pub(crate) fn reported_splits(ix: &FactsIndex) -> Vec<ReportedSplit> {
+    let Some(c) = ix.concept(SPLIT_RATIO) else {
+        return Vec::new();
+    };
+    let durations = c.durations.iter().flat_map(|(end, list)| {
+        list.iter().map(move |(start, f)| ReportedSplit {
+            ratio: f.val,
+            period_start: Some(*start),
+            period_end: *end,
+            filed: f.filed,
+        })
+    });
+    let instants = c.instants.iter().map(|(end, f)| ReportedSplit {
+        ratio: f.val,
+        period_start: None,
+        period_end: *end,
+        filed: f.filed,
+    });
+    let mut all: Vec<ReportedSplit> = durations
+        .chain(instants)
+        .filter(|s| s.ratio.is_finite() && s.ratio > 0.0 && (s.ratio - 1.0).abs() > 1e-9)
+        .collect();
+    let span = |s: &ReportedSplit| days(s.period_start.unwrap_or(s.period_end), s.period_end);
+    // Narrowest first, so each kept period is the most specific one.
+    all.sort_by(|a, b| {
+        span(a)
+            .cmp(&span(b))
+            .then(b.period_end.cmp(&a.period_end))
+    });
+    let mut kept: Vec<ReportedSplit> = Vec::new();
+    for s in all {
+        let start = s.period_start.unwrap_or(s.period_end);
+        let duplicate = kept.iter().any(|k| {
+            let k_start = k.period_start.unwrap_or(k.period_end);
+            (k.ratio - s.ratio).abs() < 1e-9 && k_start <= s.period_end && start <= k.period_end
+        });
+        if !duplicate {
+            kept.push(s);
+        }
+    }
+    kept.sort_by(|a, b| {
+        b.period_end
+            .cmp(&a.period_end)
+            .then(b.period_start.cmp(&a.period_start))
+    });
+    kept
 }
 
 #[cfg(test)]
@@ -1491,6 +1675,133 @@ mod tests {
             got,
             vec![(2026, "Q2", Some(11.0)), (2026, "Q1", Some(10.0))]
         );
+    }
+
+    fn split_fixture() -> (FactsIndex, FiscalCalendar) {
+        let ix = FactsIndex::parse(include_str!(
+            "../tests/fixtures/companyfacts_CIK0000000002.json"
+        ))
+        .unwrap();
+        let cal = ix.calendar_from_annual().unwrap();
+        (ix, cal)
+    }
+
+    #[test]
+    fn restatement_under_another_concept_wins() {
+        let (ix, cal) = split_fixture();
+        let s = build_statements(&ix, &cal, PeriodType::Annual, 3);
+        // FY2024: 5000 under Revenues (FY2024 10-K), restated to 5100 under
+        // RevenueFromContract… in the later FY2025 10-K.
+        let fy24 = find(&s, StatementKind::Income, "FY", 2024);
+        assert_eq!(fy24.value("revenue"), Some(5100.0));
+        assert_eq!(
+            line(fy24, "revenue").source_tag.as_deref(),
+            Some("us-gaap:RevenueFromContractWithCustomerExcludingAssessedTax")
+        );
+        // FY2023 was only ever reported under Revenues.
+        let fy23 = find(&s, StatementKind::Income, "FY", 2023);
+        assert_eq!(fy23.value("revenue"), Some(4500.0));
+        assert_eq!(
+            line(fy23, "revenue").source_tag.as_deref(),
+            Some("us-gaap:Revenues")
+        );
+        // Per-share values: the restated (split-adjusted) FY2024 EPS wins; FY2023
+        // keeps its original, unadjusted value.
+        assert_eq!(fy24.value("eps_diluted"), Some(2.0));
+        assert_eq!(fy23.value("eps_diluted"), Some(3.6));
+    }
+
+    #[test]
+    fn concept_order_breaks_same_day_ties() {
+        let body = r#"{"facts":{"us-gaap":{
+            "Revenues":{"units":{"USD":[{"start":"2024-10-01","end":"2025-09-30","val":100,"accn":"a-1","fy":2025,"fp":"FY","form":"10-K","filed":"2025-11-14"}]}},
+            "RevenueFromContractWithCustomerExcludingAssessedTax":{"units":{"USD":[{"start":"2024-10-01","end":"2025-09-30","val":90,"accn":"a-1","fy":2025,"fp":"FY","form":"10-K","filed":"2025-11-14"}]}}
+        }}}"#;
+        let ix = FactsIndex::parse(body).unwrap();
+        let cal = ix.calendar_from_annual().unwrap();
+        let s = build_statements(&ix, &cal, PeriodType::Annual, 1);
+        let fy = find(&s, StatementKind::Income, "FY", 2025);
+        assert_eq!(fy.value("revenue"), Some(100.0));
+        assert_eq!(
+            line(fy, "revenue").source_tag.as_deref(),
+            Some("us-gaap:Revenues")
+        );
+    }
+
+    #[test]
+    fn dividends_per_share_by_fiscal_period() {
+        let (ix, cal) = split_fixture();
+        let periods = dividend_periods(&ix, &cal);
+        let got: Vec<_> = periods
+            .iter()
+            .map(|p| {
+                (
+                    p.period_type,
+                    p.fiscal_year,
+                    p.fiscal_period.as_str(),
+                    p.period_end,
+                    p.declared_per_share,
+                    p.paid_per_share,
+                )
+            })
+            .collect();
+        let want = vec![
+            // Annual: FY2024 is the split-adjusted restatement (0.44, not 0.88).
+            (PeriodType::Annual, 2025, "FY", d(2025, 12, 31), Some(0.50), Some(0.49)),
+            (PeriodType::Annual, 2024, "FY", d(2024, 12, 31), Some(0.44), None),
+            // Quarterly: Q4 2025 isn't reported and is not derived.
+            (PeriodType::Quarterly, 2025, "Q3", d(2025, 9, 30), Some(0.13), None),
+            (PeriodType::Quarterly, 2025, "Q2", d(2025, 6, 30), Some(0.13), None),
+            (PeriodType::Quarterly, 2025, "Q1", d(2025, 3, 31), Some(0.24), None),
+        ];
+        assert_eq!(got, want);
+        assert!(periods.iter().all(|p| p.currency == "USD"));
+    }
+
+    #[test]
+    fn dividend_and_split_concepts_do_not_move_the_calendar() {
+        let (_, cal) = split_fixture();
+        let fy25 = cal.years.iter().find(|y| y.label == 2025).unwrap();
+        // The split fact ends 2025-06-02; quarter ends still come from statement facts.
+        assert_eq!(
+            fy25.quarter_ends,
+            [
+                Some(d(2025, 3, 31)),
+                Some(d(2025, 6, 30)),
+                Some(d(2025, 9, 30)),
+                Some(d(2025, 12, 31))
+            ]
+        );
+        // Company facts without any dividend concept give no rows.
+        let (ix, cal) = fixture();
+        assert!(dividend_periods(&ix, &cal).is_empty());
+        assert!(reported_splits(&ix).is_empty());
+    }
+
+    #[test]
+    fn reported_splits_keep_the_narrowest_period() {
+        let (ix, _) = split_fixture();
+        assert_eq!(
+            reported_splits(&ix),
+            vec![ReportedSplit {
+                ratio: 2.0,
+                period_start: Some(d(2025, 6, 2)),
+                period_end: d(2025, 6, 2),
+                filed: d(2025, 7, 31),
+            }]
+        );
+        // Ratio 1 is not a split; distinct splits are all kept, newest first.
+        let body = r#"{"facts":{"us-gaap":{"StockholdersEquityNoteStockSplitConversionRatio1":{"units":{"pure":[
+            {"start":"2020-08-28","end":"2020-08-28","val":4,"accn":"a-1","fy":2020,"fp":"FY","form":"10-K","filed":"2020-10-30"},
+            {"start":"2014-06-09","end":"2014-06-09","val":7,"accn":"a-0","fy":2014,"fp":"Q3","form":"10-Q","filed":"2014-07-23"},
+            {"start":"2019-01-01","end":"2019-12-31","val":1,"accn":"a-2","fy":2019,"fp":"FY","form":"10-K","filed":"2020-02-01"}
+        ]}}}}}"#;
+        let ix = FactsIndex::parse(body).unwrap();
+        let ratios: Vec<(f64, NaiveDate)> = reported_splits(&ix)
+            .iter()
+            .map(|s| (s.ratio, s.period_end))
+            .collect();
+        assert_eq!(ratios, vec![(4.0, d(2020, 8, 28)), (7.0, d(2014, 6, 9))]);
     }
 
     #[test]

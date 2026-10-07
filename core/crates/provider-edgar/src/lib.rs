@@ -27,13 +27,15 @@ use meridian_provider::{
     TokenBucket,
 };
 use meridian_types::{
-    AssetClass, Clock, CompanyProfile, DataDelay, FeedSource, Filing, FilingDocument,
+    AssetClass, Clock, CompanyProfile, DataDelay, Dividends, FeedSource, Filing, FilingDocument,
     FilingSection, FilingsPage, Fundamentals, Instrument, MarketSector, Provenance, ProviderId,
     SecurityKey, SystemClock,
 };
 use tokio::time::Instant;
 
-use crate::facts::{FactsIndex, build_statements};
+use crate::facts::{
+    FactsIndex, FiscalCalendar, build_statements, dividend_periods, reported_splits,
+};
 use crate::submissions::{FilingColumnsDto, SubmissionsDto, matches_forms, sort_newest_first};
 use crate::tickers::{TickerEntry, TickerIndex, cik10, equity_symbol};
 
@@ -154,6 +156,13 @@ fn capabilities() -> Capabilities {
                 equity,
                 DataDelay::RealTime,
                 Some("as-reported XBRL financial data (phased in from 2009); available under a minute after filing"),
+            ),
+            // Same company facts: dividends per share by fiscal period.
+            entry(
+                Capability::Dividends,
+                equity,
+                DataDelay::RealTime,
+                Some("dividends per share declared/paid by fiscal period from XBRL financial data; no ex-, record or pay dates"),
             ),
         ],
         rate_limit: Some(RateLimit::per_second(10)),
@@ -440,25 +449,71 @@ impl Provider for EdgarProvider {
     }
 
     async fn fundamentals(&self, req: &FundamentalsRequest) -> ProviderResult<Fundamentals> {
+        let facts = self.company_facts(&req.key).await?;
+        let statements =
+            build_statements(&facts.index, &facts.calendar, req.period_type, req.periods);
+        if statements.is_empty() {
+            return Err(no_statement_facts(&req.key));
+        }
+        Ok(Fundamentals {
+            key: req.key.clone(),
+            statements,
+            reported_splits: reported_splits(&facts.index),
+            provenance: Self::provenance(facts.url),
+        })
+    }
+
+    /// Dividends per share by fiscal period, from the same company facts as
+    /// the statements. Filings report per-period totals, not dividend events,
+    /// so `dividends` (events with ex-dates) is always empty.
+    async fn dividends(&self, key: &SecurityKey) -> ProviderResult<Dividends> {
+        let facts = self.company_facts(key).await?;
+        let per_period = dividend_periods(&facts.index, &facts.calendar);
+        let splits = reported_splits(&facts.index);
+        if per_period.is_empty() && splits.is_empty() {
+            return Err(ProviderError::NotFound(format!(
+                "{key} reports no dividends per share in its XBRL financial data"
+            )));
+        }
+        Ok(Dividends {
+            key: key.clone(),
+            dividends: Vec::new(),
+            per_period,
+            reported_splits: splits,
+            provenance: Self::provenance(facts.url),
+        })
+    }
+}
+
+fn no_statement_facts(key: &SecurityKey) -> ProviderError {
+    ProviderError::NotFound(format!("no us-gaap financial statement facts for {key}"))
+}
+
+/// Parsed company facts with the fiscal calendar they were classified by.
+struct CompanyFacts {
+    index: FactsIndex,
+    calendar: FiscalCalendar,
+    url: String,
+}
+
+impl EdgarProvider {
+    /// Fetches and indexes `companyfacts` for `key` and builds its fiscal
+    /// calendar (from 10-K periods, else from the submissions fiscal year end).
+    async fn company_facts(&self, key: &SecurityKey) -> ProviderResult<CompanyFacts> {
         self.http()?;
-        let e = self.resolve(&req.key).await?;
+        let e = self.resolve(key).await?;
         let url = format!(
             "{}/api/xbrl/companyfacts/CIK{}.json",
             self.data_base,
             cik10(e.cik)
         );
         let body = self.get_text(&url, Some(LARGE_TIMEOUT)).await?;
-        let ix = Self::parse_facts(body).await?;
-        let no_data = || {
-            ProviderError::NotFound(format!(
-                "no us-gaap financial statement facts for {}",
-                req.key
-            ))
-        };
-        if !ix.has_facts() {
+        let index = Self::parse_facts(body).await?;
+        let no_data = || no_statement_facts(key);
+        if !index.has_facts() {
             return Err(no_data());
         }
-        let calendar = if let Some(c) = ix.calendar_from_annual() {
+        let calendar = if let Some(c) = index.calendar_from_annual() {
             c
         } else {
             // No 10-K yet: fall back to the declared fiscal year end.
@@ -467,16 +522,12 @@ impl Provider for EdgarProvider {
                 .await?
                 .fiscal_year_end_md()
                 .ok_or_else(no_data)?;
-            ix.calendar_from_fye(m, d).ok_or_else(no_data)?
+            index.calendar_from_fye(m, d).ok_or_else(no_data)?
         };
-        let statements = build_statements(&ix, &calendar, req.period_type, req.periods);
-        if statements.is_empty() {
-            return Err(no_data());
-        }
-        Ok(Fundamentals {
-            key: req.key.clone(),
-            statements,
-            provenance: Self::provenance(url),
+        Ok(CompanyFacts {
+            index,
+            calendar,
+            url,
         })
     }
 }
@@ -522,6 +573,10 @@ mod tests {
             (
                 "/api/xbrl/companyfacts/CIK0000000001.json".into(),
                 fixture("companyfacts_CIK0000000001.json"),
+            ),
+            (
+                "/api/xbrl/companyfacts/CIK0000000002.json".into(),
+                fixture("companyfacts_CIK0000000002.json"),
             ),
             (
                 "/Archives/edgar/data/1/000000000125000010/exmp-20250930.htm".into(),
@@ -611,7 +666,8 @@ mod tests {
         assert!(c.supports(Capability::Filings, Some(AssetClass::Etf)));
         assert!(c.supports(Capability::Fundamentals, Some(AssetClass::Equity)));
         assert!(!c.supports(Capability::Fundamentals, Some(AssetClass::Etf)));
-        assert!(!c.supports(Capability::Dividends, None));
+        assert!(c.supports(Capability::Dividends, Some(AssetClass::Equity)));
+        assert!(!c.supports(Capability::Dividends, Some(AssetClass::Etf)));
         assert!(!c.supports(Capability::Quotes, None));
         assert!(c.entries.iter().all(|e| e.source == FeedSource::Official));
         assert!(
@@ -907,6 +963,68 @@ mod tests {
             p.fundamentals(&missing).await.unwrap_err(),
             ProviderError::NotFound(_)
         ));
+    }
+
+    #[tokio::test]
+    async fn dividends_end_to_end() {
+        let (p, hits) = provider_with(CONTACT).await;
+        let key = SecurityKey::equity("SMPL.B");
+        let d = p.dividends(&key).await.unwrap();
+        assert_eq!(d.key, key);
+        // Filings carry no dividend events, only per-period totals.
+        assert!(d.dividends.is_empty());
+        let fy: Vec<(i32, Option<f64>)> = d
+            .per_period
+            .iter()
+            .filter(|x| x.period_type == PeriodType::Annual)
+            .map(|x| (x.fiscal_year, x.declared_per_share))
+            .collect();
+        assert_eq!(fy, vec![(2025, Some(0.5)), (2024, Some(0.44))]);
+        assert_eq!(d.reported_splits.len(), 1);
+        assert_eq!(d.reported_splits[0].ratio, 2.0);
+        assert_eq!(d.provenance.provider.as_str(), "edgar");
+        assert!(!d.provenance.synthetic);
+        assert!(
+            d.provenance
+                .source_ref
+                .as_deref()
+                .unwrap()
+                .ends_with("/api/xbrl/companyfacts/CIK0000000002.json")
+        );
+        assert_eq!(
+            paths(&hits),
+            vec![
+                "/files/company_tickers.json",
+                "/api/xbrl/companyfacts/CIK0000000002.json"
+            ]
+        );
+
+        // Fundamentals from the same facts carry the split disclosure.
+        let f = p
+            .fundamentals(&FundamentalsRequest {
+                key: key.clone(),
+                period_type: PeriodType::Annual,
+                periods: 3,
+            })
+            .await
+            .unwrap();
+        assert_eq!(f.reported_splits, d.reported_splits);
+
+        // A company that reports no dividends per share → NotFound, with a reason.
+        let none = p.dividends(&SecurityKey::equity("EXMP")).await.unwrap_err();
+        assert!(
+            matches!(none, ProviderError::NotFound(ref m) if m.contains("no dividends per share")),
+            "{none:?}"
+        );
+        let exmp = p
+            .fundamentals(&FundamentalsRequest {
+                key: SecurityKey::equity("EXMP"),
+                period_type: PeriodType::Annual,
+                periods: 3,
+            })
+            .await
+            .unwrap();
+        assert!(exmp.reported_splits.is_empty());
     }
 
     #[tokio::test]

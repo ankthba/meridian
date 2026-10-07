@@ -14,6 +14,10 @@ as-reported financial statements from XBRL company facts.
 | Archive paths, accession-number format | https://www.sec.gov/search-filings/edgar-search-assistance/accessing-edgar-data |
 | Reuse of EDGAR content | https://www.sec.gov/os/webmaster-faq#reuse , https://www.sec.gov/about/privacy-information |
 | Ticker file | https://www.sec.gov/file/company-tickers |
+| Units: `pure` is "the default unit in XBRL"; numerator/denominator units (frames API path form `USD-per-shares`) | https://www.sec.gov/search-filings/edgar-application-programming-interfaces (checked 2026-10-07) |
+| US GAAP taxonomy 2026 element definitions (names, item types, period types) | https://xbrl.fasb.org/us-gaap/2026/elts/us-gaap-2026.xsd |
+| US GAAP taxonomy 2026 documentation labels (definitions quoted below) | https://xbrl.fasb.org/us-gaap/2026/elts/us-gaap-doc-2026.xml |
+| FASB taxonomy home and terms | https://www.fasb.org/projects/FASB-Taxonomies , https://xbrl.fasb.org/terms/TaxonomiesTermsConditions.html |
 
 The SEC documents endpoints and general structure, not a field-level schema.
 Field names were taken from third-party descriptions (listed in
@@ -68,11 +72,12 @@ archive paths.
 | Profile | Equity, ETF | RT | Submissions: "typical processing delay of less than a second" |
 | Filings | Equity, ETF | RT | Per company only (`key: None` → `Unsupported`) |
 | Fundamentals | Equity | RT | XBRL: "typical processing delay of under a minute" |
+| Dividends | Equity | RT | Dividends per share by fiscal period from the same company facts; no ex-, record or pay dates |
 
 Source is `FeedSource::Official`; every payload's provenance is provider
 `edgar`, `synthetic: false`, delay `RealTime`, `as_of` = fetch time,
-`source_ref` = accession number (filings) or the request URL (fundamentals).
-Dividends, quotes, bars, news, estimates, holders and the rest keep the
+`source_ref` = accession number (filings) or the request URL (fundamentals,
+dividends). Quotes, bars, news, estimates, holders and the rest keep the
 trait's `Unsupported` default.
 
 ## Reference data and search
@@ -146,9 +151,15 @@ founding or IPO date: those are `None`.
 
 ### Concept mapping
 
-The first concept with a value for the period wins; the chosen concept is
-recorded as `source_tag: Some("us-gaap:<Concept>")`. Reported values beat
-derived ones (all concepts are tried as reported before any derivation).
+When more than one of a line's concepts has a value for the period, the value
+from the **most recently filed** report wins, and concept order (below) only
+breaks ties between facts filed on the same day. Restatements can move a
+value to a different concept (e.g. revenue recast from `Revenues` to
+`RevenueFromContractWithCustomerExcludingAssessedTax` under ASC 606), so
+"first concept in the list" would keep the original figure. The chosen
+concept is recorded as `source_tag: Some("us-gaap:<Concept>")`. Reported
+values beat derived ones (all concepts are tried as reported before any
+derivation).
 
 | Code | Label | Statement | us-gaap concepts, in order |
 |---|---|---|---|
@@ -231,7 +242,7 @@ Depth 0 = totals and subtotals, 1 = components.
 
 - **Q4** of an additive flow = FY − 9-month YTD, or FY − (Q1 + Q2 + Q3) when
   there is no 9-month fact; tag `derived:FY-9M`. Uses one concept for all
-  terms.
+  terms: the concept whose terms were filed most recently.
 - **Q2/Q3** of an additive flow when only year-to-date values are reported
   (10-Q cash-flow statements are usually YTD only) = YTD − previous YTD; tag
   `derived:YTD-diff`.
@@ -248,25 +259,60 @@ period. Each statement of a kind lists the same lines: every code that has a
 value in at least one returned column, in display order, with `value: None`
 where a column lacks it.
 
+### Stock splits
+
+`Fundamentals.reported_splits` (and `Dividends.reported_splits`) list the
+facts of `us-gaap:StockholdersEquityNoteStockSplitConversionRatio1` (unit
+`pure`) from 10-K/10-Q filings: the ratio exactly as reported, the fact's
+period (`start`/`end`) and its filing date. The taxonomy defines it as
+"Ratio applied to the conversion of stock split, for example but not limited
+to, one share converted to two or two shares converted to one" (pure item,
+duration), so the direction for reverse splits isn't fixed and the ratio is
+not interpreted. Ratio 1 is ignored; when one ratio is reported for
+overlapping periods (the split date in a 10-Q, the whole year in the 10-K)
+only the narrowest period is kept. Filings give no ex-date. Values are never
+split-adjusted here: a period re-reported after a split carries the restated
+per-share figure (latest filing wins), and a period never re-reported keeps
+its original figure. FA shows a notice when a reported split falls inside
+the displayed window.
+
 ### Not covered
 
 - IFRS filers (20-F/40-F, `ifrs-full` taxonomy) and company-specific
   extension concepts are not mapped; those companies get `NotFound` or sparse
   statements.
 - As-reported only: no standardization beyond the mapping above, no
-  point-in-time history (restated values replace the originals).
+  point-in-time history (restated values replace the originals), no split
+  adjustment.
 
-## Dividends: not implemented
+## Dividends (per share, by fiscal period)
 
-`Dividend` needs an `ex_date`. Company facts give numeric values (`val`) per
-*reporting period*, e.g. `CommonStockDividendsPerShareDeclared` for a quarter
-or year, not per dividend event, and we found no ex-dividend date in that
-data. US-GAAP date elements such as `DividendsPayableDateDeclaredDayMonthYear`
-or `DividendsPayableDateOfRecordDayMonthYear` are declaration/record/pay
-dates, not ex-dates, and we could not confirm that company facts include
-date-typed values at all. Using a period end as an ex-date would be
-misleading, so `Capability::Dividends` is not declared and the method
-returns `Unsupported`.
+`dividends(key)` reads the same company facts as `fundamentals` and returns
+`Dividends { dividends: [], per_period, reported_splits }`:
+
+| Field | us-gaap concept (unit `<cur>/shares`) | FASB definition (2026 taxonomy) |
+|---|---|---|
+| `declared_per_share` | `CommonStockDividendsPerShareDeclared` | "Aggregate dividends declared during the period for each share of common stock outstanding." (per-share item, duration) |
+| `paid_per_share` | `CommonStockDividendsPerShareCashPaid` | "Aggregate dividends paid during the period for each share of common stock outstanding." (per-share item, duration) |
+
+- Periods use the fiscal calendar above: fiscal years (350–380-day facts
+  ending on the year end) newest first, then fiscal quarters (80–100-day
+  facts ending on the quarter end) newest first. The dividend concepts don't
+  feed the calendar, so reading them can't change statement periods.
+- Same fact rules as the statements: 10-K/10-Q (and amendments) only, the
+  most recently filed value per period.
+- **Reported values only.** Q4 and YTD-difference derivations are not
+  applied: a quarter that wasn't reported is absent. Summing per-share
+  amounts across a split would mix share bases.
+- A company with neither dividend concept nor a split fact → `NotFound`
+  ("reports no dividends per share in its XBRL financial data").
+- `dividends` (events) stays empty. A `Dividend` needs an ex-date and company
+  facts give totals per *reporting period*, not per dividend event. US-GAAP
+  date elements such as `DividendsPayableDateDeclaredDayMonthYear` or
+  `DividendsPayableDateOfRecordDayMonthYear` are declaration/record dates,
+  not ex-dates, and we could not confirm that company facts carry
+  date-typed values at all. Event dates come from Alpaca's corporate actions
+  (see `provider-alpaca`).
 
 ## Tests
 
@@ -276,8 +322,9 @@ against a local HTTP server that serves the hand-built fixtures in
 padding, ticker normalization, the missing-contact path (no request sent), the
 declared User-Agent, the per-request token bucket, filings filtering/sorting/
 paging/URLs, profile mapping, section splitting with a table of contents,
-annual/quarterly/TTM selection, Q4 and YTD derivations, EPS not derived, and
-restatements.
+annual/quarterly/TTM selection, Q4 and YTD derivations, EPS not derived,
+restatements (same concept, and recast under another concept), concept order
+breaking same-day ties, dividends per share by period, and split disclosures.
 
 `tests/live.rs` holds `#[ignore]`d tests against the real SEC endpoints. They
 read your contact from `MERIDIAN_SEC_CONTACT` and skip when it's unset. They

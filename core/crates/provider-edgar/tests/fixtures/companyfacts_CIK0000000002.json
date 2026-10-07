@@ -1,0 +1,77 @@
+{
+  "cik": 2,
+  "entityName": "Sample Holdings Inc.",
+  "facts": {
+    "us-gaap": {
+      "Revenues": {
+        "label": "Revenues",
+        "description": "Hand-built test values (not real data). Used until the FY2025 10-K, which recast revenue under another concept.",
+        "units": {
+          "USD": [
+            {"start": "2024-01-01", "end": "2024-12-31", "val": 5000, "accn": "0000000002-25-000003", "fy": 2024, "fp": "FY", "form": "10-K", "filed": "2025-02-20"},
+            {"start": "2023-01-01", "end": "2023-12-31", "val": 4500, "accn": "0000000002-25-000003", "fy": 2024, "fp": "FY", "form": "10-K", "filed": "2025-02-20"},
+            {"start": "2025-01-01", "end": "2025-03-31", "val": 1400, "accn": "0000000002-25-000010", "fy": 2025, "fp": "Q1", "form": "10-Q", "filed": "2025-05-01"},
+            {"start": "2025-04-01", "end": "2025-06-30", "val": 1500, "accn": "0000000002-25-000020", "fy": 2025, "fp": "Q2", "form": "10-Q", "filed": "2025-07-31"},
+            {"start": "2025-07-01", "end": "2025-09-30", "val": 1550, "accn": "0000000002-25-000030", "fy": 2025, "fp": "Q3", "form": "10-Q", "filed": "2025-10-30"}
+          ]
+        }
+      },
+      "RevenueFromContractWithCustomerExcludingAssessedTax": {
+        "label": "Revenue from Contract with Customer, Excluding Assessed Tax",
+        "description": "Hand-built test values. The FY2025 10-K restates FY2024 (5000 under Revenues) to 5100 under this concept.",
+        "units": {
+          "USD": [
+            {"start": "2025-01-01", "end": "2025-12-31", "val": 6000, "accn": "0000000002-26-000002", "fy": 2025, "fp": "FY", "form": "10-K", "filed": "2026-02-19"},
+            {"start": "2024-01-01", "end": "2024-12-31", "val": 5100, "accn": "0000000002-26-000002", "fy": 2025, "fp": "FY", "form": "10-K", "filed": "2026-02-19"}
+          ]
+        }
+      },
+      "EarningsPerShareDiluted": {
+        "label": "Earnings Per Share, Diluted",
+        "description": "Hand-built test values. FY2024 is 4.00 as first reported and 2.00 after a 2-for-1 split (FY2025 10-K); FY2023 was never re-reported.",
+        "units": {
+          "USD/shares": [
+            {"start": "2023-01-01", "end": "2023-12-31", "val": 3.60, "accn": "0000000002-25-000003", "fy": 2024, "fp": "FY", "form": "10-K", "filed": "2025-02-20"},
+            {"start": "2024-01-01", "end": "2024-12-31", "val": 4.00, "accn": "0000000002-25-000003", "fy": 2024, "fp": "FY", "form": "10-K", "filed": "2025-02-20"},
+            {"start": "2024-01-01", "end": "2024-12-31", "val": 2.00, "accn": "0000000002-26-000002", "fy": 2025, "fp": "FY", "form": "10-K", "filed": "2026-02-19"},
+            {"start": "2025-01-01", "end": "2025-12-31", "val": 2.40, "accn": "0000000002-26-000002", "fy": 2025, "fp": "FY", "form": "10-K", "filed": "2026-02-19"}
+          ]
+        }
+      },
+      "CommonStockDividendsPerShareDeclared": {
+        "label": "Common Stock, Dividends, Per Share, Declared",
+        "description": "Hand-built test values. FY2024 restated from 0.88 to 0.44 after the split; Q4 2025 is not reported; the 8-K value must be ignored.",
+        "units": {
+          "USD/shares": [
+            {"start": "2024-01-01", "end": "2024-12-31", "val": 0.88, "accn": "0000000002-25-000003", "fy": 2024, "fp": "FY", "form": "10-K", "filed": "2025-02-20"},
+            {"start": "2024-01-01", "end": "2024-12-31", "val": 0.44, "accn": "0000000002-26-000002", "fy": 2025, "fp": "FY", "form": "10-K", "filed": "2026-02-19"},
+            {"start": "2025-01-01", "end": "2025-12-31", "val": 0.50, "accn": "0000000002-26-000002", "fy": 2025, "fp": "FY", "form": "10-K", "filed": "2026-02-19"},
+            {"start": "2025-01-01", "end": "2025-03-31", "val": 0.24, "accn": "0000000002-25-000010", "fy": 2025, "fp": "Q1", "form": "10-Q", "filed": "2025-05-01"},
+            {"start": "2025-04-01", "end": "2025-06-30", "val": 0.13, "accn": "0000000002-25-000020", "fy": 2025, "fp": "Q2", "form": "10-Q", "filed": "2025-07-31"},
+            {"start": "2025-07-01", "end": "2025-09-30", "val": 0.13, "accn": "0000000002-25-000030", "fy": 2025, "fp": "Q3", "form": "10-Q", "filed": "2025-10-30"},
+            {"start": "2025-01-01", "end": "2025-12-31", "val": 9.99, "accn": "0000000002-26-000001", "fy": 2025, "fp": "FY", "form": "8-K", "filed": "2026-02-01"}
+          ]
+        }
+      },
+      "CommonStockDividendsPerShareCashPaid": {
+        "label": "Common Stock, Dividends, Per Share, Cash Paid",
+        "description": "Hand-built test value.",
+        "units": {
+          "USD/shares": [
+            {"start": "2025-01-01", "end": "2025-12-31", "val": 0.49, "accn": "0000000002-26-000002", "fy": 2025, "fp": "FY", "form": "10-K", "filed": "2026-02-19"}
+          ]
+        }
+      },
+      "StockholdersEquityNoteStockSplitConversionRatio1": {
+        "label": "Stockholders' Equity Note, Stock Split, Conversion Ratio",
+        "description": "Hand-built test values: one 2-for-1 split, reported for the split date in a 10-Q and for the whole year in the 10-K.",
+        "units": {
+          "pure": [
+            {"start": "2025-06-02", "end": "2025-06-02", "val": 2, "accn": "0000000002-25-000020", "fy": 2025, "fp": "Q2", "form": "10-Q", "filed": "2025-07-31"},
+            {"start": "2025-01-01", "end": "2025-12-31", "val": 2, "accn": "0000000002-26-000002", "fy": 2025, "fp": "FY", "form": "10-K", "filed": "2026-02-19"}
+          ]
+        }
+      }
+    }
+  }
+}

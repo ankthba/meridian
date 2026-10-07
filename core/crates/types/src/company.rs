@@ -68,7 +68,37 @@ impl Statement {
 pub struct Fundamentals {
     pub key: SecurityKey,
     pub statements: Vec<Statement>,
+    /// Stock splits disclosed in the same filings, so screens can say when
+    /// per-share values on either side of a split are not comparable.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub reported_splits: Vec<ReportedSplit>,
     pub provenance: Provenance,
+}
+
+/// A stock split disclosed in periodic financial statements (e.g. SEC XBRL
+/// `us-gaap:StockholdersEquityNoteStockSplitConversionRatio1`). Filings give
+/// the conversion ratio and the period of the fact, not an ex-date, and the
+/// taxonomy doesn't fix the direction of the ratio for reverse splits, so the
+/// ratio is kept exactly as reported.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct ReportedSplit {
+    /// Conversion ratio as reported (e.g. 4 for a 4-for-1 split).
+    pub ratio: f64,
+    /// Start of the fact's period; `None` for an instant.
+    pub period_start: Option<NaiveDate>,
+    /// End of the fact's period.
+    pub period_end: NaiveDate,
+    /// Filing date of the report the value was taken from.
+    pub filed: NaiveDate,
+}
+
+impl ReportedSplit {
+    /// Whether the fact's period overlaps `(from, to]`.
+    #[must_use]
+    pub fn overlaps(&self, from: NaiveDate, to: NaiveDate) -> bool {
+        let start = self.period_start.unwrap_or(self.period_end);
+        start <= to && self.period_end > from
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
@@ -244,10 +274,37 @@ pub struct Dividend {
     pub kind: DividendKind,
 }
 
+/// Dividends per share for one fiscal period as reported in financial
+/// statements (e.g. SEC XBRL `us-gaap:CommonStockDividendsPerShareDeclared`
+/// and `…CashPaid`). Filings report totals per period, not per dividend
+/// event, so there are no ex-, record or pay dates.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct PeriodDividend {
+    /// `Annual` or `Quarterly`.
+    pub period_type: PeriodType,
+    pub fiscal_year: i32,
+    /// `FY`, `Q1` … `Q4`.
+    pub fiscal_period: String,
+    pub period_end: NaiveDate,
+    /// Dividends declared during the period, per common share.
+    pub declared_per_share: Option<f64>,
+    /// Dividends paid during the period, per common share.
+    pub paid_per_share: Option<f64>,
+    pub currency: String,
+}
+
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Dividends {
     pub key: SecurityKey,
+    /// Dividend and split events with ex-dates.
     pub dividends: Vec<Dividend>,
+    /// Per-share totals by fiscal period, newest first, from sources that
+    /// report periods rather than events.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub per_period: Vec<PeriodDividend>,
+    /// Splits disclosed in filings (no ex-dates), newest first.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub reported_splits: Vec<ReportedSplit>,
     pub provenance: Provenance,
 }
 
@@ -272,6 +329,18 @@ mod tests {
             provenance: Provenance::synthetic(0),
         };
         assert_eq!(r.consensus_score(), Some(4.5));
+    }
+
+    #[test]
+    fn reported_split_overlap() {
+        let d = |m, day| NaiveDate::from_ymd_opt(2020, m, day).unwrap();
+        let fy = ReportedSplit { ratio: 4.0, period_start: Some(d(1, 1)), period_end: d(12, 31), filed: d(12, 31) };
+        assert!(fy.overlaps(d(6, 30), d(9, 30)));
+        assert!(!fy.overlaps(d(12, 31), d(12, 31)));
+        let instant = ReportedSplit { ratio: 4.0, period_start: None, period_end: d(8, 28), filed: d(10, 30) };
+        assert!(instant.overlaps(d(6, 30), d(9, 30)));
+        assert!(!instant.overlaps(d(8, 28), d(9, 30)));
+        assert!(!instant.overlaps(d(1, 1), d(8, 27)));
     }
 
     #[test]

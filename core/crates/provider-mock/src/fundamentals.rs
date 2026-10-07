@@ -437,7 +437,7 @@ impl Inner {
         }
         let mut provenance = Provenance::synthetic(now);
         provenance.source_ref = Some("mock fundamentals (synthetic)".into());
-        Some(Fundamentals { key: s.key().clone(), statements, provenance })
+        Some(Fundamentals { key: s.key().clone(), statements, reported_splits: Vec::new(), provenance })
     }
 
     pub(crate) fn estimates_for(&self, s: &Sym, now: UnixNanos) -> Option<Estimates> {
