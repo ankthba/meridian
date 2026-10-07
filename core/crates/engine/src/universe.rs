@@ -32,6 +32,44 @@ pub const WORLD_INDICES: &[(&str, &str, &str)] = &[
     ("STI", "Straits Times", "Asia/Pacific"),
 ];
 
+/// US-listed ETF shown for each [`WORLD_INDICES`] entry when no configured
+/// source provides index levels (LIVE mode on the free tier): (index symbol,
+/// ETF ticker, ETF name). The ETF's % change approximates the index's; most
+/// country funds track an MSCI country index rather than the named
+/// benchmark, and none are currency-hedged.
+pub const WORLD_INDEX_PROXIES: &[(&str, &str, &str)] = &[
+    ("INDU", "DIA", "SPDR Dow Jones Industrial Average ETF Trust"),
+    ("SPX", "SPY", "SPDR S&P 500 ETF Trust"),
+    ("CCMP", "ONEQ", "Fidelity Nasdaq Composite Index ETF"),
+    ("NDX", "QQQ", "Invesco QQQ Trust"),
+    ("RTY", "IWM", "iShares Russell 2000 ETF"),
+    ("SPTSX", "EWC", "iShares MSCI Canada ETF"),
+    ("MEXBOL", "EWW", "iShares MSCI Mexico ETF"),
+    ("IBOV", "EWZ", "iShares MSCI Brazil ETF"),
+    ("SX5E", "FEZ", "SPDR EURO STOXX 50 ETF"),
+    ("UKX", "EWU", "iShares MSCI United Kingdom ETF"),
+    ("CAC", "EWQ", "iShares MSCI France ETF"),
+    ("DAX", "EWG", "iShares MSCI Germany ETF"),
+    ("IBEX", "EWP", "iShares MSCI Spain ETF"),
+    ("FTSEMIB", "EWI", "iShares MSCI Italy ETF"),
+    ("AEX", "EWN", "iShares MSCI Netherlands ETF"),
+    ("SMI", "EWL", "iShares MSCI Switzerland ETF"),
+    ("NKY", "EWJ", "iShares MSCI Japan ETF"),
+    ("HSI", "EWH", "iShares MSCI Hong Kong ETF"),
+    ("SHCOMP", "MCHI", "iShares MSCI China ETF"),
+    ("KOSPI", "EWY", "iShares MSCI South Korea ETF"),
+    ("AS51", "EWA", "iShares MSCI Australia ETF"),
+    ("SENSEX", "INDA", "iShares MSCI India ETF"),
+    ("TWSE", "EWT", "iShares MSCI Taiwan ETF"),
+    ("STI", "EWS", "iShares MSCI Singapore ETF"),
+];
+
+/// The ETF proxy for a world index symbol: (ticker, name).
+#[must_use]
+pub fn index_proxy(index_symbol: &str) -> Option<(&'static str, &'static str)> {
+    WORLD_INDEX_PROXIES.iter().find(|(i, _, _)| *i == index_symbol).map(|(_, t, n)| (*t, *n))
+}
+
 /// Currencies on the FXC matrix, in display order.
 pub const FX_MATRIX: &[&str] = &["USD", "EUR", "JPY", "GBP", "CHF", "CAD", "AUD", "NZD", "CNH", "HKD", "SGD", "SEK", "NOK", "MXN"];
 
@@ -91,4 +129,27 @@ pub fn index_key(symbol: &str) -> SecurityKey {
 #[must_use]
 pub fn crypto_key(symbol: &str) -> SecurityKey {
     SecurityKey::currency(symbol)
+}
+
+#[cfg(test)]
+mod tests {
+    use std::collections::HashSet;
+
+    use super::*;
+
+    #[test]
+    fn every_world_index_has_one_distinct_etf_proxy() {
+        let indices: HashSet<&str> = WORLD_INDICES.iter().map(|(s, _, _)| *s).collect();
+        let proxied: HashSet<&str> = WORLD_INDEX_PROXIES.iter().map(|(s, _, _)| *s).collect();
+        assert_eq!(indices, proxied);
+        assert_eq!(WORLD_INDEX_PROXIES.len(), WORLD_INDICES.len(), "one proxy per index");
+        let tickers: HashSet<&str> = WORLD_INDEX_PROXIES.iter().map(|(_, t, _)| *t).collect();
+        assert_eq!(tickers.len(), WORLD_INDEX_PROXIES.len(), "distinct ETFs");
+        for (_, t, name) in WORLD_INDEX_PROXIES {
+            assert!(t.chars().all(|c| c.is_ascii_uppercase()) && (2..=5).contains(&t.len()), "{t}");
+            assert!(name.contains("ETF") || name.contains("Trust"), "{name}");
+        }
+        assert_eq!(index_proxy("SPX"), Some(("SPY", "SPDR S&P 500 ETF Trust")));
+        assert_eq!(index_proxy("NOPE"), None);
+    }
 }
