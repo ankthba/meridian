@@ -122,7 +122,7 @@ impl Engine {
         let mut warnings = parsed.warnings.clone();
         let (store_target, name) = match target {
             ImportTarget::Existing(id) => {
-                let p = store.portfolio(*id)?.ok_or_else(|| EngineError::NotFound(format!("portfolio {id}")))?;
+                let p = store.portfolio(*id)?.ok_or_else(|| EngineError::InvalidInput(format!("there is no portfolio {id}")))?;
                 if parsed.snapshot && !rows.is_empty() {
                     let existing = store.transaction_count(*id, None)?;
                     if existing > 0 {

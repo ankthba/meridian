@@ -476,6 +476,50 @@ impl Core {
     pub fn set_provider_settings(&self, provider: String, json: String) -> CoreResult<()> {
         Ok(self.engine.stores().app.set_provider_settings(&provider, &json)?)
     }
+
+    // --- broker CSV import ------------------------------------------------
+
+    /// Reads a broker CSV export without saving anything: the detected
+    /// format (or, with `mapping`, the file read through it), the header
+    /// row, the first rows as they would be imported, counts by kind and
+    /// warnings. When the format isn't recognized and no mapping is given,
+    /// `recognized` is false and `suggested_mapping` starts the
+    /// column-mapping UI. Async because large files take more than 1 ms.
+    pub async fn preview_import(&self, csv: String, mapping: Option<crate::types::ImportMappingFfi>) -> CoreResult<crate::types::ImportPreviewFfi> {
+        let engine = self.engine.clone();
+        let mapping: Option<meridian_import::ColumnMapping> = mapping.map(Into::into);
+        let preview = self.blocking(move || engine.preview_import(&csv, mapping.as_ref())).await??;
+        Ok(crate::types::import_preview(&preview))
+    }
+
+    /// Imports a broker CSV export into the portfolio `portfolio_id`, or a
+    /// new portfolio named `new_portfolio_name` (give exactly one). Rows
+    /// already imported into that portfolio are skipped and counted as
+    /// duplicates; the whole import is one SQLite transaction.
+    pub async fn commit_import(
+        &self,
+        csv: String,
+        mapping: Option<crate::types::ImportMappingFfi>,
+        portfolio_id: Option<i64>,
+        new_portfolio_name: Option<String>,
+    ) -> CoreResult<crate::types::ImportResultFfi> {
+        let target = match (portfolio_id, new_portfolio_name) {
+            (Some(id), None) => meridian_engine::import::ImportTarget::Existing(id),
+            (None, Some(name)) => meridian_engine::import::ImportTarget::New(name),
+            _ => return Err(CoreError::InvalidInput { message: "choose an existing portfolio or name a new one".into() }),
+        };
+        let engine = self.engine.clone();
+        let mapping: Option<meridian_import::ColumnMapping> = mapping.map(Into::into);
+        let outcome = self.blocking(move || engine.commit_import(&csv, mapping.as_ref(), &target)).await??;
+        Ok(crate::types::import_result(&outcome))
+    }
+}
+
+impl Core {
+    /// Runs blocking work (parsing, SQLite) on the engine's blocking pool.
+    async fn blocking<T: Send + 'static>(&self, f: impl FnOnce() -> T + Send + 'static) -> CoreResult<T> {
+        self.engine.handle().spawn_blocking(f).await.map_err(|e| CoreError::Internal { message: e.to_string() })
+    }
 }
 
 /// A view's live quote subscription. Poll at display rate.

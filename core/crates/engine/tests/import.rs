@@ -197,7 +197,7 @@ fn targets_are_validated() {
     let out = engine.commit_import(&csv, None, &ImportTarget::New("Taxable".into())).expect("commit");
     assert!(matches!(engine.commit_import(&csv, None, &ImportTarget::New("taxable".into())), Err(EngineError::InvalidInput(m)) if m.contains("already exists")));
     assert!(matches!(engine.commit_import(&csv, None, &ImportTarget::New("  ".into())), Err(EngineError::InvalidInput(_))));
-    assert!(matches!(engine.commit_import(&csv, None, &ImportTarget::Existing(out.portfolio_id + 99)), Err(EngineError::NotFound(_))));
+    assert!(matches!(engine.commit_import(&csv, None, &ImportTarget::Existing(out.portfolio_id + 99)), Err(EngineError::InvalidInput(_))));
     assert!(matches!(engine.preview_import("", None), Err(EngineError::InvalidInput(_))));
     assert_eq!(security_for("brk.b").as_deref(), Some("BRK/B US Equity"));
     engine.shutdown();
