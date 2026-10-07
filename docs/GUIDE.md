@@ -48,6 +48,14 @@ any other text <GO>                          searches for securities (SECF)
 
 The main window has four panels. ⌃Tab moves between them and ⌘1–⌘4 jumps to one. Each panel has a link group letter (A–D) in its corner: panels in the same group follow each other's security, so loading MSFT in one updates the others. **Launchpad** (`BLP <GO>` or ⇧⌘L) opens a separate window of tiled monitors, charts and news across pages. Layouts are saved when you quit; **Settings → General** can reset them.
 
+**Showcase:** to open four live screens for a quick tour (DES on Apple, the crypto monitor, a 5-day NVDA chart and world indices) without touching your saved layout, quit Meridian and run:
+
+```bash
+open -a Meridian --env MERIDIAN_LAYOUT=showcase
+```
+
+`MERIDIAN_LAYOUT` also takes your own screens, e.g. `"DES|MSFT US Equity;W;GP|TSLA US Equity|range=1Y;TOP"`. The layout lasts for that session only.
+
 ## Keys
 
 | Key | Action |

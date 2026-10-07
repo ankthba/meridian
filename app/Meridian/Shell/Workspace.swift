@@ -40,6 +40,12 @@ final class Workspace {
     /// Bumped to ask the focused panel's command line to take focus.
     private(set) var focusToken = 0
     private weak var core: Core?
+    /// Set when MERIDIAN_LAYOUT chose the panels: such a layout is never
+    /// saved over the user's own.
+    private var temporaryLayout = false
+
+    /// Four live screens for a quick tour: `MERIDIAN_LAYOUT=showcase`.
+    static let showcase = "DES|AAPL US Equity;CRYP;GP|NVDA US Equity|range=5D|interval=1h;WEI"
 
     func requestFocus() { focusToken += 1 }
 
@@ -55,6 +61,20 @@ final class Workspace {
             AppModel.shared.links.listen(id: p.id) { [weak p] group, security in
                 guard let p, p.linkGroup == group else { return }
                 p.linkedSecurityChanged(security)
+            }
+        }
+        // MERIDIAN_LAYOUT opens a given set of screens for this session only:
+        // "showcase", or specs like "DES|AAPL US Equity;CRYP;GP|NVDA US Equity|range=5D".
+        if let layout = ProcessInfo.processInfo.environment["MERIDIAN_LAYOUT"], !layout.isEmpty {
+            let specs = SnapshotMode.parse(layout == "showcase" ? Self.showcase : layout)
+            if !specs.isEmpty {
+                temporaryLayout = true
+                for (p, spec) in zip(panels, specs) {
+                    p.linkGroup = nil
+                    p.run(ActionFfi(function: spec.function, security: spec.security, args: spec.args), push: false)
+                }
+                focused = 0
+                return
             }
         }
         let restoreSaved = UserDefaults.standard.object(forKey: Preference.restoreWorkspace) as? Bool ?? true
@@ -86,7 +106,7 @@ final class Workspace {
     }
 
     func save() {
-        guard let core else { return }
+        guard let core, !temporaryLayout else { return }
         let snaps = panels.map(\.snapshot)
         if let data = try? JSONEncoder().encode(snaps), let json = String(data: data, encoding: .utf8) {
             try? core.saveWorkspace(id: "main", name: "Main", json: json)
