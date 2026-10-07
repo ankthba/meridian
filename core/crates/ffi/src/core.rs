@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use meridian_command::{ParseContext, ParsedCommand, SecurityNeed, SuggestionKind, parse, registry};
+use meridian_command::{ParsedCommand, SecurityNeed, SuggestionKind, registry};
 use meridian_engine::screens::ScreenRequest;
 use meridian_engine::{DataMode, Engine, EngineConfig, EngineEvent, EngineEvents};
 use meridian_provider::{AiPolicy, CachePolicy};
@@ -231,9 +231,13 @@ impl Core {
 
     // --- command line ---------------------------------------------------
 
+    /// What GO runs for the command line: plain language first (`aapl 5y`,
+    /// `aapl filings`, `earnings this week` → `Run`), the mnemonic grammar
+    /// unchanged otherwise. Resolves bare tickers against the loaded
+    /// instrument index; memory only.
     pub fn parse_command(&self, input: String, loaded: Option<String>) -> CoreResult<ParsedCommandFfi> {
-        let ctx = ParseContext { loaded: loaded.as_deref().and_then(|s| s.parse().ok()) };
-        Ok(match parse(&input, &ctx) {
+        let loaded: Option<SecurityKey> = loaded.as_deref().and_then(|s| s.parse().ok());
+        Ok(match self.engine.interpret(&input, loaded.as_ref()) {
             ParsedCommand::Empty => ParsedCommandFfi::Empty,
             ParsedCommand::Security { security, function, args } => {
                 ParsedCommandFfi::Security { security: security.to_string(), function, args }
@@ -241,9 +245,11 @@ impl Core {
             ParsedCommand::Function { function, args } => ParsedCommandFfi::Function { function, args },
             ParsedCommand::MenuItem(n) => ParsedCommandFfi::MenuItem { number: n },
             ParsedCommand::Search(text) => ParsedCommandFfi::Search { text },
+            ParsedCommand::Run(action) => ParsedCommandFfi::Run { action: action.into() },
         })
     }
 
+    /// Rows for the completion popover, in display order (see `SuggestionFfi`).
     pub fn suggest(&self, input: String, loaded: Option<String>, limit: u32) -> CoreResult<Vec<SuggestionFfi>> {
         let loaded = loaded.as_deref().and_then(|s| s.parse().ok());
         Ok(self
@@ -258,6 +264,12 @@ impl Core {
                 display: s.display,
                 detail: s.detail,
                 completion: s.completion,
+                group: s.group.heading(),
+                title: s.title,
+                subtitle: s.subtitle,
+                hint: s.hint,
+                action: s.action.map(Into::into),
+                best: s.best,
             })
             .collect())
     }
@@ -271,6 +283,8 @@ impl Core {
                 description: f.description.into(),
                 needs_security: f.needs_security == SecurityNeed::Required,
                 category: format!("{:?}", f.category),
+                name: f.name.into(),
+                summary: f.summary.into(),
             })
             .collect())
     }

@@ -152,4 +152,11 @@ mod tests {
         assert_eq!(index_proxy("SPX"), Some(("SPY", "SPDR S&P 500 ETF Trust")));
         assert_eq!(index_proxy("NOPE"), None);
     }
+
+    #[test]
+    fn plain_language_coins_are_the_crypto_monitor_list() {
+        let bases: HashSet<&str> = CRYPTO.iter().map(|(t, _)| t.trim_end_matches("USD")).collect();
+        let coins: HashSet<&str> = meridian_command::MAJOR_COINS.into_iter().collect();
+        assert_eq!(bases, coins, "keep MAJOR_COINS in the command crate equal to CRYPTO");
+    }
 }

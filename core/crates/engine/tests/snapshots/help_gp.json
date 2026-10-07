@@ -19,6 +19,7 @@
               "GP",
               "GIP",
               "HP",
+              "TODAY",
               "W",
               "BLP",
               "SECF",
@@ -32,12 +33,15 @@
               "ANR",
               "HDS",
               "DVD",
+              "CALENDAR",
               "CF",
+              "FILINGS",
               "OMON",
               "OVDV",
               "OVME",
               "EQS",
               "RV",
+              "COMPARE",
               "CORR",
               "PORT",
               "BTST",
@@ -85,6 +89,13 @@
             "label": "Security",
             "style": "Normal",
             "text": "Required",
+            "value": null
+          },
+          {
+            "format": "Text",
+            "label": "Plain phrase",
+            "style": "Normal",
+            "text": "aapl 5y",
             "value": null
           },
           {

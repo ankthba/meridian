@@ -486,13 +486,30 @@ impl From<s::Screen> for ScreenFfi {
 
 // --- command line ---------------------------------------------------------
 
+impl From<meridian_command::Action> for ActionFfi {
+    fn from(a: meridian_command::Action) -> Self {
+        Self {
+            function: a.function,
+            security: a.security.map(|k| k.to_string()),
+            args: a.args.into_iter().map(|(key, value)| KeyValue { key, value }).collect(),
+        }
+    }
+}
+
 #[derive(Debug, Clone, uniffi::Enum)]
 pub enum ParsedCommandFfi {
     Empty,
+    /// Mnemonic syntax with a security: positional `args` (the app names them).
     Security { security: String, function: Option<String>, args: Vec<String> },
+    /// A leading mnemonic: positional `args`, on the panel's security.
     Function { function: String, args: Vec<String> },
     MenuItem { number: u32 },
+    /// Nothing recognized: open the security finder with `text`.
     Search { text: String },
+    /// A plain-language command resolved to a function, security and named
+    /// arguments; run it as is. `function` may be an app action
+    /// (`SETTINGS`, `IMPORT`) that has no engine screen.
+    Run { action: ActionFfi },
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, uniffi::Enum)]
@@ -501,12 +518,32 @@ pub enum SuggestionKindFfi {
     Function,
 }
 
+/// One row of the grouped completion popover. The list arrives in display
+/// order: rows of a group are adjacent, groups in the order Compare,
+/// Security, On <symbol>, Commands, Functions.
 #[derive(Debug, Clone, uniffi::Record)]
 pub struct SuggestionFfi {
     pub kind: SuggestionKindFfi,
+    /// `AAPL US Equity`, or the function id (`CF`).
     pub display: String,
+    /// Security name or function title.
     pub detail: String,
+    /// Text Tab puts in the command bar, ending in a space (`aapl filings `).
     pub completion: String,
+    /// Group heading in sentence case: `Security`, `On AAPL`, `Commands`,
+    /// `Functions`, `Compare AAPL with`.
+    pub group: String,
+    /// `AAPL`, `Filings`, `Earnings this week`.
+    pub title: String,
+    /// Security name or a plain description.
+    pub subtitle: String,
+    /// Right-side hint: the mnemonic or shortcut; empty for securities (show
+    /// the live price).
+    pub hint: String,
+    /// What Return runs on this row; `None` when the row only completes.
+    pub action: Option<ActionFfi>,
+    /// The single best row: highlight it by default; Return runs it.
+    pub best: bool,
 }
 
 #[derive(Debug, Clone, uniffi::Record)]
@@ -516,6 +553,10 @@ pub struct FunctionInfoFfi {
     pub description: String,
     pub needs_security: bool,
     pub category: String,
+    /// Plain name in sentence case, e.g. `Filings`.
+    pub name: String,
+    /// Short plain description, e.g. `10-K, 10-Q and 8-K, with summaries and what changed`.
+    pub summary: String,
 }
 
 // --- data sources -----------------------------------------------------------

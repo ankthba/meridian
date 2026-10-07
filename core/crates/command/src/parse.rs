@@ -10,6 +10,7 @@ use meridian_types::{MarketSector, SecurityKey};
 use serde::{Deserialize, Serialize};
 
 use crate::error::CommandError;
+use crate::plain::Action;
 use crate::registry::{FunctionSpec, SecurityNeed, lookup};
 
 /// Largest number accepted by `<n> <GO>`.
@@ -46,6 +47,10 @@ pub enum ParsedCommand {
     /// Text that is neither a function nor a security key. The shell opens
     /// the security finder with it. Holds the trimmed input, case preserved.
     Search(String),
+    /// A plain-language command resolved to a function, security and named
+    /// arguments ([`interpret`](crate::interpret)); run it as is. [`parse`]
+    /// never returns this.
+    Run(Action),
 }
 
 impl ParsedCommand {
@@ -58,6 +63,7 @@ impl ParsedCommand {
             Self::Function { function, .. } => lookup(function)
                 .filter(|spec| spec.takes_security())
                 .and(ctx.loaded.as_ref()),
+            Self::Run(action) => action.security.as_ref(),
             Self::Empty | Self::MenuItem(_) | Self::Search(_) => None,
         }
     }
@@ -164,8 +170,8 @@ pub fn check_security_need(
 }
 
 /// Checks a parsed command against its function's security needs, using the
-/// panel's loaded security for bare functions. Commands without a function
-/// always pass.
+/// panel's loaded security for bare functions. Commands without a function,
+/// and app actions, always pass.
 pub fn validate(command: &ParsedCommand, ctx: &ParseContext) -> Result<(), CommandError> {
     let (function, security) = match command {
         ParsedCommand::Security {
@@ -174,6 +180,8 @@ pub fn validate(command: &ParsedCommand, ctx: &ParseContext) -> Result<(), Comma
             ..
         } => (function, Some(security)),
         ParsedCommand::Function { function, .. } => (function, ctx.loaded.as_ref()),
+        ParsedCommand::Run(action) if action.is_app_action() => return Ok(()),
+        ParsedCommand::Run(action) => (&action.function, action.security.as_ref()),
         ParsedCommand::Security { function: None, .. }
         | ParsedCommand::Empty
         | ParsedCommand::MenuItem(_)
@@ -615,6 +623,7 @@ mod tests {
                 ParsedCommand::Function { function, .. } => {
                     prop_assert!(lookup(&function).is_some());
                 }
+                ParsedCommand::Run(_) => prop_assert!(false, "parse never resolves plain language"),
             }
         }
 

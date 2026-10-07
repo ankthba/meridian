@@ -3,7 +3,7 @@
 
 use std::sync::Arc;
 
-use meridian_command::{IndexedInstrument, ParseContext, SuggestIndex, SuggestionKind, registry};
+use meridian_command::{IndexedInstrument, ParseContext, ParsedCommand, SuggestIndex, SuggestionKind, registry};
 use meridian_provider::InstrumentQuery;
 use meridian_types::{AssetClass, MarketSector, SecurityKey};
 use parking_lot::RwLock;
@@ -33,11 +33,21 @@ pub(crate) fn rebuild(engine: &Engine) {
 }
 
 impl Engine {
-    /// Command-line autocomplete.
+    /// Command-line autocomplete, grouped for the completion popover.
     #[must_use]
     pub fn suggest(&self, input: &str, loaded: Option<&SecurityKey>, limit: usize) -> Vec<meridian_command::Suggestion> {
         let ctx = ParseContext { loaded: loaded.cloned() };
         SUGGEST.read().suggest(input, &ctx, limit)
+    }
+
+    /// What GO runs for `input`: plain language resolved against the loaded
+    /// instrument index, or the mnemonic grammar's reading
+    /// ([`meridian_command::interpret`]). Before the universe loads, bare
+    /// tickers stay security searches.
+    #[must_use]
+    pub fn interpret(&self, input: &str, loaded: Option<&SecurityKey>) -> ParsedCommand {
+        let ctx = ParseContext { loaded: loaded.cloned() };
+        SUGGEST.read().interpret(input, &ctx)
     }
 
     #[must_use]
