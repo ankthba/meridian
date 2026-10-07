@@ -63,6 +63,7 @@ fn cases() -> Vec<(&'static str, ScreenRequest)> {
         ("corr", req("CORR", None, &[])),
         ("btst_spy", req("BTST", Some("SPY US Equity"), &[])),
         ("port", req("PORT", None, &[])),
+        ("import", req("IMPORT", None, &[("portfolio", "1")])),
         ("alrt", req("ALRT", None, &[])),
         ("wei", req("WEI", None, &[])),
         ("eco", req("ECO", None, &[])),

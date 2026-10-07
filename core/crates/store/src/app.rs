@@ -3,8 +3,9 @@
 
 use std::path::Path;
 
+use meridian_types::TransactionKind;
 use parking_lot::Mutex;
-use rusqlite::{Connection, OptionalExtension, params};
+use rusqlite::{Connection, OptionalExtension, Statement, params};
 use serde::{Deserialize, Serialize};
 
 use crate::error::{StoreError, StoreResult};
@@ -75,6 +76,35 @@ const MIGRATIONS: &[&str] = &[
     );
     CREATE TABLE provider_settings (provider TEXT PRIMARY KEY, json TEXT NOT NULL);
     ",
+    // 2: transaction kinds, cash amounts, settle dates, currencies and
+    // import fingerprints (broker CSV import). Rebuilt rather than altered
+    // so `security` and `price` can be NULL (cash rows, transfers without a
+    // cost basis). Existing rows become buys/sells by the sign of quantity.
+    r"
+    CREATE TABLE transactions_v2 (
+        id INTEGER PRIMARY KEY,
+        portfolio_id INTEGER NOT NULL REFERENCES portfolios(id) ON DELETE CASCADE,
+        security TEXT,
+        kind TEXT NOT NULL,
+        trade_date TEXT NOT NULL,
+        settle_date TEXT,
+        quantity REAL NOT NULL DEFAULT 0,
+        price REAL,
+        amount REAL,
+        fees REAL NOT NULL DEFAULT 0,
+        currency TEXT,
+        note TEXT,
+        source TEXT,
+        fingerprint TEXT
+    );
+    INSERT INTO transactions_v2(id, portfolio_id, security, kind, trade_date, quantity, price, fees, note)
+        SELECT id, portfolio_id, security, CASE WHEN quantity < 0 THEN 'sell' ELSE 'buy' END, trade_date, quantity, price, fees, note
+        FROM transactions;
+    DROP TABLE transactions;
+    ALTER TABLE transactions_v2 RENAME TO transactions;
+    CREATE UNIQUE INDEX transactions_fingerprint ON transactions(portfolio_id, fingerprint);
+    CREATE INDEX transactions_portfolio_date ON transactions(portfolio_id, trade_date);
+    ",
 ];
 
 fn migrate(conn: &Connection) -> StoreResult<()> {
@@ -128,18 +158,95 @@ pub struct Portfolio {
     pub base_currency: String,
 }
 
+/// A portfolio transaction. Signs follow [`TransactionKind`]: `quantity`
+/// is the change in shares, `amount` the cash flow (+ in, − out).
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Transaction {
     pub id: i64,
     pub portfolio_id: i64,
-    pub security: String,
+    /// Security key (`AAPL US Equity`); `None` for cash-only rows.
+    pub security: Option<String>,
+    pub kind: TransactionKind,
     /// `YYYY-MM-DD`.
     pub trade_date: String,
-    /// Positive = buy, negative = sell.
+    /// `YYYY-MM-DD`.
+    pub settle_date: Option<String>,
+    /// Signed change in shares (0 for cash rows).
     pub quantity: f64,
-    pub price: f64,
+    /// Per share. For a transfer in, the cost basis per share if known.
+    pub price: Option<f64>,
+    /// Signed cash flow; `None` means derive it from quantity × price and
+    /// fees (hand-entered trades).
+    pub amount: Option<f64>,
     pub fees: f64,
+    /// ISO 4217; `None` means the portfolio's base currency.
+    pub currency: Option<String>,
     pub note: Option<String>,
+    /// Import format id (`robinhood`, `positions` …); `None` when entered
+    /// by hand.
+    pub source: Option<String>,
+    /// Import de-duplication key, unique per portfolio.
+    pub fingerprint: Option<String>,
+}
+
+impl Transaction {
+    /// A hand-entered trade: positive quantity buys, negative sells.
+    #[must_use]
+    pub fn trade(portfolio_id: i64, security: &str, trade_date: &str, quantity: f64, price: f64, fees: f64) -> Self {
+        Self {
+            id: 0,
+            portfolio_id,
+            security: Some(security.to_owned()),
+            kind: if quantity < 0.0 { TransactionKind::Sell } else { TransactionKind::Buy },
+            trade_date: trade_date.to_owned(),
+            settle_date: None,
+            quantity,
+            price: Some(price),
+            amount: None,
+            fees,
+            currency: None,
+            note: None,
+            source: None,
+            fingerprint: None,
+        }
+    }
+}
+
+/// Where imported transactions go.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum PortfolioTarget<'a> {
+    Existing(i64),
+    New { name: &'a str, base_currency: &'a str },
+}
+
+/// Outcome of [`AppStore::import_transactions`].
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct ImportCounts {
+    pub portfolio_id: i64,
+    pub inserted: usize,
+    /// Rows whose fingerprint the portfolio already had.
+    pub duplicates: usize,
+}
+
+const INSERT_TRANSACTION: &str = "INSERT INTO transactions(portfolio_id, security, kind, trade_date, settle_date, quantity, price, amount, fees, currency, note, source, fingerprint)
+     VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13)";
+
+fn insert_transaction(stmt: &mut Statement<'_>, portfolio_id: i64, t: &Transaction) -> rusqlite::Result<usize> {
+    stmt.execute(params![
+        portfolio_id,
+        t.security,
+        t.kind.code(),
+        t.trade_date,
+        t.settle_date,
+        t.quantity,
+        t.price,
+        t.amount,
+        t.fees,
+        t.currency,
+        t.note,
+        t.source,
+        t.fingerprint
+    ])
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -368,14 +475,68 @@ impl AppStore {
         Ok(())
     }
 
+    pub fn portfolio(&self, id: i64) -> StoreResult<Option<Portfolio>> {
+        Ok(self
+            .conn
+            .lock()
+            .query_row("SELECT id, name, base_currency FROM portfolios WHERE id = ?1", [id], |r| {
+                Ok(Portfolio { id: r.get(0)?, name: r.get(1)?, base_currency: r.get(2)? })
+            })
+            .optional()?)
+    }
+
     pub fn add_transaction(&self, t: &Transaction) -> StoreResult<i64> {
         let conn = self.conn.lock();
-        conn.execute(
-            "INSERT INTO transactions(portfolio_id, security, trade_date, quantity, price, fees, note)
-             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)",
-            params![t.portfolio_id, t.security, t.trade_date, t.quantity, t.price, t.fees, t.note],
-        )?;
+        let mut stmt = conn.prepare(INSERT_TRANSACTION)?;
+        insert_transaction(&mut stmt, t.portfolio_id, t)?;
         Ok(conn.last_insert_rowid())
+    }
+
+    /// Inserts imported transactions in one SQLite transaction, creating
+    /// the portfolio first for [`PortfolioTarget::New`]. Rows whose
+    /// fingerprint the portfolio already has are skipped and counted as
+    /// duplicates; any other failure rolls the whole import back.
+    pub fn import_transactions(&self, target: PortfolioTarget<'_>, txs: &[Transaction]) -> StoreResult<ImportCounts> {
+        let mut conn = self.conn.lock();
+        let tx = conn.transaction()?;
+        let portfolio_id = match target {
+            PortfolioTarget::Existing(id) => {
+                let found: Option<i64> = tx.query_row("SELECT id FROM portfolios WHERE id = ?1", [id], |r| r.get(0)).optional()?;
+                found.ok_or(StoreError::NotFound)?
+            }
+            PortfolioTarget::New { name, base_currency } => {
+                tx.execute("INSERT INTO portfolios(name, base_currency) VALUES (?1, ?2)", params![name, base_currency])?;
+                tx.last_insert_rowid()
+            }
+        };
+        let (mut inserted, mut duplicates) = (0, 0);
+        {
+            let mut stmt = tx.prepare(&format!("{INSERT_TRANSACTION} ON CONFLICT(portfolio_id, fingerprint) DO NOTHING"))?;
+            for t in txs {
+                if insert_transaction(&mut stmt, portfolio_id, t)? == 0 {
+                    duplicates += 1;
+                } else {
+                    inserted += 1;
+                }
+            }
+        }
+        tx.commit()?;
+        Ok(ImportCounts { portfolio_id, inserted, duplicates })
+    }
+
+    /// Number of a portfolio's transactions, or only those imported from
+    /// `source`.
+    pub fn transaction_count(&self, portfolio_id: i64, source: Option<&str>) -> StoreResult<usize> {
+        let conn = self.conn.lock();
+        let n: i64 = match source {
+            Some(s) => conn.query_row(
+                "SELECT COUNT(*) FROM transactions WHERE portfolio_id = ?1 AND source = ?2",
+                params![portfolio_id, s],
+                |r| r.get(0),
+            )?,
+            None => conn.query_row("SELECT COUNT(*) FROM transactions WHERE portfolio_id = ?1", [portfolio_id], |r| r.get(0))?,
+        };
+        Ok(usize::try_from(n).unwrap_or(0))
     }
 
     pub fn delete_transaction(&self, id: i64) -> StoreResult<()> {
@@ -383,23 +544,33 @@ impl AppStore {
         Ok(())
     }
 
+    /// A portfolio's transactions in trade-date order, then entry order
+    /// (file order for imports).
     pub fn transactions(&self, portfolio_id: i64) -> StoreResult<Vec<Transaction>> {
         let conn = self.conn.lock();
         let mut stmt = conn.prepare(
-            "SELECT id, portfolio_id, security, trade_date, quantity, price, fees, note
+            "SELECT id, portfolio_id, security, kind, trade_date, settle_date, quantity, price, amount, fees, currency, note, source, fingerprint
              FROM transactions WHERE portfolio_id = ?1 ORDER BY trade_date, id",
         )?;
         let rows = stmt
             .query_map([portfolio_id], |r| {
+                let kind: String = r.get(3)?;
                 Ok(Transaction {
                     id: r.get(0)?,
                     portfolio_id: r.get(1)?,
                     security: r.get(2)?,
-                    trade_date: r.get(3)?,
-                    quantity: r.get(4)?,
-                    price: r.get(5)?,
-                    fees: r.get(6)?,
-                    note: r.get(7)?,
+                    // A code written by a newer version reads as Other.
+                    kind: TransactionKind::from_code(&kind).unwrap_or(TransactionKind::Other),
+                    trade_date: r.get(4)?,
+                    settle_date: r.get(5)?,
+                    quantity: r.get(6)?,
+                    price: r.get(7)?,
+                    amount: r.get(8)?,
+                    fees: r.get(9)?,
+                    currency: r.get(10)?,
+                    note: r.get(11)?,
+                    source: r.get(12)?,
+                    fingerprint: r.get(13)?,
                 })
             })?
             .collect::<Result<_, _>>()?;
@@ -513,19 +684,96 @@ mod tests {
     fn portfolio_transactions() {
         let s = AppStore::open_in_memory().unwrap();
         let pid = s.create_portfolio("Main", "USD").unwrap();
-        s.add_transaction(&Transaction {
-            id: 0,
-            portfolio_id: pid,
-            security: "AAPL US Equity".into(),
-            trade_date: "2024-01-02".into(),
-            quantity: 10.0,
-            price: 185.0,
-            fees: 1.0,
-            note: None,
-        })
-        .unwrap();
-        assert_eq!(s.transactions(pid).unwrap().len(), 1);
+        s.add_transaction(&Transaction::trade(pid, "AAPL US Equity", "2024-01-02", 10.0, 185.0, 1.0)).unwrap();
+        let t = &s.transactions(pid).unwrap()[0];
+        assert_eq!((t.kind, t.quantity, t.price, t.amount, t.fees), (TransactionKind::Buy, 10.0, Some(185.0), None, 1.0));
+        assert_eq!(s.portfolio(pid).unwrap().map(|p| p.name), Some("Main".into()));
         s.delete_portfolio(pid).unwrap();
         assert!(s.transactions(pid).unwrap().is_empty());
+        assert_eq!(s.portfolio(pid).unwrap(), None);
+    }
+
+    fn imported(fp: &str, kind: TransactionKind, security: Option<&str>, quantity: f64, amount: Option<f64>) -> Transaction {
+        Transaction {
+            id: 0,
+            portfolio_id: 0,
+            security: security.map(Into::into),
+            kind,
+            trade_date: "2026-01-05".into(),
+            settle_date: Some("2026-01-06".into()),
+            quantity,
+            price: None,
+            amount,
+            fees: 0.0,
+            currency: Some("USD".into()),
+            note: Some("imported".into()),
+            source: Some("robinhood".into()),
+            fingerprint: Some(fp.into()),
+        }
+    }
+
+    #[test]
+    fn import_creates_portfolio_and_skips_known_fingerprints() {
+        let s = AppStore::open_in_memory().unwrap();
+        let rows = vec![
+            imported("a-0", TransactionKind::Deposit, None, 0.0, Some(100.0)),
+            imported("b-0", TransactionKind::Buy, Some("AAPL US Equity"), 1.0, Some(-50.0)),
+        ];
+        let first = s.import_transactions(PortfolioTarget::New { name: "Robinhood", base_currency: "USD" }, &rows).unwrap();
+        assert_eq!((first.inserted, first.duplicates), (2, 0));
+        let mut again = rows.clone();
+        again.push(imported("c-0", TransactionKind::Dividend, Some("AAPL US Equity"), 0.0, Some(0.25)));
+        let second = s.import_transactions(PortfolioTarget::Existing(first.portfolio_id), &again).unwrap();
+        assert_eq!((second.portfolio_id, second.inserted, second.duplicates), (first.portfolio_id, 1, 2));
+        let txs = s.transactions(first.portfolio_id).unwrap();
+        assert_eq!(txs.len(), 3);
+        assert_eq!(txs[0].security, None);
+        assert_eq!(txs[0].kind, TransactionKind::Deposit);
+        assert_eq!(txs[0].settle_date.as_deref(), Some("2026-01-06"));
+        assert_eq!(s.transaction_count(first.portfolio_id, Some("robinhood")).unwrap(), 3);
+        assert_eq!(s.transaction_count(first.portfolio_id, Some("positions")).unwrap(), 0);
+        // The same fingerprint may exist in another portfolio.
+        let other = s.import_transactions(PortfolioTarget::New { name: "Copy", base_currency: "USD" }, &rows).unwrap();
+        assert_eq!(other.inserted, 2);
+        // Hand-entered rows have no fingerprint and never collide.
+        s.add_transaction(&Transaction::trade(other.portfolio_id, "AAPL US Equity", "2026-01-07", 1.0, 1.0, 0.0)).unwrap();
+        s.add_transaction(&Transaction::trade(other.portfolio_id, "AAPL US Equity", "2026-01-07", 1.0, 1.0, 0.0)).unwrap();
+        assert_eq!(s.transaction_count(other.portfolio_id, None).unwrap(), 4);
+    }
+
+    #[test]
+    fn import_into_a_missing_portfolio_or_a_taken_name_rolls_back() {
+        let s = AppStore::open_in_memory().unwrap();
+        let rows = vec![imported("a-0", TransactionKind::Deposit, None, 0.0, Some(1.0))];
+        assert_eq!(s.import_transactions(PortfolioTarget::Existing(42), &rows), Err(StoreError::NotFound));
+        s.create_portfolio("Main", "USD").unwrap();
+        assert!(s.import_transactions(PortfolioTarget::New { name: "Main", base_currency: "USD" }, &rows).is_err());
+        assert_eq!(s.portfolios().unwrap().len(), 1);
+    }
+
+    #[test]
+    fn migration_2_keeps_existing_trades() {
+        let dir = tempfile::tempdir().unwrap();
+        let p = dir.path().join("app.sqlite");
+        {
+            // A version-1 database with a buy and a sell.
+            let conn = Connection::open(&p).unwrap();
+            conn.execute_batch(MIGRATIONS[0]).unwrap();
+            conn.execute_batch(
+                "PRAGMA user_version = 1;
+                 INSERT INTO portfolios(id, name, base_currency) VALUES (1, 'Main', 'USD');
+                 INSERT INTO transactions(portfolio_id, security, trade_date, quantity, price, fees, note)
+                   VALUES (1, 'AAPL US Equity', '2024-01-02', 10, 185, 1, NULL),
+                          (1, 'AAPL US Equity', '2024-02-02', -4, 190, 0, 'trim');",
+            )
+            .unwrap();
+        }
+        let s = AppStore::open(&p).unwrap();
+        assert_eq!(s.schema_version(), MIGRATIONS.len() as u32);
+        let txs = s.transactions(1).unwrap();
+        assert_eq!(txs.len(), 2);
+        assert_eq!((txs[0].kind, txs[0].quantity, txs[0].price, txs[0].fees), (TransactionKind::Buy, 10.0, Some(185.0), 1.0));
+        assert_eq!((txs[1].kind, txs[1].quantity, txs[1].note.as_deref()), (TransactionKind::Sell, -4.0, Some("trim")));
+        assert_eq!((txs[0].amount, txs[0].fingerprint.as_deref(), txs[0].source.as_deref()), (None, None, None));
     }
 }

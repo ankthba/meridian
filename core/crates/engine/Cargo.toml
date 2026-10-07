@@ -16,6 +16,7 @@ meridian-alerts.workspace = true
 meridian-analytics.workspace = true
 meridian-ask.workspace = true
 meridian-command.workspace = true
+meridian-import.workspace = true
 async-trait.workspace = true
 chrono.workspace = true
 parking_lot.workspace = true
