@@ -25,7 +25,7 @@ Meridian runs on real data only, from free official sources. Every screen shows 
 
 ## Download
 
-Get **Meridian-1.0.0.zip** from the [latest release](https://github.com/ankthba/meridian/releases/latest), unzip it, and move Meridian to Applications. The app is signed but not notarized, so the first time, right-click it and choose **Open** (or allow it in System Settings → Privacy & Security). Requires macOS 15 or later on Apple silicon.
+Get **Meridian-1.0.0.zip** from the [latest release](https://github.com/ankthba/meridian/releases/latest), unzip it, and move Meridian to Applications. The app is signed but not notarized, so macOS blocks the first launch: open it once, then go to **System Settings → Privacy & Security** and click **Open Anyway**. Requires macOS 15 or later on Apple silicon.
 
 On first launch, Settings opens on **Data Sources**. Add the free keys you want; each source has a **Save and Test** button that connects it immediately and makes one real request so you can see it works. The [user guide](docs/GUIDE.md) walks through each source, the command syntax and every function.
 

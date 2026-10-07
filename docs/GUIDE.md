@@ -4,7 +4,7 @@ Meridian is a market terminal for macOS that you drive from a command line. This
 
 ## Install
 
-**Download:** get `Meridian-1.0.0.zip` from the [latest release](https://github.com/ankthba/meridian/releases/latest), unzip it, and move `Meridian.app` to Applications. The app is signed but not notarized, so the first time you open it macOS will refuse; right-click the app and choose **Open**, or allow it in **System Settings → Privacy & Security**. You only have to do this once.
+**Download:** get `Meridian-1.0.0.zip` from the [latest release](https://github.com/ankthba/meridian/releases/latest), unzip it, and move `Meridian.app` to Applications. The app is signed but not notarized, so macOS blocks the first launch. Open it once, then go to **System Settings → Privacy & Security**, find the message about Meridian and click **Open Anyway**. You only have to do this once. (Alternatively, in Terminal: `xattr -dr com.apple.quarantine /Applications/Meridian.app`.)
 
 **Build from source:** see [Building](../README.md#building) in the README.
 
@@ -126,4 +126,4 @@ ASK answers questions about markets and securities from the terminal's own data.
 | Settings says **Can't connect** | The message under **Connection** is the provider's own error, e.g. a rejected key. Paste the key again and press Save and Test. |
 | Stock prices differ from your broker | The free Alpaca feed is IEX only. Spreads can look wide outside market hours. |
 | F-keys change volume or brightness | Hold fn, change the Keyboard setting above, or use ⌥1–⌥0. |
-| "Meridian can't be opened" on first launch | Right-click → Open, or allow it in System Settings → Privacy & Security. |
+| "Meridian can't be opened" on first launch | System Settings → Privacy & Security → **Open Anyway** (once). |
