@@ -605,7 +605,8 @@ fn overview(req: &ScreenRequest) -> Screen {
     }
     s.push(Block::Table(Table {
         title: Some("Function Directory (select a row to open it)".into()),
-        columns: vec![Column::text("Function", 9), Column::text("Title", 28), Column::text("Security", 20), Column::text("Description", 90)],
+        // Wide enough for the area headings ("Company Fundamentals").
+        columns: vec![Column::text("Function", 22), Column::text("Title", 28), Column::text("Security", 20), Column::text("Description", 90)],
         rows,
         page_size: None,
         numbered: false,
