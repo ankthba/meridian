@@ -1,0 +1,24 @@
+{
+  "chart_1m_bars_frame_ms_p50" : 29.494833317585289,
+  "chart_1m_bars_frame_ms_p99" : 41.205416666343808,
+  "chart_10y_daily_frame_ms_p50" : 15.785666648298502,
+  "chart_10y_daily_frame_ms_p99" : 23.589249991346151,
+  "cold_launch_s" : 0.45640182495117188,
+  "go_to_screen_ms" : [
+    0.034874974517151713,
+    0.030750001315027475,
+    0.027708330890163779,
+    0.028125010430812836
+  ],
+  "grid_draw_calls_per_s" : 0,
+  "grid_rows_drawn_per_s" : 311.34973405582684,
+  "stream_cpu_percent_feed_only" : 8.2627112610534397,
+  "stream_cpu_percent_one_core" : 12.951353937401461,
+  "stream_fps" : 50.399956950100126,
+  "stream_main_loop_interval_ms_p50" : 17.182083334773779,
+  "stream_main_loop_interval_ms_p99" : 112.4507500207983,
+  "stream_row_updates_per_s" : 5659.2451660685338,
+  "stream_symbols" : 2000,
+  "suggest_ms_max" : 0.13091665459796786,
+  "suggest_ms_p50" : 0.03850000211969018
+}
