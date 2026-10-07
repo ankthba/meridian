@@ -22,4 +22,4 @@ First public release.
 - Settings with Data Sources (status per source, Save and Test with a real request, changes apply without restarting), General, Storage, Keyboard and About.
 - API keys are stored only in the macOS Keychain.
 - Local cache in DuckDB and SQLite with an offline fallback.
-- Measured on an M5 Pro: cold launch 0.17–0.66 s, 2,000 streaming symbols at 60 fps on under 10% of one core, 1M-bar charts at under 10 ms per frame.
+- Measured on an M5 Pro: cold launch 0.17–0.66 s, 2,000 streaming symbols at 60 fps on a median 8.6% of one core, 1M-bar charts at under 10 ms per frame.

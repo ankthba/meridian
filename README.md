@@ -70,10 +70,10 @@ Measured on an M5 Pro, release build (`scripts/perf-app.sh`, results in `bench/r
 
 | Budget | Result |
 |---|---|
-| Cold launch < 1.5 s | 0.17–0.66 s |
+| Cold launch < 1.5 s | 0.17–0.69 s |
 | Command suggestions < 50 ms | < 0.1 ms |
-| 2,000 streaming symbols, 60 fps, < 10% CPU | 60 fps at 7.2–9.7% of one core |
-| 1M-bar chart pan/zoom at 60 fps | p99 8–9 ms per frame |
+| 2,000 streaming symbols, 60 fps, < 10% CPU | 60 fps; median 8.6% of one core (7.2–11.5% over seven runs) |
+| 1M-bar chart pan/zoom at 60 fps | p99 7–9 ms per frame |
 
 ## Building
 

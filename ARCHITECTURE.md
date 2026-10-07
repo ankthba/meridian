@@ -463,7 +463,7 @@ final text ─► number verifier ─► ASK screen (answer + numbered SOURCES l
 | Cold launch < 1.5 s | 0.66 s first run, 0.17 s warm | Met |
 | Suggestions < 50 ms | ≤ 0.07 ms | Met |
 | GO → screen loaded < 50 ms | 10–47 ms; the first command within ~0.5 s of launch took 83–92 ms in 2 of 3 runs while startup work was still running | Met after startup; first command can exceed |
-| 2,000 symbols at 60 fps, < 10% CPU | 60.0 fps; 9.7% / 8.6% / 7.2% CPU (feed alone 4.5–5.1%); main-loop interval p99 ≈ 18 ms | Met |
+| 2,000 symbols at 60 fps, < 10% CPU | 60.0 fps; median 8.6% CPU over seven runs (2026-10-05 and 10-07; range 7.2–11.5%, two runs slightly over, the later ones with a second Meridian instance running); feed alone 4.5–6.6%; main-loop interval p99 ≈ 18 ms | Met at the median; at the edge |
 | Charts 60 fps (p99 < 16.7 ms) | 1M bars p99 8.1–9.0 ms; 10y daily p99 4.4–5.1 ms | Met |
 
 What got streaming CPU from ~25% to under 10%: number/time formatting without `NumberFormatter`/`DateFormatter`, cached `CTLine`s, one 8-bit `CALayer` per visible row instead of AppKit dirty-rect unions, the mock feed ticking at 25 ms instead of 10 ms, and the hub's idle wakeup raised from 10 ms to 100 ms.
