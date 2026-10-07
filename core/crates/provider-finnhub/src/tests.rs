@@ -5,9 +5,12 @@ use std::sync::Arc;
 use std::time::Duration;
 
 use chrono::NaiveDate;
-use meridian_provider::{AiPolicy, CachePolicy, Capability, NewsQuery, NewsScope, Provider, ProviderError};
+use meridian_provider::{
+    AiPolicy, CachePolicy, Capability, EventCalendarRequest, NewsQuery, NewsScope, Provider, ProviderError,
+};
 use meridian_types::{
-    AssetClass, DataDelay, FeedSource, FixedClock, MarketSector, SecurityKey, date_to_nanos, nanos_from_secs,
+    AssetClass, DataDelay, EarningsSession, FeedSource, FixedClock, MarketSector, SecurityKey, date_to_nanos,
+    nanos_from_secs,
 };
 use secrecy::SecretString;
 
@@ -20,6 +23,7 @@ const MARKET_NEWS: &str = include_str!("../tests/fixtures/finnhub_market_news.js
 const RECOMMENDATION: &str = include_str!("../tests/fixtures/finnhub_recommendation.json");
 const PROFILE: &str = include_str!("../tests/fixtures/finnhub_profile2.json");
 const EARNINGS: &str = include_str!("../tests/fixtures/finnhub_earnings.json");
+const EARNINGS_CALENDAR: &str = include_str!("../tests/fixtures/finnhub_earnings_calendar.json");
 
 /// Obviously fake key.
 const TEST_KEY: &str = "test-finnhub-key-not-real-0000";
@@ -325,6 +329,155 @@ fn earnings_edge_cases() {
 }
 
 // ---------------------------------------------------------------------------
+// Earnings calendar
+// ---------------------------------------------------------------------------
+
+/// Hand-built rows (obviously-test symbols) for cases the documented sample
+/// doesn't cover: other `hour` values, nulls, class shares, bad rows.
+const CALENDAR_EDGES: &str = r#"{"earningsCalendar":[
+  {"date":"2026-10-08","epsActual":null,"epsEstimate":1.25,"hour":"bmo","quarter":3,"revenueActual":null,"revenueEstimate":1000000,"symbol":"TSTA","year":2026},
+  {"date":"2026-10-07","epsActual":null,"epsEstimate":null,"hour":"","quarter":3,"revenueActual":null,"revenueEstimate":null,"symbol":"tstb","year":2026},
+  {"date":"2026-10-09","hour":"dmh","symbol":"TST.B"},
+  {"date":"2026-10-09","hour":"later","symbol":"TSTC","quarter":9,"year":0},
+  {"date":"10/09/2026","hour":"amc","symbol":"BADDATE"},
+  {"date":"2026-10-09","hour":"amc","symbol":""},
+  {"date":"2026-12-01","hour":"amc","symbol":"OUTSIDE"}
+]}"#;
+
+#[test]
+fn earnings_calendar_fixture_normalizes() {
+    let dto: normalize::EarningsCalendarDto = serde_json::from_str(EARNINGS_CALENDAR).unwrap();
+    let (events, dropped) = normalize::earnings_events(dto.earnings_calendar, date(2019, 10, 1), date(2020, 2, 1), None);
+    assert_eq!(dropped, 0);
+    assert_eq!(events.len(), 2);
+    // Oldest first.
+    let (q4, q1) = (&events[0], &events[1]);
+    assert_eq!(q4.key, SecurityKey::equity("AAPL"));
+    assert_eq!(q4.date, date(2019, 10, 30));
+    assert_eq!((q4.fiscal_year, q4.fiscal_quarter), (Some(2019), Some(4)));
+    assert_eq!(q1.date, date(2020, 1, 28));
+    assert_eq!(q1.session, Some(EarningsSession::AfterClose));
+    assert_eq!((q1.eps_actual, q1.eps_estimate), (Some(4.99), Some(4.5474)));
+    assert_eq!((q1.revenue_actual, q1.revenue_estimate), (Some(91_819_000_000.0), Some(88_496_400_810.0)));
+    // The window is inclusive and applied here as well.
+    let dto: normalize::EarningsCalendarDto = serde_json::from_str(EARNINGS_CALENDAR).unwrap();
+    let (events, _) = normalize::earnings_events(dto.earnings_calendar, date(2020, 1, 28), date(2020, 1, 28), None);
+    assert_eq!(events.len(), 1);
+}
+
+#[test]
+fn earnings_calendar_edge_cases() {
+    let dto: normalize::EarningsCalendarDto = serde_json::from_str(CALENDAR_EDGES).unwrap();
+    let (events, dropped) = normalize::earnings_events(dto.earnings_calendar, date(2026, 10, 1), date(2026, 10, 31), None);
+    assert_eq!(dropped, 2, "bad date and empty symbol");
+    let got: Vec<(&str, Option<EarningsSession>)> = events.iter().map(|e| (e.key.symbol.as_str(), e.session)).collect();
+    assert_eq!(
+        got,
+        [
+            ("TSTB", None),
+            ("TSTA", Some(EarningsSession::BeforeOpen)),
+            ("TST/B", Some(EarningsSession::DuringMarket)),
+            ("TSTC", None),
+        ]
+    );
+    assert_eq!(events[1].eps_estimate, Some(1.25));
+    assert_eq!(events[0].eps_estimate, None);
+    // Out-of-range quarter and year are dropped, not passed on.
+    assert_eq!((events[3].fiscal_year, events[3].fiscal_quarter), (None, None));
+
+    // With wanted keys, rows map back to the caller's keys and others go.
+    let mine: SecurityKey = "TST/B US Equity".parse().unwrap();
+    let wanted = vec![("TST.B".to_owned(), mine.clone())];
+    let dto: normalize::EarningsCalendarDto = serde_json::from_str(CALENDAR_EDGES).unwrap();
+    let (events, _) = normalize::earnings_events(dto.earnings_calendar, date(2026, 10, 1), date(2026, 10, 31), Some(&wanted));
+    assert_eq!(events.len(), 1);
+    assert_eq!(events[0].key, mine);
+
+    // A body without the array is a format change.
+    let err = normalize::parse_body::<normalize::EarningsCalendarDto>("{}", "t", TEST_KEY, Capability::EarningsCalendar)
+        .unwrap_err();
+    assert!(matches!(err, ProviderError::Parse { .. }), "{err:?}");
+}
+
+fn calendar_req(keys: &[&str]) -> EventCalendarRequest {
+    EventCalendarRequest {
+        from: date(2026, 10, 5),
+        to: date(2026, 10, 14),
+        keys: keys.iter().map(|k| k.parse().unwrap()).collect(),
+    }
+}
+
+#[tokio::test]
+async fn earnings_calendar_per_symbol_for_a_few_keys() {
+    let server = TestServer::start(|target| match (path_of(target), query_param(target, "symbol").as_deref()) {
+        ("/api/v1/calendar/earnings", Some("TSTA")) => {
+            (200, r#"{"earningsCalendar":[{"date":"2026-10-08","hour":"bmo","symbol":"TSTA","epsEstimate":1.25}]}"#.into())
+        }
+        ("/api/v1/calendar/earnings", Some(_)) => (200, r#"{"earningsCalendar":[]}"#.into()),
+        _ => (404, String::new()),
+    })
+    .await;
+    let p = provider(&server.base, Some(TEST_KEY));
+    let cal = p.earnings_calendar(&calendar_req(&["TSTA US Equity", "TST/B US Equity", "BTCUSD Curncy"])).await.unwrap();
+    assert_eq!(cal.events.len(), 1);
+    assert_eq!(cal.events[0].key, SecurityKey::equity("TSTA"));
+    assert_eq!(cal.provenance.delay, DataDelay::EndOfDay);
+    assert!(!cal.provenance.synthetic);
+    let reqs = server.requests();
+    let symbols: Vec<_> = reqs.iter().map(|r| query_param(&r.target, "symbol").unwrap()).collect();
+    assert_eq!(symbols, ["TSTA", "TST.B"], "the crypto key is not Finnhub's");
+    for r in &reqs {
+        assert_eq!(query_param(&r.target, "from").as_deref(), Some("2026-10-05"));
+        assert_eq!(query_param(&r.target, "to").as_deref(), Some("2026-10-14"));
+        assert_eq!(query_param(&r.target, "token"), None);
+        assert!(r.headers.iter().any(|(k, v)| k == "x-finnhub-token" && v == TEST_KEY));
+    }
+    let source_ref = cal.provenance.source_ref.unwrap();
+    assert!(source_ref.contains("/calendar/earnings?from=2026-10-05&to=2026-10-14&symbol=TSTA"), "{source_ref}");
+}
+
+#[tokio::test]
+async fn earnings_calendar_one_window_request_for_many_keys_or_none() {
+    let server = TestServer::start(|_| (200, CALENDAR_EDGES.to_owned())).await;
+    let p = provider(&server.base, Some(TEST_KEY));
+    let cal = p
+        .earnings_calendar(&calendar_req(&["TSTA US Equity", "TSTB US Equity", "TST/B US Equity", "ZZZZ US Equity"]))
+        .await
+        .unwrap();
+    let symbols: Vec<_> = cal.events.iter().map(|e| e.key.symbol.as_str()).collect();
+    assert_eq!(symbols, ["TSTB", "TSTA", "TST/B"]);
+    let reqs = server.requests();
+    assert_eq!(reqs.len(), 1);
+    assert_eq!(query_param(&reqs[0].target, "symbol"), None);
+
+    // No keys: the whole market in the window.
+    let all = p.earnings_calendar(&calendar_req(&[])).await.unwrap();
+    assert_eq!(all.events.len(), 4);
+    assert_eq!(server.requests().len(), 2);
+}
+
+#[tokio::test]
+async fn earnings_calendar_without_key_or_coverage_makes_no_http() {
+    let server = TestServer::start(|_| (200, r#"{"earningsCalendar":[]}"#.into())).await;
+    let p = provider(&server.base, None);
+    let err = p.earnings_calendar(&calendar_req(&[])).await.unwrap_err();
+    assert!(matches!(err, ProviderError::Unauthorized(_)));
+    let p = provider(&server.base, Some(TEST_KEY));
+    let err = p.earnings_calendar(&calendar_req(&["VOD LN Equity", "EURUSD Curncy"])).await.unwrap_err();
+    assert!(matches!(err, ProviderError::NotFound(_)), "{err:?}");
+    tokio::time::sleep(Duration::from_millis(50)).await;
+    assert_eq!(server.connections(), 0);
+}
+
+#[tokio::test]
+async fn earnings_calendar_premium_answer_is_not_entitled() {
+    let server = TestServer::start(|_| (403, r#"{"error":"You don't have access to this resource."}"#.into())).await;
+    let p = provider(&server.base, Some(TEST_KEY));
+    let err = p.earnings_calendar(&calendar_req(&["TSTA US Equity"])).await.unwrap_err();
+    assert!(matches!(err, ProviderError::NotEntitled { capability: Capability::EarningsCalendar, .. }), "{err:?}");
+}
+
+// ---------------------------------------------------------------------------
 // Errors and redaction
 // ---------------------------------------------------------------------------
 
@@ -377,6 +530,7 @@ async fn missing_key_is_unauthorized_without_http() {
         assert_eq!(p.profile(&key).await.unwrap_err(), expected);
         assert_eq!(p.recommendations(&key).await.unwrap_err(), expected);
         assert_eq!(p.earnings(&key).await.unwrap_err(), expected);
+        assert_eq!(p.earnings_calendar(&calendar_req(&["AAPL US Equity"])).await.unwrap_err(), expected);
     }
     tokio::time::sleep(Duration::from_millis(50)).await;
     assert_eq!(server.connections(), 0);
@@ -516,6 +670,8 @@ fn capabilities_declare_terms() {
     assert!(caps.supports(Capability::Profile, Some(AssetClass::Equity)));
     assert!(caps.supports(Capability::Recommendations, Some(AssetClass::Equity)));
     assert!(caps.supports(Capability::Earnings, Some(AssetClass::Equity)));
+    assert!(caps.supports(Capability::EarningsCalendar, None));
+    assert!(!caps.supports(Capability::DividendCalendar, None));
     assert!(!caps.supports(Capability::Estimates, None));
     assert!(!caps.supports(Capability::Quotes, None));
     assert_eq!(caps.cache_policy, CachePolicy::PurgeOnUnsubscribe);

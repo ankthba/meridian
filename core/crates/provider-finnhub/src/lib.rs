@@ -1,5 +1,5 @@
 //! Finnhub free tier: company and market news, recommendation trends,
-//! company profile, and EPS surprises.
+//! company profile, EPS surprises, and the earnings calendar.
 //!
 //! Built against the Finnhub API docs (checked 2026-10-05); see `README.md`
 //! for the exact sources, what is free, the terms, and mapping decisions.
@@ -19,12 +19,12 @@ use std::sync::Arc;
 
 use async_trait::async_trait;
 use meridian_provider::{
-    AiPolicy, CachePolicy, Capabilities, Capability, CapabilityEntry, NewsQuery, NewsScope, Provider, ProviderError,
-    ProviderResult, RateLimit, TokenBucket,
+    AiPolicy, CachePolicy, Capabilities, Capability, CapabilityEntry, EventCalendarRequest, NewsQuery, NewsScope,
+    Provider, ProviderError, ProviderResult, RateLimit, TokenBucket,
 };
 use meridian_types::{
-    AssetClass, Clock, CompanyProfile, DataDelay, EarningsHistory, FeedSource, NewsPage, ProviderId, Recommendations,
-    SecurityKey, SystemClock,
+    AssetClass, Clock, CompanyProfile, DataDelay, EarningsCalendar, EarningsHistory, FeedSource, NewsPage, ProviderId,
+    Recommendations, SecurityKey, SystemClock,
 };
 use reqwest::header::HeaderValue;
 use secrecy::{ExposeSecret, SecretString};
@@ -46,11 +46,17 @@ const REQUESTS_PER_MINUTE: u32 = 60;
 /// `/news` category for general market news.
 const MARKET_NEWS_CATEGORY: &str = "general";
 
+/// Up to this many symbols, the earnings calendar is requested per symbol
+/// (`symbol=` filter, exact). Above it, one request for the whole window is
+/// filtered here, so a long watchlist costs one call instead of dozens
+/// against the 60 calls/minute limit.
+const EARNINGS_CALENDAR_PER_SYMBOL_MAX: usize = 3;
+
 const TERMS_NOTE: &str = "Free plan, personal use only: the terms forbid redistributing or sharing data \"or \
 derived results\" with anyone without Finnhub's written approval, and all data must be deleted when the \
 subscription ends (Meridian purges it). Free tier: 60 calls/minute (plus a 30 calls/second cap on every plan); \
 company news covers North American companies with 1 year of history; EPS surprises cover the last 4 quarters; \
-no price targets. No attribution requirement. AI use is unreviewed: the no-sharing clause may cover sending data \
+the earnings calendar covers upcoming releases plus 1 month back; no price targets. No attribution requirement. AI use is unreviewed: the no-sharing clause may cover sending data \
 to an AI service.";
 
 /// Configuration. The key comes from the Keychain via the engine.
@@ -162,6 +168,58 @@ impl FinnhubProvider {
         Ok(NewsPage { items: normalize::finish_news(items, q), next: None })
     }
 
+    /// `/calendar/earnings` for `req`: per symbol for a few keys, else one
+    /// window request filtered to the keys (or unfiltered when there are
+    /// none).
+    async fn earnings_calendar_for(&self, req: &EventCalendarRequest) -> ProviderResult<EarningsCalendar> {
+        self.key()?;
+        let cap = Capability::EarningsCalendar;
+        let mut wanted: Vec<(String, SecurityKey)> = Vec::new();
+        for k in &req.keys {
+            if let Some(sym) = normalize::finnhub_symbol(k)
+                && !wanted.iter().any(|(s, _)| *s == sym)
+            {
+                wanted.push((sym, k.clone()));
+            }
+        }
+        if !req.keys.is_empty() && wanted.is_empty() {
+            return Err(normalize::not_covered(&req.keys[0]));
+        }
+        let fetched_at = self.clock.now();
+        let window = [("from", req.from.format("%Y-%m-%d").to_string()), ("to", req.to.format("%Y-%m-%d").to_string())];
+        let requests: Vec<Vec<(&str, String)>> = if !wanted.is_empty() && wanted.len() <= EARNINGS_CALENDAR_PER_SYMBOL_MAX {
+            wanted
+                .iter()
+                .map(|(sym, _)| {
+                    let mut p = window.to_vec();
+                    p.push(("symbol", sym.clone()));
+                    p
+                })
+                .collect()
+        } else {
+            vec![window.to_vec()]
+        };
+        let filter = (!wanted.is_empty()).then_some(wanted.as_slice());
+        let mut events = Vec::new();
+        let mut first_url = None;
+        let mut dropped = 0;
+        for params in &requests {
+            let (body, url, key) = self.get("calendar/earnings", params, cap).await?;
+            let dto: normalize::EarningsCalendarDto =
+                normalize::parse_body(&body, "Finnhub /calendar/earnings response", key, cap)?;
+            let (mut e, d) = normalize::earnings_events(dto.earnings_calendar, req.from, req.to, filter);
+            events.append(&mut e);
+            dropped += d;
+            first_url.get_or_insert(url);
+        }
+        if dropped > 0 {
+            tracing::warn!(dropped, "Finnhub earnings calendar: rows without a symbol or a valid date were dropped");
+        }
+        events.sort_by(|a, b| a.date.cmp(&b.date).then_with(|| a.key.symbol.cmp(&b.key.symbol)));
+        let source_ref = first_url.unwrap_or_default();
+        Ok(EarningsCalendar { events, provenance: normalize::provenance(DataDelay::EndOfDay, fetched_at, &source_ref) })
+    }
+
     fn symbol(&self, key: &SecurityKey) -> ProviderResult<String> {
         self.key()?;
         normalize::finnhub_symbol(key).ok_or_else(|| normalize::not_covered(key))
@@ -197,6 +255,12 @@ fn capabilities(rate_limit: RateLimit) -> Capabilities {
                 vec![AssetClass::Equity],
                 DataDelay::EndOfDay,
                 Some("EPS actual vs estimate, last 4 quarters (free tier)"),
+            ),
+            entry(
+                Capability::EarningsCalendar,
+                vec![AssetClass::Equity],
+                DataDelay::EndOfDay,
+                Some("upcoming US earnings releases plus 1 month back (free tier); EPS and revenue estimates"),
             ),
         ],
         rate_limit: Some(rate_limit),
@@ -249,6 +313,11 @@ impl Provider for FinnhubProvider {
         let (body, url, api_key) = self.get("stock/recommendation", &[("symbol", sym)], cap).await?;
         let periods = normalize::parse_body(&body, "Finnhub /stock/recommendation response", api_key, cap)?;
         normalize::recommendations(key, periods, &url)
+    }
+
+    /// `GET /calendar/earnings?from=…&to=…[&symbol=…]`.
+    async fn earnings_calendar(&self, req: &EventCalendarRequest) -> ProviderResult<EarningsCalendar> {
+        self.earnings_calendar_for(req).await
     }
 
     async fn earnings(&self, key: &SecurityKey) -> ProviderResult<EarningsHistory> {
