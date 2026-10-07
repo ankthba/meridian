@@ -347,6 +347,22 @@ fn detection_and_empty_files() {
 }
 
 #[test]
+fn same_day_rows_keep_their_real_order() {
+    // Robinhood lists newest first: a one-day file's sell (bought earlier
+    // that day) comes first and must end up after the buy.
+    let header = "\"Activity Date\",\"Process Date\",\"Settle Date\",\"Instrument\",\"Description\",\"Trans Code\",\"Quantity\",\"Price\",\"Amount\"\n";
+    let text = format!(
+        "{header}\"3/2/2026\",\"3/2/2026\",\"3/3/2026\",\"AAPL\",\"Apple\",\"Sell\",\"1\",\"$11.00\",\"$11.00\"\n\"3/2/2026\",\"3/2/2026\",\"3/3/2026\",\"AAPL\",\"Apple\",\"Buy\",\"1\",\"$10.00\",\"($10.00)\"\n"
+    );
+    let p = parse(&text, None, &opts()).unwrap();
+    assert_eq!(p.transactions.iter().map(|t| t.kind).collect::<Vec<_>>(), [K::Buy, K::Sell]);
+    // A mapped (oldest-first) file keeps its order.
+    let m = ColumnMapping { header_line: 1, trade_date: Some(0), symbol: Some(1), quantity: Some(2), price: Some(3), ..Default::default() };
+    let p = parse("Date,Ticker,Qty,Px\n2026-03-02,AAPL,1,10\n2026-03-02,AAPL,-1,11\n", Some(&m), &opts()).unwrap();
+    assert_eq!(p.transactions.iter().map(|t| t.kind).collect::<Vec<_>>(), [K::Buy, K::Sell]);
+}
+
+#[test]
 fn crlf_and_quoted_newlines_count_lines() {
     let text = fixture("robinhood_activity.csv").replace('\n', "\r\n");
     let p = parse(&text, None, &opts()).unwrap();

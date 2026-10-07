@@ -163,10 +163,15 @@ fn positions_snapshot_into_new_and_existing_portfolios() {
     let brk = pos.iter().find(|p| p.0 == "BRK/B US Equity").expect("share class mapped to BRK/B");
     assert!(near(brk.2.unwrap(), 400.0));
     assert!(near(field(&s, "Cost basis"), 1800.0 + 1200.0));
-    // The same snapshot again: all duplicates, plus a double-count warning.
+    // The same snapshot again: all duplicates, nothing added, no warning.
     let again = engine.commit_import(&csv, None, &ImportTarget::Existing(out.portfolio_id)).expect("again");
     assert_eq!((again.imported, again.duplicates), (0, 3));
-    assert!(again.warnings.iter().any(|w| w.message.contains("may be counted twice")));
+    assert!(!again.warnings.iter().any(|w| w.message.contains("may be counted twice")));
+    // A snapshot added to a portfolio that has history says it may double count.
+    let history = engine.commit_import(&fixture("schwab_2020.csv"), None, &ImportTarget::New("History".into())).expect("history");
+    let mixed = engine.commit_import(&csv, None, &ImportTarget::Existing(history.portfolio_id)).expect("mixed");
+    assert_eq!(mixed.imported, 3);
+    assert!(mixed.warnings.iter().any(|w| w.message.starts_with("History already had 3 transactions") && w.message.contains("may be counted twice")));
     engine.shutdown();
 }
 

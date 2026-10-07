@@ -262,7 +262,7 @@ pub fn parse(text: &str, mapping: Option<&ColumnMapping>, opts: &ImportOptions) 
         formats::parse(f, &recs, idx, *opts, &mut out);
         (f, idx)
     };
-    chronological(&mut out.txs);
+    chronological(&mut out.txs, format);
     net_splits(&mut out.txs);
     out.warnings.sort_by_key(|w| w.line);
     if out.txs.is_empty() && out.warnings.is_empty() {
@@ -278,12 +278,15 @@ pub fn parse(text: &str, mapping: Option<&ColumnMapping>, opts: &ImportOptions) 
     })
 }
 
-/// Puts rows in trade-date order. Broker files list newest first, so a
-/// file whose first date is later than its last is reversed before the
-/// stable sort; that keeps same-day rows in the order they happened.
-fn chronological(txs: &mut [ImportedTx]) {
-    if let (Some(f), Some(l)) = (txs.first(), txs.last())
-        && f.trade_date > l.trade_date
+/// Puts rows in trade-date order. Robinhood, Fidelity and Schwab list
+/// newest first, so their files are reversed before the stable sort (unless
+/// the file was re-sorted oldest first); that keeps same-day rows in the
+/// order they happened. Other files keep their own same-day order.
+fn chronological(txs: &mut [ImportedTx], format: Format) {
+    let newest_first = matches!(format, Format::Robinhood | Format::Fidelity | Format::Schwab);
+    if newest_first
+        && let (Some(f), Some(l)) = (txs.first(), txs.last())
+        && f.trade_date >= l.trade_date
     {
         txs.reverse();
     }

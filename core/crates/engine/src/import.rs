@@ -120,22 +120,11 @@ impl Engine {
         let store = &self.stores().app;
         let rows: Vec<Transaction> = parsed.transactions.iter().map(|t| to_store(t, parsed.format)).collect();
         let mut warnings = parsed.warnings.clone();
+        let mut existing = 0;
         let (store_target, name) = match target {
             ImportTarget::Existing(id) => {
                 let p = store.portfolio(*id)?.ok_or_else(|| EngineError::InvalidInput(format!("there is no portfolio {id}")))?;
-                if parsed.snapshot && !rows.is_empty() {
-                    let existing = store.transaction_count(*id, None)?;
-                    if existing > 0 {
-                        warnings.push(ImportWarning {
-                            line: 0,
-                            message: format!(
-                                "{} already had {existing} transactions; holdings from this snapshot are added to them and may be counted twice. Import a snapshot into a new portfolio to replace holdings.",
-                                p.name
-                            ),
-                            text: String::new(),
-                        });
-                    }
-                }
+                existing = store.transaction_count(*id, None)?;
                 let foreign = rows.iter().filter(|r| r.currency.as_deref().is_some_and(|c| !c.eq_ignore_ascii_case(&p.base_currency))).count();
                 if foreign > 0 {
                     warnings.push(ImportWarning {
@@ -169,6 +158,15 @@ impl Engine {
             t @ PortfolioTarget::Existing(_) => t,
         };
         let counts = store.import_transactions(store_target, &rows)?;
+        if parsed.snapshot && existing > 0 && counts.inserted > 0 {
+            warnings.push(ImportWarning {
+                line: 0,
+                message: format!(
+                    "{name} already had {existing} transactions; the snapshot's holdings were added to them and may be counted twice. Import a snapshot into a new portfolio to replace holdings."
+                ),
+                text: String::new(),
+            });
+        }
         Ok(ImportOutcome {
             portfolio_id: counts.portfolio_id,
             portfolio_name: name,
