@@ -4,6 +4,7 @@ import MeridianCore
 extension Notification.Name {
     static let openLaunchpad = Notification.Name("meridian.openLaunchpad")
     static let openSettingsRequest = Notification.Name("meridian.openSettings")
+    static let openImport = Notification.Name("meridian.openImport")
 }
 import Observation
 

@@ -26,6 +26,8 @@ final class PanelModel: Identifiable {
     var pendingInputs: [String: String] = [:]
     /// Views implemented in Swift rather than as Rust screen models.
     enum Special: Equatable { case none, ask }
+    /// A question typed as "ask …" in the command bar, sent when ASK opens.
+    var pendingQuestion: String?
     private(set) var special: Special = .none
     /// Live quotes for the current screen's bound rows and chart.
     private(set) var feed: QuoteFeed?
@@ -53,6 +55,8 @@ final class PanelModel: Identifiable {
             return
         }
         suggestions = (try? core.suggest(input: commandText, loaded: security, limit: 12)) ?? []
+        // The row GO would run is highlighted, so Return does what was typed.
+        highlighted = suggestions.firstIndex(where: \.best)
     }
 
     func moveHighlight(_ delta: Int) {
@@ -72,6 +76,16 @@ final class PanelModel: Identifiable {
 
     /// GO.
     func go() {
+        // A highlighted suggestion with a resolved action runs directly.
+        if let i = highlighted, suggestions.indices.contains(i), let action = suggestions[i].action {
+            let typed = commandText.trimmingCharacters(in: .whitespaces)
+            if !typed.isEmpty { try? core?.pushHistory(panel: id, command: typed) }
+            commandText = ""
+            suggestions = []
+            highlighted = nil
+            run(action)
+            return
+        }
         if acceptSuggestion() {
             // A completion that already names a function runs immediately.
             if case .security(_, .some, _)? = try? core?.parseCommand(input: commandText, loaded: security) {} else { updateSuggestions(); return }
@@ -165,9 +179,19 @@ final class PanelModel: Identifiable {
 
     func run(_ action: ActionFfi, push: Bool = true) {
         guard let core else { return }
-        if action.function == "BLP" {
+        // App-level actions from plain commands ("import", "settings").
+        switch action.function {
+        case "BLP":
             NotificationCenter.default.post(name: .openLaunchpad, object: nil)
             return
+        case "IMPORT":
+            NotificationCenter.default.post(name: .openImport, object: nil)
+            return
+        case "SETTINGS":
+            NotificationCenter.default.post(name: .openSettingsRequest, object: nil)
+            return
+        default:
+            break
         }
         if push, let cur = current, cur != action { history.append(cur) }
         if history.count > 100 { history.removeFirst(history.count - 100) }
@@ -176,6 +200,7 @@ final class PanelModel: Identifiable {
         pendingInputs = [:]
         pages = [:]
         if action.function == "ASK" {
+            pendingQuestion = action.args.first { $0.key == "q" }?.value
             special = .ask
             screen = nil
             loading = false

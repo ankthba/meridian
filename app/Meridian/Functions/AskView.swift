@@ -76,16 +76,15 @@ struct AskView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-            HStack {
-                Text("ASK — AI Analyst").font(Theme.swiftFont(weight: .bold)).foregroundStyle(Theme.white.swiftUI)
-                Spacer()
-                Text(AppModel.shared.mode == .mock ? "answers use MOCK data" : "answers use LIVE data where terms allow")
-                    .font(Theme.swiftFont(11)).foregroundStyle(Theme.muted.swiftUI)
-            }
-            .padding(.horizontal, 6)
+            Text(AppModel.shared.mode == .mock ? "Answers use mock test data." : "Answers come from the terminal's own data, where each source's terms allow; every number is checked against it.")
+                .font(Theme.ui(12)).foregroundStyle(Theme.muted.swiftUI)
+                .padding(.horizontal, 12).padding(.top, 10)
             if !model.available {
-                Text("NOT AVAILABLE — add an Anthropic API key in Settings (⌘,) → API Keys, then restart Meridian.")
-                    .font(Theme.swiftFont()).foregroundStyle(Theme.down.swiftUI).padding(6)
+                VStack(alignment: .leading, spacing: 3) {
+                    Text("Not available").font(Theme.ui(13, weight: .semibold)).foregroundStyle(Theme.warn.swiftUI)
+                    Text("Add an Anthropic API key in Settings → Data Sources (⌘,).").font(Theme.ui(13)).foregroundStyle(Theme.text2.swiftUI)
+                }
+                .padding(.horizontal, 12).padding(.vertical, 6)
             }
             ScrollViewReader { proxy in
                 ScrollView {
@@ -115,6 +114,13 @@ struct AskView: View {
             .frame(height: 38)
             .background(Theme.header.swiftUI)
             .overlay(alignment: .top) { Rectangle().fill(Theme.line.swiftUI).frame(height: 1) }
+        }
+        // "ask …" typed in the command bar arrives here and is sent once.
+        .task(id: panel.pendingQuestion) {
+            guard let q = panel.pendingQuestion, !q.isEmpty else { return }
+            panel.pendingQuestion = nil
+            model.draft = q
+            if model.available { model.send(security: panel.security) }
         }
     }
 }

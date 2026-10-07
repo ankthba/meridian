@@ -124,7 +124,7 @@ struct CompletionPopover: View {
                             .font(Theme.ui(13, weight: .semibold))
                             .foregroundStyle(Theme.text.swiftUI)
                             .frame(minWidth: 64, alignment: .leading)
-                        Text(s.detail)
+                        Text(s.subtitle.isEmpty ? s.detail : s.subtitle)
                             .font(Theme.ui(13))
                             .foregroundStyle(Theme.text2.swiftUI)
                             .lineLimit(1)
@@ -156,23 +156,19 @@ struct CompletionPopover: View {
 }
 
 extension SuggestionFfi {
-    /// Group heading in the completion popover.
-    var groupTitle: String { kind == .function ? "Functions" : "Securities" }
+    /// Group heading in the completion popover ("Security", "On AAPL", …).
+    var groupTitle: String { group.isEmpty ? (kind == .function ? "Functions" : "Security") : group }
 
-    /// Securities show their ticker; functions their plain name.
     var titleText: String {
-        switch kind {
-        case .security: display.split(separator: " ").first.map(String.init) ?? display
-        case .function: FunctionLabel.short(display)
-        }
+        if !title.isEmpty { return title }
+        return kind == .security ? SecurityText.ticker(display) : FunctionLabel.short(display)
     }
 
-    /// Right-hand hint: the mnemonic for functions, the market for securities.
+    /// Right-hand hint: the mnemonic for functions; for securities the
+    /// listing (e.g. "US Equity").
     var hintText: String {
-        switch kind {
-        case .function: display
-        case .security: display.split(separator: " ").dropFirst().joined(separator: " ")
-        }
+        if !hint.isEmpty { return hint }
+        return kind == .security ? display.split(separator: " ").dropFirst().joined(separator: " ") : display
     }
 }
 
