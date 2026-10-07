@@ -61,7 +61,7 @@ A security can be a ticker (aapl, brk.b), a coin (btc) or a currency pair (eurus
 Anything else searches for securities.
 
 Mnemonics still work:
-<security> <sector key> <function> <GO>     AAPL US <EQUITY> DES <GO>
+<security> <sector key> <function> <GO>      AAPL US <EQUITY> DES <GO>
 <function> <GO>                              runs on the panel's loaded security: DES <GO>
 <security> <sector key> <GO>                 loads the security and opens its function menu
 <n> <GO>                                     selects numbered item n

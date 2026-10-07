@@ -598,7 +598,7 @@ async fn port_exposure_and_risk(engine: &Arc<Engine>, s: &mut Screen, open: &[&H
     ex.sort_by(|a, b| b.1.total_cmp(&a.1));
     s.push(Block::Xy(XyChart {
         title: "Exposure by Sector (%)".into(),
-        x_label: ex.iter().map(|(k, _)| k.as_str()).collect::<Vec<_>>().join(" | "),
+        x_label: "Sector".into(),
         y_label: "%".into(),
         series: vec![XySeries {
             name: "Weight".into(),
@@ -609,7 +609,7 @@ async fn port_exposure_and_risk(engine: &Arc<Engine>, s: &mut Screen, open: &[&H
         }],
         x_marker: None,
         height_rows: 6,
-        x_categories: None,
+        x_categories: Some(ex.iter().map(|(k, _)| if k.is_empty() { "Other".to_owned() } else { k.clone() }).collect()),
     }));
 
     // Risk from 1Y of daily history on current weights.
