@@ -185,7 +185,8 @@ final class PanelModel: Identifiable {
             NotificationCenter.default.post(name: .openLaunchpad, object: nil)
             return
         case "IMPORT":
-            NotificationCenter.default.post(name: .openImport, object: nil)
+            let pid = action.args.first { $0.key == "portfolio" }.flatMap { Int64($0.value) }
+            NotificationCenter.default.post(name: .openImport, object: pid)
             return
         case "SETTINGS":
             NotificationCenter.default.post(name: .openSettingsRequest, object: nil)

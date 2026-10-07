@@ -47,7 +47,7 @@ final class Workspace {
     private var temporaryLayout = false
 
     /// Four live screens for a quick tour: `MERIDIAN_LAYOUT=showcase`.
-    static let showcase = "DES|AAPL US Equity;CRYP;GP|NVDA US Equity|range=5D|interval=1h;WEI"
+    static let showcase = "TODAY;CRYP;GP|NVDA US Equity|range=5D|interval=1h;WEI"
 
     func requestFocus() { focusToken += 1 }
 
@@ -79,7 +79,11 @@ final class Workspace {
                 return
             }
         }
-        let restoreSaved = UserDefaults.standard.object(forKey: Preference.restoreWorkspace) as? Bool ?? true
+        // 1.1 changed what panes are for (Today, Calendar, Filings): open the
+        // new default layout once, then restore as usual.
+        let layoutVersion = UserDefaults.standard.integer(forKey: "layoutVersion")
+        UserDefaults.standard.set(2, forKey: "layoutVersion")
+        let restoreSaved = (UserDefaults.standard.object(forKey: Preference.restoreWorkspace) as? Bool ?? true) && layoutVersion >= 2
         if restoreSaved,
            let json = try? core.loadWorkspace(id: "main"),
            let data = json.data(using: .utf8),
@@ -92,13 +96,13 @@ final class Workspace {
         resetToDefaults()
     }
 
-    /// HELP, a worksheet, a price graph and top news.
+    /// Today, a worksheet, a price graph and the filings inbox.
     func resetToDefaults() {
         let defaults: [(String, String?, String?)] = [
-            ("HELP", nil, nil),
+            ("TODAY", nil, nil),
             ("W", nil, "A"),
             ("GP", "AAPL US Equity", "A"),
-            ("TOP", nil, "B"),
+            ("FILINGS", nil, nil),
         ]
         for (p, d) in zip(panels, defaults) {
             p.linkGroup = d.2

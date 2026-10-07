@@ -7,6 +7,7 @@ struct MainWindow: View {
     @Bindable var app = AppModel.shared
     @Environment(\.openWindow) private var openWindow
     @Environment(\.openSettings) private var openSettings
+    @State private var importRequest: ImportRequest?
 
     var body: some View {
         let ws = app.workspace
@@ -41,6 +42,12 @@ struct MainWindow: View {
         }
         .onReceive(NotificationCenter.default.publisher(for: .openSettingsRequest)) { _ in
             openSettings()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .openImport)) { n in
+            importRequest = ImportRequest(portfolioId: n.object as? Int64)
+        }
+        .sheet(item: $importRequest) { req in
+            ImportSheet(model: ImportModel(portfolioId: req.portfolioId))
         }
         .task {
             // Without stock data or EDGAR most screens are empty: open Settings.

@@ -63,7 +63,7 @@ struct GeneralPane: View {
             } header: {
                 Text("Panels")
             } footer: {
-                Text("The default layout opens HELP, a worksheet, a price graph and top news. Panels in link group A follow each other's security.")
+                Text("The default layout opens Today, a worksheet, a price graph and the filings inbox. Panes in link group A follow each other's security.")
             }
             Section("Help") {
                 LabeledContent("Function directory") {

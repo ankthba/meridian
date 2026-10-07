@@ -98,12 +98,7 @@ struct BlockView: View {
         case let .text(title, body):
             VStack(alignment: .leading, spacing: 2) {
                 if let title { SectionTitle(text: title) }
-                Text(body)
-                    .font(Theme.ui(13))
-                    .lineSpacing(3)
-                    .foregroundStyle(Theme.text2.swiftUI)
-                    .textSelection(.enabled)
-                    .fixedSize(horizontal: false, vertical: true)
+                TextBlockBody(text: body)
                     .padding(.horizontal, 12)
             }
         case let .inputs(title, inputs):
@@ -328,12 +323,13 @@ struct XyChartView: View {
                     }
                 }
             }
+            .padding(.trailing, 12)
             Chart {
                 ForEach(Array(chart.series.enumerated()), id: \.offset) { si, s in
                     ForEach(Array(zip(s.x, s.y).enumerated()), id: \.offset) { _, p in
                         if p.1.isFinite {
                             if s.bars {
-                                BarMark(x: .value("x", barKey(p.0)), y: .value("y", p.1))
+                                BarMark(x: .value("x", barKey(p.0)), y: .value("y", p.1), width: barWidth)
                                     .foregroundStyle(color(si, s).swiftUI)
                                     .position(by: .value("series", s.name))
                             } else if isTime {
@@ -357,12 +353,19 @@ struct XyChartView: View {
             .chartYAxis { AxisMarks(position: .trailing) { _ in AxisGridLine().foregroundStyle(Theme.hairline.swiftUI); AxisValueLabel().font(Theme.swiftFont(10.5)).foregroundStyle(Theme.muted.swiftUI) } }
             .chartLegend(.hidden)
             .modifier(XDomain(chart: chart, isTime: isTime))
+            .modifier(YDomain(chart: chart))
             .frame(height: CGFloat(max(chart.heightRows, 6)) * Theme.rowHeight)
             .padding(.horizontal, 12)
             if chart.series.contains(where: \.bars), chart.xLabel.contains("|") {
                 Text(chart.xLabel).font(Theme.ui(10.5)).foregroundStyle(Theme.muted.swiftUI).padding(.horizontal, 12)
             }
         }
+    }
+
+    /// Few categories would otherwise stretch each bar across the pane.
+    private var barWidth: MarkDimension {
+        let n = Set(chart.series.filter(\.bars).flatMap(\.x)).count
+        return n <= 4 ? .fixed(56) : .ratio(0.7)
     }
 
     private func color(_ i: Int, _ s: XySeriesFfi) -> NSColor {
@@ -388,6 +391,54 @@ private struct XDomain: ViewModifier {
             content.chartXScale(domain: cats.filter { seen.insert($0).inserted })
         } else if !isTime, let lo = xs.min(), let hi = xs.max(), hi > lo {
             content.chartXScale(domain: lo...hi)
+        } else {
+            content
+        }
+    }
+}
+
+/// Prose in SF Pro; lines aligned with runs of spaces (command tables in
+/// HELP, examples) in SF Mono so their columns line up.
+struct TextBlockBody: View {
+    let text: String
+
+    private var runs: [(mono: Bool, text: String)] {
+        var out: [(mono: Bool, text: String)] = []
+        for line in text.components(separatedBy: "\n") {
+            let mono = line.contains("  ")
+            if let last = out.last, last.mono == mono {
+                out[out.count - 1].text += "\n" + line
+            } else {
+                out.append((mono, line))
+            }
+        }
+        return out
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 3) {
+            ForEach(Array(runs.enumerated()), id: \.offset) { _, r in
+                Text(r.text)
+                    .font(r.mono ? Theme.swiftFont(12.5) : Theme.ui(13))
+                    .lineSpacing(3)
+                    .foregroundStyle(Theme.text2.swiftUI)
+                    .textSelection(.enabled)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+    }
+}
+
+/// Line charts fit the y axis to the data (a rebased series near 100
+/// shouldn't share its height with zero); bars keep their zero baseline.
+private struct YDomain: ViewModifier {
+    let chart: XyChartFfi
+
+    func body(content: Content) -> some View {
+        let ys = chart.series.flatMap(\.y).filter(\.isFinite)
+        if !chart.series.contains(where: \.bars), let lo = ys.min(), let hi = ys.max(), hi > lo {
+            let pad = (hi - lo) * 0.06
+            content.chartYScale(domain: (lo - pad)...(hi + pad))
         } else {
             content
         }

@@ -10,6 +10,8 @@ import SwiftUI
 ///   MERIDIAN_SNAPSHOT_SIZE=960x600   panel size (default 960x600)
 ///   MERIDIAN_SNAPSHOT_MAIN=1         also render the whole main window
 ///   MERIDIAN_SNAPSHOT_SETUP=1        also render Settings → Setup
+///   MERIDIAN_SNAPSHOT_IMPORT=/a.csv  also render the importer: intro,
+///                                    preview of that file, result, and PORT
 ///   MERIDIAN_SNAPSHOT_WAIT=10        seconds to wait for each screen
 ///
 /// Use with MERIDIAN_MODE=mock, MERIDIAN_IN_MEMORY=1 and
@@ -56,6 +58,12 @@ enum SnapshotMode {
         Task { @MainActor in
             // Let the universe load and streams tick so live columns fill.
             try? await Task.sleep(nanoseconds: 1_500_000_000)
+            // Import first so the screens below (and the main window) see
+            // the imported portfolio.
+            if let path = env["MERIDIAN_SNAPSHOT_IMPORT"] {
+                await renderImport(URL(fileURLWithPath: path), size: size, to: out)
+                for p in AppModel.shared.workspace.panels { p.reload() }
+            }
             for (i, spec) in specs.enumerated() {
                 let panel = PanelModel(index: 900 + i)
                 panel.run(ActionFfi(function: spec.function, security: spec.security, args: spec.args), push: false)
@@ -95,6 +103,42 @@ enum SnapshotMode {
             print("snapshots written to \(out.path)")
             NSApp.terminate(nil)
         }
+    }
+
+    /// Runs the real preview and commit against the core (in-memory store
+    /// under MERIDIAN_IN_MEMORY) and renders each step of the sheet.
+    static func renderImport(_ url: URL, size: CGSize, to out: URL) async {
+        let sheet = CGSize(width: 820, height: 640)
+        func draw(_ m: ImportModel, _ name: String) async {
+            let v = ImportSheet(model: m).background(Color(nsColor: .windowBackgroundColor))
+            await render(v, size: sheet, to: out.appendingPathComponent(name))
+        }
+        let model = ImportModel(portfolioId: nil)
+        await draw(model, "import-1-intro.png")
+        guard let data = try? Data(contentsOf: url) else {
+            print("import: can't read \(url.path)")
+            return
+        }
+        model.load(data, name: url.lastPathComponent)
+        await model.refresh()
+        print("import: \(model.preview.map { "\($0.formatName), \($0.totalRows) rows, \($0.warningCount) warnings" } ?? model.error ?? "no preview")")
+        await draw(model, "import-2-preview.png")
+        await model.commit()
+        print("import: \(model.result.map { "\($0.imported) imported into \($0.portfolioName) (#\($0.portfolioId))" } ?? model.error ?? "no result")")
+        await draw(model, "import-3-done.png")
+        guard let r = model.result else { return }
+        let panel = PanelModel(index: 950)
+        panel.run(ActionFfi(function: "PORT", security: nil, args: [KeyValue(key: "portfolio", value: String(r.portfolioId))]), push: false)
+        var waited = 0
+        while (panel.loading || panel.screen == nil) && waited < 200 {
+            try? await Task.sleep(nanoseconds: 50_000_000)
+            waited += 1
+        }
+        let view = PanelView(panel: panel, focused: false, focusToken: 0)
+            .frame(width: size.width, height: size.height)
+            .background(Theme.bg.swiftUI)
+            .environment(\.colorScheme, .dark)
+        await render(view, size: size, to: out.appendingPathComponent("import-4-portfolio.png"))
     }
 
     /// Waits by suspending (never by spinning the run loop inside this
