@@ -41,7 +41,7 @@ impl Engine {
 }
 
 /// `ratio:1` for splits, `1:n` for reverse splits.
-fn fmt_ratio(r: f64) -> String {
+pub(crate) fn fmt_ratio(r: f64) -> String {
     let trim = |x: f64| {
         let s = format!("{x:.4}");
         s.trim_end_matches('0').trim_end_matches('.').to_owned()

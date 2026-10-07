@@ -83,9 +83,9 @@ New functions get plain-word ids instead of new mnemonics (CLAUDE.md, 2026-10-07
 
 | Id | Function | Arguments | Notes |
 |---|---|---|---|
-| TODAY | Home: your markets, holdings and what's coming up | none | Registered so `today` and `home` resolve and autocomplete; the screen is built separately |
-| CALENDAR | Upcoming earnings reports and dividend dates | `kind` = `earnings` or `dividends` (absent: both); `range` = `today`, `this-week` or `next-week` (absent: this week) | `earnings this week` → `kind=earnings range=this-week`; the screen is built separately |
-| FILINGS | Filings inbox: new filings from the companies you follow | none | `filings` alone; `aapl filings` is still CF for one company. The screen is built separately |
+| TODAY | Home: portfolio value and today's change, market strip (SPY, QQQ, 10-year Treasury, BTC), holdings with live prices, coming up (next 10 days), new filings (5 unread), news on holdings (8) | see Notes | Without positions it offers IMPORT and shows the first watchlist. Sections load concurrently; each degrades on its own. |
+| CALENDAR | Earnings, ex-dividend dates and macro releases in a window for holdings and watchlists (or all securities) | see Notes | `range` Next 10 days / Today / This week / Next week / This month; `scope`; `kind`; macro `importance` (high by default). Rows open ERN, DVD or ECO. |
+| FILINGS | Inbox of recent SEC filings for holdings and watchlists, newest first, read/unread | see Notes | 8-K items by their official Form 8-K titles; opening a filing in CF marks it read; periodic reports and proxies open on CF's diff versus the prior filing of the same form. `Mark all read` (by time, idempotent), `unread=<accession>`. Read state in SQLite (`filing_reads`). |
 | COMPARE | Securities side by side: performance rebased to 100 and a table of last price, 1D/1M/YTD/1Y change, market cap, P/E, net margin and dividend yield | `securities` = comma-separated keys (up to 8); `range` = a chart preset (default 1Y) | `aapl vs msft [vs …] [range]`, `compare aapl with msft`. Changes are measured from the last close on or before the period's start date (YTD from the prior year-end), and the chart is rebased at the same close, so a 1Y chart ends at the 1Y change |
 
 `SETTINGS` and `IMPORT` are app actions, not registry functions: `settings` and `import` resolve to them and the app opens Settings or the CSV import.
@@ -152,6 +152,9 @@ Case-insensitive. A security is a ticker (`aapl`, `brk.b`, `brk/b`), a ticker an
 | DVD | Alpaca corporate actions (ex-, record and pay dates, cash amounts, splits) merged with SEC EDGAR dividends per share by fiscal period and splits disclosed in filings. A source that fails leaves only its part NOT AVAILABLE. |
 | WEI | Index levels aren't available from free sources, so each index row shows a labeled US-listed ETF proxy (e.g. S&P 500 → SPY, Nikkei 225 → EWJ) quoted through Alpaca. |
 | FA | As-reported EDGAR statements; a value restated in a later filing wins, even under a different concept. A split disclosed inside the displayed window adds a notice that per-share values aren't adjusted. |
+| CALENDAR | Earnings: Finnhub `/calendar/earnings` (free tier: upcoming releases plus 1 month back; date, before open / after close, consensus EPS). Up to 3 stocks are asked one by one; more cost one request for the window. Dividends: Alpaca corporate actions for up to 100 symbols per request, filtered by ex-date. Macro: FRED release dates, high-importance releases unless `importance=All`. A missing source leaves only its kind NOT AVAILABLE. |
+| FILINGS | SEC EDGAR submissions per company (the CF list cache, 15 minutes). A company that fails is named in a notice; if every one fails, the screen is NOT AVAILABLE with the reason (e.g. no contact email set). No AI calls; CF summarizes only on request. |
+| TODAY | Quotes from the stream when subscribed, else one REST batch; the 10-year yield from the Treasury par curve (`UST:10 Yr`, keyless), else FRED `DGS10`; calendar and filings as above; company news from Alpaca and Finnhub for the 10 largest positions by cost, de-duplicated by headline, reused for five minutes. |
 
 ### Conflicts with the brief
 

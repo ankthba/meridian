@@ -193,6 +193,8 @@ The store enforces `CachePolicy`. The UI shows attributions on the screens that 
 - retries retryable errors with exponential backoff and jitter, and opens a per-provider circuit breaker after repeated failures;
 - **never** falls back across the mock/live boundary.
 
+Corporate event calendars (`earnings_calendar`, `dividend_calendar`, capabilities `EarningsCalendar` and `DividendCalendar`) take an `EventCalendarRequest`: a date window and a key set, where no keys means every security the source covers. They exist so CALENDAR and TODAY cost one request per window rather than one per security (Finnhub's earnings calendar, Alpaca's multi-symbol corporate actions).
+
 Most datasets take the first provider that answers. Where sources complement each other, the caller asks each one: `providers_for(capability, key)` lists them in routing order and `dividends_from(provider, key)` calls one with the same rate limit, retries and breaker but no fall-through. DVD uses this to merge dividend events with ex-dates (a vendor's corporate actions) and per-share totals by fiscal period (SEC XBRL); each source is cached separately, and a failing source leaves only its part `NOT AVAILABLE`.
 
 ### 4.3 Data mode
@@ -275,6 +277,7 @@ pub enum ProviderError {
 - **Migrations:** embedded, numbered SQL files. SQLite uses `PRAGMA user_version`; DuckDB uses a `schema_version` table. Migrations run at startup before any service starts, and a failed migration aborts startup with a clear error rather than running on a half-migrated schema.
 - **Every cached row carries its `provider` column, and the Parquet path includes `provider=`.** Some vendor terms (e.g. Finnhub) require deleting their data when the subscription ends. `store` exposes `purge_provider(id)`, which removes that provider's rows and files from all three stores, and Settings exposes it per provider.
 - Secrets never go in any of these stores (§10).
+- SQLite migration 2 adds `filing_reads (accession, read_at)`: the FILINGS inbox's read state. It is user state, not provider data, so `purge_provider` leaves it.
 
 ---
 

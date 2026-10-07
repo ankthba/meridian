@@ -26,6 +26,10 @@ pub enum Capability {
     EconomicSeries,
     EconomicCalendar,
     YieldCurve,
+    /// Scheduled earnings releases across securities in a date window.
+    EarningsCalendar,
+    /// Dividend ex-dates across securities in a date window.
+    DividendCalendar,
 }
 
 impl Capability {
@@ -52,6 +56,8 @@ impl Capability {
             Capability::EconomicSeries => "economic series",
             Capability::EconomicCalendar => "economic calendar",
             Capability::YieldCurve => "yield curves",
+            Capability::EarningsCalendar => "earnings calendar",
+            Capability::DividendCalendar => "dividend calendar",
         }
     }
 }

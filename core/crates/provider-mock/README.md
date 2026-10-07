@@ -39,6 +39,10 @@ counter-based generators, so a bar never depends on the requested range.
   from the same model), monthly activity/price indices with recession and inflation regimes, and a calendar whose
   actuals and release dates come from the same series.
 
+- **Event calendars**: the earnings calendar lists the same release dates, estimates and actuals as ERN (upcoming
+  releases carry the EE consensus EPS), with a fixed before-open or after-close habit per company; the dividend
+  calendar lists DVD's events by ex-date (only those declared by the clock's date). No keys = the whole core universe.
+
 ## Performance (release, M5 Pro)
 
 `cargo bench -p meridian-provider-mock`: 20 years of daily bars ≈ 0.44 ms; one month of one-minute bars ≈ 0.51 ms;

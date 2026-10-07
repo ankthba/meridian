@@ -1,6 +1,6 @@
 # meridian-provider-alpaca
 
-Provider `alpaca`: Alpaca Market Data API for US stocks (snapshot quotes, historical bars, a real-time trade/quote WebSocket stream), US option chain snapshots with vendor Greeks, news, and corporate actions (cash dividends and splits for DVD).
+Provider `alpaca`: Alpaca Market Data API for US stocks (snapshot quotes, historical bars, a real-time trade/quote WebSocket stream), US option chain snapshots with vendor Greeks, news, and corporate actions (cash dividends and splits for DVD, and ex-dates across many symbols for CALENDAR and TODAY).
 
 Requires an Alpaca account and API key pair (a free paper account works for the Basic plan). Keys come from the Keychain through `AlpacaConfig`; the crate never reads them from anywhere else.
 
@@ -18,7 +18,7 @@ Requires an Alpaca account and API key pair (a free paper account works for the 
 | Bars `GET /v2/stocks/{symbol}/bars` | <https://docs.alpaca.markets/us/reference/stockbarsingle-1> (multi-symbol: <https://docs.alpaca.markets/us/reference/stockbars>) |
 | Option chain `GET /v1beta1/options/snapshots/{underlying}` | <https://docs.alpaca.markets/us/reference/optionchain> |
 | News `GET /v1beta1/news` | <https://docs.alpaca.markets/us/reference/news-3> |
-| Corporate actions `GET /v1/corporate-actions` (checked 2026-10-07; page updated 2026-05-27) | <https://docs.alpaca.markets/us/reference/corporateactions-1> |
+| Corporate actions `GET /v1/corporate-actions` (checked 2026-10-07; page updated 2026-05-27). `symbols`: "A comma-separated list of symbols", not required; `limit` "applies to the total number of data points, not the count per symbol" | <https://docs.alpaca.markets/us/reference/corporateactions-1> |
 | Corporate actions: `region`, `isin` and `currency` added (2026-06-03) | <https://docs.alpaca.markets/us/v1.1/changelog/2026-06-03-market-data-9dddd18> |
 | `end` filters on `process_date`, which can be days after the ex-date (Alpaca staff, community forum) | <https://forum.alpaca.markets/t/querying-corporate-actions-by-ex-date-rather-than-process-date/17724> |
 | WebSocket protocol, errors, limits | <https://docs.alpaca.markets/us/docs/streaming-market-data> |
@@ -129,6 +129,15 @@ The stream page still says quote sizes are "in round lots"; the REST schema and 
 - Events are sorted newest first. `per_period` and `reported_splits` stay empty (they come from SEC EDGAR).
 - `provenance`: `EndOfDay`, `Aggregated`, `as_of` = fetch time, `source_ref` = first page URL (no credentials in it).
 
+### `dividend_calendar` — `GET /v1/corporate-actions` for many symbols
+
+For CALENDAR and TODAY: dividend and split events whose **ex-date** is in `[from, to]` for a set of securities, in as few requests as possible.
+
+- Query: as for `dividends`, but `symbols=A,B,…` with up to 100 symbols per request (the docs give no maximum; our choice), or no `symbols` at all when the request has no keys (the parameter is optional: every symbol). Keys Alpaca doesn't serve are skipped; if none is served → `NotFound`, no request.
+- Window: `start` = `from` − 7 days, `end` = `to` + 75 days. `start`/`end` filter on process date, which trails the ex-date (actions are processed around the pay date); the extra week before `from` covers large special dividends paid before their ex-date. The ex-date filter is applied here. If a future `end` is rejected (400/422), the request is retried once with `end` = today (announced future dividends are then missing).
+- Records map exactly as for `dividends`; each is keyed back to the caller's key (`BRK.B` → `BRK/B US Equity`), or, without keys, `<symbol> US Equity`. Records without a symbol, ex-date or amount are skipped and counted in a warning. Up to 50 pages (50,000 records) per request; a window that needs more is refused with an `Upstream` error ("choose a shorter range or fewer securities") rather than shown incomplete. Oldest first; duplicates removed.
+- Capability `DividendCalendar` (equities and ETFs), `EndOfDay`, `Aggregated`.
+
 ## Streaming
 
 `connect(sink)` checks the keys, spawns one tokio task, and returns a `StreamHandle` at once. URL: `wss://stream.data.alpaca.markets/v2/iex` or `/v2/sip`.
@@ -159,6 +168,6 @@ Basic 200 requests/min, Algo Trader Plus 10,000/min (about-market-data-api). The
 - `src/normalize.rs`, `src/occ.rs`, `src/stream.rs`: mappings against the documented examples in `tests/fixtures/` (see `tests/fixtures/SOURCES.md` for each file's origin and which ones are hand-built).
 - `src/tests.rs`: the provider end to end against a scripted HTTP server on 127.0.0.1 (request paths, queries, auth headers, pagination, error mapping, missing keys making no requests).
 - `src/stream.rs`: the stream task against a local WebSocket server (auth, subscribe/unsubscribe diffs, events, plan limit, reconnect and re-subscribe, auth failure stopping, close/drop).
-- `tests/live.rs`: `#[ignore]`d smoke tests that read `ALPACA_KEY_ID` / `ALPACA_SECRET_KEY` (and optional `ALPACA_FEED=sip`) from the environment and skip when unset. **They have not been run**: there are no Alpaca keys for this project yet, and secrets belong in the Keychain, not in files.
+- `tests/live.rs` (`live_dividend_calendar` added 2026-10-07): `#[ignore]`d smoke tests that read `ALPACA_KEY_ID` / `ALPACA_SECRET_KEY` (and optional `ALPACA_FEED=sip`) from the environment and skip when unset. **They have not been run**: there are no Alpaca keys for this project yet, and secrets belong in the Keychain, not in files.
 
 Everything that could not be confirmed against a live response (quote size units on the stream, whether trades and quotes count separately toward the 30-symbol limit, the snapshot symbol-count limit, exact 403 texts for the OPRA feed on Basic) is noted above.

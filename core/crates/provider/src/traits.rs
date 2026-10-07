@@ -2,16 +2,16 @@ use std::sync::Arc;
 
 use async_trait::async_trait;
 use meridian_types::{
-    BarSeries, CompanyProfile, Dividends, EarningsHistory, EconomicEvent, EconomicSeries, Estimates, FilingDocument,
-    Filing, FilingsPage, Fundamentals, Holders, Instrument, NewsPage, OptionChain, ProviderId, Quote,
-    Recommendations, SecurityKey, StreamEvent, Transcript, YieldCurve,
+    BarSeries, CompanyProfile, DividendCalendar, Dividends, EarningsCalendar, EarningsHistory, EconomicEvent,
+    EconomicSeries, Estimates, FilingDocument, Filing, FilingsPage, Fundamentals, Holders, Instrument, NewsPage,
+    OptionChain, ProviderId, Quote, Recommendations, SecurityKey, StreamEvent, Transcript, YieldCurve,
 };
 
 use crate::capability::{Capabilities, Capability};
 use crate::error::{ProviderError, ProviderResult};
 use crate::request::{
-    BarsRequest, CalendarRequest, ChainRequest, CurveRequest, FilingsRequest, FundamentalsRequest,
-    InstrumentQuery, NewsQuery, SeriesRequest,
+    BarsRequest, CalendarRequest, ChainRequest, CurveRequest, EventCalendarRequest, FilingsRequest,
+    FundamentalsRequest, InstrumentQuery, NewsQuery, SeriesRequest,
 };
 
 fn unsupported<T>(capability: Capability) -> ProviderResult<T> {
@@ -91,6 +91,16 @@ pub trait Provider: Send + Sync + 'static {
     }
     async fn yield_curve(&self, _req: &CurveRequest) -> ProviderResult<YieldCurve> {
         unsupported(Capability::YieldCurve)
+    }
+    /// Earnings releases dated in `[req.from, req.to]` for `req.keys` (all
+    /// covered securities when empty), oldest first.
+    async fn earnings_calendar(&self, _req: &EventCalendarRequest) -> ProviderResult<EarningsCalendar> {
+        unsupported(Capability::EarningsCalendar)
+    }
+    /// Dividend and split events whose ex-date is in `[req.from, req.to]`
+    /// for `req.keys` (all covered securities when empty), oldest first.
+    async fn dividend_calendar(&self, _req: &EventCalendarRequest) -> ProviderResult<DividendCalendar> {
+        unsupported(Capability::DividendCalendar)
     }
 
     /// Push feed, if the provider has one.

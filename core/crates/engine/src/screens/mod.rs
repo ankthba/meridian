@@ -3,6 +3,7 @@
 
 mod alerts;
 mod analysis;
+mod calendar;
 pub mod chart;
 mod common;
 mod company;
@@ -12,11 +13,14 @@ mod dividends;
 mod filings;
 mod help;
 mod hp;
+mod inbox;
 mod macro_eco;
 mod monitors;
 mod news;
 mod options;
+mod scope;
 mod secf;
+mod today;
 
 use std::sync::Arc;
 
@@ -24,6 +28,8 @@ use meridian_types::SecurityKey;
 use serde::{Deserialize, Serialize};
 
 pub use common::*;
+pub use inbox::plain_description;
+pub use scope::{new_york_date, new_york_time};
 
 use crate::core::Engine;
 use crate::screen::Screen;
@@ -88,6 +94,9 @@ pub(crate) fn builder_for(function: &str) -> Option<Builder> {
         "SECF" => builder!(secf::secf),
         "HELP" => builder!(help::help),
         "MENU" => builder!(secf::security_menu),
+        "TODAY" => builder!(today::today),
+        "CALENDAR" => builder!(calendar::calendar),
+        "FILINGS" => builder!(inbox::filings),
         _ => return extra_builder_for(function),
     })
 }

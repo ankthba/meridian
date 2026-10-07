@@ -550,3 +550,106 @@ async fn dividends_errors_and_unserved_keys() {
     );
     assert_eq!(server.requests().len(), before);
 }
+
+fn calendar_req(from: &str, to: &str, keys: &[&str]) -> EventCalendarRequest {
+    let date = |s: &str| NaiveDate::parse_from_str(s, "%Y-%m-%d").unwrap();
+    EventCalendarRequest { from: date(from), to: date(to), keys: keys.iter().map(|k| k.parse().unwrap()).collect() }
+}
+
+#[test]
+fn dividend_calendar_capability_is_declared() {
+    for feed in [AlpacaFeed::Iex, AlpacaFeed::Sip] {
+        let caps = capabilities_for(feed);
+        let e = caps.entry(Capability::DividendCalendar, None).unwrap();
+        assert_eq!((e.delay, e.source.clone()), (DataDelay::EndOfDay, FeedSource::Aggregated));
+        assert!(!caps.supports(Capability::EarningsCalendar, None));
+    }
+}
+
+#[tokio::test]
+async fn dividend_calendar_asks_for_many_symbols_and_filters_by_ex_date() {
+    use meridian_types::DividendKind::{Regular, Special};
+
+    let server = TestServer::start(vec![(200, CA_PAGE_1), (200, CA_PAGE_2)]).await;
+    let p = provider(AlpacaFeed::Iex, &server.base);
+    let req = calendar_req("2025-06-01", "2026-09-30", &["TESTA US Equity", "TESTB US Equity", "EURUSD Curncy"]);
+    let cal = p.dividend_calendar(&req).await.unwrap();
+
+    let reqs = server.requests();
+    assert_eq!(reqs.len(), 2, "both pages");
+    assert_eq!(reqs[0].path, "/v1/corporate-actions");
+    assert_eq!(reqs[0].query["symbols"], "TESTA,TESTB");
+    assert_eq!(reqs[0].query["types"], "cash_dividend,forward_split,reverse_split");
+    // Process-date window: a week before `from`, 75 days past `to`.
+    assert_eq!(reqs[0].query["start"], "2025-05-25");
+    assert_eq!(reqs[0].query["end"], "2026-12-14");
+    assert_eq!(reqs[1].query["page_token"], "page-2");
+
+    // Splits on page 2 have ex-dates before the window; oldest first.
+    let got: Vec<(&str, NaiveDate, meridian_types::DividendKind)> =
+        cal.events.iter().map(|e| (e.key.symbol.as_str(), e.dividend.ex_date, e.dividend.kind.clone())).collect();
+    let date = |s: &str| NaiveDate::parse_from_str(s, "%Y-%m-%d").unwrap();
+    assert_eq!(
+        got,
+        vec![
+            ("TESTB", date("2025-06-01"), Regular),
+            ("TESTA", date("2025-12-01"), Special),
+            ("TESTA", date("2026-09-12"), Regular),
+        ]
+    );
+    assert_eq!(cal.events[2].key, "TESTA US Equity".parse::<SecurityKey>().unwrap());
+    assert_eq!(cal.provenance.provider.as_str(), "alpaca");
+    assert!(cal.provenance.source_ref.as_deref().unwrap().contains("symbols=TESTA%2CTESTB"));
+}
+
+#[tokio::test]
+async fn dividend_calendar_without_keys_asks_for_every_symbol() {
+    let server = TestServer::start(vec![(200, CA_PAGE_2)]).await;
+    let p = provider(AlpacaFeed::Iex, &server.base);
+    let cal = p.dividend_calendar(&calendar_req("2023-01-01", "2024-12-31", &[])).await.unwrap();
+    assert!(!server.requests()[0].query.contains_key("symbols"));
+    assert_eq!(cal.events.len(), 2);
+    assert!(cal.events.iter().all(|e| e.key == SecurityKey::equity("TESTA")));
+}
+
+#[tokio::test]
+async fn dividend_calendar_retries_without_a_future_end_and_skips_unserved_keys() {
+    let server = TestServer::start(vec![(422, r#"{"message":"invalid end"}"#), (200, CA_PAGE_2)]).await;
+    let p = provider(AlpacaFeed::Iex, &server.base);
+    let today = Utc::now().date_naive();
+    let req = EventCalendarRequest {
+        from: today,
+        to: today + chrono::Duration::days(10),
+        keys: vec![SecurityKey::equity("TESTA")],
+    };
+    let cal = p.dividend_calendar(&req).await.unwrap();
+    assert!(cal.events.is_empty(), "page 2's splits are years old");
+    let reqs = server.requests();
+    assert_eq!(reqs.len(), 2);
+    assert_eq!(reqs[1].query["end"], today.format("%Y-%m-%d").to_string());
+
+    let before = server.requests().len();
+    let foreign = calendar_req("2026-01-01", "2026-01-10", &["VOD LN Equity", "EURUSD Curncy"]);
+    assert!(matches!(p.dividend_calendar(&foreign).await, Err(ProviderError::NotFound(_))));
+    assert_eq!(
+        keyless(&server.base).dividend_calendar(&calendar_req("2026-01-01", "2026-01-10", &[])).await.unwrap_err(),
+        ProviderError::Unauthorized(MISSING_KEY.into())
+    );
+    assert_eq!(server.requests().len(), before);
+}
+
+#[tokio::test]
+async fn dividend_calendar_refuses_a_window_too_large_to_load_whole() {
+    let pages: Vec<(u16, &'static str)> = (1..=MAX_CALENDAR_PAGES)
+        .map(|i| {
+            let body = format!(r#"{{"corporate_actions":{{}},"next_page_token":"p{i}"}}"#);
+            (200, &*Box::leak(body.into_boxed_str()))
+        })
+        .collect();
+    let server = TestServer::start(pages).await;
+    // The Algo Trader Plus rate keeps 50 requests quick.
+    let p = provider(AlpacaFeed::Sip, &server.base);
+    let err = p.dividend_calendar(&calendar_req("2026-01-01", "2026-03-31", &[])).await.unwrap_err();
+    assert!(matches!(err, ProviderError::Upstream(ref m) if m.contains("more than 50000 corporate actions")), "{err:?}");
+    assert_eq!(server.requests().len(), MAX_CALENDAR_PAGES as usize);
+}

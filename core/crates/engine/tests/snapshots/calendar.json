@@ -1,0 +1,434 @@
+{
+  "args": [],
+  "blocks": [
+    {
+      "Inputs": {
+        "inputs": [
+          {
+            "id": "range",
+            "kind": "Choice",
+            "label": "When",
+            "options": [
+              "Next 10 days",
+              "Today",
+              "This week",
+              "Next week",
+              "This month"
+            ],
+            "value": "Next 10 days"
+          },
+          {
+            "id": "scope",
+            "kind": "Choice",
+            "label": "Securities",
+            "options": [
+              "Holdings and watchlists",
+              "Holdings",
+              "Watchlists",
+              "All securities"
+            ],
+            "value": "Holdings and watchlists"
+          },
+          {
+            "id": "kind",
+            "kind": "Choice",
+            "label": "Events",
+            "options": [
+              "All",
+              "Earnings",
+              "Dividends",
+              "Macro"
+            ],
+            "value": "All"
+          },
+          {
+            "id": "importance",
+            "kind": "Choice",
+            "label": "Macro releases",
+            "options": [
+              "High importance",
+              "All"
+            ],
+            "value": "High importance"
+          }
+        ],
+        "title": null
+      }
+    },
+    {
+      "Table": {
+        "columns": [
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Date",
+            "width": 10
+          },
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Time",
+            "width": 13
+          },
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Kind",
+            "width": 11
+          },
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Security",
+            "width": 9
+          },
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Name",
+            "width": 32
+          },
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Detail",
+            "width": 40
+          }
+        ],
+        "numbered": true,
+        "page_size": 25,
+        "rows": [
+          {
+            "action": {
+              "args": [
+                [
+                  "series",
+                  "PAYEMS"
+                ]
+              ],
+              "function": "ECO",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Fri 10/09",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "08:30 ET",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Macro",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "US",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Change in Nonfarm Payrolls",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Sep · High importance",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "series",
+                  "UNRATE"
+                ]
+              ],
+              "function": "ECO",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Fri 10/09",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "08:30 ET",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Macro",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "US",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Unemployment Rate",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Sep · High importance",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DVD",
+              "security": "GOOGL US Equity"
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Mon 10/12",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Ex-dividend",
+                "value": null
+              },
+              {
+                "style": "Link",
+                "text": "GOOGL",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "Alphabet Inc. Class A",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "0.1675 USD · pays 10/28",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": "GOOGL US Equity"
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "series",
+                  "CPILFESL"
+                ]
+              ],
+              "function": "ECO",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Wed 10/14",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "08:30 ET",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Macro",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "US",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "CPI Ex Food and Energy MoM",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Sep · High importance",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "series",
+                  "CPIAUCSL"
+                ]
+              ],
+              "function": "ECO",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Wed 10/14",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "08:30 ET",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Macro",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "US",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "CPI MoM",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Sep · High importance",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [
+                [
+                  "series",
+                  "CPIAUCSL"
+                ]
+              ],
+              "function": "ECO",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Normal",
+                "text": "Wed 10/14",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "08:30 ET",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Macro",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "US",
+                "value": null
+              },
+              {
+                "style": "Emphasis",
+                "text": "CPI YoY",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Sep · High importance",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          }
+        ],
+        "title": "Next 10 days · Mon 10/05 – Wed 10/14/2026"
+      }
+    },
+    {
+      "Fields": {
+        "columns": 1,
+        "fields": [
+          {
+            "format": "Text",
+            "label": "Earnings",
+            "style": "Muted",
+            "text": "Mock data · estimates are the source's consensus",
+            "value": null
+          },
+          {
+            "format": "Text",
+            "label": "Dividends",
+            "style": "Muted",
+            "text": "Mock data · ex-dates of announced dividends and splits",
+            "value": null
+          },
+          {
+            "format": "Text",
+            "label": "Macro",
+            "style": "Muted",
+            "text": "Mock data · release calendar, high-importance releases",
+            "value": null
+          }
+        ],
+        "title": "Sources"
+      }
+    }
+  ],
+  "function": "CALENDAR",
+  "menu": [],
+  "refresh_ms": null,
+  "security": null,
+  "sources": [
+    {
+      "as_of": 1791216000000000000,
+      "attribution": null,
+      "delay": "MOCK",
+      "provider": "mock",
+      "source": "MOCK",
+      "synthetic": true
+    }
+  ],
+  "status": "Ok",
+  "title": "Calendar"
+}

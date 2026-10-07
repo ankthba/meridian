@@ -6,8 +6,9 @@ use std::collections::HashSet;
 use chrono::{Days, NaiveDate};
 use meridian_provider::{Capability, NewsQuery, ProviderError, ProviderResult};
 use meridian_types::{
-    CompanyProfile, DataDelay, EarningsHistory, EarningsRecord, FeedSource, MarketSector, NewsItem, Provenance,
-    ProviderId, Recommendations, SecurityKey, UnixNanos, date_to_nanos, nanos_from_secs, nanos_to_date,
+    CompanyProfile, DataDelay, EarningsEvent, EarningsHistory, EarningsRecord, EarningsSession, FeedSource,
+    MarketSector, NewsItem, Provenance, ProviderId, Recommendations, SecurityKey, UnixNanos, date_to_nanos,
+    nanos_from_secs, nanos_to_date,
 };
 use serde::Deserialize;
 use serde::de::DeserializeOwned;
@@ -95,6 +96,41 @@ pub(crate) struct EarningsDto {
     pub quarter: Option<u32>,
     #[serde(default)]
     pub year: Option<i32>,
+}
+
+/// `EarningRelease` (one row of `/calendar/earnings`). Everything is
+/// optional on the wire; rows without a symbol or a valid date are dropped.
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub(crate) struct EarningReleaseDto {
+    #[serde(default)]
+    pub symbol: Option<String>,
+    #[serde(default)]
+    pub date: Option<String>,
+    /// `bmo`, `amc` or `dmh`; often empty.
+    #[serde(default)]
+    pub hour: Option<String>,
+    #[serde(default)]
+    pub year: Option<i64>,
+    #[serde(default)]
+    pub quarter: Option<i64>,
+    #[serde(default)]
+    pub eps_estimate: Option<f64>,
+    #[serde(default)]
+    pub eps_actual: Option<f64>,
+    #[serde(default)]
+    pub revenue_estimate: Option<f64>,
+    #[serde(default)]
+    pub revenue_actual: Option<f64>,
+}
+
+/// `EarningsCalendar`: `{"earningsCalendar": [EarningRelease, …]}`. The
+/// array is required: a body without it is a format change, not "no
+/// releases".
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub(crate) struct EarningsCalendarDto {
+    pub earnings_calendar: Vec<EarningReleaseDto>,
 }
 
 /// Finnhub's error body: `{"error": "..."}`.
@@ -502,4 +538,74 @@ pub(crate) fn earnings(
         records,
         provenance: provenance(DataDelay::EndOfDay, fetched_at, source_ref),
     })
+}
+
+// ---------------------------------------------------------------------------
+// Earnings calendar
+// ---------------------------------------------------------------------------
+
+/// `hour` → session. The schema documents `bmo` (before market open), `amc`
+/// (after market close) and `dmh` (during market hours); anything else
+/// (usually an empty string) means the source doesn't say.
+pub(crate) fn earnings_session(hour: Option<&str>) -> Option<EarningsSession> {
+    match hour.map(|h| h.trim().to_ascii_lowercase()).as_deref() {
+        Some("bmo") => Some(EarningsSession::BeforeOpen),
+        Some("amc") => Some(EarningsSession::AfterClose),
+        Some("dmh") => Some(EarningsSession::DuringMarket),
+        _ => None,
+    }
+}
+
+/// Key for a Finnhub US symbol (`BRK.B` → `BRK/B US Equity`).
+pub(crate) fn key_for_symbol(symbol: &str) -> SecurityKey {
+    SecurityKey::equity(&symbol.trim().to_ascii_uppercase().replace('.', "/"))
+}
+
+/// Calendar rows → events dated in `[from, to]`, oldest first.
+///
+/// `wanted` maps Finnhub symbols to the caller's keys; when it is `None`
+/// every row is kept and keyed by [`key_for_symbol`]. Rows without a
+/// symbol or a valid `YYYY-MM-DD` date are dropped; returns the events and
+/// the number dropped.
+pub(crate) fn earnings_events(
+    rows: Vec<EarningReleaseDto>,
+    from: NaiveDate,
+    to: NaiveDate,
+    wanted: Option<&[(String, SecurityKey)]>,
+) -> (Vec<EarningsEvent>, usize) {
+    let mut out = Vec::new();
+    let mut dropped = 0;
+    for r in rows {
+        let symbol = r.symbol.as_deref().map(str::trim).filter(|s| !s.is_empty()).map(str::to_ascii_uppercase);
+        let date = r.date.as_deref().and_then(|d| NaiveDate::parse_from_str(d.trim(), "%Y-%m-%d").ok());
+        let (Some(symbol), Some(date)) = (symbol, date) else {
+            dropped += 1;
+            continue;
+        };
+        if date < from || date > to {
+            continue;
+        }
+        let key = match wanted {
+            Some(list) => match list.iter().find(|(s, _)| *s == symbol) {
+                Some((_, k)) => k.clone(),
+                None => continue,
+            },
+            None => key_for_symbol(&symbol),
+        };
+        let finite = |v: Option<f64>| v.filter(|x| x.is_finite());
+        out.push(EarningsEvent {
+            key,
+            date,
+            session: earnings_session(r.hour.as_deref()),
+            fiscal_year: r.year.and_then(|y| i32::try_from(y).ok()).filter(|y| *y > 0),
+            fiscal_quarter: r.quarter.and_then(|q| u32::try_from(q).ok()).filter(|q| (1..=4).contains(q)),
+            eps_estimate: finite(r.eps_estimate),
+            eps_actual: finite(r.eps_actual),
+            revenue_estimate: finite(r.revenue_estimate),
+            revenue_actual: finite(r.revenue_actual),
+        });
+    }
+    out.sort_by(|a, b| a.date.cmp(&b.date).then_with(|| a.key.symbol.cmp(&b.key.symbol)));
+    out.dedup_by(|a, b| a.key == b.key && a.date == b.date);
+    (out, dropped)
 }
