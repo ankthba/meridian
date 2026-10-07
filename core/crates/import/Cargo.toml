@@ -1,0 +1,16 @@
+[package]
+name = "meridian-import"
+description = "Broker CSV import: format detection and normalized portfolio transactions. Pure: no I/O, no clock."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[dependencies]
+meridian-types.workspace = true
+chrono.workspace = true
+thiserror.workspace = true
+
+[lints]
+workspace = true

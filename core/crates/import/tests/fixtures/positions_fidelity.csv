@@ -1,0 +1,13 @@
+﻿Account Number,Account Name,Symbol,Description,Quantity,Last Price,Last Price Change,Current Value,Today's Gain/Loss Dollar,Today's Gain/Loss Percent,Total Gain/Loss Dollar,Total Gain/Loss Percent,Percent Of Account,Cost Basis Total,Average Cost Basis,Type
+Z00000001,Individual,SPAXX**,HELD IN MONEY MARKET,,,,$1520.33,,,,,12.50%,,,Cash,
+Z00000001,Individual,AAPL,APPLE INC,10,$230.10,+$1.20,$2301.00,+$12.00,+0.52%,+$501.00,+27.83%,18.90%,$1800.00,$180.00,Cash,
+Z00000001,Individual,VTI,VANGUARD TOTAL STOCK MARKET ETF,12.5,$300.00,-$0.50,$3750.00,-$6.25,-0.17%,--,--,30.80%,--,--,Cash,
+Z00000001,Individual,912810FS2,US TREASURY BOND,1000,$98.50,$0.00,$985.00,$0.00,0.00%,-$15.00,-1.50%,8.10%,$1000.00,$100.00,Cash,
+Z00000001,Individual,BRK.B,BERKSHIRE HATHAWAY INC CL B,3,$480.00,+$2.00,$1440.00,+$6.00,+0.42%,+$240.00,+20.00%,11.80%,$1200.00,$400.00,Cash,
+Z00000001,Individual,Pending Activity,,,,($120.50),,,,,,,,,,
+
+"The data and information in this spreadsheet is provided to you solely for your use. [Paraphrased.]"
+
+"Brokerage services are provided by Fidelity Brokerage Services LLC (FBS). [Paraphrased.]"
+
+"Date downloaded Mar-02-2026 at 10:46 a.m ET"

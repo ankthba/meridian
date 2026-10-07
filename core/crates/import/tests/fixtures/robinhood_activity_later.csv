@@ -1,0 +1,12 @@
+"Activity Date","Process Date","Settle Date","Instrument","Description","Trans Code","Quantity","Price","Amount"
+"5/4/2026","5/4/2026","5/5/2026","NVDA","NVIDIA
+CUSIP: 67066G104","Buy","2","$110.00","($220.00)"
+"5/1/2026","5/1/2026","5/1/2026","","ACH Deposit","ACH","","","$250.00"
+"4/25/2026","4/25/2026","4/25/2026","","Unrecognized activity","XYZQ","","","$1.00"
+"4/22/2026","4/22/2026","4/22/2026","","ACH Withdrawal","ACH","","","($500.00)"
+"4/20/2026","4/20/2026","4/20/2026","ABCD","Abcd Holdings
+CUSIP: 000000AB1","SPR","5","",""
+"4/20/2026","4/20/2026","4/20/2026","ABCD","Abcd Holdings
+CUSIP: 000000AA3","SPR","100S","",""
+""
+"","","","","","","","","","The data provided is for informational purposes only. [Remainder paraphrased in this hand-built fixture: consult a tax advisor about cost basis; crypto and spending activity are not included.]"

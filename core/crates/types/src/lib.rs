@@ -12,6 +12,7 @@ pub mod macro_data;
 pub mod market;
 pub mod news;
 pub mod options;
+pub mod portfolio;
 pub mod provenance;
 pub mod time;
 
@@ -23,5 +24,6 @@ pub use macro_data::*;
 pub use market::*;
 pub use news::*;
 pub use options::*;
+pub use portfolio::*;
 pub use provenance::*;
 pub use time::*;

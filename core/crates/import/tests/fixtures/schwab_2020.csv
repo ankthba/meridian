@@ -1,0 +1,6 @@
+"Transactions  for account Brokerage XXXX-1234 as of 12/19/2020 22:47:12 ET"
+"Date","Action","Symbol","Description","Quantity","Price","Fees & Comm","Amount",
+"12/18/2020","Buy","SCHB","SCHWAB US BROAD MARKET ETF","12","$91.20","","-$1094.40",
+"12/15/2020 as of 12/11/2020","Bank Interest","","BANK INT 111320-121120 SCHWAB BANK","","","","$0.42",
+"12/01/2020","MoneyLink Transfer","","Tfr BANK, FAKE","","","","$2000.00",
+Transactions Total,"","","","","","",$906.02
