@@ -74,7 +74,7 @@ async fn everything_is_labeled_synthetic() {
     assert!(p.universe().iter().all(|i| i.is_synthetic));
     assert!(p.universe().len() > 200);
     let caps = p.capabilities();
-    assert_eq!(caps.entries.len(), 20);
+    assert_eq!(caps.entries.len(), 22);
     assert!(caps.supports(Capability::Fundamentals, None));
     assert!(caps.entries.iter().all(|e| e.delay == DataDelay::Synthetic && e.source == FeedSource::Synthetic));
     assert!(!caps.requires_credentials);
