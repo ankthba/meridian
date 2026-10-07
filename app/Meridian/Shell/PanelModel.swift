@@ -257,13 +257,18 @@ final class PanelModel: Identifiable {
     }
 
     private func scheduleRefresh(_ s: ScreenFfi) {
-        guard let ms = s.refreshMs, ms > 0, let action = current else { return }
+        guard let first = s.refreshMs, first > 0, let action = current else { return }
         refreshTask = Task { [weak self] in
+            // Each refreshed screen sets the next interval (TODAY asks for a
+            // quick fill-in while its slower sections load, then a minute).
+            var ms = first
             while !Task.isCancelled {
                 try? await Task.sleep(nanoseconds: UInt64(ms) * 1_000_000)
                 guard let self, !Task.isCancelled, let core = self.core, self.current == action else { return }
                 if let s = try? await core.screen(function: action.function, security: action.security, args: action.args), self.current == action {
                     self.screen = s
+                    guard let next = s.refreshMs, next > 0 else { return }
+                    ms = next
                 }
             }
         }

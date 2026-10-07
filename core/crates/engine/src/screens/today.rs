@@ -7,6 +7,7 @@
 
 use std::collections::{HashMap, HashSet};
 use std::sync::Arc;
+use std::time::Duration;
 
 use chrono::NaiveDate;
 use meridian_provider::{NewsQuery, NewsScope, ProviderError, SeriesRequest};
@@ -14,8 +15,8 @@ use meridian_stream::row::QuoteRow;
 use meridian_types::{NANOS_PER_DAY, NANOS_PER_SEC, NewsItem, Provenance, SecurityKey};
 
 use super::ScreenRequest;
-use super::calendar::{CalendarRow, Kinds, SectionStatus, calendar_columns, source_name};
-use super::inbox::{inbox_columns, inbox_row};
+use super::calendar::{CalendarData, CalendarRow, Kinds, SectionStatus, calendar_columns, source_name};
+use super::inbox::{Inbox, inbox_columns, inbox_row};
 use super::scope::{Holding, Scope, Window, is_company_key, new_york_date};
 use crate::cache::ttl;
 use crate::core::Engine;
@@ -53,7 +54,7 @@ fn finite(x: f64) -> Option<f64> {
 }
 
 /// Latest and previous daily value of the ten-year yield.
-struct TenYear {
+pub(crate) struct TenYear {
     level: f64,
     change: Option<f64>,
     date: NaiveDate,
@@ -171,6 +172,68 @@ fn no_quote_reason(engine: &Engine, keys: &[&SecurityKey]) -> String {
     }
 }
 
+/// TODAY's sections that wait on slower sources (SEC, the calendar
+/// providers, news, the yield curve).
+pub(crate) struct Slow {
+    ten_year: Result<TenYear, EngineError>,
+    calendar: CalendarData,
+    inbox: Inbox,
+    news: Option<EngineResult<Vec<NewsItem>>>,
+}
+
+/// How long TODAY waits for its slower sections before showing prices and
+/// holdings; the rest fills in on a refresh this soon after.
+const FIRST_PAINT: Duration = Duration::from_millis(250);
+const FILL_IN_MS: u32 = 1_000;
+
+/// Runs the slower sections as one task and waits up to `FIRST_PAINT` for
+/// it (indefinitely with a fixed clock). `None` means still loading: the
+/// task keeps running and the next call for the same inputs resumes it, so
+/// a refresh never fetches twice.
+async fn slow_sections(engine: &Arc<Engine>, today: NaiveDate, scope_keys: &[SecurityKey], news_keys: &[SecurityKey]) -> Option<Slow> {
+    let sig = format!("{today}|{scope_keys:?}|{news_keys:?}");
+    let pending = engine.today_pending.lock().take();
+    let mut task = match pending {
+        Some((s, task)) if s == sig => task,
+        other => {
+            if let Some((_, stale)) = other {
+                stale.abort();
+            }
+            let (e, scope, news_keys) = (engine.clone(), scope_keys.to_vec(), news_keys.to_vec());
+            engine.handle().spawn(async move {
+                let window = Window::parse(None, today);
+                let (ten_year, calendar, inbox, news) = tokio::join!(
+                    e.ten_year(today),
+                    e.calendar_data(&window, Some(&scope), Kinds::ALL, true),
+                    e.filings_inbox(&scope, today - chrono::Duration::days(FILING_DAYS)),
+                    async {
+                        if news_keys.is_empty() { None } else { Some(e.holdings_news_items(&news_keys).await) }
+                    },
+                );
+                Slow { ten_year, calendar, inbox, news }
+            })
+        }
+    };
+    let done = if engine.deterministic { Ok((&mut task).await) } else { tokio::time::timeout(FIRST_PAINT, &mut task).await };
+    match done {
+        Ok(Ok(slow)) => Some(slow),
+        Ok(Err(e)) => {
+            // The task panicked or was aborted; report it rather than wait forever.
+            let reason = format!("internal error ({e})");
+            Some(Slow {
+                ten_year: Err(EngineError::Internal(reason.clone())),
+                calendar: CalendarData::failed(&reason),
+                inbox: Inbox { unavailable: Some(reason), ..Inbox::default() },
+                news: None,
+            })
+        }
+        Err(_) => {
+            *engine.today_pending.lock() = Some((sig, task));
+            None
+        }
+    }
+}
+
 pub(crate) async fn today(engine: Arc<Engine>, _req: ScreenRequest) -> Screen {
     let now = engine.now();
     let today = new_york_date(now);
@@ -196,16 +259,7 @@ pub(crate) async fn today(engine: Arc<Engine>, _req: ScreenRequest) -> Screen {
     let mut quote_keys = table_keys.clone();
     quote_keys.extend(strip_keys.iter().cloned());
 
-    let window = Window::parse(None, today);
-    let (quotes, ten_year, calendar, inbox, news) = tokio::join!(
-        engine.quote_rows(&quote_keys),
-        engine.ten_year(today),
-        engine.calendar_data(&window, Some(&scope_keys), Kinds::ALL, true),
-        engine.filings_inbox(&scope_keys, today - chrono::Duration::days(FILING_DAYS)),
-        async {
-            if news_keys.is_empty() { None } else { Some(engine.holdings_news_items(&news_keys).await) }
-        },
-    );
+    let (quotes, slow) = tokio::join!(engine.quote_rows(&quote_keys), slow_sections(&engine, today, &scope_keys, &news_keys));
 
     let mut s = Screen::new("TODAY", TITLE, None);
     s.refresh_ms = Some(60_000);
@@ -300,8 +354,9 @@ pub(crate) async fn today(engine: Arc<Engine>, _req: ScreenRequest) -> Screen {
             None => strip_missing.push(k),
         }
     }
-    match &ten_year {
-        Ok(t) => {
+    match slow.as_ref().map(|x| &x.ten_year) {
+        None => {}
+        Some(Ok(t)) => {
             s.source(&t.provenance);
             strip_rows.insert(
                 2.min(strip_rows.len()),
@@ -314,7 +369,7 @@ pub(crate) async fn today(engine: Arc<Engine>, _req: ScreenRequest) -> Screen {
                 .action(Action::new("ECO", None).arg("view", "curve")),
             );
         }
-        Err(e) => s.push(Block::Notice {
+        Some(Err(e)) => s.push(Block::Notice {
             level: NoticeLevel::Warning,
             text: format!("10-year Treasury yield: NOT AVAILABLE — {}", e.user_message()),
         }),
@@ -376,6 +431,12 @@ pub(crate) async fn today(engine: Arc<Engine>, _req: ScreenRequest) -> Screen {
             .collect();
         s.push(Block::Table(Table { title: Some(table_title), columns, rows, page_size: Some(15), numbered: true }));
     }
+
+    let Some(Slow { calendar, inbox, news, .. }) = slow else {
+        s.push(Block::Notice { level: NoticeLevel::Info, text: "Loading the 10-year yield, what's coming up, new filings and news…".into() });
+        s.refresh_ms = Some(FILL_IN_MS);
+        return s;
+    };
 
     // --- (d) Coming up --------------------------------------------------------
     for p in &calendar.provenance {

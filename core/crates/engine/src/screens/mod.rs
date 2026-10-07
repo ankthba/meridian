@@ -20,7 +20,7 @@ mod news;
 mod options;
 mod scope;
 mod secf;
-mod today;
+pub(crate) mod today;
 
 use std::sync::Arc;
 
