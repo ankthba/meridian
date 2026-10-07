@@ -22,8 +22,8 @@ targets:
     type: application
     platform: macOS
     sources:
+      # The Iosevka license ships with the fonts (SIL OFL 1.1 requires it).
       - path: Meridian
-        excludes: ["Resources/Fonts/*.md"]
     resources:
       - path: Meridian/Resources/Fonts
         buildPhase: resources
