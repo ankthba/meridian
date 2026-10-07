@@ -28,7 +28,24 @@ Coinbase, Kraken, the ECB (via Frankfurter), the U.S. Treasury and press-release
 
 ## The command line
 
-Every panel has a command line. Type, then press Return (GO):
+Every panel has a command line. Type what you want in plain words, then press Return (GO):
+
+```
+aapl                          the overview
+aapl 5y                       chart over a range (1d 5d 1m 3m 6m ytd 1y 2y 5y 10y max)
+aapl filings                  or news, financials, balance sheet, earnings, analysts, dividends,
+                              options, volatility, peers, history, backtest, 10-k
+aapl vs msft 5y               performance and key figures side by side
+earnings this week            the earnings calendar; also dividends next week
+cpi · jobs · gdp · rates      economic series and the Treasury yield curve
+news · crypto · fx · world    markets
+today · portfolio · settings  your home screen, holdings and setup
+ask <question>                the AI analyst
+```
+
+A security can be a ticker (`aapl`, `brk.b`), a coin (`btc`) or a currency pair (`eurusd`). A word on its own like `chart` or `options` applies to the panel's security. Anything Meridian doesn't recognize searches for securities. The full vocabulary and how ambiguous words are read (for example `gdp` when a ticker GDP exists) are in [FUNCTIONS.md](FUNCTIONS.md#plain-language-commands-11).
+
+Mnemonics still work exactly as before:
 
 ```
 <security> <yellow key> <function> <GO>      AAPL US <EQUITY> DES <GO>
@@ -40,7 +57,7 @@ any other text <GO>                          searches for securities (SECF)
 
 - **Securities** are `SYMBOL [EXCHANGE] <yellow key>`. US equities don't need the exchange: `AAPL <EQUITY>` and `AAPL US Equity` both work. Currencies and crypto use `<CRNCY>`: `EURUSD <CRNCY>`, `BTCUSD <CRNCY>`.
 - **Yellow keys** are the F-keys F2–F11, or ⌥1–⌥0 (`GOVT CORP MTGE M-MKT MUNI PFD EQUITY CMDTY INDEX CRNCY`). You can also type the word in angle brackets.
-- **Autocomplete** suggests securities and functions as you type: ↑ ↓ to choose, Tab to accept.
+- **Autocomplete** suggests securities, things to open on a security (`aapl fil` → Filings), commands and functions as you type: ↑ ↓ to choose, Tab to accept.
 - **Arguments** follow the function: `GP 5Y` sets the range, `CN rate cut` filters news, `FA BS` opens the balance sheet, `HELP GP` explains GP. Screens also have amber input fields; edit them and press GO.
 - **MENU** (⌘[, End, or Delete on an empty line) goes back to the previous screen.
 
@@ -102,6 +119,7 @@ Mac F-keys send media keys unless you hold fn or turn on **Use F1, F2, etc. keys
 | | `OVME` | Option and strategy valuation (Black–Scholes and binomial) with payoff | `AAPL US <EQUITY> OVME` |
 | Analytics | `EQS` | Equity screener on fundamentals and performance | `EQS` |
 | | `RV` | Relative valuation against peers | `MSFT US <EQUITY> RV` |
+| | `COMPARE` | Securities side by side: performance rebased to 100, price changes, market cap, P/E, net margin, dividend yield | `aapl vs msft 5y` |
 | | `CORR` | Correlation matrix of returns | `CORR` |
 | | `PORT` | Portfolio: transactions, holdings, performance and risk | `PORT` |
 | | `BTST` | Backtester (SMA cross, RSI reversion, breakout, MACD, buy and hold) | `SPY US <EQUITY> BTST` |
