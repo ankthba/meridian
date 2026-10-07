@@ -6,6 +6,7 @@
 //! source leaves a NOT AVAILABLE note naming it, never a stand-in value.
 
 use std::collections::{HashMap, HashSet};
+use std::future::Future;
 use std::sync::Arc;
 use std::time::Duration;
 
@@ -13,6 +14,8 @@ use chrono::NaiveDate;
 use meridian_provider::{NewsQuery, NewsScope, ProviderError, SeriesRequest};
 use meridian_stream::row::QuoteRow;
 use meridian_types::{NANOS_PER_DAY, NANOS_PER_SEC, NewsItem, Provenance, SecurityKey};
+use parking_lot::Mutex;
+use tokio::sync::watch;
 
 use super::ScreenRequest;
 use super::calendar::{CalendarData, CalendarRow, Kinds, SectionStatus, calendar_columns, source_name};
@@ -172,66 +175,93 @@ fn no_quote_reason(engine: &Engine, keys: &[&SecurityKey]) -> String {
     }
 }
 
-/// TODAY's sections that wait on slower sources (SEC, the calendar
-/// providers, news, the yield curve).
-pub(crate) struct Slow {
-    ten_year: Result<TenYear, EngineError>,
-    calendar: CalendarData,
-    inbox: Inbox,
-    news: Option<EngineResult<Vec<NewsItem>>>,
-}
-
-/// How long TODAY waits for its slower sections before showing prices and
-/// holdings; the rest fills in on a refresh this soon after.
+/// How long TODAY waits for its slower sections (the 10-year yield, the
+/// calendar, SEC filings, news) before showing what it has; sections still
+/// loading fill in on a refresh this soon after.
 const FIRST_PAINT: Duration = Duration::from_millis(250);
 const FILL_IN_MS: u32 = 1_000;
 
-/// Runs the slower sections as one task and waits up to `FIRST_PAINT` for
-/// it (indefinitely with a fixed clock). `None` means still loading: the
-/// task keeps running and the next call for the same inputs resumes it, so
-/// a refresh never fetches twice.
-async fn slow_sections(engine: &Arc<Engine>, today: NaiveDate, scope_keys: &[SecurityKey], news_keys: &[SecurityKey]) -> Option<Slow> {
-    let sig = format!("{today}|{scope_keys:?}|{news_keys:?}");
-    let pending = engine.today_pending.lock().take();
-    let mut task = match pending {
-        Some((s, task)) if s == sig => task,
-        other => {
-            if let Some((_, stale)) = other {
-                stale.abort();
+/// One slower TODAY section, loading in the background. Panes showing TODAY
+/// share one fetch per set of inputs, and while a refresh fetches again the
+/// last result keeps showing, so sections don't blink out when a cache
+/// expires.
+pub(crate) struct Part<T> {
+    inner: Mutex<Option<PartState<T>>>,
+}
+
+struct PartState<T> {
+    sig: String,
+    rx: watch::Receiver<Option<Arc<T>>>,
+    /// The fetch's result has been returned to a caller; the next call
+    /// fetches again (cheaply, when the cache is still fresh).
+    delivered: bool,
+    last: Option<Arc<T>>,
+}
+
+impl<T> Default for Part<T> {
+    fn default() -> Self {
+        Self { inner: Mutex::new(None) }
+    }
+}
+
+impl<T: Send + Sync + 'static> Part<T> {
+    /// The section for inputs `sig`: waits up to `FIRST_PAINT` (until it's
+    /// done with `wait_all`, i.e. a fixed clock), else returns the last result for the same
+    /// inputs, or `None` while it has never loaded.
+    async fn get<F>(&self, rt: &tokio::runtime::Handle, wait_all: bool, sig: &str, fetch: impl FnOnce() -> F) -> Option<Arc<T>>
+    where
+        F: Future<Output = T> + Send + 'static,
+    {
+        let mut rx = {
+            let mut g = self.inner.lock();
+            // Still running, or finished with a result nobody has seen yet.
+            let reuse = g.as_ref().filter(|p| {
+                let done = p.rx.borrow().is_some();
+                p.sig == sig && ((!done && p.rx.has_changed().is_ok()) || (done && !p.delivered))
+            });
+            if let Some(p) = reuse {
+                p.rx.clone()
+            } else {
+                let last = g.as_ref().filter(|p| p.sig == sig).and_then(|p| p.rx.borrow().clone().or_else(|| p.last.clone()));
+                let (tx, rx) = watch::channel(None);
+                let fut = fetch();
+                rt.spawn(async move {
+                    let _ = tx.send(Some(Arc::new(fut.await)));
+                });
+                *g = Some(PartState { sig: sig.to_owned(), rx: rx.clone(), delivered: false, last });
+                rx
             }
-            let (e, scope, news_keys) = (engine.clone(), scope_keys.to_vec(), news_keys.to_vec());
-            engine.handle().spawn(async move {
-                let window = Window::parse(None, today);
-                let (ten_year, calendar, inbox, news) = tokio::join!(
-                    e.ten_year(today),
-                    e.calendar_data(&window, Some(&scope), Kinds::ALL, true),
-                    e.filings_inbox(&scope, today - chrono::Duration::days(FILING_DAYS)),
-                    async {
-                        if news_keys.is_empty() { None } else { Some(e.holdings_news_items(&news_keys).await) }
-                    },
-                );
-                Slow { ten_year, calendar, inbox, news }
-            })
-        }
-    };
-    let done = if engine.deterministic { Ok((&mut task).await) } else { tokio::time::timeout(FIRST_PAINT, &mut task).await };
-    match done {
-        Ok(Ok(slow)) => Some(slow),
-        Ok(Err(e)) => {
-            // The task panicked or was aborted; report it rather than wait forever.
-            let reason = format!("internal error ({e})");
-            Some(Slow {
-                ten_year: Err(EngineError::Internal(reason.clone())),
-                calendar: CalendarData::failed(&reason),
-                inbox: Inbox { unavailable: Some(reason), ..Inbox::default() },
-                news: None,
-            })
-        }
-        Err(_) => {
-            *engine.today_pending.lock() = Some((sig, task));
-            None
+        };
+        let got: Option<Arc<T>> = if wait_all {
+            rx.wait_for(Option::is_some).await.ok().and_then(|v| v.clone())
+        } else {
+            match tokio::time::timeout(FIRST_PAINT, rx.wait_for(Option::is_some)).await {
+                Ok(Ok(v)) => v.clone(),
+                _ => None,
+            }
+        };
+        let mut g = self.inner.lock();
+        let state = g.as_mut().filter(|p| p.sig == sig);
+        match got {
+            Some(v) => {
+                if let Some(p) = state {
+                    p.last = Some(v.clone());
+                    p.delivered |= p.rx.same_channel(&rx);
+                }
+                Some(v)
+            }
+            None => state.and_then(|p| p.last.clone()),
         }
     }
+}
+
+/// TODAY's slower sections, kept on the engine between calls.
+#[derive(Default)]
+pub(crate) struct TodayParts {
+    ten_year: Part<Result<TenYear, EngineError>>,
+    calendar: Part<CalendarData>,
+    inbox: Part<Inbox>,
+    news: Part<Option<EngineResult<Vec<NewsItem>>>>,
 }
 
 pub(crate) async fn today(engine: Arc<Engine>, _req: ScreenRequest) -> Screen {
@@ -259,7 +289,29 @@ pub(crate) async fn today(engine: Arc<Engine>, _req: ScreenRequest) -> Screen {
     let mut quote_keys = table_keys.clone();
     quote_keys.extend(strip_keys.iter().cloned());
 
-    let (quotes, slow) = tokio::join!(engine.quote_rows(&quote_keys), slow_sections(&engine, today, &scope_keys, &news_keys));
+    let parts = &engine.today;
+    let (rt, wait_all) = (engine.handle(), engine.deterministic);
+    let (day_sig, scope_sig, news_sig) = (today.to_string(), format!("{today}|{scope_keys:?}"), format!("{news_keys:?}"));
+    let (quotes, ten_year, calendar, inbox, news) = tokio::join!(
+        engine.quote_rows(&quote_keys),
+        parts.ten_year.get(rt, wait_all, &day_sig, || {
+            let e = engine.clone();
+            async move { e.ten_year(today).await }
+        }),
+        parts.calendar.get(rt, wait_all, &scope_sig, || {
+            let (e, scope) = (engine.clone(), scope_keys.clone());
+            async move { e.calendar_data(&Window::parse(None, today), Some(&scope), Kinds::ALL, true).await }
+        }),
+        parts.inbox.get(rt, wait_all, &scope_sig, || {
+            let (e, scope) = (engine.clone(), scope_keys.clone());
+            async move { e.filings_inbox(&scope, today - chrono::Duration::days(FILING_DAYS)).await }
+        }),
+        parts.news.get(rt, wait_all, &news_sig, || {
+            let (e, keys) = (engine.clone(), news_keys.clone());
+            async move { if keys.is_empty() { None } else { Some(e.holdings_news_items(&keys).await) } }
+        }),
+    );
+    let loading = ten_year.is_none() || calendar.is_none() || inbox.is_none() || news.is_none();
 
     let mut s = Screen::new("TODAY", TITLE, None);
     s.refresh_ms = Some(60_000);
@@ -354,7 +406,7 @@ pub(crate) async fn today(engine: Arc<Engine>, _req: ScreenRequest) -> Screen {
             None => strip_missing.push(k),
         }
     }
-    match slow.as_ref().map(|x| &x.ten_year) {
+    match ten_year.as_deref() {
         None => {}
         Some(Ok(t)) => {
             s.source(&t.provenance);
@@ -432,68 +484,78 @@ pub(crate) async fn today(engine: Arc<Engine>, _req: ScreenRequest) -> Screen {
         s.push(Block::Table(Table { title: Some(table_title), columns, rows, page_size: Some(15), numbered: true }));
     }
 
-    let Some(Slow { calendar, inbox, news, .. }) = slow else {
-        s.push(Block::Notice { level: NoticeLevel::Info, text: "Loading the 10-year yield, what's coming up, new filings and news…".into() });
+    if loading {
         s.refresh_ms = Some(FILL_IN_MS);
-        return s;
-    };
+    }
+    if ten_year.is_none() {
+        s.push(Block::Notice { level: NoticeLevel::Info, text: "10-year Treasury yield: loading…".into() });
+    }
 
     // --- (d) Coming up --------------------------------------------------------
-    for p in &calendar.provenance {
-        s.source(p);
-    }
-    for n in calendar.notices() {
-        if let Block::Notice { level, text } = n {
-            s.push(Block::Notice { level, text: format!("Coming up — {text}") });
+    if let Some(calendar) = &calendar {
+        for p in &calendar.provenance {
+            s.source(p);
         }
-    }
-    let upcoming: Vec<&CalendarRow> = calendar.rows.iter().filter(|r| r.date >= today).take(COMING_UP_ROWS).collect();
-    if upcoming.is_empty() {
-        if calendar.sections.iter().any(|x| matches!(x.status, SectionStatus::Loaded { .. })) {
-            s.push(Block::Notice { level: NoticeLevel::Info, text: "Coming up: nothing scheduled in the next 10 days".into() });
-        }
-    } else {
-        s.push(Block::Table(Table {
-            title: Some("Coming up".into()),
-            columns: calendar_columns(),
-            rows: upcoming.iter().map(|r| r.to_row()).collect(),
-            page_size: None,
-            numbered: false,
-        }));
-    }
-
-    // --- (e) New filings ------------------------------------------------------
-    if let Some(p) = &inbox.provenance {
-        s.source(p);
-    }
-    if let Some(reason) = &inbox.unavailable {
-        s.push(Block::Notice { level: NoticeLevel::Warning, text: format!("New filings: NOT AVAILABLE — {reason}") });
-    } else {
-        for n in &inbox.notes {
-            if let Block::Notice { level: NoticeLevel::Warning, text } = n {
-                s.push(Block::Notice { level: NoticeLevel::Warning, text: format!("New filings — {text}") });
+        for n in calendar.notices() {
+            if let Block::Notice { level, text } = n {
+                s.push(Block::Notice { level, text: format!("Coming up — {text}") });
             }
         }
-        let unread: Vec<Row> = inbox.items.iter().filter(|i| i.unread).take(NEW_FILINGS_ROWS).map(inbox_row).collect();
-        if unread.is_empty() {
-            s.push(Block::Notice { level: NoticeLevel::Info, text: format!("New filings: none unread in the last {FILING_DAYS} days") });
+        let upcoming: Vec<&CalendarRow> = calendar.rows.iter().filter(|r| r.date >= today).take(COMING_UP_ROWS).collect();
+        if upcoming.is_empty() {
+            if calendar.sections.iter().any(|x| matches!(x.status, SectionStatus::Loaded { .. })) {
+                s.push(Block::Notice { level: NoticeLevel::Info, text: "Coming up: nothing scheduled in the next 10 days".into() });
+            }
         } else {
             s.push(Block::Table(Table {
-                title: Some(format!("New filings · {} unread", inbox.unread())),
-                columns: inbox_columns(),
-                rows: unread,
+                title: Some("Coming up".into()),
+                columns: calendar_columns(),
+                rows: upcoming.iter().map(|r| r.to_row()).collect(),
                 page_size: None,
                 numbered: false,
             }));
         }
+    } else {
+        s.push(Block::Notice { level: NoticeLevel::Info, text: "Coming up: loading…".into() });
+    }
+
+    // --- (e) New filings ------------------------------------------------------
+    if let Some(inbox) = &inbox {
+        if let Some(p) = &inbox.provenance {
+            s.source(p);
+        }
+        if let Some(reason) = &inbox.unavailable {
+            s.push(Block::Notice { level: NoticeLevel::Warning, text: format!("New filings: NOT AVAILABLE — {reason}") });
+        } else {
+            for n in &inbox.notes {
+                if let Block::Notice { level: NoticeLevel::Warning, text } = n {
+                    s.push(Block::Notice { level: NoticeLevel::Warning, text: format!("New filings — {text}") });
+                }
+            }
+            let unread: Vec<Row> = inbox.items.iter().filter(|i| i.unread).take(NEW_FILINGS_ROWS).map(inbox_row).collect();
+            if unread.is_empty() {
+                s.push(Block::Notice { level: NoticeLevel::Info, text: format!("New filings: none unread in the last {FILING_DAYS} days") });
+            } else {
+                s.push(Block::Table(Table {
+                    title: Some(format!("New filings · {} unread", inbox.unread())),
+                    columns: inbox_columns(),
+                    rows: unread,
+                    page_size: None,
+                    numbered: false,
+                }));
+            }
+        }
+    } else {
+        s.push(Block::Notice { level: NoticeLevel::Info, text: "New filings: loading…".into() });
     }
 
     // --- (f) News on holdings -------------------------------------------------
     let news_title = if holdings.is_empty() { "News on your watchlist" } else { "News on your holdings" };
-    match news {
-        None => s.push(Block::Notice { level: NoticeLevel::Info, text: format!("{news_title}: no stocks to follow") }),
-        Some(Err(e)) => {
-            let reason = match &e {
+    match news.as_deref() {
+        None => s.push(Block::Notice { level: NoticeLevel::Info, text: format!("{news_title}: loading…") }),
+        Some(None) => s.push(Block::Notice { level: NoticeLevel::Info, text: format!("{news_title}: no stocks to follow") }),
+        Some(Some(Err(e))) => {
+            let reason = match e {
                 EngineError::Provider(ProviderError::Unsupported { .. }) => {
                     format!("no configured source provides company news ({})", engine.unavailable_hint())
                 }
@@ -501,10 +563,10 @@ pub(crate) async fn today(engine: Arc<Engine>, _req: ScreenRequest) -> Screen {
             };
             s.push(Block::Notice { level: NoticeLevel::Warning, text: format!("{news_title}: NOT AVAILABLE — {reason}") });
         }
-        Some(Ok(items)) if items.is_empty() => {
+        Some(Some(Ok(items))) if items.is_empty() => {
             s.push(Block::Notice { level: NoticeLevel::Info, text: format!("{news_title}: no stories in the last 3 days") });
         }
-        Some(Ok(items)) => {
+        Some(Some(Ok(items))) => {
             let shown: Vec<&NewsItem> = items.iter().take(NEWS_ROWS).collect();
             for it in shown.iter().take(5) {
                 s.source(&it.provenance);
@@ -536,4 +598,40 @@ pub(crate) async fn today(engine: Arc<Engine>, _req: ScreenRequest) -> Screen {
         }
     }
     s
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::sync::atomic::{AtomicUsize, Ordering};
+
+    /// A fetch that takes `ms` and counts how often it was started.
+    fn slow(n: &Arc<AtomicUsize>, ms: u64, v: u32) -> impl Future<Output = u32> + Send + 'static {
+        n.fetch_add(1, Ordering::SeqCst);
+        async move {
+            tokio::time::sleep(Duration::from_millis(ms)).await;
+            v
+        }
+    }
+
+    #[tokio::test(start_paused = true)]
+    async fn a_slow_part_is_fetched_once_and_fills_in_later() {
+        let (part, n, rt) = (Part::<u32>::default(), Arc::new(AtomicUsize::new(0)), tokio::runtime::Handle::current());
+        assert_eq!(part.get(&rt, false, "a", || slow(&n, 600, 1)).await, None, "still loading after the first paint");
+        assert_eq!(part.get(&rt, false, "a", || slow(&n, 600, 1)).await, None);
+        tokio::time::sleep(Duration::from_millis(200)).await;
+        assert_eq!(part.get(&rt, false, "a", || slow(&n, 600, 1)).await.as_deref(), Some(&1));
+        assert_eq!(n.load(Ordering::SeqCst), 1, "callers share one fetch");
+    }
+
+    #[tokio::test(start_paused = true)]
+    async fn a_refresh_shows_the_last_result_until_the_new_one_arrives() {
+        let (part, n, rt) = (Part::<u32>::default(), Arc::new(AtomicUsize::new(0)), tokio::runtime::Handle::current());
+        assert_eq!(part.get(&rt, false, "a", || slow(&n, 10, 1)).await.as_deref(), Some(&1));
+        assert_eq!(part.get(&rt, false, "a", || slow(&n, 900, 2)).await.as_deref(), Some(&1), "stale while refreshing");
+        tokio::time::sleep(Duration::from_millis(900)).await;
+        assert_eq!(part.get(&rt, false, "a", || slow(&n, 900, 3)).await.as_deref(), Some(&2));
+        assert_eq!(part.get(&rt, false, "b", || slow(&n, 900, 4)).await, None, "never another input's data");
+        assert_eq!(part.get(&rt, true, "c", || slow(&n, 900, 5)).await.as_deref(), Some(&5), "a fixed clock waits");
+    }
 }

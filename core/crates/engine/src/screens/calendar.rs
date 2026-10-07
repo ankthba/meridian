@@ -152,12 +152,6 @@ pub(crate) struct CalendarData {
 }
 
 impl CalendarData {
-    /// Every kind NOT AVAILABLE for one reason (the load itself failed).
-    pub(crate) fn failed(reason: &str) -> Self {
-        let section = |name| Section { name, status: SectionStatus::Unavailable(reason.to_owned()), note: "" };
-        Self { rows: Vec::new(), sections: vec![section("Earnings"), section("Dividends"), section("Macro")], provenance: Vec::new(), stale_since: None }
-    }
-
     /// NOT AVAILABLE and "nothing to show" notes, one per kind.
     pub(crate) fn notices(&self) -> Vec<Block> {
         self.sections

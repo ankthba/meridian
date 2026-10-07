@@ -50,10 +50,8 @@ pub struct Engine {
     /// Company news for TODAY by key set: (fetched at, items). In memory
     /// only, like `recent_news`; a short TTL keeps the home screen fast.
     pub(crate) holdings_news: Mutex<HashMap<String, (UnixNanos, Vec<meridian_types::NewsItem>)>>,
-    /// TODAY's slower sections still loading after the first paint, by the
-    /// inputs they were started for. The quick refresh that follows picks
-    /// the same task up instead of fetching again.
-    pub(crate) today_pending: Mutex<Option<(String, tokio::task::JoinHandle<crate::screens::today::Slow>)>>,
+    /// TODAY's slower sections, loading in the background between calls.
+    pub(crate) today: crate::screens::today::TodayParts,
     /// Fixed clock (tests, snapshots): screens wait for all their data so
     /// output is deterministic.
     pub(crate) deterministic: bool,
@@ -94,7 +92,7 @@ impl Engine {
             instruments: RwLock::new(HashMap::new()),
             recent_news: Mutex::new(HashMap::new()),
             holdings_news: Mutex::new(HashMap::new()),
-            today_pending: Mutex::new(None),
+            today: crate::screens::today::TodayParts::default(),
             deterministic: config.fixed_clock.is_some(),
             cancel: CancellationToken::new(),
         });
