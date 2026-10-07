@@ -22,11 +22,8 @@ targets:
     type: application
     platform: macOS
     sources:
-      # The Iosevka license ships with the fonts (SIL OFL 1.1 requires it).
       - path: Meridian
-    resources:
-      - path: Meridian/Resources/Fonts
-        buildPhase: resources
+        excludes: ["Resources/Fonts/**"]
     dependencies:
       - package: MeridianCore
     info:
@@ -38,7 +35,6 @@ targets:
         LSMinimumSystemVersion: "15.0"
         NSPrincipalClass: NSApplication
         LSApplicationCategoryType: public.app-category.finance
-        ATSApplicationFontsPath: "."
         NSHumanReadableCopyright: "Personal use. Market data per provider terms."
     settings:
       base:

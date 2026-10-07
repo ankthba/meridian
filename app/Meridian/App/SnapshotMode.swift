@@ -72,7 +72,7 @@ enum SnapshotMode {
                 try? await Task.sleep(nanoseconds: 700_000_000)
                 let view = PanelView(panel: panel, focused: false, focusToken: 0)
                     .frame(width: size.width, height: size.height)
-                    .background(Color.black)
+                    .background(Theme.bg.swiftUI)
                     .environment(\.colorScheme, .dark)
                 await render(view, size: size, to: out.appendingPathComponent(spec.fileName))
             }

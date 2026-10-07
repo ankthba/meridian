@@ -42,8 +42,6 @@ jobs:
           workspaces: core
       - name: Tools
         run: brew install xcodegen
-      - name: Fonts
-        run: scripts/fetch-fonts.sh
       - name: Core XCFramework + bindings
         run: scripts/build-core.sh
       - name: Generate project

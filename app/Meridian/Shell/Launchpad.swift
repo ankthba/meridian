@@ -161,6 +161,18 @@ struct LaunchpadView: View {
     var body: some View {
         VStack(spacing: 0) {
             toolbar
+            if let page = model.page, page.components.indices.contains(model.focused) {
+                ZStack(alignment: .topLeading) {
+                    CommandBar(panel: page.components[model.focused], focusToken: model.focusToken)
+                    if !page.components[model.focused].suggestions.isEmpty {
+                        CompletionPopover(panel: page.components[model.focused])
+                            .padding(.top, 44)
+                            .padding(.leading, 14)
+                            .zIndex(10)
+                    }
+                }
+                .zIndex(10)
+            }
             if let page = model.page {
                 GeometryReader { geo in
                     let cols = max(1, page.columns)
@@ -179,17 +191,17 @@ struct LaunchpadView: View {
                                         .frame(width: w, height: h)
                                         .clipped()
                                     } else {
-                                        Color.black.frame(width: w, height: h)
+                                        Theme.bg.swiftUI.frame(width: w, height: h)
                                     }
                                 }
                             }
                         }
                     }
-                    .background(Theme.grid.swiftUI)
+                    .background(Theme.line.swiftUI)
                 }
             }
         }
-        .background(Color.black)
+        .background(Theme.bg.swiftUI)
         .preferredColorScheme(.dark)
         .onAppear { model.ensureLoaded() }
         .onDisappear { model.save() }
@@ -197,32 +209,36 @@ struct LaunchpadView: View {
 
     private var toolbar: some View {
         HStack(spacing: 12) {
+            Text("LAUNCHPAD").font(Theme.label()).tracking(1.4).foregroundStyle(Theme.muted.swiftUI).padding(.leading, 74)
             ForEach(Array(model.pages.enumerated()), id: \.element.id) { i, p in
                 Text(p.name)
-                    .font(Theme.swiftFont(weight: .bold))
-                    .foregroundStyle(model.selected == i ? Color.black : Theme.amber.swiftUI)
-                    .padding(.horizontal, 6)
-                    .background(model.selected == i ? Theme.amber.swiftUI : Color.clear)
+                    .font(Theme.ui(12.5))
+                    .foregroundStyle((model.selected == i ? Theme.text : Theme.muted).swiftUI)
+                    .padding(.vertical, 3)
+                    .overlay(alignment: .bottom) { if model.selected == i { Rectangle().fill(Theme.text.swiftUI).frame(height: 1.5) } }
                     .onTapGesture { model.selected = i; model.focused = 0 }
             }
-            Text("+ Page").font(Theme.swiftFont()).foregroundStyle(Theme.muted.swiftUI).onTapGesture { model.addPage() }
+            Text("New page").font(Theme.ui(12)).foregroundStyle(Theme.muted.swiftUI).onTapGesture { model.addPage() }
             Spacer()
-            Text("Add:").font(Theme.swiftFont(11)).foregroundStyle(Theme.muted.swiftUI)
-            ForEach(["W", "GP", "GIP", "TOP", "CN", "WEI", "CRYP", "FXC", "ECO", "OMON"], id: \.self) { f in
-                Text(f).font(Theme.swiftFont(11, weight: .bold)).foregroundStyle(Theme.white.swiftUI)
-                    .onTapGesture { model.addComponent(f) }
+            Menu {
+                ForEach(["W", "GP", "GIP", "TOP", "CN", "WEI", "CRYP", "FXC", "ECO", "OMON"], id: \.self) { f in
+                    Button(FunctionLabel.short(f)) { model.addComponent(f) }
+                }
+            } label: {
+                Text("Add pane").font(Theme.ui(12)).foregroundStyle(Theme.text2.swiftUI)
             }
-            Text("Remove").font(Theme.swiftFont(11)).foregroundStyle(Theme.down.swiftUI).onTapGesture { model.removeFocused() }
+            .menuStyle(.button).buttonStyle(.plain).fixedSize()
+            Text("Remove pane").font(Theme.ui(12)).foregroundStyle(Theme.muted.swiftUI).onTapGesture { model.removeFocused() }
             Stepper("Cols \(model.page?.columns ?? 1)", value: Binding(
                 get: { model.page?.columns ?? 1 },
                 set: { if model.pages.indices.contains(model.selected) { model.pages[model.selected].columns = min(max($0, 1), 4); model.save() } }
             ), in: 1...4)
-            .font(Theme.swiftFont(11))
+            .font(Theme.ui(12))
             .fixedSize()
         }
-        .padding(.horizontal, 8)
-        .frame(height: 24)
-        .background(Color.black)
-        .overlay(alignment: .bottom) { Rectangle().fill(Theme.grid.swiftUI).frame(height: 1) }
+        .padding(.trailing, 14)
+        .frame(height: 40)
+        .background(Theme.bg.swiftUI)
+        .overlay(alignment: .bottom) { Rectangle().fill(Theme.line.swiftUI).frame(height: 1) }
     }
 }

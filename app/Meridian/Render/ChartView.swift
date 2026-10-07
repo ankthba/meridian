@@ -154,9 +154,9 @@ final class PriceChartNSView: NSView {
         let ticks = niceTicks(Double(minP) + series.origin, Double(maxP) + series.origin, count: 6)
         for t in ticks {
             let y = yFor(Float(t - series.origin))
-            ctx.setStrokeColor(Theme.grid.cgColor)
+            ctx.setStrokeColor(Theme.hairline.cgColor)
             ctx.move(to: CGPoint(x: 0, y: y)); ctx.addLine(to: CGPoint(x: pricePane.maxX, y: y)); ctx.strokePath()
-            (TerminalFormatter.fixed(t, series.decimals) as NSString).draw(at: NSPoint(x: pricePane.maxX + 4, y: y - 7), withAttributes: [.font: font, .foregroundColor: Theme.amber])
+            (TerminalFormatter.fixed(t, series.decimals) as NSString).draw(at: NSPoint(x: pricePane.maxX + 6, y: y - 7), withAttributes: [.font: font, .foregroundColor: Theme.muted])
         }
 
         // Decimation: aggregate into pixel buckets when bars exceed pixels.
@@ -166,7 +166,7 @@ final class PriceChartNSView: NSView {
 
         // Volume
         if maxV > 0 {
-            ctx.setFillColor(Theme.muted.withAlphaComponent(0.35).cgColor)
+            ctx.setFillColor(Theme.volume.cgColor)
             var i = lo
             while i < hi {
                 let j = min(i + step, hi)
@@ -206,14 +206,14 @@ final class PriceChartNSView: NSView {
                 ctx.saveGState()
                 ctx.addPath(fill)
                 ctx.clip()
-                let colors = [Theme.amber.withAlphaComponent(0.35).cgColor, Theme.amber.withAlphaComponent(0.0).cgColor] as CFArray
+                let colors = [Theme.text.withAlphaComponent(0.08).cgColor, Theme.text.withAlphaComponent(0.0).cgColor] as CFArray
                 if let g = CGGradient(colorsSpace: CGColorSpaceCreateDeviceRGB(), colors: colors, locations: [0, 1]) {
                     ctx.drawLinearGradient(g, start: CGPoint(x: 0, y: pricePane.minY), end: CGPoint(x: 0, y: pricePane.maxY), options: [])
                 }
                 ctx.restoreGState()
             }
-            ctx.setStrokeColor(Theme.amber.cgColor)
-            ctx.setLineWidth(1.5)
+            ctx.setStrokeColor(Theme.text.cgColor)
+            ctx.setLineWidth(1.8)
             ctx.addPath(path)
             ctx.strokePath()
         case .candles, .bars:
@@ -249,13 +249,13 @@ final class PriceChartNSView: NSView {
                 strokeSeries(ctx, st.values, lo, hi, step, rect: pricePane, color: color) { yFor($0) }
                 let last = st.values.last(where: { $0.isFinite }).map { Double($0) + series.origin }
                 let label = "\(st.name) \(last.map { TerminalFormatter.fixed($0, series.decimals) } ?? "")" as NSString
-                label.draw(at: NSPoint(x: legendX, y: 4), withAttributes: [.font: font, .foregroundColor: color])
+                label.draw(at: NSPoint(x: legendX, y: 6), withAttributes: [.font: font, .foregroundColor: color])
                 legendX += label.size(withAttributes: [.font: font]).width + 14
             }
         }
         for (pi, pane) in lowerPanes.enumerated() {
             let r = lowerRects[pi]
-            ctx.setStrokeColor(Theme.grid.cgColor)
+            ctx.setStrokeColor(Theme.line.cgColor)
             ctx.move(to: CGPoint(x: 0, y: r.minY)); ctx.addLine(to: CGPoint(x: bounds.width, y: r.minY)); ctx.strokePath()
             let lines = series.studies.enumerated().filter { $0.element.pane == pane }
             var mn = Float.greatestFiniteMagnitude, mx = -Float.greatestFiniteMagnitude
@@ -283,30 +283,30 @@ final class PriceChartNSView: NSView {
         while i < hi {
             let x = xFor(Double(i) + 0.5, pricePane)
             let d = Date(timeIntervalSince1970: Double(series.ts[i]) / 1e9)
-            let s = intraday ? Self.timeFmt.string(from: d) : Self.dateFmt.string(from: d)
-            (s as NSString).draw(at: NSPoint(x: x - 20, y: axisY), withAttributes: [.font: font, .foregroundColor: Theme.amber])
+            let s = intraday ? Self.timeFmt.string(from: d) : Self.axisFmt.string(from: d)
+            (s as NSString).draw(at: NSPoint(x: x - 20, y: axisY), withAttributes: [.font: font, .foregroundColor: Theme.muted])
             i += labelEvery
         }
 
         // Live last price
         let lastPrice = livePrice ?? (Double(series.close[n - 1]) + series.origin)
         let ly = yFor(Float(lastPrice - series.origin))
-        ctx.setStrokeColor(Theme.yellow.withAlphaComponent(0.6).cgColor)
-        ctx.setLineDash(phase: 0, lengths: [3, 3])
+        ctx.setStrokeColor(Theme.muted.withAlphaComponent(0.7).cgColor)
+        ctx.setLineDash(phase: 0, lengths: [2, 3])
         ctx.move(to: CGPoint(x: 0, y: ly)); ctx.addLine(to: CGPoint(x: pricePane.maxX, y: ly)); ctx.strokePath()
         ctx.setLineDash(phase: 0, lengths: [])
         let tag = NSRect(x: pricePane.maxX + 1, y: ly - 8, width: axisWidth - 2, height: 16)
-        Theme.yellow.setFill(); tag.fill()
-        (TerminalFormatter.fixed(lastPrice, series.decimals) as NSString).draw(at: NSPoint(x: tag.minX + 3, y: tag.minY + 1), withAttributes: [.font: font, .foregroundColor: NSColor.black])
+        Theme.text.setFill(); NSBezierPath(roundedRect: tag, xRadius: 3, yRadius: 3).fill()
+        (TerminalFormatter.fixed(lastPrice, series.decimals) as NSString).draw(at: NSPoint(x: tag.minX + 4, y: tag.minY + 1), withAttributes: [.font: font, .foregroundColor: Theme.bg])
 
         // Drawings
         for d in drawings + (pendingDrawing.map { [$0] } ?? []) {
-            ctx.setStrokeColor(Theme.white.cgColor)
+            ctx.setStrokeColor(Theme.text2.cgColor)
             ctx.setLineWidth(1.2)
             if d.kind == "hline" {
                 let y = yFor(Float(d.y1 - series.origin))
                 ctx.move(to: CGPoint(x: 0, y: y)); ctx.addLine(to: CGPoint(x: pricePane.maxX, y: y)); ctx.strokePath()
-                (TerminalFormatter.fixed(d.y1, series.decimals) as NSString).draw(at: NSPoint(x: 4, y: y - 14), withAttributes: [.font: font, .foregroundColor: Theme.white])
+                (TerminalFormatter.fixed(d.y1, series.decimals) as NSString).draw(at: NSPoint(x: 4, y: y - 14), withAttributes: [.font: font, .foregroundColor: Theme.text2])
             } else {
                 ctx.move(to: CGPoint(x: xFor(d.x1, pricePane), y: yFor(Float(d.y1 - series.origin))))
                 ctx.addLine(to: CGPoint(x: xFor(d.x2, pricePane), y: yFor(Float(d.y2 - series.origin))))
@@ -328,14 +328,15 @@ final class PriceChartNSView: NSView {
             let d = Date(timeIntervalSince1970: Double(series.ts[idx]) / 1e9)
             let f = { (v: Double) in TerminalFormatter.fixed(v, self.series.decimals) }
             let info = "\(intraday ? Self.dateTimeFmt.string(from: d) : Self.dateFmt.string(from: d))  O \(f(o))  H \(f(h))  L \(f(l))  C \(f(c))  V \(TerminalFormatter.large(Double(series.volume[idx]), 2))"
-            let box = NSRect(x: 6, y: 22, width: (info as NSString).size(withAttributes: [.font: font]).width + 10, height: 16)
-            NSColor.black.withAlphaComponent(0.85).setFill(); box.fill()
-            (info as NSString).draw(at: NSPoint(x: box.minX + 5, y: box.minY + 1), withAttributes: [.font: font, .foregroundColor: Theme.white])
+            let box = NSRect(x: 6, y: 24, width: (info as NSString).size(withAttributes: [.font: font]).width + 16, height: 22)
+            Theme.raised.setFill(); NSBezierPath(roundedRect: box, xRadius: 5, yRadius: 5).fill()
+            Theme.line.setStroke(); NSBezierPath(roundedRect: box.insetBy(dx: 0.5, dy: 0.5), xRadius: 5, yRadius: 5).stroke()
+            (info as NSString).draw(at: NSPoint(x: box.minX + 8, y: box.minY + 4), withAttributes: [.font: font, .foregroundColor: Theme.text])
             if pricePane.contains(m) {
                 let price = Double(minP + Float((pricePane.maxY - m.y) / pricePane.height) * (maxP - minP)) + series.origin
                 let pt = NSRect(x: pricePane.maxX + 1, y: m.y - 8, width: axisWidth - 2, height: 16)
-                Theme.white.setFill(); pt.fill()
-                (TerminalFormatter.fixed(price, series.decimals) as NSString).draw(at: NSPoint(x: pt.minX + 3, y: pt.minY + 1), withAttributes: [.font: font, .foregroundColor: NSColor.black])
+                Theme.hover.setFill(); NSBezierPath(roundedRect: pt, xRadius: 3, yRadius: 3).fill()
+                (TerminalFormatter.fixed(price, series.decimals) as NSString).draw(at: NSPoint(x: pt.minX + 4, y: pt.minY + 1), withAttributes: [.font: font, .foregroundColor: Theme.text])
             }
         }
     }
@@ -373,9 +374,10 @@ final class PriceChartNSView: NSView {
         return out
     }
 
-    private static let dateFmt: DateFormatter = { let f = DateFormatter(); f.dateFormat = "MM/dd/yy"; return f }()
+    private static let dateFmt: DateFormatter = { let f = DateFormatter(); f.dateFormat = "EEE, MMM d, yyyy"; return f }()
+    private static let axisFmt: DateFormatter = { let f = DateFormatter(); f.dateFormat = "MMM ''yy"; return f }()
     private static let timeFmt: DateFormatter = { let f = DateFormatter(); f.dateFormat = "HH:mm"; return f }()
-    private static let dateTimeFmt: DateFormatter = { let f = DateFormatter(); f.dateFormat = "MM/dd HH:mm"; return f }()
+    private static let dateTimeFmt: DateFormatter = { let f = DateFormatter(); f.dateFormat = "EEE, MMM d HH:mm"; return f }()
 
     // MARK: Interaction
 
@@ -525,20 +527,21 @@ struct ChartBlockView: View {
             HStack(spacing: 10) {
                 ForEach(DrawTool.allCases, id: \.self) { t in
                     Text(t.rawValue)
-                        .font(Theme.swiftFont(11))
-                        .foregroundStyle(tool == t ? Color.black : Theme.amber.swiftUI)
-                        .padding(.horizontal, 4)
-                        .background(tool == t ? Theme.amber.swiftUI : Color.clear)
+                        .font(Theme.ui(11.5))
+                        .foregroundStyle((tool == t ? Theme.text : Theme.muted).swiftUI)
+                        .padding(.vertical, 2)
+                        .overlay(alignment: .bottom) { if tool == t { Rectangle().fill(Theme.text.swiftUI).frame(height: 1) } }
+                        .contentShape(Rectangle())
                         .onTapGesture { tool = t }
                 }
-                Text("Clear").font(Theme.swiftFont(11)).foregroundStyle(Theme.muted.swiftUI)
+                Text("Clear").font(Theme.ui(11.5)).foregroundStyle(Theme.muted.swiftUI)
                     .onTapGesture { UserDefaults.standard.removeObject(forKey: drawingsKey); reloadToken += 1 }
                 Spacer()
-                if let error { Text(error).font(Theme.swiftFont(11)).foregroundStyle(Theme.down.swiftUI) }
-                Text("scroll/pinch: zoom · drag: pan · +/−/0").font(Theme.swiftFont(10)).foregroundStyle(Theme.muted.swiftUI)
+                if let error { Text(error).font(Theme.ui(11.5)).foregroundStyle(Theme.warn.swiftUI) }
+                Text("scroll to zoom · drag to pan").font(Theme.ui(11)).foregroundStyle(Theme.muted.swiftUI)
             }
-            .padding(.horizontal, 6)
-            .frame(height: 16)
+            .padding(.horizontal, 12)
+            .frame(height: 22)
             PriceChartRepresentable(series: series ?? ChartSeries(), style: spec.style, livePrice: livePrice, tool: tool, drawingsKey: drawingsKey, reloadToken: reloadToken)
         }
         .task(id: spec) { await load() }

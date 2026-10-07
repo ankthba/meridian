@@ -5,7 +5,6 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 PROFILE="${1:-debug}"
 CONFIG=$([ "$PROFILE" = "release" ] && echo Release || echo Debug)
-"$ROOT/scripts/fetch-fonts.sh" >/dev/null
 "$ROOT/scripts/build-core.sh" "$PROFILE" >/dev/null
 cd "$ROOT/app"
 xcodegen generate --spec project.yml >/dev/null

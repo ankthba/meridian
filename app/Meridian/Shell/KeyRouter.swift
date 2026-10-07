@@ -104,7 +104,7 @@ enum KeyRouter {
             // Typing anywhere goes to the focused command line.
             if !commandLineFocused(), e.modifierFlags.intersection([.command, .control]).isEmpty, let ch = e.characters, !ch.isEmpty,
                ch.unicodeScalars.allSatisfy({ CharacterSet.alphanumerics.union(.punctuationCharacters).union(.whitespaces).contains($0) }) {
-                panel.commandText += ch.uppercased()
+                panel.commandText += ch
                 panel.updateSuggestions()
                 ws.requestFocus()
                 return true

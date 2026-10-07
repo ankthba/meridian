@@ -55,7 +55,7 @@ final class TerminalGridView: NSView {
     private var colX: [CGFloat] = []
     private var colW: [CGFloat] = []
     private let numberWidth: CGFloat = 4
-    private let pad: CGFloat = 6
+    private let pad: CGFloat = 12
     private let font = Theme.font()
     private let boldFont = Theme.font(weight: .medium)
     private let flashDuration: CFTimeInterval = 0.35
@@ -348,13 +348,36 @@ final class TerminalGridView: NSView {
     private func drawHeader(_ ctx: CGContext, y: CGFloat) {
         let h = Theme.rowHeight
         for (i, c) in table.columns.enumerated() where i < colX.count {
-            drawText(ctx, c.title, in: NSRect(x: colX[i], y: y, width: colW[i], height: h), align: c.align, color: Theme.white)
+            drawLabel(ctx, c.title, in: NSRect(x: colX[i], y: y, width: colW[i], height: h), align: c.align)
         }
         if table.numbered {
-            drawText(ctx, "#", in: NSRect(x: pad, y: y, width: 4 * cellWidth, height: h), align: .left, color: Theme.white)
+            drawLabel(ctx, "#", in: NSRect(x: pad, y: y, width: 4 * cellWidth, height: h), align: .left)
         }
-        ctx.setFillColor(Theme.grid.cgColor)
+        ctx.setFillColor(Theme.line.cgColor)
         ctx.fill(CGRect(x: 0, y: y + h - 1, width: bounds.width, height: 1))
+    }
+
+    private static let labelFont = Theme.uiFont(11)
+    private static var labelLines: [String: CTLine] = [:]
+
+    /// Column headers: SF Pro 11 in `muted`, measured (not cell-width) for
+    /// alignment. Not on the hot path.
+    private func drawLabel(_ ctx: CGContext, _ s: String, in rect: NSRect, align: AlignFfi) {
+        guard !s.isEmpty else { return }
+        let l = Self.labelLines[s] ?? {
+            let l = CTLineCreateWithAttributedString(NSAttributedString(string: s, attributes: [.font: Self.labelFont, .foregroundColor: Theme.muted]))
+            Self.labelLines[s] = l
+            return l
+        }()
+        let w = min(CGFloat(CTLineGetTypographicBounds(l, nil, nil, nil)), rect.width)
+        let x: CGFloat = switch align {
+        case .left: rect.minX
+        case .right: rect.maxX - w
+        case .center: rect.midX - w / 2
+        }
+        let f = Self.labelFont
+        ctx.textPosition = CGPoint(x: x, y: rect.minY + (rect.height - (f.ascender - f.descender)) / 2 + f.ascender)
+        CTLineDraw(l, ctx)
     }
 
     private func drawFooter(_ ctx: CGContext, y: CGFloat) {
@@ -367,13 +390,15 @@ final class TerminalGridView: NSView {
         let h = Theme.rowHeight
         let row = table.rows[ri]
         if selectedRow == ri {
-            ctx.setFillColor(Theme.selection.cgColor)
+            ctx.setFillColor(Theme.selected.cgColor)
             ctx.fill(NSRect(x: 0, y: y, width: bounds.width, height: h))
         }
+        ctx.setFillColor(Theme.hairline.cgColor)
+        ctx.fill(NSRect(x: 0, y: y + h - 1, width: bounds.width, height: 1))
         let live = row.security.flatMap { feed?.row(for: $0) }
         let isFlashing = (flashing[vi] ?? 0) > CACurrentMediaTime()
         if table.numbered {
-            drawText(ctx, "\(ri + 1))", in: NSRect(x: pad, y: y, width: 4 * cellWidth, height: h), align: .left, color: Theme.white)
+            drawText(ctx, "\(ri + 1)", in: NSRect(x: pad, y: y, width: 4 * cellWidth, height: h), align: .left, color: Theme.muted)
         }
         let indent = CGFloat(row.depth) * 2 * cellWidth
         for (ci, col) in table.columns.enumerated() where ci < row.cells.count && ci < colX.count {
@@ -386,7 +411,10 @@ final class TerminalGridView: NSView {
                 if isFlashing, live.changed & HotRow.changedBit(lf) != 0 { cellFlash = true }
             }
             let text: String = {
-                if let t = cell.text, col.live == nil || value == nil { return t }
+                if let t = cell.text, col.live == nil || value == nil {
+                    // A cell showing the row's own security key reads as the ticker.
+                    return t == row.security ? SecurityText.ticker(t) : t
+                }
                 return TerminalFormatter.string(value, col.format)
             }()
             if let s = TerminalFormatter.signedStyle(value, col.format) { style = s }
@@ -396,7 +424,7 @@ final class TerminalGridView: NSView {
             if cellFlash {
                 let up = live.map { $0.flags & HotRow.tickUp != 0 } ?? true
                 ctx.setFillColor((up ? Theme.flashUp : Theme.flashDown).cgColor)
-                ctx.fill(cellRect.insetBy(dx: -2, dy: 0))
+                ctx.fill(cellRect.insetBy(dx: -3, dy: 1))
             }
             drawText(ctx, text, in: cellRect, align: col.align, color: style.color, bold: row.emphasis)
         }
@@ -436,7 +464,7 @@ final class TerminalGridView: NSView {
         case .right: rect.maxX - w
         case .center: rect.midX - w / 2
         }
-        ctx.textPosition = CGPoint(x: x, y: rect.minY + 2 + ascent)
+        ctx.textPosition = CGPoint(x: x, y: rect.minY + (rect.height - (ascent - font.descender)) / 2 + ascent)
         CTLineDraw(line(text, color, bold), ctx)
     }
 

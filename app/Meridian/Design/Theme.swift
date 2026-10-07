@@ -1,76 +1,93 @@
 import AppKit
-import CoreText
 import MeridianCore
 import SwiftUI
 
-/// Visual tokens. Values are PROVISIONAL: chosen from public descriptions
-/// of the terminal convention (amber on black, white emphasis, amber input
-/// cells, red function bar, green/red up/down) until reference screenshots
-/// exist; `scripts/palette` will replace them with measured values.
+/// Visual tokens for the Instrument design system (`docs/DESIGN.md`):
+/// graphite surfaces, bone text, no accent hue; green and red only for up
+/// and down. SF Pro for interface text, SF Mono for data.
 enum Theme {
-    // Colors
-    static let background = NSColor(srgbRed: 0, green: 0, blue: 0, alpha: 1)
-    static let amber = NSColor(srgbRed: 1.0, green: 0.627, blue: 0.157, alpha: 1) // #FFA028
-    static let white = NSColor(srgbRed: 0.949, green: 0.949, blue: 0.949, alpha: 1) // #F2F2F2
-    static let yellow = NSColor(srgbRed: 1.0, green: 0.878, blue: 0.0, alpha: 1) // #FFE000
-    static let muted = NSColor(srgbRed: 0.49, green: 0.49, blue: 0.49, alpha: 1) // #7D7D7D
-    static let up = NSColor(srgbRed: 0.184, green: 0.827, blue: 0.420, alpha: 1) // #2FD36B
-    static let down = NSColor(srgbRed: 1.0, green: 0.302, blue: 0.302, alpha: 1) // #FF4D4D
-    static let warning = NSColor(srgbRed: 1.0, green: 0.78, blue: 0.2, alpha: 1)
-    static let link = NSColor(srgbRed: 0.949, green: 0.949, blue: 0.949, alpha: 1)
-    static let functionBar = NSColor(srgbRed: 0.478, green: 0.059, blue: 0.059, alpha: 1) // #7A0F0F
-    static let grid = NSColor(srgbRed: 0.149, green: 0.149, blue: 0.149, alpha: 1) // #262626
-    static let commandBackground = NSColor(srgbRed: 0.043, green: 0.043, blue: 0.043, alpha: 1)
-    static let inputFill = amber
-    static let inputText = NSColor.black
-    static let focus = NSColor(srgbRed: 0.176, green: 0.420, blue: 1.0, alpha: 1) // #2D6BFF
-    static let mockBadge = NSColor(srgbRed: 0.753, green: 0.224, blue: 0.169, alpha: 1)
-    static let flashUp = NSColor(srgbRed: 0.05, green: 0.24, blue: 0.12, alpha: 1)
-    static let flashDown = NSColor(srgbRed: 0.28, green: 0.06, blue: 0.06, alpha: 1)
-    static let selection = NSColor(srgbRed: 0.12, green: 0.18, blue: 0.36, alpha: 1)
-    /// Distinct series colors for charts (amber first).
-    static let series: [NSColor] = [
-        amber, yellow, NSColor(srgbRed: 0.22, green: 0.74, blue: 0.97, alpha: 1), white,
-        NSColor(srgbRed: 0.75, green: 0.52, blue: 0.99, alpha: 1), up, down,
-    ]
-
-    // Typography
-    static let fontFamily = "Iosevka Fixed SS08"
-    static let baseSize: CGFloat = 13
-    nonisolated(unsafe) private static var registered = false
-
-    /// Registers bundled fonts once; falls back to Menlo if missing.
-    static func registerFonts() {
-        guard !registered else { return }
-        registered = true
-        let urls = Bundle.main.urls(forResourcesWithExtension: "ttf", subdirectory: nil) ?? []
-        for url in urls {
-            CTFontManagerRegisterFontsForURL(url as CFURL, .process, nil)
-        }
+    private static func rgb(_ hex: UInt32, _ a: CGFloat = 1) -> NSColor {
+        NSColor(srgbRed: CGFloat((hex >> 16) & 0xFF) / 255, green: CGFloat((hex >> 8) & 0xFF) / 255, blue: CGFloat(hex & 0xFF) / 255, alpha: a)
     }
 
+    // Surfaces
+    static let bg = rgb(0x121212)
+    static let header = rgb(0x181818)
+    static let raised = rgb(0x1B1B1B)
+    static let selected = rgb(0x1E1E1E)
+    static let hover = rgb(0x2A2A2A)
+    static let line = rgb(0x2A2A2A)
+    static let hairline = rgb(0x1F1F1F)
+    static let volume = rgb(0x232323)
+
+    // Text
+    static let text = rgb(0xE8E6E1)
+    static let text2 = rgb(0xBEBBB3)
+    static let muted = rgb(0x8A877F)
+
+    // Signal
+    static let up = rgb(0x5BC98A)
+    static let down = rgb(0xEF6F66)
+    static let warn = rgb(0xE0B25C)
+    /// `up`/`down` at ~10% over `bg`, precomputed for the hot grid path.
+    static let upTint = rgb(0x1A2A20)
+    static let downTint = rgb(0x2B1C1A)
+    static let diffAddText = rgb(0x9BE0B6)
+    static let diffDelText = rgb(0xF2A29C)
+
+    /// Distinguishable but restrained series colors for multi-line charts.
+    static let series: [NSColor] = [text, rgb(0x9CB4CC), rgb(0xC9A26B), rgb(0xA3C9A8), rgb(0xC4A2C9), text2, up, down]
+
+    // Roles used across the app (kept as names so call sites read clearly).
+    static let background = bg
+    static let white = text
+    static let amber = text2
+    static let yellow = text
+    static let warning = warn
+    static let link = text
+    static let grid = line
+    static let functionBar = header
+    static let commandBackground = header
+    static let inputText = text
+    static let focus = text
+    static let mockBadge = warn
+    static let flashUp = upTint
+    static let flashDown = downTint
+    static let selection = hover
+
+    // Typography
+    static let baseSize: CGFloat = 12.5
+
+    /// Kept for call sites from the bundled-font era; SF needs no registration.
+    static func registerFonts() {}
+
+    /// Data font: SF Mono, whose digits are tabular.
     static func font(_ size: CGFloat = baseSize, weight: NSFont.Weight = .regular) -> NSFont {
-        // PostScript names inside the bundled TTFs (not the file names).
-        let name: String
-        switch weight {
-        case .bold, .heavy, .black, .semibold: name = "Iosevka-Fixed-SS08-Bold"
-        case .medium: name = "Iosevka-Fixed-SS08-Medium"
-        default: name = "Iosevka-Fixed-SS08"
-        }
-        return NSFont(name: name, size: size) ?? NSFont.monospacedSystemFont(ofSize: size, weight: weight)
+        NSFont.monospacedSystemFont(ofSize: size, weight: weight)
     }
 
     static func swiftFont(_ size: CGFloat = baseSize, weight: NSFont.Weight = .regular) -> Font {
         Font(font(size, weight: weight))
     }
 
-    /// Width of one character cell at the base size.
-    static var charWidth: CGFloat {
-        let f = font()
-        return ("0" as NSString).size(withAttributes: [.font: f]).width
+    /// Interface font: SF Pro.
+    static func uiFont(_ size: CGFloat = 13, weight: NSFont.Weight = .regular) -> NSFont {
+        NSFont.systemFont(ofSize: size, weight: weight)
     }
 
-    static let rowHeight: CGFloat = 17
+    static func ui(_ size: CGFloat = 13, weight: Font.Weight = .regular) -> Font {
+        .system(size: size, weight: weight)
+    }
+
+    /// Pane label: SF Pro 10.5 bold, uppercase, tracked.
+    static func label() -> Font { .system(size: 10.5, weight: .bold) }
+
+    /// Width of one character cell at the base size.
+    static var charWidth: CGFloat {
+        ("0" as NSString).size(withAttributes: [.font: font()]).width
+    }
+
+    static let rowHeight: CGFloat = 22
 }
 
 extension NSColor {
@@ -80,14 +97,14 @@ extension NSColor {
 extension StyleFfi {
     var color: NSColor {
         switch self {
-        case .normal: Theme.amber
-        case .emphasis: Theme.white
+        case .normal: Theme.text
+        case .emphasis: Theme.text
         case .up: Theme.up
         case .down: Theme.down
         case .muted: Theme.muted
-        case .input: Theme.inputText
-        case .warning: Theme.warning
-        case .link: Theme.link
+        case .input: Theme.text
+        case .warning: Theme.warn
+        case .link: Theme.text
         }
     }
 }

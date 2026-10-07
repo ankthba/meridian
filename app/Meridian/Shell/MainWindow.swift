@@ -1,33 +1,49 @@
 import MeridianCore
 import SwiftUI
 
-/// The default four-panel window.
+/// The main window: top bar, the command bar (runs in the focused pane),
+/// and four panes. Layout per `docs/DESIGN.md`.
 struct MainWindow: View {
     @Bindable var app = AppModel.shared
     @Environment(\.openWindow) private var openWindow
     @Environment(\.openSettings) private var openSettings
 
     var body: some View {
+        let ws = app.workspace
         VStack(spacing: 0) {
-            StatusBar()
+            TopBar()
             if let err = app.startupError {
                 Text(err)
-                    .font(Theme.swiftFont())
+                    .font(Theme.ui(13))
                     .foregroundStyle(Theme.down.swiftUI)
                     .padding()
                 Spacer()
             } else {
-                panelGrid
+                ZStack(alignment: .topLeading) {
+                    VStack(spacing: 0) {
+                        CommandBar(panel: ws.focusedPanel, focusToken: ws.focusToken)
+                        panelGrid(ws)
+                    }
+                    if !ws.focusedPanel.suggestions.isEmpty {
+                        CompletionPopover(panel: ws.focusedPanel)
+                            .padding(.top, 44)
+                            .padding(.leading, 14)
+                            .zIndex(10)
+                    }
+                }
             }
         }
-        .background(Color.black)
+        .background(Theme.bg.swiftUI)
         .preferredColorScheme(.dark)
         .sheet(isPresented: $app.showKeyboardOverlay) { KeyboardOverlay() }
         .onReceive(NotificationCenter.default.publisher(for: .openLaunchpad)) { _ in
             openWindow(id: "launchpad", value: "1")
         }
+        .onReceive(NotificationCenter.default.publisher(for: .openSettingsRequest)) { _ in
+            openSettings()
+        }
         .task {
-            // Without stock data or EDGAR most screens are empty: open Setup.
+            // Without stock data or EDGAR most screens are empty: open Settings.
             let wanted = UserDefaults.standard.object(forKey: Preference.openSetupAtLaunch) as? Bool ?? true
             if wanted, app.mode == .live, !SnapshotMode.enabled, !PerfHarness.enabled, DataSource.essentialMissing {
                 openSettings()
@@ -35,22 +51,24 @@ struct MainWindow: View {
         }
     }
 
-    private var panelGrid: some View {
-        let ws = app.workspace
-        return GeometryReader { geo in
-            let w = (geo.size.width - 1) / 2
-            let h = (geo.size.height - 1) / 2
+    /// 2 × 2 panes, columns 1.45 : 1 and rows 1.2 : 1, hairline borders.
+    private func panelGrid(_ ws: Workspace) -> some View {
+        GeometryReader { geo in
+            let w0 = ((geo.size.width - 1) * 1.45 / 2.45).rounded()
+            let w1 = geo.size.width - 1 - w0
+            let h0 = ((geo.size.height - 1) * 1.2 / 2.2).rounded()
+            let h1 = geo.size.height - 1 - h0
             VStack(spacing: 1) {
                 HStack(spacing: 1) {
-                    cell(ws, 0).frame(width: w, height: h)
-                    cell(ws, 1).frame(width: w, height: h)
+                    cell(ws, 0).frame(width: w0, height: h0)
+                    cell(ws, 1).frame(width: w1, height: h0)
                 }
                 HStack(spacing: 1) {
-                    cell(ws, 2).frame(width: w, height: h)
-                    cell(ws, 3).frame(width: w, height: h)
+                    cell(ws, 2).frame(width: w0, height: h1)
+                    cell(ws, 3).frame(width: w1, height: h1)
                 }
             }
-            .background(Theme.grid.swiftUI)
+            .background(Theme.line.swiftUI)
         }
     }
 
@@ -62,58 +80,68 @@ struct MainWindow: View {
     }
 }
 
-struct StatusBar: View {
+/// Wordmark, data status and the clock.
+struct TopBar: View {
     @Bindable var app = AppModel.shared
     @Environment(\.openSettings) private var openSettings
     @State private var now = Date()
     private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     private static let clock: DateFormatter = {
         let f = DateFormatter()
-        f.dateFormat = "EEE MMM dd HH:mm:ss"
+        f.dateFormat = "HH:mm:ss"
         return f
     }()
 
     var body: some View {
         HStack(spacing: 14) {
-            Text("MERIDIAN").font(Theme.swiftFont(weight: .bold)).foregroundStyle(Theme.white.swiftUI)
-            if app.mode == .mock {
-                Text("MOCK DATA").font(Theme.swiftFont(weight: .bold)).foregroundStyle(.white)
-                    .padding(.horizontal, 6).background(Theme.mockBadge.swiftUI)
-                    .help("Synthetic data for automated tests (MERIDIAN_MODE=mock).")
-            } else {
-                Text("LIVE").font(Theme.swiftFont(weight: .bold)).foregroundStyle(.black)
-                    .padding(.horizontal, 6).background(Theme.up.swiftUI)
-                if app.missingSetup > 0 {
-                    Button { openSettings() } label: {
-                        Text("SETUP: \(app.missingSetup) SOURCE\(app.missingSetup == 1 ? "" : "S") NOT SET").font(Theme.swiftFont(11, weight: .bold)).foregroundStyle(Theme.warning.swiftUI)
-                    }
-                    .buttonStyle(.plain)
-                    .help("Open Settings → Setup (⌘,)")
-                }
-            }
-            ForEach(app.feeds) { f in
-                HStack(spacing: 4) {
-                    // Idle = connected on demand, nothing routed to it yet.
-                    Circle().fill((f.connected ? Theme.up : f.message.hasPrefix("idle") ? Theme.muted : Theme.down).swiftUI).frame(width: 7, height: 7)
-                    Text(f.provider).font(Theme.swiftFont(11)).foregroundStyle(Theme.muted.swiftUI)
-                }
-                .help(f.message)
-            }
-            if app.instrumentsLoaded > 0 {
-                Text("\(app.instrumentsLoaded) securities").font(Theme.swiftFont(11)).foregroundStyle(Theme.muted.swiftUI)
-            }
+            Text("MERIDIAN")
+                .font(Theme.ui(11, weight: .bold))
+                .tracking(3)
+                .foregroundStyle(Theme.text.swiftUI)
+                .padding(.leading, 74) // clear the window controls
             if let a = app.lastAlert {
-                Text("ALERT: \(a)").font(Theme.swiftFont(11)).foregroundStyle(Theme.warning.swiftUI).lineLimit(1)
+                Text("Alert · \(a)").font(Theme.ui(12)).foregroundStyle(Theme.warn.swiftUI).lineLimit(1)
             }
             Spacer()
-            Text("⌘/ keys").font(Theme.swiftFont(11)).foregroundStyle(Theme.muted.swiftUI)
-            Text(Self.clock.string(from: now)).font(Theme.swiftFont(11)).foregroundStyle(Theme.amber.swiftUI)
+            if app.mode == .mock {
+                Text("Mock data · tests only")
+                    .font(Theme.ui(12, weight: .semibold))
+                    .foregroundStyle(Theme.warn.swiftUI)
+                    .help("Synthetic data for automated tests (MERIDIAN_MODE=mock).")
+            } else if app.missingSetup > 0 {
+                Button { openSettings() } label: {
+                    Text("\(app.missingSetup) source\(app.missingSetup == 1 ? "" : "s") not set up")
+                        .font(Theme.ui(12))
+                        .foregroundStyle(Theme.warn.swiftUI)
+                }
+                .buttonStyle(.plain)
+                .help("Open Settings → Data Sources (⌘,)")
+            }
+            HStack(spacing: 6) {
+                Circle().fill(liveColor.swiftUI).frame(width: 6, height: 6)
+                Text(app.mode == .mock ? "Mock" : "Live").font(Theme.ui(12)).foregroundStyle(Theme.text2.swiftUI)
+            }
+            .help(app.feeds.map { "\($0.provider): \($0.message)" }.joined(separator: "\n"))
+            Text(app.feeds.map(\.provider).joined(separator: " · "))
+                .font(Theme.ui(12))
+                .foregroundStyle(Theme.muted.swiftUI)
+                .lineLimit(1)
+            Text(Self.clock.string(from: now))
+                .font(Theme.swiftFont(12))
+                .foregroundStyle(Theme.text2.swiftUI)
         }
-        .padding(.horizontal, 8)
-        .frame(height: 20)
-        .background(Color.black)
-        .overlay(alignment: .bottom) { Rectangle().fill(Theme.grid.swiftUI).frame(height: 1) }
+        .padding(.trailing, 14)
+        .frame(height: 40)
+        .background(Theme.bg.swiftUI)
+        .overlay(alignment: .bottom) { Rectangle().fill(Theme.line.swiftUI).frame(height: 1) }
         .onReceive(timer) { now = $0 }
+    }
+
+    /// Green when every connected-on-demand feed is healthy; red if one failed.
+    private var liveColor: NSColor {
+        if app.mode == .mock { return Theme.warn }
+        let failed = app.feeds.contains { !$0.connected && !$0.message.hasPrefix("idle") && !$0.message.hasPrefix("reconnecting with") }
+        return failed ? Theme.down : Theme.up
     }
 }
 
@@ -136,20 +164,25 @@ struct KeyboardOverlay: View {
     ]
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text("KEYBOARD").font(Theme.swiftFont(weight: .bold)).foregroundStyle(Theme.white.swiftUI)
-            Text("Mac F-keys send media keys unless fn is held or “Use F1, F2… as standard function keys” is on; ⌥1–⌥0 always work.")
-                .font(Theme.swiftFont(11)).foregroundStyle(Theme.muted.swiftUI)
+        VStack(alignment: .leading, spacing: 0) {
+            Text("KEYBOARD").font(Theme.label()).tracking(1.4).foregroundStyle(Theme.muted.swiftUI)
+            Text("Type plain commands like aapl 5y or aapl filings; the keys below are shortcuts. Mac F-keys send media keys unless fn is held; ⌥1–⌥0 always work.")
+                .font(Theme.ui(12)).foregroundStyle(Theme.text2.swiftUI)
+                .fixedSize(horizontal: false, vertical: true)
+                .padding(.vertical, 8)
             ForEach(Self.rows, id: \.0) { r in
                 HStack {
-                    Text(r.0).font(Theme.swiftFont(weight: .medium)).foregroundStyle(Theme.amber.swiftUI).frame(width: 180, alignment: .leading)
-                    Text(r.1).font(Theme.swiftFont()).foregroundStyle(Theme.white.swiftUI)
+                    Text(r.0).font(Theme.ui(12.5)).foregroundStyle(Theme.text2.swiftUI).frame(width: 180, alignment: .leading)
+                    Text(r.1).font(Theme.swiftFont(12)).foregroundStyle(Theme.text.swiftUI)
+                    Spacer()
                 }
+                .padding(.vertical, 4)
+                .overlay(alignment: .bottom) { Rectangle().fill(Theme.hairline.swiftUI).frame(height: 1) }
             }
-            HStack { Spacer(); Button("Close") { dismiss() }.keyboardShortcut(.cancelAction) }
+            HStack { Spacer(); Button("Close") { dismiss() }.keyboardShortcut(.cancelAction) }.padding(.top, 12)
         }
-        .padding(16)
-        .frame(width: 560)
-        .background(Color.black)
+        .padding(20)
+        .frame(width: 600)
+        .background(Theme.raised.swiftUI)
     }
 }

@@ -3,6 +3,7 @@ import MeridianCore
 
 extension Notification.Name {
     static let openLaunchpad = Notification.Name("meridian.openLaunchpad")
+    static let openSettingsRequest = Notification.Name("meridian.openSettings")
 }
 import Observation
 

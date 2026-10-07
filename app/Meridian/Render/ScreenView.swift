@@ -14,7 +14,7 @@ struct ScreenView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            titleRow
+            Color.clear.frame(height: 6)
             switch screen.status {
             case .ok:
                 if hasFillChart {
@@ -31,41 +31,28 @@ struct ScreenView: View {
                 notAvailable(reason)
                 ScrollView { VStack(alignment: .leading, spacing: 6) { blocks } }
             case let .error(message):
-                Text("ERROR — \(message)")
-                    .font(Theme.swiftFont())
+                Text(message)
+                    .font(Theme.ui(13))
                     .foregroundStyle(Theme.down.swiftUI)
-                    .padding(6)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 6)
                 Spacer()
             }
         }
     }
 
-    private var titleRow: some View {
-        HStack(spacing: 8) {
-            Text(screen.title)
-                .font(Theme.swiftFont(weight: .bold))
-                .foregroundStyle(Theme.white.swiftUI)
-                .lineLimit(1)
-            Spacer(minLength: 4)
-            ForEach(Array(screen.sources.enumerated()), id: \.offset) { _, b in
-                SourceBadgeView(badge: b)
-            }
-        }
-        .padding(.horizontal, 6)
-        .padding(.vertical, 3)
-    }
-
     private func notAvailable(_ reason: String) -> some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text("NOT AVAILABLE")
-                .font(Theme.swiftFont(weight: .bold))
-                .foregroundStyle(Theme.down.swiftUI)
+        VStack(alignment: .leading, spacing: 3) {
+            Text("Not available")
+                .font(Theme.ui(13, weight: .semibold))
+                .foregroundStyle(Theme.warn.swiftUI)
             Text(reason)
-                .font(Theme.swiftFont())
-                .foregroundStyle(Theme.amber.swiftUI)
+                .font(Theme.ui(13))
+                .foregroundStyle(Theme.text2.swiftUI)
                 .fixedSize(horizontal: false, vertical: true)
         }
-        .padding(6)
+        .padding(.horizontal, 12)
+        .padding(.vertical, 6)
     }
 
     @ViewBuilder
@@ -79,25 +66,9 @@ struct ScreenView: View {
 struct SourceBadgeView: View {
     let badge: SourceBadgeFfi
     var body: some View {
-        HStack(spacing: 4) {
-            if badge.synthetic {
-                Text("MOCK")
-                    .font(Theme.swiftFont(11, weight: .bold))
-                    .foregroundStyle(.white)
-                    .padding(.horizontal, 4)
-                    .background(Theme.mockBadge.swiftUI)
-            } else {
-                Text(badge.delay)
-                    .font(Theme.swiftFont(11, weight: .bold))
-                    .foregroundStyle(badge.delay == "RT" ? Theme.up.swiftUI : Theme.warning.swiftUI)
-                Text(badge.source)
-                    .font(Theme.swiftFont(11))
-                    .foregroundStyle(Theme.muted.swiftUI)
-            }
-            Text(badge.provider)
-                .font(Theme.swiftFont(11))
-                .foregroundStyle(Theme.muted.swiftUI)
-        }
+        Text(badge.synthetic ? "mock" : SourceText.describe(badge))
+            .font(Theme.ui(11))
+            .foregroundStyle((badge.synthetic ? Theme.warn : Theme.muted).swiftUI)
         .help(badge.attribution ?? "\(badge.provider) · \(badge.delay) · \(badge.source)")
     }
 }
@@ -128,19 +99,20 @@ struct BlockView: View {
             VStack(alignment: .leading, spacing: 2) {
                 if let title { SectionTitle(text: title) }
                 Text(body)
-                    .font(Theme.swiftFont())
-                    .foregroundStyle(Theme.amber.swiftUI)
+                    .font(Theme.ui(13))
+                    .lineSpacing(3)
+                    .foregroundStyle(Theme.text2.swiftUI)
                     .textSelection(.enabled)
                     .fixedSize(horizontal: false, vertical: true)
-                    .padding(.horizontal, 6)
+                    .padding(.horizontal, 12)
             }
         case let .inputs(title, inputs):
             InputsView(title: title, inputs: inputs, panel: panel)
         case let .notice(level, text):
             Text(text)
-                .font(Theme.swiftFont())
-                .foregroundStyle((level == .error ? Theme.down : level == .warning ? Theme.warning : Theme.muted).swiftUI)
-                .padding(.horizontal, 6)
+                .font(Theme.ui(12.5))
+                .foregroundStyle((level == .error ? Theme.down : level == .warning ? Theme.warn : Theme.muted).swiftUI)
+                .padding(.horizontal, 12)
                 .fixedSize(horizontal: false, vertical: true)
         case let .chart(spec):
             ChartBlockView(spec: spec, feed: feed)
@@ -160,10 +132,11 @@ struct SectionTitle: View {
     let text: String
     var body: some View {
         Text(text)
-            .font(Theme.swiftFont(weight: .bold))
-            .foregroundStyle(Theme.white.swiftUI)
-            .padding(.horizontal, 6)
-            .padding(.top, 2)
+            .font(Theme.ui(12, weight: .semibold))
+            .foregroundStyle(Theme.text.swiftUI)
+            .padding(.horizontal, 12)
+            .padding(.top, 8)
+            .padding(.bottom, 2)
     }
 }
 
@@ -175,7 +148,7 @@ struct FieldsView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 1) {
             if let title { SectionTitle(text: title) }
-            Grid(alignment: .leading, horizontalSpacing: 14, verticalSpacing: 1) {
+            Grid(alignment: .leading, horizontalSpacing: 24, verticalSpacing: 0) {
                 ForEach(Array(stride(from: 0, to: fields.count, by: max(columns, 1))), id: \.self) { start in
                     GridRow {
                         ForEach(start..<min(start + max(columns, 1), fields.count), id: \.self) { i in
@@ -184,25 +157,26 @@ struct FieldsView: View {
                     }
                 }
             }
-            .padding(.horizontal, 6)
+            .padding(.horizontal, 12)
         }
     }
 
     private func fieldCell(_ f: FieldFfi) -> some View {
-                    HStack(spacing: 6) {
-                        Text(f.label)
-                            .font(Theme.swiftFont())
-                            .foregroundStyle(Theme.amber.swiftUI)
-                            .lineLimit(1)
-                        Spacer(minLength: 4)
-                        Text(valueText(f))
-                            .font(Theme.swiftFont(weight: f.style == .emphasis ? .medium : .regular))
-                            .foregroundStyle(valueColor(f).swiftUI)
-                            .lineLimit(1)
-                            .textSelection(.enabled)
-                    }
-                    .overlay(alignment: .bottom) { Rectangle().fill(Color(white: 0.11)).frame(height: 1) }
-                    .frame(maxWidth: .infinity)
+        HStack(spacing: 8) {
+            Text(f.label)
+                .font(Theme.ui(12.5))
+                .foregroundStyle(Theme.muted.swiftUI)
+                .lineLimit(1)
+            Spacer(minLength: 6)
+            Text(valueText(f))
+                .font(Theme.swiftFont(13, weight: f.style == .emphasis ? .semibold : .regular))
+                .foregroundStyle(valueColor(f).swiftUI)
+                .lineLimit(1)
+                .textSelection(.enabled)
+        }
+        .padding(.vertical, 4)
+        .overlay(alignment: .bottom) { Rectangle().fill(Theme.hairline.swiftUI).frame(height: 1) }
+        .frame(maxWidth: .infinity)
     }
 
     private func valueText(_ f: FieldFfi) -> String {
@@ -213,7 +187,7 @@ struct FieldsView: View {
 
     private func valueColor(_ f: FieldFfi) -> NSColor {
         if let s = TerminalFormatter.signedStyle(f.value, f.format) { return s.color }
-        return f.style == .normal ? Theme.white : f.style.color
+        return f.style.color
     }
 }
 
@@ -227,12 +201,12 @@ struct InputsView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 2) {
             if let title { SectionTitle(text: title) }
-            FlowLayout(spacing: 12) {
+            FlowLayout(spacing: 18) {
                 ForEach(inputs, id: \.id) { input in
-                    HStack(spacing: 4) {
+                    HStack(spacing: 6) {
                         Text(input.label)
-                            .font(Theme.swiftFont())
-                            .foregroundStyle(Theme.amber.swiftUI)
+                            .font(Theme.ui(12.5))
+                            .foregroundStyle(Theme.muted.swiftUI)
                         switch input.kind {
                         case .choice:
                             Menu {
@@ -240,11 +214,14 @@ struct InputsView: View {
                                     Button(o) { panel.applyInput(id: input.id, value: o) }
                                 }
                             } label: {
-                                Text(panel.pendingInputs[input.id] ?? input.value)
-                                    .font(Theme.swiftFont())
-                                    .foregroundStyle(Theme.inputText.swiftUI)
-                                    .padding(.horizontal, 4)
-                                    .background(Theme.inputFill.swiftUI)
+                                HStack(spacing: 3) {
+                                    Text(panel.pendingInputs[input.id] ?? input.value)
+                                        .font(Theme.ui(12.5))
+                                        .foregroundStyle(Theme.text.swiftUI)
+                                    Image(systemName: "chevron.down").font(.system(size: 8, weight: .semibold)).foregroundStyle(Theme.muted.swiftUI)
+                                }
+                                .padding(.bottom, 2)
+                                .overlay(alignment: .bottom) { Rectangle().fill(Theme.line.swiftUI).frame(height: 1) }
                             }
                             .menuStyle(.button)
                             .buttonStyle(.plain)
@@ -260,7 +237,8 @@ struct InputsView: View {
                     }
                 }
             }
-            .padding(.horizontal, 6)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 4)
         }
     }
 
@@ -284,11 +262,11 @@ struct InputCell: View {
     var body: some View {
         TextField("", text: $text)
             .textFieldStyle(.plain)
-            .font(Theme.swiftFont())
-            .foregroundStyle(Theme.inputText.swiftUI)
-            .padding(.horizontal, 4)
+            .font(Theme.swiftFont(12.5))
+            .foregroundStyle(Theme.text.swiftUI)
+            .padding(.bottom, 2)
             .frame(width: width)
-            .background(Theme.inputFill.swiftUI)
+            .overlay(alignment: .bottom) { Rectangle().fill(Theme.line.swiftUI).frame(height: 1) }
             .onAppear { text = initial }
             .onChange(of: initial) { _, v in text = v }
             .onChange(of: text) { _, v in onChange(v) }
@@ -344,7 +322,10 @@ struct XyChartView: View {
                 SectionTitle(text: chart.title)
                 Spacer()
                 ForEach(Array(chart.series.enumerated()), id: \.offset) { i, s in
-                    Text(s.name).font(Theme.swiftFont(11)).foregroundStyle(color(i, s).swiftUI)
+                    HStack(spacing: 4) {
+                        Rectangle().fill(color(i, s).swiftUI).frame(width: 10, height: 2)
+                        Text(s.name).font(Theme.ui(11)).foregroundStyle(Theme.muted.swiftUI)
+                    }
                 }
             }
             Chart {
@@ -368,18 +349,18 @@ struct XyChartView: View {
                     }
                 }
                 if let m = chart.xMarker {
-                    RuleMark(x: .value("marker", m)).foregroundStyle(Theme.yellow.swiftUI.opacity(0.6))
+                    RuleMark(x: .value("marker", m)).foregroundStyle(Theme.muted.swiftUI.opacity(0.8))
                         .lineStyle(StrokeStyle(lineWidth: 1, dash: [3, 3]))
                 }
             }
-            .chartXAxis { AxisMarks { _ in AxisGridLine().foregroundStyle(Theme.grid.swiftUI); AxisValueLabel().font(Theme.swiftFont(10)).foregroundStyle(Theme.amber.swiftUI) } }
-            .chartYAxis { AxisMarks(position: .trailing) { _ in AxisGridLine().foregroundStyle(Theme.grid.swiftUI); AxisValueLabel().font(Theme.swiftFont(10)).foregroundStyle(Theme.amber.swiftUI) } }
+            .chartXAxis { AxisMarks { _ in AxisGridLine().foregroundStyle(Theme.hairline.swiftUI); AxisValueLabel().font(Theme.ui(10.5)).foregroundStyle(Theme.muted.swiftUI) } }
+            .chartYAxis { AxisMarks(position: .trailing) { _ in AxisGridLine().foregroundStyle(Theme.hairline.swiftUI); AxisValueLabel().font(Theme.swiftFont(10.5)).foregroundStyle(Theme.muted.swiftUI) } }
             .chartLegend(.hidden)
             .modifier(XDomain(chart: chart, isTime: isTime))
             .frame(height: CGFloat(max(chart.heightRows, 6)) * Theme.rowHeight)
-            .padding(.horizontal, 6)
+            .padding(.horizontal, 12)
             if chart.series.contains(where: \.bars), chart.xLabel.contains("|") {
-                Text(chart.xLabel).font(Theme.swiftFont(10)).foregroundStyle(Theme.muted.swiftUI).padding(.horizontal, 6)
+                Text(chart.xLabel).font(Theme.ui(10.5)).foregroundStyle(Theme.muted.swiftUI).padding(.horizontal, 12)
             }
         }
     }
@@ -424,22 +405,22 @@ struct HeatMapView: View {
             SectionTitle(text: map.title)
             Canvas { ctx, _ in
                 for (j, l) in map.colLabels.enumerated() {
-                    ctx.draw(Text(l).font(Theme.swiftFont(10)).foregroundColor(Theme.white.swiftUI), at: CGPoint(x: labelW + CGFloat(j) * cell + cell / 2, y: 8))
+                    ctx.draw(Text(l).font(Theme.ui(10.5)).foregroundColor(Theme.muted.swiftUI), at: CGPoint(x: labelW + CGFloat(j) * cell + cell / 2, y: 8))
                 }
                 for i in 0..<rows {
-                    ctx.draw(Text(map.rowLabels[i]).font(Theme.swiftFont(11)).foregroundColor(Theme.white.swiftUI), at: CGPoint(x: 4, y: 24 + CGFloat(i) * 18 + 9), anchor: .leading)
+                    ctx.draw(Text(map.rowLabels[i]).font(Theme.ui(11.5)).foregroundColor(Theme.text2.swiftUI), at: CGPoint(x: 4, y: 24 + CGFloat(i) * 18 + 9), anchor: .leading)
                     for j in 0..<cols {
                         let v = map.values[i * cols + j]
                         let r = CGRect(x: labelW + CGFloat(j) * cell, y: 16 + CGFloat(i) * 18, width: cell - 2, height: 16)
                         ctx.fill(Path(r), with: .color(color(v)))
                         if v.isFinite {
-                            ctx.draw(Text(TerminalFormatter.string(v, map.format)).font(Theme.swiftFont(10)).foregroundColor(.white), at: CGPoint(x: r.midX, y: r.midY))
+                            ctx.draw(Text(TerminalFormatter.string(v, map.format)).font(Theme.swiftFont(10.5)).foregroundColor(Theme.text.swiftUI), at: CGPoint(x: r.midX, y: r.midY))
                         }
                     }
                 }
             }
             .frame(width: labelW + CGFloat(cols) * cell + 8, height: 20 + CGFloat(rows) * 18)
-            .padding(.horizontal, 6)
+            .padding(.horizontal, 12)
         }
     }
 
@@ -449,14 +430,14 @@ struct HeatMapView: View {
     }
 
     private func color(_ v: Double) -> Color {
-        guard v.isFinite else { return Color(white: 0.08) }
+        guard v.isFinite else { return Theme.hairline.swiftUI }
         if map.diverging {
             let t = max(-1, min(1, v))
-            return t >= 0 ? Color(red: 0.05, green: 0.15 + 0.5 * t, blue: 0.1) : Color(red: 0.2 + 0.5 * -t, green: 0.05, blue: 0.05)
+            return (t >= 0 ? Theme.up : Theme.down).swiftUI.opacity(0.10 + 0.55 * abs(t))
         }
         let (lo, hi) = range
         let t = hi > lo ? (v - lo) / (hi - lo) : 0.5
-        return Color(red: 0.2 + 0.7 * t, green: 0.12 + 0.35 * t, blue: 0.05)
+        return Theme.text.swiftUI.opacity(0.06 + 0.40 * t)
     }
 }
 
@@ -468,18 +449,21 @@ struct DiffView: View {
         VStack(alignment: .leading, spacing: 1) {
             SectionTitle(text: title)
             ForEach(Array(lines.enumerated()), id: \.offset) { _, l in
-                HStack(alignment: .top, spacing: 4) {
+                let color = l.kind == .added ? Theme.diffAddText : l.kind == .removed ? Theme.diffDelText : Theme.muted
+                HStack(alignment: .top, spacing: 6) {
                     Text(l.kind == .added ? "+" : l.kind == .removed ? "−" : " ")
-                        .font(Theme.swiftFont(weight: .bold))
-                        .foregroundStyle((l.kind == .added ? Theme.up : l.kind == .removed ? Theme.down : Theme.muted).swiftUI)
+                        .font(Theme.swiftFont(11.5))
+                        .foregroundStyle(color.swiftUI)
                     Text(l.text)
-                        .font(Theme.swiftFont())
-                        .foregroundStyle((l.kind == .same ? Theme.muted : Theme.white).swiftUI)
+                        .font(Theme.swiftFont(11.5))
+                        .foregroundStyle(color.swiftUI)
                         .fixedSize(horizontal: false, vertical: true)
                         .textSelection(.enabled)
+                    Spacer(minLength: 0)
                 }
-                .padding(.horizontal, 6)
-                .background((l.kind == .added ? Theme.flashUp : l.kind == .removed ? Theme.flashDown : Theme.background).swiftUI)
+                .padding(.horizontal, 8)
+                .padding(.vertical, 1.5)
+                .background((l.kind == .added ? Theme.upTint : l.kind == .removed ? Theme.downTint : Theme.bg).swiftUI)
             }
         }
     }

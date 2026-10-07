@@ -212,9 +212,6 @@ struct AboutPane: View {
             } header: {
                 Text("Data credits")
             }
-            Section("Fonts") {
-                Text("Iosevka by Renzhi Li (Belleve Invis), licensed under the SIL Open Font License 1.1.")
-            }
             Section {
                 Text("For personal use. Meridian doesn't redistribute market data and isn't affiliated with any market-data or terminal vendor.")
                     .foregroundStyle(.secondary)

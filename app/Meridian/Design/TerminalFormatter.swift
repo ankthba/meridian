@@ -119,3 +119,24 @@ enum TerminalFormatter {
         }
     }
 }
+
+/// Plain display of security keys: "AAPL US Equity" reads as "AAPL",
+/// "BTCUSD Curncy" as "BTCUSD". Non-US listings keep their exchange.
+enum SecurityText {
+    static func ticker(_ key: String) -> String {
+        let parts = key.split(separator: " ")
+        guard parts.count >= 2 else { return key }
+        if parts.count == 3, parts[1] == "US" { return String(parts[0]) }
+        if parts.count == 2 { return String(parts[0]) }
+        return parts.dropLast().joined(separator: " ")
+    }
+}
+
+/// "iex · rt · alpaca": venue, delay and provider, without repeating a venue
+/// that is just the provider's name.
+enum SourceText {
+    static func describe(_ b: SourceBadgeFfi) -> String {
+        let source = b.source.lowercased(), provider = b.provider.lowercased()
+        return (source == provider ? [b.delay.lowercased(), provider] : [source, b.delay.lowercased(), provider]).joined(separator: " · ")
+    }
+}

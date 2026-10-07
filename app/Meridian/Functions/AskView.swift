@@ -94,25 +94,27 @@ struct AskView: View {
                             TurnView(turn: t).id(t.id)
                         }
                     }
-                    .padding(6)
+                    .padding(12)
                 }
                 .onChange(of: model.turns.last?.answer) { _, _ in
                     if let id = model.turns.last?.id { proxy.scrollTo(id, anchor: .bottom) }
                 }
             }
-            HStack(spacing: 6) {
-                Text("ASK>").font(Theme.swiftFont(weight: .bold)).foregroundStyle(Theme.yellow.swiftUI)
-                TextField("Ask about \(panel.security ?? "markets") — e.g. “How has it performed vs SPY this year?”", text: $model.draft)
+            HStack(spacing: 8) {
+                Text("Ask").font(Theme.ui(12.5, weight: .semibold)).foregroundStyle(Theme.muted.swiftUI)
+                TextField("Ask about \(panel.security ?? "markets"), e.g. how has it done against SPY this year?", text: $model.draft)
                     .textFieldStyle(.plain)
-                    .font(Theme.swiftFont())
-                    .foregroundStyle(Theme.yellow.swiftUI)
+                    .font(Theme.ui(13.5))
+                    .foregroundStyle(Theme.text.swiftUI)
                     .onSubmit { model.send(security: panel.security) }
                 if model.turns.last?.running == true {
-                    Text("Stop").font(Theme.swiftFont()).foregroundStyle(Theme.down.swiftUI).onTapGesture { model.cancel() }
+                    Text("Stop").font(Theme.ui(12.5)).foregroundStyle(Theme.down.swiftUI).onTapGesture { model.cancel() }
                 }
             }
-            .padding(6)
-            .background(Theme.commandBackground.swiftUI)
+            .padding(.horizontal, 12)
+            .frame(height: 38)
+            .background(Theme.header.swiftUI)
+            .overlay(alignment: .top) { Rectangle().fill(Theme.line.swiftUI).frame(height: 1) }
         }
     }
 }
@@ -122,34 +124,35 @@ private struct TurnView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text("Q: \(turn.question)").font(Theme.swiftFont(weight: .bold)).foregroundStyle(Theme.white.swiftUI)
+            Text(turn.question).font(Theme.ui(13.5, weight: .semibold)).foregroundStyle(Theme.text.swiftUI)
             if turn.running && turn.answer.isEmpty {
                 Text(turn.calls.isEmpty ? "Thinking…" : "Running \(turn.calls.last!.name)…")
-                    .font(Theme.swiftFont()).foregroundStyle(Theme.muted.swiftUI)
+                    .font(Theme.ui(12.5)).foregroundStyle(Theme.muted.swiftUI)
             }
             Text(attributed)
-                .font(Theme.swiftFont())
+                .font(Theme.ui(13))
+                .lineSpacing(3)
                 .textSelection(.enabled)
                 .fixedSize(horizontal: false, vertical: true)
             if let f = turn.final {
                 let unverified = f.checks.filter { !$0.verified }.count
                 HStack(spacing: 12) {
-                    Text(unverified == 0 ? "All \(f.checks.count) numbers verified against tool results" : "\(unverified) UNVERIFIED number(s) highlighted in red")
+                    Text(unverified == 0 ? "All \(f.checks.count) numbers match the data retrieved" : "\(unverified) number\(unverified == 1 ? "" : "s") not found in the data, marked in red")
                         .foregroundStyle((unverified == 0 ? Theme.up : Theme.down).swiftUI)
                     Text("\(f.model)\(f.servedByFallback ? " (fallback)" : "") · in \(f.inputTokens) / out \(f.outputTokens) · cache \(f.cacheReadTokens)")
                         .foregroundStyle(Theme.muted.swiftUI)
                 }
-                .font(Theme.swiftFont(11))
+                .font(Theme.ui(11.5))
             }
             if let e = turn.error {
-                Text("ERROR — \(e)").font(Theme.swiftFont()).foregroundStyle(Theme.down.swiftUI)
+                Text(e).font(Theme.ui(12.5)).foregroundStyle(Theme.down.swiftUI)
             }
             if !turn.tools.isEmpty {
-                Text("SOURCES").font(Theme.swiftFont(11, weight: .bold)).foregroundStyle(Theme.white.swiftUI).padding(.top, 2)
+                Text("SOURCES").font(Theme.label()).tracking(1.4).foregroundStyle(Theme.muted.swiftUI).padding(.top, 4)
                 ForEach(Array(turn.tools.enumerated()), id: \.offset) { i, t in
                     VStack(alignment: .leading, spacing: 0) {
                         Text("[\(i + 1)] \(t.tool)  \(t.inputJson)")
-                            .foregroundStyle((t.isError ? Theme.down : Theme.amber).swiftUI)
+                            .foregroundStyle((t.isError ? Theme.down : Theme.text2).swiftUI)
                             .lineLimit(2)
                         HStack(spacing: 10) {
                             if !t.sources.isEmpty { Text(t.sources.joined(separator: ", ")) }
@@ -158,7 +161,7 @@ private struct TurnView: View {
                         }
                         .foregroundStyle(Theme.muted.swiftUI)
                         if let sql = t.sql {
-                            Text(sql).foregroundStyle(Theme.white.swiftUI).textSelection(.enabled)
+                            Text(sql).foregroundStyle(Theme.text.swiftUI).textSelection(.enabled)
                         }
                     }
                     .font(Theme.swiftFont(11))
@@ -170,7 +173,7 @@ private struct TurnView: View {
     /// Answer text with unverified numbers marked red-on-dark.
     private var attributed: AttributedString {
         var a = AttributedString(turn.answer)
-        a.foregroundColor = Theme.amber.swiftUI
+        a.foregroundColor = Theme.text2.swiftUI
         guard let f = turn.final else { return a }
         let ns = turn.answer as NSString
         for c in f.checks where !c.verified {
