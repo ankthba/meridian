@@ -1,0 +1,1882 @@
+{
+  "args": [],
+  "blocks": [
+    {
+      "Inputs": {
+        "inputs": [
+          {
+            "id": "topic",
+            "kind": "Choice",
+            "label": "Help on",
+            "options": [
+              "Overview",
+              "DES",
+              "GP",
+              "GIP",
+              "HP",
+              "W",
+              "BLP",
+              "SECF",
+              "MOST",
+              "N",
+              "CN",
+              "TOP",
+              "FA",
+              "EE",
+              "ERN",
+              "ANR",
+              "HDS",
+              "DVD",
+              "CF",
+              "OMON",
+              "OVDV",
+              "OVME",
+              "EQS",
+              "RV",
+              "CORR",
+              "PORT",
+              "BTST",
+              "ALRT",
+              "WEI",
+              "ECO",
+              "FXC",
+              "CRYP",
+              "ASK",
+              "HELP"
+            ],
+            "value": "Overview"
+          }
+        ],
+        "title": null
+      }
+    },
+    {
+      "Text": {
+        "body": "<security> <yellow key> <function> <GO>     AAPL US <EQUITY> DES <GO>\n<function> <GO>                              runs on the panel's loaded security: DES <GO>\n<security> <yellow key> <GO>                 loads the security and opens its function menu\n<n> <GO>                                     selects numbered item n\nany other text <GO>                          searches for securities (SECF)\n\nYellow keys: GOVT  CORP  MTGE  M-MKT  MUNI  PFD  EQUITY  CMDTY  INDEX  CRNCY\nA security is SYMBOL [EXCHANGE] <yellow key>; equities without an exchange are US.\nHELP <GO> opens this page; pick a function under \"Help on\" for its own page.",
+        "title": "Command Syntax"
+      }
+    },
+    {
+      "Table": {
+        "columns": [
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Key",
+            "width": 22
+          },
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Binding",
+            "width": 44
+          }
+        ],
+        "numbered": false,
+        "page_size": null,
+        "rows": [
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "GO",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Return",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "CANCEL",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Esc",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "MENU (back)",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "⌘[  ·  End  ·  Delete on empty line",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "HELP",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "F1  ·  ⌘?   (twice: function directory)",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "PAGE FWD / BACK",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "PgDn / PgUp  ·  ⌘↓ / ⌘↑",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "PANEL (next / prev)",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "⌃Tab / ⌃⇧Tab  ·  ⌘1–⌘4",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "Autocomplete",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "↑ ↓ to choose · Tab to accept",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "Numbered item",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "<n> Return",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "GOVT",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "F2 · ⌥1",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "CORP",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "F3 · ⌥2",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "MTGE",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "F4 · ⌥3",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "M-MKT",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "F5 · ⌥4",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "MUNI",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "F6 · ⌥5",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "PFD",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "F7 · ⌥6",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "EQUITY",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "F8 · ⌥7",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "CMDTY",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "F9 · ⌥8",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "INDEX",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "F10 · ⌥9",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "CRNCY",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "F11 · ⌥0",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "Launchpad",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "BLP <GO>",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "Settings / API keys",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "⌘,",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "Key reference overlay",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "⌘/",
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": false,
+            "security": null
+          }
+        ],
+        "title": "Keys"
+      }
+    },
+    {
+      "Table": {
+        "columns": [
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Function",
+            "width": 9
+          },
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Title",
+            "width": 28
+          },
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Security",
+            "width": 20
+          },
+          {
+            "align": "Left",
+            "format": "Text",
+            "live": null,
+            "title": "Description",
+            "width": 90
+          }
+        ],
+        "numbered": false,
+        "page_size": null,
+        "rows": [
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "Security",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": true,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DES",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "DES",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Security Description",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Required",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Profile of the security: business summary, key statistics, and identifiers.",
+                "value": null
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "SECF",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "SECF",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Security Finder",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "—",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Search for securities by name, ticker, or asset class.",
+                "value": null
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "Charts & Prices",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": true,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "GP",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "GP",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Historical Price Graph",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Required",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Historical price chart with technical indicators and drawing tools.",
+                "value": null
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "GIP",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "GIP",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Intraday Price Graph",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Required",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Intraday chart of the current or a recent trading session.",
+                "value": null
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "HP",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "HP",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Historical Prices",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Required",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Table of historical open, high, low, close, and volume.",
+                "value": null
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "News",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": true,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "N",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "N",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "News",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "—",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "News main menu: top stories, sources, and topics.",
+                "value": null
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "CN",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "CN",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Company News",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Optional",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "News for the loaded security, or general market news when none is loaded.",
+                "value": null
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "TOP",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "TOP",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Top News",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "—",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Top headlines across markets.",
+                "value": null
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "Company Fundamentals",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": true,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "FA",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "FA",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Financial Analysis",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Required (EQUITY)",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Financial statements and ratios: income statement, balance sheet, and cash flow.",
+                "value": null
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "EE",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "EE",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Earnings Estimates",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Required (EQUITY)",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Consensus analyst estimates for EPS, revenue, and other metrics.",
+                "value": null
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "ERN",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "ERN",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Earnings History",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Required (EQUITY)",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Reported earnings against consensus, with surprises and price reaction.",
+                "value": null
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "ANR",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "ANR",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Analyst Recommendations",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Required (EQUITY)",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Analyst ratings, price targets, and the consensus recommendation.",
+                "value": null
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "HDS",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "HDS",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Holders",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Required (EQUITY)",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Institutional and insider holders of the security.",
+                "value": null
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "DVD",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "DVD",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Dividends and Splits",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Required (EQUITY)",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Dividend history and projections, and stock splits.",
+                "value": null
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "Filings",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": true,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "CF",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "CF",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Company Filings",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Required (EQUITY)",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Regulatory filings such as 10-K, 10-Q, and 8-K, with summaries and changes from the prior filing.",
+                "value": null
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "Derivatives",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": true,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "OMON",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "OMON",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Option Monitor",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Required (EQUITY, INDEX)",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Option chain with prices, implied volatility, and Greeks.",
+                "value": null
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "OVDV",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "OVDV",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Volatility Surface",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Required (EQUITY, INDEX)",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Implied volatility surface and skew across strikes and expiries.",
+                "value": null
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "OVME",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "OVME",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Option Valuation",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Required (EQUITY, INDEX)",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Value options and multi-leg strategies, with payoff and scenario analysis.",
+                "value": null
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "Analytics",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": true,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "EQS",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "EQS",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Equity Screener",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "—",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Screen equities by fundamental and market criteria.",
+                "value": null
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "RV",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "RV",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Relative Valuation",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Required (EQUITY)",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Compare the security with its peers on valuation and performance.",
+                "value": null
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "CORR",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "CORR",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Correlation Matrix",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Optional",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Correlation of returns across a set of securities.",
+                "value": null
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "PORT",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "PORT",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Portfolio Analytics",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "—",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Portfolio holdings, performance, and risk.",
+                "value": null
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "BTST",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "BTST",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Backtester",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Required",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Backtest a trading strategy on the security's price history.",
+                "value": null
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "Macro & Cross-Asset",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": true,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "WEI",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "WEI",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "World Equity Indices",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "—",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Major equity indices worldwide with price and performance.",
+                "value": null
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "ECO",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "ECO",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Economic Calendar",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "—",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Economic releases with actual, consensus, and prior values, plus economic data series.",
+                "value": null
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "FXC",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "FXC",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "FX Cross Rates",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "—",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Matrix of cross exchange rates between major currencies.",
+                "value": null
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "Monitors",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": true,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "W",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "W",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Worksheet",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "—",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Real-time worksheet of securities with configurable columns.",
+                "value": null
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "MOST",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "MOST",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Most Active",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "—",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Most active securities ranked by volume, value traded, and price change.",
+                "value": null
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "ALRT",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "ALRT",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Alerts",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "—",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Create and manage price and event alerts.",
+                "value": null
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "CRYP",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "CRYP",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Crypto Monitor",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "—",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Prices and market data for cryptocurrencies.",
+                "value": null
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "Workspace",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": true,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "BLP",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "BLP",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Launchpad",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "—",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Workspace of monitors, charts, news, and function panels across pages and displays.",
+                "value": null
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "HELP",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "HELP",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "Help",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "—",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Command syntax, the keyboard map, and a directory of every function; with a topic, help for one function.",
+                "value": null
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": null
+          },
+          {
+            "action": null,
+            "cells": [
+              {
+                "style": "Emphasis",
+                "text": "AI",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": null,
+                "value": null
+              }
+            ],
+            "depth": 0,
+            "emphasis": true,
+            "security": null
+          },
+          {
+            "action": {
+              "args": [],
+              "function": "ASK",
+              "security": null
+            },
+            "cells": [
+              {
+                "style": "Link",
+                "text": "ASK",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "AI Analyst",
+                "value": null
+              },
+              {
+                "style": "Normal",
+                "text": "—",
+                "value": null
+              },
+              {
+                "style": "Muted",
+                "text": "Ask questions about markets and securities in plain language; numbers in answers are checked against the data used.",
+                "value": null
+              }
+            ],
+            "depth": 1,
+            "emphasis": false,
+            "security": null
+          }
+        ],
+        "title": "Function Directory (select a row to open it)"
+      }
+    }
+  ],
+  "function": "HELP",
+  "menu": [],
+  "refresh_ms": null,
+  "security": null,
+  "sources": [
+    {
+      "as_of": 1791216000000000000,
+      "attribution": null,
+      "delay": "MOCK",
+      "provider": "mock",
+      "source": "MOCK",
+      "synthetic": true
+    }
+  ],
+  "status": "Ok",
+  "title": "Help"
+}

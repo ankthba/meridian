@@ -73,6 +73,8 @@ fn cases() -> Vec<(&'static str, ScreenRequest)> {
         ("w", req("W", None, &[])),
         ("most", req("MOST", None, &[])),
         ("secf_apple", req("SECF", None, &[("q", "apple")])),
+        ("help", req("HELP", None, &[])),
+        ("help_gp", req("HELP", None, &[("topic", "GP")])),
     ]
 }
 

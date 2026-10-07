@@ -90,7 +90,7 @@ const EQUITY_INDEX: &[MarketSector] = &[MarketSector::Equity, MarketSector::Inde
 use FunctionCategory as C;
 use SecurityNeed as S;
 
-static REGISTRY: [FunctionSpec; 32] = [
+static REGISTRY: [FunctionSpec; 33] = [
     // Core market
     FunctionSpec {
         mnemonic: "DES",
@@ -661,6 +661,26 @@ static REGISTRY: [FunctionSpec; 32] = [
         sectors: ANY,
         category: C::Ai,
     },
+    // Help
+    FunctionSpec {
+        mnemonic: "HELP",
+        title: "Help",
+        description: "Command syntax, the keyboard map, and a directory of every function; with a topic, help for one function.",
+        keywords: &[
+            "help",
+            "keys",
+            "keyboard",
+            "syntax",
+            "commands",
+            "functions",
+            "directory",
+            "guide",
+            "manual",
+        ],
+        needs_security: S::None,
+        sectors: ANY,
+        category: C::Workspace,
+    },
 ];
 
 #[cfg(test)]
@@ -669,10 +689,10 @@ mod tests {
 
     use super::*;
 
-    const EXPECTED: [&str; 32] = [
+    const EXPECTED: [&str; 33] = [
         "DES", "GP", "GIP", "HP", "W", "BLP", "SECF", "MOST", "N", "CN", "TOP", "FA", "EE", "ERN",
         "ANR", "HDS", "DVD", "CF", "OMON", "OVDV", "OVME", "EQS", "RV", "CORR", "PORT", "BTST",
-        "ALRT", "WEI", "ECO", "FXC", "CRYP", "ASK",
+        "ALRT", "WEI", "ECO", "FXC", "CRYP", "ASK", "HELP",
     ];
 
     fn spec(m: &str) -> &'static FunctionSpec {
@@ -768,7 +788,7 @@ mod tests {
         );
         for m in [
             "WEI", "ECO", "FXC", "CRYP", "TOP", "N", "EQS", "BLP", "W", "MOST", "PORT", "ALRT",
-            "ASK", "SECF",
+            "ASK", "SECF", "HELP",
         ] {
             assert_eq!(spec(m).needs_security, SecurityNeed::None, "{m}");
         }
@@ -795,5 +815,6 @@ mod tests {
         assert_eq!(spec("ECO").category, FunctionCategory::Macro);
         assert_eq!(spec("BLP").category, FunctionCategory::Workspace);
         assert_eq!(spec("ASK").category, FunctionCategory::Ai);
+        assert_eq!(spec("HELP").category, FunctionCategory::Workspace);
     }
 }
