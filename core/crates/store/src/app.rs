@@ -75,6 +75,13 @@ const MIGRATIONS: &[&str] = &[
     );
     CREATE TABLE provider_settings (provider TEXT PRIMARY KEY, json TEXT NOT NULL);
     ",
+    // 2: read state of SEC filings in the FILINGS inbox, by accession number
+    r"
+    CREATE TABLE filing_reads (
+        accession TEXT PRIMARY KEY,
+        read_at INTEGER NOT NULL
+    );
+    ",
 ];
 
 fn migrate(conn: &Connection) -> StoreResult<()> {
@@ -440,6 +447,41 @@ impl AppStore {
         Ok(rows)
     }
 
+    // --- filing read state (FILINGS) -------------------------------------
+
+    /// Marks filings read (accession numbers). Already-read ones keep their
+    /// first read time.
+    pub fn mark_filings_read(&self, accessions: &[String], now: i64) -> StoreResult<()> {
+        let mut conn = self.conn.lock();
+        let tx = conn.transaction()?;
+        {
+            let mut ins = tx.prepare("INSERT OR IGNORE INTO filing_reads(accession, read_at) VALUES (?1, ?2)")?;
+            for a in accessions {
+                ins.execute(params![a, now])?;
+            }
+        }
+        tx.commit()?;
+        Ok(())
+    }
+
+    pub fn mark_filing_unread(&self, accession: &str) -> StoreResult<()> {
+        self.conn.lock().execute("DELETE FROM filing_reads WHERE accession = ?1", [accession])?;
+        Ok(())
+    }
+
+    /// The subset of `accessions` that has been read.
+    pub fn read_filings(&self, accessions: &[String]) -> StoreResult<std::collections::HashSet<String>> {
+        let conn = self.conn.lock();
+        let mut stmt = conn.prepare("SELECT 1 FROM filing_reads WHERE accession = ?1")?;
+        let mut out = std::collections::HashSet::new();
+        for a in accessions {
+            if stmt.exists([a])? {
+                out.insert(a.clone());
+            }
+        }
+        Ok(out)
+    }
+
     // --- provider settings (never secrets) ------------------------------
 
     pub fn provider_settings(&self, provider: &str) -> StoreResult<Option<String>> {
@@ -507,6 +549,34 @@ mod tests {
         let a = &s.alerts().unwrap()[0];
         assert_eq!(a.last_fired_at, Some(9));
         assert_eq!(s.alert_events(10).unwrap()[0].message, "AAPL > 200");
+    }
+
+    #[test]
+    fn filing_read_state() {
+        let s = AppStore::open_in_memory().unwrap();
+        let (a, b) = ("0000000000-26-000001".to_owned(), "0000000000-26-000002".to_owned());
+        assert!(s.read_filings(&[a.clone(), b.clone()]).unwrap().is_empty());
+        s.mark_filings_read(std::slice::from_ref(&a), 5).unwrap();
+        s.mark_filings_read(&[a.clone(), b.clone()], 9).unwrap();
+        assert_eq!(s.read_filings(&[a.clone(), b.clone()]).unwrap().len(), 2);
+        s.mark_filing_unread(&a).unwrap();
+        assert_eq!(s.read_filings(&[a, b.clone()]).unwrap().into_iter().collect::<Vec<_>>(), vec![b]);
+    }
+
+    #[test]
+    fn version_one_databases_gain_the_filing_reads_table() {
+        let dir = tempfile::tempdir().unwrap();
+        let p = dir.path().join("app.sqlite");
+        {
+            let conn = Connection::open(&p).unwrap();
+            conn.execute_batch(MIGRATIONS[0]).unwrap();
+            conn.execute_batch("PRAGMA user_version = 1").unwrap();
+            conn.execute("INSERT INTO settings(key, value) VALUES ('k', 'v')", []).unwrap();
+        }
+        let s = AppStore::open(&p).unwrap();
+        assert_eq!(s.schema_version(), 2);
+        assert_eq!(s.setting("k").unwrap().as_deref(), Some("v"));
+        s.mark_filings_read(&["x".into()], 1).unwrap();
     }
 
     #[test]
