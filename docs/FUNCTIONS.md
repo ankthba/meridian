@@ -158,6 +158,6 @@ Case-insensitive. A security is a ticker (`aapl`, `brk.b`, `brk/b`), a ticker an
 
 ### Conflicts with the brief
 
-1. **Input-field colour**: the brief says inputs are white and yellow. Public sources say editable fields are **amber**. References will settle it; we'll extract exact colours from them.
+1. **Input-field colour**: resolved in 1.1. Meridian has its own design (`docs/DESIGN.md`); inputs are underlined bone text, not a copied colour.
 2. **HELP**: the brief binds it to ⌘?, while the standard keyboard uses F1. Proposal: bind both.
 3. **MENU** and **PANEL** have no standard Mac-keyboard keys; bindings needed (see open questions in `ARCHITECTURE.md` §16).

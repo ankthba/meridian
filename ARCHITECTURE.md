@@ -277,7 +277,7 @@ pub enum ProviderError {
 - **Migrations:** embedded, numbered SQL files. SQLite uses `PRAGMA user_version`; DuckDB uses a `schema_version` table. Migrations run at startup before any service starts, and a failed migration aborts startup with a clear error rather than running on a half-migrated schema.
 - **Every cached row carries its `provider` column, and the Parquet path includes `provider=`.** Some vendor terms (e.g. Finnhub) require deleting their data when the subscription ends. `store` exposes `purge_provider(id)`, which removes that provider's rows and files from all three stores, and Settings exposes it per provider.
 - Secrets never go in any of these stores (§10).
-- SQLite migration 2 adds `filing_reads (accession, read_at)`: the FILINGS inbox's read state. It is user state, not provider data, so `purge_provider` leaves it.
+- SQLite migration 2 rebuilds `transactions` as a ledger for broker import (`kind`, `settle_date`, `amount`, `currency`, `source`, `fingerprint`; security and price optional for cash rows), with a unique fingerprint per portfolio so re-importing an overlapping export skips rows already there. Migration 3 adds `filing_reads (accession, read_at)`: the FILINGS inbox's read state. Both are user state, not provider data, so `purge_provider` leaves them. `engine::portfolio::ledger` turns transactions into holdings, realized P&L, income, fees and cash for PORT and TODAY.
 
 ---
 
@@ -342,7 +342,7 @@ Swift display link (per window, ≤ 120 Hz) ── subscription.poll(since_seq) 
 
 ### 7.5 Screen model
 
-Function screens are built in Rust (`engine/src/screens/*`) as a generic `Screen`: a title, numbered menu (`Action`s), source badges, a status (`Ok` / `NotAvailable{reason}` / `Error`), and blocks — `Fields`, `Table` (columns may bind to a live hot-row field), `Text`, `Inputs` (editable amber cells; changing one re-requests the screen with that argument), `Notice`, `Chart` (spec; Swift fetches `chart_data`), `Xy` (small embedded charts; bar charts may carry category labels shown instead of numeric x ticks), `Heat`, and `Diff`. Swift renders every function with one renderer (`Render/ScreenView.swift`, `TerminalGridView`), so screens get consistent look and keyboard behavior and all logic stays testable in Rust. Swift-native views exist only where interaction demands it: the price chart, ASK, and Launchpad.
+Function screens are built in Rust (`engine/src/screens/*`) as a generic `Screen`: a title, numbered menu (`Action`s), source badges, a status (`Ok` / `NotAvailable{reason}` / `Error`), and blocks — `Fields`, `Table` (columns may bind to a live hot-row field), `Text`, `Inputs` (editable underlined cells or menus; changing one re-requests the screen with that argument), `Notice`, `Chart` (spec; Swift fetches `chart_data`), `Xy` (small embedded charts; bar charts may carry category labels shown instead of numeric x ticks), `Heat`, and `Diff`. Swift renders every function with one renderer (`Render/ScreenView.swift`, `TerminalGridView`), so screens get consistent look and keyboard behavior and all logic stays testable in Rust. Swift-native views exist only where interaction demands it: the price chart, ASK, and Launchpad.
 
 ## 8. Threading model
 
@@ -366,8 +366,8 @@ Cancellation: Swift task cancellation does **not** reach Rust on its own (§7.2 
 
 ### 9.1 Panels
 
-- A **panel** is the unit of work: its own command line, function stack (for MENU/back), loaded security, and link group.
-- The default main window holds a 2×2 grid of panels. **Launchpad** windows host floating or tiled components (monitors, charts, news, function panels) across multiple pages and displays. Layouts persist in SQLite.
+- A **panel** (a *pane* in the UI) is the unit of work: its own function stack (for MENU/back), loaded security, and link group. One command bar at the top of the window edits the focused panel's command text, so commands always run in the focused pane.
+- The default main window holds a 2×2 grid of panels: TODAY, W, GP and FILINGS. Saved layouts carry a `layoutVersion`; 1.1 resets layouts saved by 1.0 once. **Launchpad** windows host floating or tiled components (monitors, charts, news, function panels) across multiple pages and displays. Layouts persist in SQLite.
 - **Link groups**: each panel or component may join a group, labeled by letter (A, B, C…), as in the incumbent's Group Manager. There are two kinds: *security groups* (members follow one security) and *monitor groups* (a monitor's selected row drives news/chart members). Loading a security in one member publishes `(group, SecurityKey)` and the other members load it. The link bus lives in `Shell` (Swift), because it is UI coordination, not market data. Group membership is persisted via `WorkspaceStore`.
 
 ### 9.2 Command line
@@ -522,12 +522,13 @@ pub enum CoreError {
 
 ---
 
-## 15. Visual system (pending references)
+## 15. Visual system
 
-- Theme tokens (colors, font sizes, row heights, grid metrics) live in `Design/Theme.swift`, generated from `Design/tokens.json`.
-- **Colors are not chosen by eye.** `scripts/palette` samples reference PNGs and emits candidate hex values with pixel counts. Tokens are filled from that output once references exist.
-- Font: **Iosevka Fixed, SS08 stylistic set** (SIL OFL 1.1, no Reserved Font Name), fetched by `scripts/fetch-fonts.sh` from the official release (not committed, size) and bundled with its license notice. It is the only freely licensed monospace that is natively narrow (0.500 em vs the usual 0.600) and can be built narrower. It covers box-drawing, block, and Braille glyphs, which are useful for grids and sparklines. Phase 2 starts from the prebuilt family and makes a custom narrower build (renamed family) only if the references call for it. Fallback: IBM Plex Mono. The incumbent's font is proprietary and is not used. Research: `docs/research/tech-stack.md`.
-- Panels have no rounded corners, shadows, translucency, or SF-style controls. Editable fields use a distinct input-cell style taken from the references.
+- Since 1.1 the look is Meridian's own **Instrument** design, specified in `docs/DESIGN.md` (approved mockup: `docs/design/instrument.png`). It replaced the 1.0 look, which followed another terminal's documented conventions.
+- Tokens live in `Design/Theme.swift`: graphite surfaces (`#121212` background, `#181818` headers), bone text (`#E8E6E1`, `#BEBBB3`, muted `#8A877F`), no accent hue; green and red only for up and down, amber only for warnings.
+- Fonts are the system's: SF Pro for interface text, SF Mono for numbers and tables (tabular digits). Nothing is bundled. Text blocks render space-aligned lines in SF Mono so tables in help text line up.
+- Panes have no rounded corners, shadows or translucency; inputs are underlined text with a chevron for menus. The completion popover is the one raised surface.
+- Screens are checked by rendering them with mock data (`scripts/capture.sh`) and reviewing them against `docs/DESIGN.md`.
 - `scripts/check-names` fails CI if the forbidden brand name appears anywhere under `app/`, `core/`, or bundled assets.
 
 ---

@@ -30,8 +30,8 @@ targets:
       path: Meridian/Info.plist
       properties:
         CFBundleDisplayName: Meridian
-        CFBundleShortVersionString: "1.0.0"
-        CFBundleVersion: "1"
+        CFBundleShortVersionString: "1.1.0"
+        CFBundleVersion: "2"
         LSMinimumSystemVersion: "15.0"
         NSPrincipalClass: NSApplication
         LSApplicationCategoryType: public.app-category.finance

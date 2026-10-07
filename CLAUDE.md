@@ -2,7 +2,7 @@
 
 Native macOS financial terminal for personal use. SwiftUI + AppKit UI, Rust core via UniFFI, DuckDB / SQLite / Parquet storage, Anthropic API for the ASK analyst. Read `ARCHITECTURE.md` before changing module boundaries, data contracts, threading, or the FFI.
 
-**Current phase:** 1.1 in progress: original "Instrument" redesign (user decision, 2026-10-07: the 1.0 look read as a copy of another terminal) plus Today home, broker CSV import, Filings inbox and plain-language commands. 1.0.0 released 2026-10-07; phases 1–9 implemented. The user asked for the whole build without per-phase check-ins, so defaults were taken where decisions were open: free data tier only, `W` and Launchpad Monitor both, MENU = ⌘[ / End / Delete on an empty line, PANEL = ⌃Tab, layouts from documented conventions (no references exist). **The app runs on real data only** (user decision, 2026-10-05); see Hard rules. Remaining work is in Known gaps.
+**Current phase:** 1.1.0 (2026-10-07): original "Instrument" redesign (user decision, 2026-10-07: the 1.0 look read as a copy of another terminal) plus Today home, broker CSV import, Calendar, Filings inbox, Compare and plain-language commands. 1.0.0 released 2026-10-07; phases 1–9 implemented. The user asked for the whole build without per-phase check-ins, so defaults were taken where decisions were open: free data tier only, `W` and Launchpad Monitor both, MENU = ⌘[ / End / Delete on an empty line, PANEL = ⌃Tab, layouts from documented conventions (no references exist). **The app runs on real data only** (user decision, 2026-10-05); see Hard rules. Remaining work is in Known gaps.
 
 Key docs: `docs/DATA_PROVIDERS.md` (provider comparison and budget stacks), `docs/research/*` (cited research), `docs/FUNCTIONS.md` (mnemonic registry and status), `reference/README.md` (reference inventory).
 
@@ -112,12 +112,13 @@ macOS 27.0.1 · Xcode 27.0 (Swift 6.4) · rustc 1.93.0 (CI pins the same) · App
 
 ## Known gaps
 
-- **No reference screenshots**, so no fidelity pass has run; layouts follow documented conventions.
+- Screens are checked against `docs/DESIGN.md` by rendering them with mock data (`scripts/capture.sh`, plus `MERIDIAN_SNAPSHOT_IMPORT=<csv>` for the importer); there is no automated pixel comparison.
 - **Free tier limits (live):** US equities are IEX-only (single exchange) with 30 streamed symbols on Alpaca Basic; options are Alpaca's indicative feed; no consensus estimates (EE), holders (HDS) or transcripts from any free source. WEI shows US-listed ETF proxies, not index levels.
 - **ASK has not run against the live API** (no Anthropic key yet); it's covered by recorded-fixture tests. Alpaca, SEC EDGAR, FRED, Finnhub, Coinbase, Kraken, Frankfurter, Treasury and RSS have all run live.
 - FA per-share values before a stock split are as reported (a notice says so). CORP/MUNI/MTGE bond pricing is not obtainable on the free tier.
 - Launchpad components are tiled in one window; no floating windows or multi-monitor persistence.
 - Crash reporting is the Rust panic hook (writes reports to the data directory); no MetricKit.
 - The release app is signed with an Apple Development certificate but not notarized (needs a paid Developer ID).
-- The 2,000-symbol streaming budget is measured with the synthetic load generator; real data at that scale needs a consolidated (SIP) plan.
-- **Broker CSV import** (`core/crates/import`, sources in its README): Robinhood, Fidelity, Schwab, Vanguard, positions snapshots and a column-mapping path; no broker publishes a spec, so formats come from parsers and published exports. Options, short sales, mergers, bonds and 401(k) rows are warnings, not imports; no FX conversion; holdings rebuilt from a date-limited history can have gaps (PORT flags them). The app's file picker and mapping UI are not built yet (FFI `preview_import`/`commit_import` exist).
+- The 2,000-symbol streaming budget is measured with the synthetic load generator; real data at that scale needs a consolidated (SIP) plan. 1.1 re-runs (`bench/results/app-2026-10-07-v1.1-run*.json`) were taken with another app using most of a core: 8–14% total, with the grid's share over the feed-only baseline unchanged from 1.0 (2–6 points). Re-measure on an idle machine.
+- **Not yet run live in 1.1:** the Finnhub earnings calendar and Alpaca corporate-actions calendar paths, and TODAY's progressive load against real network latency (fixtures and mock only).
+- **Broker CSV import** (`core/crates/import`, sources in its README): Robinhood, Fidelity, Schwab, Vanguard, positions snapshots and a column-mapping path; no broker publishes a spec, so formats come from parsers and published exports. Options, short sales, mergers, bonds and 401(k) rows are warnings, not imports; no FX conversion; holdings rebuilt from a date-limited history can have gaps (PORT flags them). The import sheet (`App/ImportSheet.swift`) has been run end to end on fixtures and a positions file in mock mode, not on a real broker export.

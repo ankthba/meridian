@@ -1,5 +1,28 @@
 # Changelog
 
+## 1.1.0 — 2026-10-07
+
+A new look of its own, and features built around your own portfolio.
+
+### Design
+- New Instrument design ([`docs/DESIGN.md`](docs/DESIGN.md)): graphite surfaces and bone text with no accent color; green and red only for up and down. SF Pro for interface text, SF Mono for numbers. Replaces the black-and-amber look and the bundled font.
+- One command bar at the top of the window runs in the focused pane. Suggestions are grouped (the security, things to open on it, commands) and the best match runs on Return.
+- Pane headers show a plain name (Overview, Chart, Financials), the security, the screen's sections as tabs, and the data sources with their delay.
+- Line charts fit their axis to the data; chart, table and help typography redone.
+
+### Features
+- **Today**, the new home pane: portfolio value and today's change, markets, holdings (or your watchlist), upcoming earnings, ex-dividend dates and economic releases, and unread filings.
+- **Broker import**: Robinhood, Fidelity, Charles Schwab and Vanguard activity exports, Fidelity and Schwab positions files, and any other CSV with a column mapping. Preview first (format, date range, counts, skipped rows with reasons), then import into a new or existing portfolio. Re-importing an overlapping export adds only new rows. Portfolios now track dividends, interest, fees, splits, transfers and cash, with realized P&L and income.
+- **Calendar**: earnings with consensus estimates (Finnhub), ex-dividend and split dates (Alpaca corporate actions) and high-importance economic releases (FRED), for holdings, watchlists or everything.
+- **Filings inbox**: new SEC filings from what you hold and watch, with read and unread state.
+- **Compare**: up to eight securities rebased to 100, with returns, market cap, P/E, net margin and dividend yield.
+- **Plain-language commands**: `aapl 5y`, `aapl filings`, `aapl vs msft`, `earnings this week`, `cpi`, `ask …`. Mnemonics still work.
+
+### Changes
+- The default layout is Today, a watchlist, a chart and the filings inbox. Layouts saved by 1.0 are reset once.
+- `MERIDIAN_LAYOUT=showcase` opens Today, crypto, a 5-day NVDA chart and world indices.
+- The local database gains a transaction ledger (schema v2) and filing read state (v3); 1.0 databases migrate on launch.
+
 ## 1.0.0 — 2026-10-07
 
 First public release.
