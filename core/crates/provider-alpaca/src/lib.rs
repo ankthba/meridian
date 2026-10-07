@@ -21,12 +21,13 @@ use std::time::Duration;
 use async_trait::async_trait;
 use chrono::{NaiveDate, Utc};
 use meridian_provider::{
-    AiPolicy, BarsRequest, CachePolicy, Capabilities, Capability, CapabilityEntry, ChainRequest, NewsQuery, NewsScope,
-    Provider, ProviderError, ProviderResult, RateLimit, StreamHandle, StreamSink, StreamingProvider, TokenBucket,
+    AiPolicy, BarsRequest, CachePolicy, Capabilities, Capability, CapabilityEntry, ChainRequest, EventCalendarRequest,
+    NewsQuery, NewsScope, Provider, ProviderError, ProviderResult, RateLimit, StreamHandle, StreamSink,
+    StreamingProvider, TokenBucket,
 };
 use meridian_types::{
-    AssetClass, BarSeries, DataDelay, Dividends, FeedSource, NewsPage, OptionChain, ProviderId, Quote, SecurityKey,
-    UnixNanos, datetime_to_nanos,
+    AssetClass, BarSeries, DataDelay, DividendCalendar, DividendEvent, Dividends, FeedSource, NewsPage, OptionChain,
+    ProviderId, Quote, SecurityKey, UnixNanos, datetime_to_nanos,
 };
 use reqwest::Url;
 use reqwest::header::{HeaderMap, HeaderName, HeaderValue};
@@ -34,8 +35,8 @@ use secrecy::{ExposeSecret, SecretString};
 use serde::de::DeserializeOwned;
 
 use crate::normalize::{
-    BarsParams, PROVIDER_ID, alpaca_symbol, bars_query, corporate_action_events, corporate_actions_query, next_page,
-    option_contract, provenance, push_bars, rfc3339,
+    BarsParams, PROVIDER_ID, alpaca_symbol, bars_query, corporate_action_events, corporate_action_events_by_symbol,
+    corporate_actions_query, next_page, option_contract, provenance, push_bars, rfc3339,
 };
 
 const DATA_BASE: &str = "https://data.alpaca.markets";
@@ -69,6 +70,16 @@ const CORPORATE_ACTIONS_LOOKBACK_DAYS: i64 = 3653;
 const CORPORATE_ACTIONS_LOOKAHEAD_DAYS: i64 = 90;
 /// Pages read per corporate actions call (1,000 records each).
 const MAX_CORPORATE_ACTION_PAGES: usize = 10;
+/// Symbols per corporate actions calendar request (`symbols` is a
+/// comma-separated list; the docs give no maximum, 100 keeps URLs short).
+const CALENDAR_SYMBOL_CHUNK: usize = 100;
+/// The calendar filters on ex-date, but Alpaca's `start`/`end` filter on
+/// process date, which trails the ex-date (actions are processed around
+/// the pay date). The request window reaches this far past `to`…
+const CALENDAR_PROCESS_LAG_DAYS: i64 = 75;
+/// …and this far before `from`, for the rare action paid before its
+/// ex-date (large special dividends).
+const CALENDAR_PROCESS_LEAD_DAYS: i64 = 7;
 
 /// Which Alpaca market data plan the configured keys have.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
@@ -229,7 +240,8 @@ impl AlpacaProvider {
         end: NaiveDate,
     ) -> ProviderResult<Dividends> {
         let context = "Alpaca corporate actions";
-        let first_url = self.endpoint(&["v1", "corporate-actions"], &corporate_actions_query(symbol, start, end, None))?;
+        let first_url =
+            self.endpoint(&["v1", "corporate-actions"], &corporate_actions_query(Some(symbol), start, end, None))?;
         let fetched = now();
         let mut url = first_url.clone();
         let mut events = Vec::new();
@@ -245,7 +257,10 @@ impl AlpacaProvider {
                 tracing::warn!(symbol, "Alpaca corporate actions: page limit reached; older actions not loaded");
                 break;
             }
-            url = self.endpoint(&["v1", "corporate-actions"], &corporate_actions_query(symbol, start, end, Some(&token)))?;
+            url = self.endpoint(
+                &["v1", "corporate-actions"],
+                &corporate_actions_query(Some(symbol), start, end, Some(&token)),
+            )?;
         }
         if skipped > 0 {
             tracing::warn!(skipped, symbol, "Alpaca corporate actions: skipped records without a valid ex-date or amount");
@@ -258,6 +273,59 @@ impl AlpacaProvider {
             reported_splits: Vec::new(),
             provenance: provenance(DataDelay::EndOfDay, FeedSource::Aggregated, fetched, first_url.as_str()),
         })
+    }
+
+    /// `GET /v1/corporate-actions` for many symbols (or all, `None`) over
+    /// `[start, end]` by process date, all pages up to
+    /// [`MAX_CORPORATE_ACTION_PAGES`]. Returns `(SYMBOL, event)` pairs and the
+    /// first page's URL.
+    async fn corporate_actions_many(
+        &self,
+        symbols: Option<&str>,
+        start: NaiveDate,
+        end: NaiveDate,
+    ) -> ProviderResult<(Vec<(String, meridian_types::Dividend)>, String)> {
+        let context = "Alpaca corporate actions";
+        let path = ["v1", "corporate-actions"];
+        let first_url = self.endpoint(&path, &corporate_actions_query(symbols, start, end, None))?;
+        let mut url = first_url.clone();
+        let mut events = Vec::new();
+        let mut skipped = 0;
+        let mut seen = HashSet::new();
+        for page in 1..=MAX_CORPORATE_ACTION_PAGES {
+            let resp: dto::CorporateActionsResp = self.get(&url, context, Capability::DividendCalendar).await?;
+            let (mut e, s) = corporate_action_events_by_symbol(&resp.corporate_actions.unwrap_or_default());
+            events.append(&mut e);
+            skipped += s;
+            let Some(token) = next_page(resp.next_page_token, &mut seen, context)? else { break };
+            if page == MAX_CORPORATE_ACTION_PAGES {
+                tracing::warn!("Alpaca corporate actions calendar: page limit reached; some actions not loaded");
+                break;
+            }
+            url = self.endpoint(&path, &corporate_actions_query(symbols, start, end, Some(&token)))?;
+        }
+        if skipped > 0 {
+            tracing::warn!(skipped, "Alpaca corporate actions: skipped records without a symbol, ex-date or amount");
+        }
+        Ok((events, first_url.to_string()))
+    }
+
+    /// One calendar chunk, retried once with `end` = today if a future end
+    /// date is rejected (as for `dividends`).
+    async fn corporate_actions_chunk(
+        &self,
+        symbols: Option<&str>,
+        start: NaiveDate,
+        end: NaiveDate,
+    ) -> ProviderResult<(Vec<(String, meridian_types::Dividend)>, String)> {
+        let today = Utc::now().date_naive();
+        match self.corporate_actions_many(symbols, start, end).await {
+            Err(ProviderError::Http { status: 400 | 422, .. }) if end > today => {
+                tracing::debug!("Alpaca corporate actions: future end date rejected; retrying with end = today");
+                self.corporate_actions_many(symbols, start, today.max(start)).await
+            }
+            other => other,
+        }
     }
 
     /// Latest trade price of the underlying from the configured stock feed.
@@ -401,10 +469,18 @@ fn capabilities_for(feed: AlpacaFeed) -> Capabilities {
             // appears, so it is labelled end-of-day rather than real time.
             entry(
                 Capability::Dividends,
-                equities,
+                equities.clone(),
                 DataDelay::EndOfDay,
                 FeedSource::Aggregated,
                 Some("corporate actions (cash dividends, splits): up to 10 years back, plus announced actions"),
+            ),
+            // The same corporate actions for many symbols at once, by ex-date.
+            entry(
+                Capability::DividendCalendar,
+                equities,
+                DataDelay::EndOfDay,
+                FeedSource::Aggregated,
+                Some("ex-dates of cash dividends and splits, including announced ones"),
             ),
         ],
         rate_limit: Some(rate_limit),
@@ -640,6 +716,69 @@ impl Provider for AlpacaProvider {
             }
             other => other,
         }
+    }
+
+    /// Dividend and split events with an ex-date in `[from, to]` from
+    /// `GET /v1/corporate-actions?symbols=A,B,…` (100 symbols per request),
+    /// or for every symbol when the request has no keys. Alpaca filters on
+    /// process date, so the request window is widened (see
+    /// [`CALENDAR_PROCESS_LAG_DAYS`]) and the ex-date filter applied here.
+    async fn dividend_calendar(&self, req: &EventCalendarRequest) -> ProviderResult<DividendCalendar> {
+        self.creds()?;
+        let mut wanted: Vec<(String, SecurityKey)> = Vec::new();
+        for k in &req.keys {
+            if let Some(sym) = alpaca_symbol(k)
+                && !wanted.iter().any(|(s, _)| *s == sym)
+            {
+                wanted.push((sym, k.clone()));
+            }
+        }
+        if !req.keys.is_empty() && wanted.is_empty() {
+            return Err(not_served(&req.keys[0]));
+        }
+        let start = req.from - chrono::Duration::days(CALENDAR_PROCESS_LEAD_DAYS);
+        let end = req.to + chrono::Duration::days(CALENDAR_PROCESS_LAG_DAYS);
+        let fetched = now();
+        let chunks: Vec<Option<String>> = if wanted.is_empty() {
+            vec![None]
+        } else {
+            wanted
+                .chunks(CALENDAR_SYMBOL_CHUNK)
+                .map(|c| Some(c.iter().map(|(s, _)| s.as_str()).collect::<Vec<_>>().join(",")))
+                .collect()
+        };
+        let mut events = Vec::new();
+        let mut first_url = None;
+        for chunk in &chunks {
+            let (records, url) = self.corporate_actions_chunk(chunk.as_deref(), start, end).await?;
+            first_url.get_or_insert(url);
+            for (sym, dividend) in records {
+                if dividend.ex_date < req.from || dividend.ex_date > req.to {
+                    continue;
+                }
+                let key = if wanted.is_empty() {
+                    SecurityKey::equity(&sym.replace('.', "/"))
+                } else {
+                    match wanted.iter().find(|(s, _)| *s == sym) {
+                        Some((_, k)) => k.clone(),
+                        None => continue,
+                    }
+                };
+                events.push(DividendEvent { key, dividend });
+            }
+        }
+        events.sort_by(|a, b| {
+            a.dividend.ex_date.cmp(&b.dividend.ex_date).then_with(|| a.key.symbol.cmp(&b.key.symbol))
+        });
+        events.dedup_by(|a, b| {
+            a.key == b.key && a.dividend.ex_date == b.dividend.ex_date && a.dividend.kind == b.dividend.kind
+                && (a.dividend.amount - b.dividend.amount).abs() < 1e-12
+        });
+        let source_ref = first_url.unwrap_or_default();
+        Ok(DividendCalendar {
+            events,
+            provenance: provenance(DataDelay::EndOfDay, FeedSource::Aggregated, fetched, &source_ref),
+        })
     }
 
     fn streaming(&self) -> Option<&dyn StreamingProvider> {

@@ -94,3 +94,27 @@ async fn live_corporate_actions() {
     assert!(cash >= 12, "expected several years of quarterly dividends, got {cash}");
     assert!(d.dividends.windows(2).all(|w| w[0].ex_date >= w[1].ex_date));
 }
+
+/// The multi-symbol calendar request: the last 120 days for a few regular
+/// payers should hold each one's latest quarterly ex-date, and the same
+/// dates as the per-symbol path.
+#[tokio::test]
+#[ignore = "needs ALPACA_KEY_ID / ALPACA_SECRET_KEY and network"]
+async fn live_dividend_calendar() {
+    use meridian_provider::EventCalendarRequest;
+
+    let Some(p) = live_provider() else { return };
+    let today = chrono::Utc::now().date_naive();
+    let keys: Vec<SecurityKey> = ["KO", "PG", "JNJ"].iter().map(|s| SecurityKey::equity(s)).collect();
+    let req = EventCalendarRequest { from: today - chrono::Duration::days(120), to: today, keys: keys.clone() };
+    let cal = p.dividend_calendar(&req).await.unwrap();
+    for k in &keys {
+        let mine: Vec<_> = cal.events.iter().filter(|e| &e.key == k).map(|e| e.dividend.ex_date).collect();
+        assert!(!mine.is_empty(), "{k}: no ex-date in the last 120 days");
+        let single = p.dividends(k).await.unwrap();
+        let mut want: Vec<_> =
+            single.dividends.iter().filter(|d| d.ex_date >= req.from && d.ex_date <= req.to).map(|d| d.ex_date).collect();
+        want.sort();
+        assert_eq!(mine, want, "{k}");
+    }
+}
