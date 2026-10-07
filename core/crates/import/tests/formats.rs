@@ -332,6 +332,14 @@ fn detection_and_empty_files() {
     assert_eq!(detect(&fixture("positions_schwab.csv")).format, Some(Format::Positions));
     let unknown = detect("\n\nWhen,What,Value\n1,2,3\n");
     assert_eq!((unknown.format, unknown.header_line, unknown.headers.len()), (None, 3, 3));
+    // A history with symbol and quantity columns but an unknown date or
+    // type column is not mistaken for holdings.
+    assert_eq!(detect("When,What,Ticker,Qty,Px\n2026-01-02,Buy,MSFT,2,400\n").format, None);
+    assert_eq!(detect("Symbol,Quantity,Price,Transaction\nMSFT,2,400,Buy\n").format, None);
+    // Merrill's positions header has a close-of-business date and is a
+    // snapshot.
+    let merrill = "\"COB Date\",\"Security #\",\"Symbol\",\"CUSIP #\",\"Security Description\",\"Account Nickname\",\"Account Registration\",\"Account #\",\"Quantity\",\"Price ($)\",\"Value ($)\"\n";
+    assert_eq!(detect(merrill).format, Some(Format::Positions));
     assert_eq!(parse("\n \n", None, &opts()), Err(ImportError::Empty));
     // A recognized header with no rows says so.
     let p = parse("\"Date\",\"Action\",\"Symbol\",\"Description\",\"Quantity\",\"Price\",\"Fees & Comm\",\"Amount\"\n", None, &opts()).unwrap();

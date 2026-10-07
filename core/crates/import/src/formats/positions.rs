@@ -23,7 +23,7 @@ const AVERAGE_COST: &[&str] = &["average cost basis", "cost basis per share", "c
 const DESCRIPTION: &[&str] = &["description", "security description", "investment name", "name"];
 const ACCOUNT: &[&str] = &["account number", "account name/number", "account #", "account"];
 const ASSET_TYPE: &[&str] = &["security type", "asset type"];
-/// Columns that only transaction histories have.
+/// Date columns of transaction histories.
 const DATES: &[&str] = &["date", "trade date", "run date", "activity date", "settlement date", "settle date", "transaction date"];
 
 /// Summary rows in the symbol column (Schwab, E*TRADE, Fidelity).
@@ -41,8 +41,18 @@ const SUMMARY: &[&str] = &[
 /// Footer lines that are not data (Fidelity, E*TRADE).
 const FOOTERS: &[&str] = &["the data and information in this spreadsheet", "brokerage services are provided", "date downloaded", "date exported", "generated at"];
 
+/// Type columns of transaction histories.
+const ACTIONS: &[&str] = &["action", "transaction type", "trans code", "activity", "transaction"];
+
+/// A symbol and a quantity column, and nothing that looks like a
+/// transaction date or type, so an unknown history goes to the mapping UI
+/// instead of being read as holdings.
 pub(crate) fn matches(c: &Columns) -> bool {
-    c.find(SYMBOL).is_some() && c.find(QUANTITY).is_some() && c.find(DATES).is_none()
+    c.find(SYMBOL).is_some()
+        && c.find(QUANTITY).is_some()
+        && c.find(DATES).is_none()
+        && c.find(ACTIONS).is_none()
+        && !c.any(|n| (n.ends_with(" date") && n != "cob date") || n == "when" || n == "time")
 }
 
 /// Which columns hold a snapshot's values.

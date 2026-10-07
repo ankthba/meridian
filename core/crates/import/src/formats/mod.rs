@@ -38,6 +38,11 @@ impl Columns {
         names.iter().all(|n| self.names.iter().any(|h| h == n))
     }
 
+    /// Whether any header name satisfies `f`.
+    pub(crate) fn any(&self, f: impl Fn(&str) -> bool) -> bool {
+        self.names.iter().any(|n| f(n))
+    }
+
     /// Number of non-empty header names.
     pub(crate) fn width(&self) -> usize {
         self.names.iter().filter(|n| !n.is_empty()).count()
