@@ -344,6 +344,8 @@ Swift display link (per window, ≤ 120 Hz) ── subscription.poll(since_seq) 
 
 Function screens are built in Rust (`engine/src/screens/*`) as a generic `Screen`: a title, numbered menu (`Action`s), source badges, a status (`Ok` / `NotAvailable{reason}` / `Error`), and blocks — `Fields`, `Table` (columns may bind to a live hot-row field), `Text`, `Inputs` (editable underlined cells or menus; changing one re-requests the screen with that argument), `Notice`, `Chart` (spec; Swift fetches `chart_data`), `Xy` (small embedded charts; bar charts may carry category labels shown instead of numeric x ticks), `Heat`, and `Diff`. Swift renders every function with one renderer (`Render/ScreenView.swift`, `TerminalGridView`), so screens get consistent look and keyboard behavior and all logic stays testable in Rust. Swift-native views exist only where interaction demands it: the price chart, ASK, and Launchpad.
 
+Screens with slow sources load progressively through one shared mechanism (`screens/parts.rs`): TODAY's slower sections (10-year yield, calendar, filings, news) and CALENDAR's three kinds (earnings, dividends, macro releases) are each a `Part`, a background fetch on the engine runtime shared by every pane asking with the same inputs. The screen waits up to 250 ms, shows "…: loading…" for what's missing and sets `refresh_ms` to 1 s until everything has filled in; on later refreshes the last result for the same inputs stays up while the new fetch runs. With a fixed clock (tests, snapshots) screens wait for every part, so output is deterministic.
+
 ## 8. Threading model
 
 | Thread / pool | Owner | Runs | Must never |
