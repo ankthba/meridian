@@ -65,6 +65,12 @@ pub const MAJOR_COINS: [&str; 15] = [
     "ATOM", "AAVE",
 ];
 
+/// Major-coin shorthand that is also an operating company's US ticker
+/// (LTC Properties, Atomera, Interlink, Emeren, Banco de Chile). Where that
+/// stock is listed it wins; the coin is still `ltcusd`. Funds that hold the
+/// coin (BTC, ETH) don't count: there the coin wins.
+const COIN_TICKERS_OF_COMPANIES: [&str; 5] = ["LTC", "ATOM", "LINK", "SOL", "BCH"];
+
 /// ISO 4217 codes accepted in currency pairs that aren't in the index.
 const CURRENCIES: [&str; 30] = [
     "USD", "EUR", "JPY", "GBP", "CHF", "CAD", "AUD", "NZD", "CNH", "CNY", "HKD", "SGD", "SEK",
@@ -929,7 +935,12 @@ pub fn resolve_security<R: SecurityResolver + ?Sized>(
             .exact(&format!("{base}USD"), None)
             .filter(|k| k.sector == MarketSector::Curncy)
     };
+    let company_listed = || {
+        COIN_TICKERS_OF_COMPANIES.contains(&up.as_str())
+            && resolver.exact(&up, None).is_some_and(|k| k.sector == MarketSector::Equity)
+    };
     if MAJOR_COINS.contains(&up.as_str())
+        && !company_listed()
         && let Some(key) = coin(&up)
     {
         return Some(key);
@@ -995,12 +1006,15 @@ mod tests {
             SecurityKey::equity("MAX"),
             SecurityKey::equity("BRK-B"),
             SecurityKey::equity("BTC"),
+            SecurityKey::equity("LTC"),
             SecurityKey::equity("SPY"),
             SecurityKey::new("BMW", Some("GR"), MarketSector::Equity),
             SecurityKey::index("SPX"),
             SecurityKey::currency("BTCUSD"),
             SecurityKey::currency("ETHUSD"),
             SecurityKey::currency("PEPEUSD"),
+            SecurityKey::currency("LTCUSD"),
+            SecurityKey::currency("LINKUSD"),
             SecurityKey::currency("EURUSD"),
         ];
         let mut map: HashMap<String, Vec<SecurityKey>> = HashMap::new();
@@ -1090,6 +1104,11 @@ mod tests {
             run("eth"),
             action("DES", Some(SecurityKey::currency("ETHUSD")), &[])
         );
+        // A company listed under a coin's ticker wins; the coin is LTCUSD.
+        assert_eq!(run("ltc"), action("DES", Some(SecurityKey::equity("LTC")), &[]));
+        assert_eq!(run("ltcusd"), action("DES", Some(SecurityKey::currency("LTCUSD")), &[]));
+        // Without that listing the shorthand is the coin.
+        assert_eq!(run("link"), action("DES", Some(SecurityKey::currency("LINKUSD")), &[]));
         // Other coins resolve when no ticker matches.
         assert_eq!(
             run("pepe"),
