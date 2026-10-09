@@ -10,7 +10,9 @@ settings:
     MACOSX_DEPLOYMENT_TARGET: "15.0"
     DEVELOPMENT_TEAM: H7T2D2GL7U
     CODE_SIGN_STYLE: Manual
-    CODE_SIGN_IDENTITY: "Apple Development"
+    # One identity for every build, so the login keychain trusts them all
+    # after a single "Always Allow" per stored key.
+    CODE_SIGN_IDENTITY: "Developer ID Application"
     ENABLE_HARDENED_RUNTIME: YES
     DEAD_CODE_STRIPPING: YES
     ARCHS: arm64
@@ -47,11 +49,9 @@ targets:
         COMBINE_HIDPI_IMAGES: YES
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
       configs:
-        # Releases are signed for distribution outside the App Store and
-        # notarized (scripts/release.sh): Developer ID, secure timestamp, and
+        # Releases are notarized (scripts/release.sh): secure timestamp and
         # no debugging entitlement (the notary service rejects get-task-allow).
         Release:
-          CODE_SIGN_IDENTITY: "Developer ID Application"
           OTHER_CODE_SIGN_FLAGS: "--timestamp"
           CODE_SIGN_INJECT_BASE_ENTITLEMENTS: NO
   MeridianTests:
