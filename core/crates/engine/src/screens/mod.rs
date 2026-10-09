@@ -3,7 +3,7 @@
 
 mod alerts;
 mod analysis;
-mod calendar;
+pub(crate) mod calendar;
 pub mod chart;
 mod common;
 mod company;

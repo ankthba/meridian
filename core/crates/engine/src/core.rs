@@ -52,6 +52,8 @@ pub struct Engine {
     pub(crate) holdings_news: Mutex<HashMap<String, (UnixNanos, Vec<meridian_types::NewsItem>)>>,
     /// TODAY's slower sections, loading in the background between calls.
     pub(crate) today: crate::screens::today::TodayParts,
+    /// CALENDAR's kinds (earnings, dividends, macro), likewise.
+    pub(crate) calendar: crate::screens::calendar::CalendarParts,
     /// Fixed clock (tests, snapshots): screens wait for all their data so
     /// output is deterministic.
     pub(crate) deterministic: bool,
@@ -93,6 +95,7 @@ impl Engine {
             recent_news: Mutex::new(HashMap::new()),
             holdings_news: Mutex::new(HashMap::new()),
             today: crate::screens::today::TodayParts::default(),
+            calendar: crate::screens::calendar::CalendarParts::default(),
             deterministic: config.fixed_clock.is_some(),
             cancel: CancellationToken::new(),
         });
