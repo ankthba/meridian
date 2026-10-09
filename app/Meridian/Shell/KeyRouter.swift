@@ -146,8 +146,13 @@ enum KeyRouter {
             panel.commandText = (t.isEmpty ? "" : t + " ") + "<\(s)> "
             panel.updateSuggestions()
             ws.requestFocus()
-        case .suggestionUp: panel.moveHighlight(-1)
-        case .suggestionDown: panel.moveHighlight(1)
+        case .suggestionUp, .suggestionDown:
+            panel.moveHighlight(key == .suggestionUp ? -1 : 1)
+            // Focus stays in the command field, so VoiceOver can't see the
+            // highlight move: read the row out.
+            if let i = panel.highlighted, panel.suggestions.indices.contains(i) {
+                Announcer.announce(panel.suggestions[i].spokenDescription)
+            }
         case .acceptSuggestion:
             if panel.highlighted == nil { panel.highlighted = 0 }
             _ = panel.acceptSuggestion()

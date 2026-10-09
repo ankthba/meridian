@@ -58,6 +58,9 @@ struct Drawing: Codable, Equatable {
 /// study panes, crosshair, pan/zoom, trend and horizontal lines.
 final class PriceChartNSView: NSView {
     var series = ChartSeries() { didSet { resetViewport(); needsDisplay = true } }
+    /// What VoiceOver calls the chart ("AAPL price chart, 1 year"); set by
+    /// the block. The numbers are summarized on demand.
+    var accessibilityTitle = "Price chart"
     var style: ChartStyleFfi = .candles { didSet { needsDisplay = true } }
     var livePrice: Double? { didSet { if livePrice != oldValue { needsDisplay = true } } }
     var tool: DrawTool = .cursor
@@ -493,9 +496,59 @@ final class PriceChartNSView: NSView {
             switch event.keyCode {
             case 123: pan(by: -0.1)
             case 124: pan(by: 0.1)
-            default: super.keyDown(with: event)
+            default: super.keyDown(with: event); return
             }
         }
+        // VoiceOver can't see the new window onto the data: say what it shows.
+        Announcer.announce(self.visibleSummary())
+    }
+
+    // MARK: Accessibility
+
+    /// Bars in the visible window.
+    private var visibleBars: Range<Int> {
+        let lo = max(0, Int(floor(viewStart)))
+        return lo..<max(lo, min(series.count, Int(ceil(viewEnd))))
+    }
+
+    private func visibleSummary() -> String {
+        Self.summary(series, visibleBars, livePrice: livePrice)
+    }
+
+    override func isAccessibilityElement() -> Bool { true }
+    override func accessibilityRole() -> NSAccessibility.Role? { .image }
+    override func accessibilityLabel() -> String? { "\(accessibilityTitle). \(visibleSummary())" }
+    override func accessibilityHelp() -> String? {
+        "Plus and minus zoom, left and right arrows pan, 0 shows the whole range."
+    }
+
+    /// The chart in words, over bars `window`, with the numbers formatted as
+    /// the axis and tooltip draw them: "From 245.10 on Tue, Oct 7, 2025 to
+    /// 289.44 on Tue, Oct 6, 2026, change up 44.34, up 18.09 percent. High
+    /// 301.20, low 199.80."
+    static func summary(_ s: ChartSeries, _ window: Range<Int>, livePrice: Double?) -> String {
+        guard !window.isEmpty, window.upperBound <= s.count else { return "No data" }
+        let f = { (v: Double) in TerminalFormatter.fixed(v, s.decimals) }
+        let a = window.lowerBound, b = window.upperBound - 1
+        let first = Double(s.close[a]) + s.origin
+        // The last bar shows the live price when there is one.
+        let last = (b == s.count - 1 ? livePrice : nil) ?? (Double(s.close[b]) + s.origin)
+        var hi = -Float.greatestFiniteMagnitude, lo = Float.greatestFiniteMagnitude
+        for i in window { hi = max(hi, s.high[i]); lo = min(lo, s.low[i]) }
+        let intraday = s.count > 1 && (s.ts[1] - s.ts[0]) < 86_400_000_000_000
+        let date = { (i: Int) -> String in
+            let d = Date(timeIntervalSince1970: Double(s.ts[i]) / 1e9)
+            return intraday ? dateTimeFmt.string(from: d) : dateFmt.string(from: d)
+        }
+        let d = UInt8(clamping: s.decimals)
+        let change = FormatFfi.change(decimals: d)
+        var out = "From \(f(first)) on \(date(a)) to \(f(last)) on \(date(b)), change "
+            + SpokenText.value(TerminalFormatter.string(last - first, change), format: change)
+        if first != 0 {
+            let pct = FormatFfi.changePercent(decimals: 2)
+            out += ", " + SpokenText.value(TerminalFormatter.string((last - first) / abs(first) * 100, pct), format: pct)
+        }
+        return out + ". High \(f(Double(hi) + s.origin)), low \(f(Double(lo) + s.origin))."
     }
 
     /// Benchmark hook: renders `frames` frames while zooming/panning.
@@ -533,16 +586,25 @@ struct ChartBlockView: View {
                         .overlay(alignment: .bottom) { if tool == t { Rectangle().fill(Theme.text.swiftUI).frame(height: 1) } }
                         .contentShape(Rectangle())
                         .onTapGesture { tool = t }
+                        .accessibilityLabel("\(t.rawValue) tool")
+                        .accessibilityAddTraits(tool == t ? [.isButton, .isSelected] : .isButton)
+                        .accessibilityAction { tool = t }
                 }
                 Text("Clear").font(Theme.ui(11.5)).foregroundStyle(Theme.muted.swiftUI)
-                    .onTapGesture { UserDefaults.standard.removeObject(forKey: drawingsKey); reloadToken += 1 }
+                    .onTapGesture { clearDrawings() }
+                    .accessibilityLabel("Clear drawings")
+                    .accessibilityAddTraits(.isButton)
+                    .accessibilityAction { clearDrawings() }
                 Spacer()
                 if let error { Text(error).font(Theme.ui(11.5)).foregroundStyle(Theme.warn.swiftUI) }
                 Text("scroll to zoom · drag to pan").font(Theme.ui(11)).foregroundStyle(Theme.muted.swiftUI)
+                    .accessibilityHidden(true) // the chart's own help says how, for the keyboard
             }
             .padding(.horizontal, 12)
             .frame(height: 22)
-            PriceChartRepresentable(series: series ?? ChartSeries(), style: spec.style, livePrice: livePrice, tool: tool, drawingsKey: drawingsKey, reloadToken: reloadToken)
+            .accessibilityElement(children: .contain)
+            .accessibilityLabel("Chart tools")
+            PriceChartRepresentable(series: series ?? ChartSeries(), style: spec.style, livePrice: livePrice, tool: tool, drawingsKey: drawingsKey, reloadToken: reloadToken, accessibilityTitle: accessibilityTitle)
         }
         .task(id: spec) { await load() }
         .onReceive(Timer.publish(every: 0.25, on: .main, in: .common).autoconnect()) { _ in
@@ -552,6 +614,17 @@ struct ChartBlockView: View {
 
     @State private var reloadToken = 0
     private var drawingsKey: String { "drawings.\(spec.security)" }
+
+    private func clearDrawings() {
+        UserDefaults.standard.removeObject(forKey: drawingsKey)
+        reloadToken += 1
+    }
+
+    /// "AAPL price chart, 1 year".
+    private var accessibilityTitle: String {
+        let name = "\(SecurityText.ticker(spec.security)) price chart"
+        return spec.range.isEmpty ? name : "\(name), \(SpokenText.range(spec.range))"
+    }
 
     /// Chart loads in flight (snapshot mode waits for zero).
     nonisolated(unsafe) static var inFlight = 0
@@ -577,6 +650,7 @@ struct PriceChartRepresentable: NSViewRepresentable {
     let tool: DrawTool
     let drawingsKey: String
     let reloadToken: Int
+    let accessibilityTitle: String
 
     final class Coordinator { var lastCount = -1; var lastFirst: Int64 = 0; var lastToken = -1 }
     func makeCoordinator() -> Coordinator { Coordinator() }
@@ -604,5 +678,6 @@ struct PriceChartRepresentable: NSViewRepresentable {
         v.style = style
         v.livePrice = livePrice
         v.tool = tool
+        v.accessibilityTitle = accessibilityTitle
     }
 }

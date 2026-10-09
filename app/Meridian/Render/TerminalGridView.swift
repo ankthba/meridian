@@ -26,11 +26,16 @@ private final class RowLayerDelegate: NSObject, CALayerDelegate {
 /// flash briefly on change. Text uses cached CTLines and monospace metrics
 /// (width = characters × cell width), so nothing is measured per frame.
 /// `draw(_:)` paints the full grid for offscreen snapshot rendering.
+///
+/// For VoiceOver the view is a table whose rows and cells are
+/// `NSAccessibilityElement`s (`GridAccessibility.swift`), made the first
+/// time an assistive app asks and read from the same cell text the grid
+/// draws. Drawing and live updates do no accessibility work.
 final class TerminalGridView: NSView {
     var table: TableFfi = TableFfi(title: nil, columns: [], rows: [], pageSize: nil, numbered: false) {
-        didSet { rowsByIdValid = false; recompute(); resetRowLayers() }
+        didSet { rowsByIdValid = false; recompute(); resetRowLayers(); axShapeChanged() }
     }
-    var page: Int = 0 { didSet { if page != oldValue { rowsByIdValid = false; resetRowLayers() } } }
+    var page: Int = 0 { didSet { if page != oldValue { rowsByIdValid = false; resetRowLayers(); axShapeChanged() } } }
     var feed: QuoteFeed? {
         didSet {
             oldValue?.removeListener(self)
@@ -45,6 +50,7 @@ final class TerminalGridView: NSView {
             for ri in [oldValue, selectedRow].compactMap({ $0 }) {
                 rowLayers[ri - visibleRows.lowerBound]?.setNeedsDisplay()
             }
+            if ax != nil, selectedRow != oldValue { NSAccessibility.post(element: self, notification: .selectedRowsChanged) }
         }
     }
 
@@ -277,12 +283,15 @@ final class TerminalGridView: NSView {
         guard feed != nil else { return }
         if !rowsByIdValid { rebuildRowIndex() }
         let now = CACurrentMediaTime()
+        // The tick flash is the app's only animation; Reduce Motion turns
+        // it off (values and colors still update).
+        let flash = !MotionPreference.reduceMotion
         for id in ids {
             guard let rows = rowsById[id] else { continue }
             for vi in rows {
                 guard let l = rowLayers[vi] else { continue }
                 l.setNeedsDisplay()
-                flashing[vi] = now + flashDuration
+                if flash { flashing[vi] = now + flashDuration }
             }
         }
         if flashTimer == nil, !flashing.isEmpty {
@@ -402,32 +411,44 @@ final class TerminalGridView: NSView {
         }
         let indent = CGFloat(row.depth) * 2 * cellWidth
         for (ci, col) in table.columns.enumerated() where ci < row.cells.count && ci < colX.count {
-            let cell = row.cells[ci]
-            var value = cell.value
-            var style = cell.style
-            var cellFlash = false
-            if let lf = col.live, let live {
-                value = live.value(lf)
-                if isFlashing, live.changed & HotRow.changedBit(lf) != 0 { cellFlash = true }
-            }
-            let text: String = {
-                if let t = cell.text, col.live == nil || value == nil {
-                    // A cell showing the row's own security key reads as the ticker.
-                    return t == row.security ? SecurityText.ticker(t) : t
-                }
-                return TerminalFormatter.string(value, col.format)
-            }()
-            if let s = TerminalFormatter.signedStyle(value, col.format) { style = s }
-            if row.emphasis && style == .normal { style = .emphasis }
+            let c = Self.content(row.cells[ci], column: col, row: row, live: live)
             var cellRect = NSRect(x: colX[ci], y: y, width: colW[ci], height: h)
             if ci == 0 { cellRect.origin.x += indent; cellRect.size.width -= indent }
-            if cellFlash {
-                let up = live.map { $0.flags & HotRow.tickUp != 0 } ?? true
+            if isFlashing, let lf = col.live, let live, live.changed & HotRow.changedBit(lf) != 0 {
+                let up = live.flags & HotRow.tickUp != 0
                 ctx.setFillColor((up ? Theme.flashUp : Theme.flashDown).cgColor)
                 ctx.fill(cellRect.insetBy(dx: -3, dy: 1))
             }
-            drawText(ctx, text, in: cellRect, align: col.align, color: style.color, bold: row.emphasis)
+            drawText(ctx, c.text, in: cellRect, align: col.align, color: c.style.color, bold: row.emphasis)
         }
+    }
+
+    /// What one cell shows: the text the grid draws (and VoiceOver reads),
+    /// its style, and whether the text was formatted from a number. Live
+    /// columns take the streamed value when there is one.
+    struct CellContent: Equatable {
+        var text: String
+        var style: StyleFfi
+        var formatted: Bool
+    }
+
+    static func content(_ cell: CellFfi, column col: ColumnFfi, row: RowFfi, live: HotRow?) -> CellContent {
+        var value = cell.value
+        var style = cell.style
+        if let lf = col.live, let live { value = live.value(lf) }
+        let text: String
+        let formatted: Bool
+        if let t = cell.text, col.live == nil || value == nil {
+            // A cell showing the row's own security key reads as the ticker.
+            text = t == row.security ? SecurityText.ticker(t) : t
+            formatted = false
+        } else {
+            text = TerminalFormatter.string(value, col.format)
+            formatted = true
+        }
+        if let s = TerminalFormatter.signedStyle(value, col.format) { style = s }
+        if row.emphasis && style == .normal { style = .emphasis }
+        return CellContent(text: text, style: style, formatted: formatted)
     }
 
     private struct LineKey: Hashable {
@@ -472,12 +493,228 @@ final class TerminalGridView: NSView {
 
     override func mouseDown(with event: NSEvent) {
         let p = convert(event.locationInWindow, from: nil)
-        let vi = Int(p.y / Theme.rowHeight) - 1
+        activate(Int(p.y / Theme.rowHeight) - 1)
+    }
+
+    /// Selects the page's row `vi` and runs its action (a click, or a
+    /// VoiceOver press).
+    @discardableResult
+    private func activate(_ vi: Int) -> Bool {
         let rows = visibleRows
-        guard vi >= 0, vi < rows.count else { return }
+        guard vi >= 0, vi < rows.count else { return false }
         let ri = rows.lowerBound + vi
         selectedRow = ri
         onSelect?(ri)
+        return true
+    }
+
+    // MARK: Accessibility
+
+    private struct AXElements {
+        var rows: [GridRowElement] = []
+        var headers: [GridHeaderElement] = []
+        var columns: [GridColumnElement] = []
+        var headerGroup: GridHeaderGroupElement?
+        var columnCount = -1
+    }
+
+    /// Nil until an assistive app first asks about the grid.
+    private var ax: AXElements?
+
+    /// Whether an assistive app has asked about the grid (tests check that
+    /// drawing alone builds nothing).
+    var hasAccessibilityElements: Bool { ax != nil }
+
+    /// Data columns plus the number column of numbered tables.
+    var axColumnCount: Int { table.columns.count + (table.numbered ? 1 : 0) }
+
+    /// Accessibility column → data column; nil for the number column.
+    private func axDataColumn(_ c: Int) -> Int? { table.numbered ? (c == 0 ? nil : c - 1) : c }
+
+    /// Makes or reuses elements for the current table shape. Row and cell
+    /// elements hold only indices, so they survive refreshes of the same
+    /// shape and VoiceOver keeps its place.
+    @discardableResult
+    private func axElements() -> AXElements {
+        var e = ax ?? AXElements()
+        let cols = axColumnCount
+        if e.columnCount != cols || e.headerGroup == nil {
+            e.headerGroup = GridHeaderGroupElement(grid: self)
+            e.headers = (0..<cols).map { GridHeaderElement(grid: self, column: $0) }
+            e.columns = (0..<cols).map { GridColumnElement(grid: self, column: $0) }
+            e.rows = []
+            e.columnCount = cols
+        }
+        let n = visibleRows.count
+        if e.rows.count > n {
+            e.rows.removeLast(e.rows.count - n)
+        } else if e.rows.count < n {
+            e.rows += (e.rows.count..<n).map { GridRowElement(grid: self, vi: $0) }
+        }
+        ax = e
+        return e
+    }
+
+    /// New table or page: tell VoiceOver only if it has been looking.
+    private func axShapeChanged() {
+        guard let old = ax else { return }
+        let e = axElements()
+        if e.columnCount != old.columnCount {
+            NSAccessibility.post(element: self, notification: .layoutChanged)
+        } else if e.rows.count != old.rows.count {
+            NSAccessibility.post(element: self, notification: .rowCountChanged)
+        }
+    }
+
+    var axRowElements: [GridRowElement] { axElements().rows }
+    var axHeaderCells: [GridHeaderElement] { axElements().headers }
+    var axHeaderGroup: GridHeaderGroupElement? { axElements().headerGroup }
+
+    func axHeaderCell(_ c: Int) -> GridHeaderElement? {
+        let h = axElements().headers
+        return h.indices.contains(c) ? h[c] : nil
+    }
+
+    func axColumnTitle(_ c: Int) -> String? {
+        guard let d = axDataColumn(c) else { return "Number" }
+        guard table.columns.indices.contains(d) else { return nil }
+        let t = SpokenText.header(table.columns[d].title)
+        return t.isEmpty ? nil : t
+    }
+
+    /// The row's cells as drawn, for speech.
+    private func axCells(_ ri: Int) -> [SpokenText.Cell] {
+        let row = table.rows[ri]
+        let live = row.security.flatMap { feed?.row(for: $0) }
+        var out: [SpokenText.Cell] = []
+        if table.numbered { out.append(SpokenText.Cell(header: "", text: "\(ri + 1)", format: .integer, formatted: false)) }
+        for (ci, col) in table.columns.enumerated() where ci < row.cells.count {
+            let c = Self.content(row.cells[ci], column: col, row: row, live: live)
+            out.append(SpokenText.Cell(header: col.title, text: c.text, format: col.format, formatted: c.formatted))
+        }
+        return out
+    }
+
+    private func axRowIndex(_ vi: Int) -> Int? {
+        let rows = visibleRows
+        let ri = rows.lowerBound + vi
+        return vi >= 0 && rows.contains(ri) ? ri : nil
+    }
+
+    func axRowDescription(_ vi: Int) -> String? {
+        axRowIndex(vi).map { SpokenText.row(axCells($0)) }
+    }
+
+    func axCellText(row vi: Int, column c: Int) -> String? {
+        guard let ri = axRowIndex(vi) else { return nil }
+        let cells = axCells(ri)
+        guard cells.indices.contains(c) else { return nil }
+        let cell = cells[c]
+        return SpokenText.value(cell.text, format: cell.format, formatted: cell.formatted)
+    }
+
+    func axRowHelp(_ vi: Int) -> String? {
+        guard let ri = axRowIndex(vi), let a = table.rows[ri].action else { return nil }
+        return "Opens \(FunctionLabel.short(a.function))"
+    }
+
+    func axIsSelected(_ vi: Int) -> Bool { axRowIndex(vi).map { $0 == selectedRow } ?? false }
+    func axSelect(_ vi: Int) { if let ri = axRowIndex(vi) { selectedRow = ri } }
+    func axActivate(_ vi: Int) -> Bool { activate(vi) }
+
+    /// Frame in view coordinates. `row` -1 is the header row and nil the
+    /// whole column; `column` nil is the whole row.
+    private func axLocalFrame(row vi: Int?, column c: Int?) -> NSRect {
+        let h = Theme.rowHeight
+        var r: NSRect = switch vi {
+        case nil: NSRect(x: 0, y: 0, width: bounds.width, height: CGFloat(visibleRows.count + 1) * h)
+        case .some(-1): NSRect(x: 0, y: 0, width: bounds.width, height: h)
+        case let v?: rowRect(v)
+        }
+        if let c {
+            if let d = axDataColumn(c) {
+                guard d < colX.count else { return .zero }
+                r.origin.x = colX[d]
+                r.size.width = colW[d]
+            } else {
+                r.origin.x = pad
+                r.size.width = numberWidth * cellWidth
+            }
+        }
+        return r
+    }
+
+    func axScreenFrame(row vi: Int?, column c: Int?) -> NSRect {
+        NSAccessibility.screenRect(fromView: self, rect: axLocalFrame(row: vi, column: c))
+    }
+
+    override func isAccessibilityElement() -> Bool { true }
+    override func accessibilityRole() -> NSAccessibility.Role? { .table }
+
+    override func accessibilityLabel() -> String? {
+        guard pageCount > 1 else { return table.title }
+        let p = "page \(page + 1) of \(pageCount)"
+        return table.title.map { "\($0), \(p)" } ?? p
+    }
+
+    override func accessibilityHelp() -> String? {
+        pageCount > 1 ? "Page Down and Page Up turn pages" : nil
+    }
+
+    override func accessibilityChildren() -> [Any]? {
+        let e = axElements()
+        return (e.headerGroup.map { [$0] } ?? []) + e.rows + e.columns
+    }
+
+    override func accessibilityRows() -> [Any]? { axElements().rows }
+
+    override func accessibilityVisibleRows() -> [Any]? {
+        let vis = visibleRect
+        return axElements().rows.filter { rowRect($0.vi).intersects(vis) }
+    }
+
+    override func accessibilitySelectedRows() -> [Any]? {
+        guard let s = selectedRow else { return [] }
+        let rows = axElements().rows
+        let vi = s - visibleRows.lowerBound
+        return rows.indices.contains(vi) ? [rows[vi]] : []
+    }
+
+    override func setAccessibilitySelectedRows(_ rows: [Any]?) {
+        if let r = rows?.first as? GridRowElement { axSelect(r.vi) }
+    }
+
+    override func accessibilityColumns() -> [Any]? { axElements().columns }
+    override func accessibilityVisibleColumns() -> [Any]? { axElements().columns }
+    override func accessibilityHeader() -> Any? { axElements().headerGroup }
+    override func accessibilityColumnHeaderUIElements() -> [Any]? { axElements().headers }
+    override func accessibilityRowCount() -> Int { visibleRows.count }
+    override func accessibilityColumnCount() -> Int { axColumnCount }
+
+    override func accessibilityCell(forColumn column: Int, row: Int) -> Any? {
+        let rows = axElements().rows
+        return rows.indices.contains(row) ? rows[row].cell(column) : nil
+    }
+
+    /// `NSAccessibility` declares hit testing nonisolated; AppKit calls it on
+    /// the main thread.
+    nonisolated override func accessibilityHitTest(_ point: NSPoint) -> Any? {
+        nonisolated(unsafe) var hit: Any?
+        MainActor.assumeIsolated { hit = axHit(point) }
+        return hit
+    }
+
+    private func axHit(_ point: NSPoint) -> Any? {
+        guard let window else { return self }
+        let p = convert(window.convertPoint(fromScreen: point), from: nil)
+        let vi = Int(floor(p.y / Theme.rowHeight)) - 1
+        let e = axElements()
+        if vi == -1 {
+            return (0..<axColumnCount).first { axLocalFrame(row: -1, column: $0).contains(p) }.flatMap { axHeaderCell($0) } ?? e.headerGroup
+        }
+        guard e.rows.indices.contains(vi) else { return self }
+        let row = e.rows[vi]
+        return (0..<axColumnCount).first { axLocalFrame(row: vi, column: $0).contains(p) }.flatMap { row.cell($0) } ?? row
     }
 }
 

@@ -101,13 +101,17 @@ struct AskView: View {
             }
             HStack(spacing: 8) {
                 Text("Ask").font(Theme.ui(12.5, weight: .semibold)).foregroundStyle(Theme.muted.swiftUI)
+                    .accessibilityHidden(true) // the field is labeled "Question"
                 TextField("Ask about \(panel.security ?? "markets"), e.g. how has it done against SPY this year?", text: $model.draft)
                     .textFieldStyle(.plain)
                     .font(Theme.ui(13.5))
                     .foregroundStyle(Theme.text.swiftUI)
                     .onSubmit { model.send(security: panel.security) }
+                    .accessibilityLabel("Question")
                 if model.turns.last?.running == true {
                     Text("Stop").font(Theme.ui(12.5)).foregroundStyle(Theme.down.swiftUI).onTapGesture { model.cancel() }
+                        .accessibilityAddTraits(.isButton)
+                        .accessibilityAction { model.cancel() }
                 }
             }
             .padding(.horizontal, 12)

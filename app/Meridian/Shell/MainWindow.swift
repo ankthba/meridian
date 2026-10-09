@@ -77,6 +77,8 @@ struct MainWindow: View {
             }
             .background(Theme.line.swiftUI)
         }
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Panes")
     }
 
     private func cell(_ ws: Workspace, _ i: Int) -> some View {
@@ -106,6 +108,7 @@ struct TopBar: View {
                 .tracking(3)
                 .foregroundStyle(Theme.text.swiftUI)
                 .padding(.leading, 74) // clear the window controls
+                .accessibilityLabel("Meridian")
             if let a = app.lastAlert {
                 Text("Alert · \(a)").font(Theme.ui(12)).foregroundStyle(Theme.warn.swiftUI).lineLimit(1)
             }
@@ -152,26 +155,39 @@ struct TopBar: View {
                 Text(app.mode == .mock ? "Mock" : "Live").font(Theme.ui(12)).foregroundStyle(Theme.text2.swiftUI)
             }
             .help(app.feeds.map { "\($0.provider): \($0.message)" }.joined(separator: "\n"))
+            // The dot's color is the feed health; say it in words.
+            .accessibilityElement(children: .ignore)
+            .accessibilityAddTraits(.isStaticText)
+            .accessibilityLabel(app.mode == .mock ? "Mock data" : "Live")
+            .accessibilityValue(app.mode == .mock ? "" : feedFailed ? "a data feed has failed" : "feeds healthy")
             Text(app.feeds.map(\.provider).joined(separator: " · "))
                 .font(Theme.ui(12))
                 .foregroundStyle(Theme.muted.swiftUI)
                 .lineLimit(1)
+                .accessibilityLabel(app.feeds.isEmpty ? "" : "Feeds: " + app.feeds.map(\.provider).joined(separator: ", "))
             Text(Self.clock.string(from: now))
                 .font(Theme.swiftFont(12))
                 .foregroundStyle(Theme.text2.swiftUI)
+                .accessibilityLabel("Time")
+                .accessibilityValue(Self.clock.string(from: now))
         }
         .padding(.trailing, 14)
         .frame(height: 40)
         .background(Theme.bg.swiftUI)
         .overlay(alignment: .bottom) { Rectangle().fill(Theme.line.swiftUI).frame(height: 1) }
         .onReceive(timer) { now = $0 }
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Status")
+    }
+
+    private var feedFailed: Bool {
+        app.feeds.contains { !$0.connected && !$0.message.hasPrefix("idle") && !$0.message.hasPrefix("reconnecting with") }
     }
 
     /// Green when every connected-on-demand feed is healthy; red if one failed.
     private var liveColor: NSColor {
         if app.mode == .mock { return Theme.warn }
-        let failed = app.feeds.contains { !$0.connected && !$0.message.hasPrefix("idle") && !$0.message.hasPrefix("reconnecting with") }
-        return failed ? Theme.down : Theme.up
+        return feedFailed ? Theme.down : Theme.up
     }
 }
 
@@ -196,6 +212,8 @@ struct KeyboardOverlay: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             Text("KEYBOARD").font(Theme.label()).tracking(1.4).foregroundStyle(Theme.muted.swiftUI)
+                .accessibilityLabel("Keyboard")
+                .accessibilityAddTraits(.isHeader)
             Text("Type plain commands like aapl 5y or aapl filings; the keys below are shortcuts. Mac F-keys send media keys unless fn is held; ⌥1–⌥0 always work.")
                 .font(Theme.ui(12)).foregroundStyle(Theme.text2.swiftUI)
                 .fixedSize(horizontal: false, vertical: true)
@@ -208,6 +226,7 @@ struct KeyboardOverlay: View {
                 }
                 .padding(.vertical, 4)
                 .overlay(alignment: .bottom) { Rectangle().fill(Theme.hairline.swiftUI).frame(height: 1) }
+                .accessibilityElement(children: .combine)
             }
             HStack { Spacer(); Button("Close") { dismiss() }.keyboardShortcut(.cancelAction) }.padding(.top, 12)
         }
