@@ -422,6 +422,58 @@ fn same_day_rows_keep_their_real_order() {
 }
 
 #[test]
+fn as_of_rows_do_not_flip_the_file_order() {
+    // A short newest-first Schwab export whose top row is dated "as of" an
+    // older day. Judged by trade dates it looked oldest first, so it was not
+    // reversed and the 10/07 sell sorted before the 10/07 buy.
+    let schwab = "\"Date\",\"Action\",\"Symbol\",\"Description\",\"Quantity\",\"Price\",\"Fees & Comm\",\"Amount\"\n\
+                  \"10/08/2026 as of 09/30/2026\",\"Credit Interest\",\"\",\"SCHWAB1 INT 09/01-09/30\",\"\",\"\",\"\",\"$0.40\"\n\
+                  \"10/07/2026\",\"Sell\",\"AAPL\",\"APPLE INC\",\"10\",\"$200.00\",\"\",\"$2000.00\"\n\
+                  \"10/07/2026\",\"Buy\",\"AAPL\",\"APPLE INC\",\"10\",\"$190.00\",\"\",\"-$1900.00\"\n";
+    let p = parse(schwab, None, &opts()).unwrap();
+    assert_eq!(p.transactions.iter().map(|t| t.kind).collect::<Vec<_>>(), [K::Interest, K::Buy, K::Sell]);
+    assert_eq!((p.transactions[0].trade_date, p.transactions[0].listed_date), (d(2026, 9, 30), d(2026, 10, 8)));
+    // The same with Fidelity's "as of" inside the Action.
+    let fidelity = "Run Date,Action,Symbol,Description,Type,Quantity,Price ($),Commission ($),Fees ($),Accrued Interest ($),Amount ($),Settlement Date\n\
+                    10/08/2026,DIVIDEND RECEIVED as of 09/30/2026 APPLE INC (AAPL) (Cash),AAPL,APPLE INC,Cash,0,,,,,2.60,\n\
+                    10/07/2026,YOU SOLD APPLE INC (AAPL) (Cash),AAPL,APPLE INC,Cash,-10,200,,,,2000.00,10/08/2026\n\
+                    10/07/2026,YOU BOUGHT APPLE INC (AAPL) (Cash),AAPL,APPLE INC,Cash,10,190,,,,-1900.00,10/08/2026\n";
+    let p = parse(fidelity, None, &opts()).unwrap();
+    assert_eq!(p.transactions.iter().map(|t| t.kind).collect::<Vec<_>>(), [K::Dividend, K::Buy, K::Sell]);
+    // A file someone re-sorted oldest first is still read in its order.
+    let resorted = "\"Date\",\"Action\",\"Symbol\",\"Description\",\"Quantity\",\"Price\",\"Fees & Comm\",\"Amount\"\n\
+                    \"10/06/2026\",\"Buy\",\"AAPL\",\"APPLE INC\",\"10\",\"$190.00\",\"\",\"-$1900.00\"\n\
+                    \"10/07/2026\",\"Buy\",\"MSFT\",\"MICROSOFT CORP\",\"1\",\"$400.00\",\"\",\"-$400.00\"\n\
+                    \"10/07/2026\",\"Sell\",\"MSFT\",\"MICROSOFT CORP\",\"1\",\"$410.00\",\"\",\"$410.00\"\n";
+    let p = parse(resorted, None, &opts()).unwrap();
+    assert_eq!(p.transactions.iter().map(|t| t.kind).collect::<Vec<_>>(), [K::Buy, K::Buy, K::Sell]);
+}
+
+/// `schwab_2024.csv` with its two reverse-split rows (lines 5 and 6) swapped.
+fn schwab_2024_legs_swapped() -> String {
+    let text = fixture("schwab_2024.csv");
+    let mut lines: Vec<&str> = text.lines().collect();
+    assert!(lines[4].contains("\"Reverse Split\",\"ABCD\"") && lines[5].contains("\"Reverse Split\",\"000000AA3\""));
+    lines.swap(4, 5);
+    lines.join("\n") + "\n"
+}
+
+#[test]
+fn netted_reverse_split_fingerprint_ignores_leg_order() {
+    let a = read("schwab_2024.csv");
+    let b = parse(&schwab_2024_legs_swapped(), None, &opts()).unwrap();
+    let (ra, rb) = (find(&a, K::Split, "ABCD"), find(&b, K::Split, "ABCD"));
+    assert_eq!((ra.len(), rb.len()), (1, 1));
+    assert!(close(ra[0].quantity, -95.0) && close(rb[0].quantity, -95.0));
+    assert_eq!(ra[0].fingerprint, rb[0].fingerprint);
+    // Every other row agrees too, so re-importing either file adds nothing.
+    let fa: std::collections::HashSet<&str> = a.transactions.iter().map(|t| t.fingerprint.as_str()).collect();
+    assert!(b.transactions.iter().all(|t| fa.contains(t.fingerprint.as_str())));
+    // A split that is not netted keeps its own fingerprint shape.
+    assert!(find(&a, K::Split, "AVGO")[0].fingerprint.ends_with("-0"));
+}
+
+#[test]
 fn crlf_and_quoted_newlines_count_lines() {
     let text = fixture("robinhood_activity.csv").replace('\n', "\r\n");
     let p = parse(&text, None, &opts()).unwrap();

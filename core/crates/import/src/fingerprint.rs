@@ -95,6 +95,17 @@ impl Fingerprinter {
     }
 }
 
+/// Fingerprint of a row netted from several rows (a reverse split's legs):
+/// the hash of the legs' fingerprints in sorted order, so it does not
+/// depend on the order the file listed the legs in.
+#[must_use]
+pub fn combine(legs: &[String]) -> String {
+    let mut sorted: Vec<&str> = legs.iter().map(String::as_str).collect();
+    sorted.sort_unstable();
+    let h = fnv1a(format!("netted\u{1f}{}", sorted.join("\u{1f}")).as_bytes());
+    format!("{h:032x}-0")
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -123,5 +134,15 @@ mod tests {
         // A different family never collides with the same row.
         let mut h = Fingerprinter::new();
         assert_ne!(h.next(&Parts { family: "schwab", ..p }), a);
+    }
+
+    #[test]
+    fn combined_fingerprints_ignore_leg_order() {
+        let (a, b) = ("1".repeat(32) + "-0", "2".repeat(32) + "-0");
+        let ab = combine(&[a.clone(), b.clone()]);
+        assert_eq!(ab, combine(&[b.clone(), a.clone()]));
+        assert_ne!(ab, a);
+        assert_ne!(ab, b);
+        assert_ne!(ab, combine(&[a, b.clone(), b]));
     }
 }

@@ -89,6 +89,9 @@ fn row(rec: &Record, c: &Columns, date_i: usize, action_i: usize, out: &mut Outp
     use TransactionKind as K;
     let bad = |e: value::BadValue| format!("Not imported: unreadable {}", e.describe());
     let trade_date = event_date(rec.get(date_i)).map_err(bad)?;
+    // The first date of `MM/DD/YYYY as of MM/DD/YYYY` (the text after it
+    // is ignored) is the posting date the file is ordered by.
+    let listed_date = value::date(rec.get(date_i), DateOrder::MonthFirst).map_err(bad)?;
     let action = value::text(rec.get(action_i));
     let Some(k) = kind(&action) else {
         return Err(format!("Not imported: unknown Action '{action}'"));
@@ -119,6 +122,7 @@ fn row(rec: &Record, c: &Columns, date_i: usize, action_i: usize, out: &mut Outp
         Kind::Unsupported(why) => return Err(format!("Not imported: {action} — {why}")),
     };
     let mut r = Row::new(kind, trade_date);
+    r.listed_date = listed_date;
     r.symbol = c.find(&["symbol"]).and_then(|i| value::symbol(rec.get(i)));
     r.amount = amount;
     r.fees = fees.map(f64::abs).filter(|f| *f != 0.0);
@@ -167,5 +171,7 @@ mod tests {
         let d = |y, m, dd| chrono::NaiveDate::from_ymd_opt(y, m, dd).unwrap();
         assert_eq!(event_date("07/15/2024 as of 07/12/2024").unwrap(), d(2024, 7, 12));
         assert_eq!(event_date("07/15/2024").unwrap(), d(2024, 7, 15));
+        // The listed (posting) date is the first one.
+        assert_eq!(value::date("07/15/2024 as of 07/12/2024", DateOrder::MonthFirst).unwrap(), d(2024, 7, 15));
     }
 }

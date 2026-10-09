@@ -172,6 +172,25 @@ fn schwab_import_flags_transfers_without_cost() {
 }
 
 #[test]
+fn a_reverse_split_listed_in_another_leg_order_is_not_applied_twice() {
+    let rt = tokio::runtime::Builder::new_multi_thread().enable_all().build().expect("rt");
+    let engine = engine();
+    let csv = fixture("schwab_2024.csv");
+    let first = engine.commit_import(&csv, None, &ImportTarget::New("Schwab".into())).expect("commit");
+    // The same export with the reverse split's legs in the other order.
+    let mut lines: Vec<&str> = csv.lines().collect();
+    lines.swap(4, 5);
+    let swapped = lines.join("\n") + "\n";
+    let again = engine.commit_import(&swapped, None, &ImportTarget::Existing(first.portfolio_id)).expect("again");
+    assert_eq!((again.imported, again.duplicates), (0, first.imported));
+    let s = port(&engine, &rt, first.portfolio_id);
+    let pos = positions(&s);
+    // 100 → 5, not 100 → 5 → 0.
+    assert_eq!(pos.iter().find(|p| p.0 == "ABCD US Equity").map(|p| p.1), Some(5.0), "{pos:?}");
+    engine.shutdown();
+}
+
+#[test]
 fn positions_snapshot_into_new_and_existing_portfolios() {
     let rt = tokio::runtime::Builder::new_multi_thread().enable_all().build().expect("rt");
     let engine = engine();

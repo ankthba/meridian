@@ -206,6 +206,7 @@ fn row(rec: &Record, c: &Columns, date_i: usize, out: &mut Output) -> Result<boo
         Kind::Unsupported(why) => return Err(format!("Not imported: {action} — {why}")),
     };
     let mut r = Row::new(kind, as_of(&action).unwrap_or(run_date));
+    r.listed_date = run_date;
     r.settle_date = c.find(&["settlement date"]).and_then(|i| value::date(rec.get(i), DateOrder::MonthFirst).ok());
     r.symbol = symbol;
     r.currency = opt_text(rec, c.find(&["currency"])).map_or_else(|| "USD".to_owned(), |s| s.to_ascii_uppercase());
