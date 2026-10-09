@@ -75,7 +75,9 @@ fn kind(action: &str) -> Option<Kind> {
         || starts("adjust fee")
     {
         Kind::Is(K::Fee)
-    } else if starts("dividend received") || starts("dividend adjustment") || starts("short-term cap gain") || starts("long-term cap gain") || starts("return of capital") {
+    } else if starts("return of capital") {
+        Kind::Is(K::ReturnOfCapital)
+    } else if starts("dividend received") || starts("dividend adjustment") || starts("short-term cap gain") || starts("long-term cap gain") {
         Kind::Is(K::Dividend)
     } else if starts("reinvestment") {
         Kind::Is(K::ReinvestedDividend)
@@ -86,7 +88,7 @@ fn kind(action: &str) -> Option<Kind> {
     } else if starts("distribution") || starts("reverse split") {
         Kind::Is(K::Split)
     } else if starts("in lieu of") {
-        Kind::Is(K::Other)
+        Kind::Is(K::CashInLieu)
     } else if starts("merger") || starts("name changed") {
         Kind::Unsupported("mergers and name changes are not supported; adjust the holding by hand")
     } else if starts("redemption payout") {
@@ -291,6 +293,8 @@ mod tests {
         assert_eq!(k("YOU SOLD ISHARES SHORT TREASURY BOND ETF (SHV) (Cash)"), format!("{:?}", K::Sell));
         assert_eq!(k("NON-RESIDENT TAX DIVIDEND RECEIVED X"), format!("{:?}", K::Fee));
         assert_eq!(k("DIVIDEND RECEIVED X"), format!("{:?}", K::Dividend));
+        assert_eq!(k("RETURN OF CAPITAL ABCD HOLDINGS (ABCD) (Cash)"), format!("{:?}", K::ReturnOfCapital));
+        assert_eq!(k("IN LIEU OF FRX SHARE LEU PAYOUT ABCD HOLDINGS (ABCD) (Cash)"), format!("{:?}", K::CashInLieu));
         assert_eq!(k("DISTRIBUTION SPINOFF FROM:(ABC ) XYZ"), format!("{:?}", K::TransferIn));
         assert_eq!(k("DISTRIBUTION NVIDIA CORP (NVDA) (Cash)"), format!("{:?}", K::Split));
         assert_eq!(k("TRANSFER OF ASSETS ACAT RECEIVE"), "Transfer");

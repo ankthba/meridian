@@ -27,6 +27,10 @@ pub(crate) fn classify(action: &str, quantity: Option<f64>, amount: Option<f64>)
     let shares = quantity.is_some_and(|q| q != 0.0);
     Some(if starts("split") {
         K::Split
+    } else if has("lieu") {
+        K::CashInLieu
+    } else if has("return") && has("capital") {
+        K::ReturnOfCapital
     } else if starts("reinvest") {
         if shares { K::ReinvestedDividend } else { K::Dividend }
     } else if has("fee") || has("fees") || has("commission") || has("tax") || has("taxes") {
@@ -248,7 +252,7 @@ fn row(rec: &Record, m: &ColumnMapping, order: DateOrder, decimal: Decimal, defa
         K::Split => r.quantity = quantity,
         K::Fee | K::Withdrawal => r.amount = signed(amount, false),
         K::Deposit => r.amount = signed(amount, true),
-        K::Dividend | K::Interest | K::Other => r.amount = amount,
+        K::Dividend | K::ReturnOfCapital | K::CashInLieu | K::Interest | K::Other => r.amount = amount,
     }
     if kind.moves_shares() && r.symbol.is_none() {
         return Err(format!("Not imported: {} without a symbol", kind.label().to_lowercase()));
@@ -281,6 +285,9 @@ mod tests {
         assert_eq!(c("Reinvest Shares", Some(1.2), None), Some(K::ReinvestedDividend));
         assert_eq!(c("Qual Div Reinvest", None, Some(5.0)), Some(K::Dividend));
         assert_eq!(c("Long Term Cap Gain", None, Some(5.0)), Some(K::Dividend));
+        assert_eq!(c("Return of Capital", None, Some(5.0)), Some(K::ReturnOfCapital));
+        assert_eq!(c("Cash in lieu of fractional shares", None, Some(0.75)), Some(K::CashInLieu));
+        assert_eq!(c("Capital Gain Distribution", None, Some(5.0)), Some(K::Dividend));
         assert_eq!(c("Foreign Tax Paid", None, Some(-1.0)), Some(K::Fee));
         assert_eq!(c("ADR Mgmt Fee", None, Some(-1.0)), Some(K::Fee));
         assert_eq!(c("Bank Interest", None, Some(1.0)), Some(K::Interest));

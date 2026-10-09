@@ -37,11 +37,13 @@ fn kind(action: &str) -> Option<Kind> {
         // The cash leg of a reinvestment, and plain distributions.
         "reinvest dividend" | "qual div reinvest" | "qual div reinvest adj" | "non-qualified div" | "short term cap gain reinvest" | "long term cap gain reinvest"
         | "pr yr div reinvest" | "cash dividend" | "qualified dividend" | "special dividend" | "special qual div" | "special non qual div" | "pr yr cash div"
-        | "pr yr special div" | "div adjustment" | "long term cap gain" | "short term cap gain" | "return of capital" => Kind::Is(K::Dividend),
+        | "pr yr special div" | "div adjustment" | "long term cap gain" | "short term cap gain" => Kind::Is(K::Dividend),
+        "return of capital" => Kind::Is(K::ReturnOfCapital),
         "bank interest" | "credit interest" | "bond interest" | "margin interest" | "interest adj" | "promotional award" => Kind::Is(K::Interest),
         "nra tax adj" | "nra withholding" | "nra withhold" | "pr yr nra tax" | "foreign tax paid" | "foreign tax reclaim" | "foreign tax reclaim adj"
         | "irs withhold adj" | "adr mgmt fee" | "service fee" | "advisor fee" => Kind::Is(K::Fee),
-        "cash in lieu" | "misc cash entry" | "adjustment" => Kind::Is(K::Other),
+        "cash in lieu" => Kind::Is(K::CashInLieu),
+        "misc cash entry" | "adjustment" => Kind::Is(K::Other),
         // A stock dividend adds shares without changing cost, like a split.
         "stock split" | "reverse split" | "stock div dist" => Kind::Is(K::Split),
         "spin-off" | "stock plan activity" => Kind::Is(K::TransferIn),

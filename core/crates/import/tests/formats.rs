@@ -135,7 +135,7 @@ fn fidelity_all_accounts_2026_layout() {
     // ACAT shares arrive without a cost basis.
     let acat = find(&p, K::TransferIn, "VTI")[0];
     assert!(close(acat.quantity, 15.0) && acat.price.is_none() && acat.cost_basis.is_none());
-    assert_eq!((count(&p, K::Deposit), count(&p, K::Withdrawal), count(&p, K::Other)), (1, 1, 1));
+    assert_eq!((count(&p, K::Deposit), count(&p, K::Withdrawal), count(&p, K::CashInLieu), count(&p, K::Other)), (1, 1, 1, 0));
 }
 
 #[test]
@@ -251,7 +251,7 @@ fn vanguard_download() {
     let rs = find(&p, K::Split, "ABCD");
     assert_eq!(rs.len(), 1);
     assert!(close(rs[0].quantity, -95.0));
-    assert_eq!(p.counts(), vec![(K::Buy, 2), (K::Sell, 1), (K::Dividend, 2), (K::ReinvestedDividend, 1), (K::Split, 1), (K::Deposit, 1), (K::Withdrawal, 1), (K::Other, 1)]);
+    assert_eq!(p.counts(), vec![(K::Buy, 2), (K::Sell, 1), (K::Dividend, 2), (K::ReinvestedDividend, 1), (K::Split, 1), (K::CashInLieu, 1), (K::Deposit, 1), (K::Withdrawal, 1)]);
     assert!(p.transactions.iter().all(|t| t.account.as_deref() == Some("12345678")));
 }
 
@@ -400,6 +400,22 @@ fn decimal_comma_files_through_the_mapping() {
     let g = fixture("generic_mapped.csv");
     let gh = detect(&g).headers;
     assert!(!meridian_import::suggest_mapping(&g, 1, &gh).decimal_comma);
+}
+
+#[test]
+fn return_of_capital_and_cash_in_lieu_have_their_own_kinds() {
+    // Not dividends (return of capital lowers cost) and not Other (cash in
+    // lieu is proceeds).
+    let schwab = "\"Date\",\"Action\",\"Symbol\",\"Description\",\"Quantity\",\"Price\",\"Fees & Comm\",\"Amount\"\n\
+                  \"06/20/2024\",\"Cash In Lieu\",\"ABCD\",\"ABCD HOLDINGS\",\"\",\"\",\"\",\"$0.75\"\n\
+                  \"03/28/2024\",\"Return Of Capital\",\"ABCD\",\"ABCD HOLDINGS\",\"\",\"\",\"\",\"$5.00\"\n";
+    let p = parse(schwab, None, &opts()).unwrap();
+    assert_eq!(p.counts(), vec![(K::ReturnOfCapital, 1), (K::CashInLieu, 1)]);
+    assert!(close(find(&p, K::ReturnOfCapital, "ABCD")[0].amount, 5.0));
+    assert!(find(&p, K::CashInLieu, "ABCD")[0].quantity.is_none());
+    let fidelity = read("fidelity_all_accounts_2026q1.csv");
+    assert!(close(find(&fidelity, K::CashInLieu, "ABCD")[0].amount, 0.75));
+    assert_eq!(count(&read("vanguard_ofx.csv"), K::CashInLieu), 1);
 }
 
 #[test]

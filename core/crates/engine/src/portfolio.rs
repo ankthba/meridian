@@ -12,6 +12,16 @@
 //!   Transfers out remove shares at average cost without P&L.
 //! - Dividends and interest are income; fees (and taxes withheld) are
 //!   expenses; deposits and withdrawals are external flows, not P&L.
+//! - A return of capital is not income: it lowers the position's cost
+//!   basis, and any part beyond the basis is a realized gain. On shares
+//!   whose cost is unknown, or that the history doesn't hold, it can't be
+//!   applied and is flagged.
+//! - Cash in lieu of a fractional share is realized proceeds of that
+//!   fraction. Exports don't say how large the fraction was, so its cost
+//!   stays in the remaining shares' basis: total return is exact, and the
+//!   realized/unrealized split is off by the fraction's cost (cents to a
+//!   few dollars). On a position the history doesn't hold (or whose cost is
+//!   unknown) the realized result is marked unknown.
 //! - Rows in another currency than the portfolio's are left out and
 //!   counted, since no FX conversion is applied.
 
@@ -199,11 +209,41 @@ pub fn ledger(txs: &[Transaction], base_currency: &str) -> Ledger {
                     l.holdings[i].fees += c;
                 }
             }
+            (K::ReturnOfCapital, Some(i)) => {
+                let c = cash.unwrap_or(0.0);
+                let h = &mut l.holdings[i];
+                if h.quantity <= EPS {
+                    h.issues.push(format!("{date}: return of capital of {c} on a position the history doesn't hold (not applied)"));
+                    continue;
+                }
+                if !h.cost_known {
+                    h.issues.push(format!("{date}: return of capital of {c} on shares with an unknown cost basis (not applied)"));
+                    continue;
+                }
+                h.cost -= c;
+                // Beyond the basis, a return of capital is a gain.
+                if h.cost < 0.0 {
+                    h.realized -= h.cost;
+                    h.cost = 0.0;
+                }
+            }
+            (K::CashInLieu, Some(i)) => {
+                let c = cash.unwrap_or(0.0);
+                let h = &mut l.holdings[i];
+                h.realized += c;
+                if h.quantity <= EPS {
+                    h.realized_known = false;
+                    h.issues.push(format!("{date}: cash in lieu of {c} on a position the history doesn't hold"));
+                } else if !h.cost_known {
+                    h.realized_known = false;
+                }
+            }
             (K::Deposit, _) => l.deposits += cash.unwrap_or(0.0).abs(),
             (K::Withdrawal, _) => l.withdrawals += cash.unwrap_or(0.0).abs(),
-            // Share-moving kinds without a security can't be applied (the
-            // importer refuses them); they count as Other.
-            (K::Other, _) | (K::Buy | K::Sell | K::ReinvestedDividend | K::Split | K::TransferIn | K::TransferOut, None) => l.other += 1,
+            // Share-moving and cost-basis kinds without a security can't be
+            // applied (the importer refuses the former); they count as Other.
+            (K::Other, _)
+            | (K::Buy | K::Sell | K::ReinvestedDividend | K::ReturnOfCapital | K::Split | K::CashInLieu | K::TransferIn | K::TransferOut, None) => l.other += 1,
         }
         // A closed position starts fresh.
         if let Some(i) = holding {
@@ -295,6 +335,51 @@ mod tests {
         assert!((h.fees - 0.3).abs() < 1e-12);
         assert!((l.dividends - 2.4).abs() < 1e-12 && (l.interest - 1.1).abs() < 1e-12 && (l.fees - 0.3).abs() < 1e-12);
         assert_eq!((l.deposits, l.withdrawals, l.other), (5000.0, 500.0, 1));
+    }
+
+    #[test]
+    fn return_of_capital_lowers_cost_and_is_not_income() {
+        use TransactionKind as K;
+        let l = ledger(&[tx(K::Buy, A, 10.0, Some(100.0), Some(-1000.0)), tx(K::ReturnOfCapital, A, 0.0, None, Some(50.0))], "USD");
+        let h = &l.holdings[0];
+        assert_eq!((h.quantity, h.cost, h.realized, h.income), (10.0, 950.0, 0.0, 0.0));
+        assert_eq!(h.average_cost(), Some(95.0));
+        assert_eq!((l.dividends, l.other), (0.0, 0));
+        // Beyond the basis the excess is a realized gain; the basis stops at 0.
+        let l = ledger(&[tx(K::Buy, A, 1.0, Some(10.0), Some(-10.0)), tx(K::ReturnOfCapital, A, 0.0, None, Some(15.0))], "USD");
+        let h = &l.holdings[0];
+        assert_eq!((h.cost, h.realized), (0.0, 5.0));
+        assert!(h.realized_known);
+        // Unknown cost or no position: not applied, said so.
+        let l = ledger(&[tx(K::TransferIn, A, 10.0, None, None), tx(K::ReturnOfCapital, A, 0.0, None, Some(5.0))], "USD");
+        assert!(l.holdings[0].issues.iter().any(|i| i.contains("unknown cost basis")));
+        let l = ledger(&[tx(K::ReturnOfCapital, A, 0.0, None, Some(5.0))], "USD");
+        assert!(l.holdings[0].issues[0].contains("doesn't hold"));
+        assert_eq!(l.realized(), 0.0);
+        // Without a security it is listed, not counted.
+        assert_eq!(ledger(&[tx(K::ReturnOfCapital, None, 0.0, None, Some(5.0))], "USD").other, 1);
+    }
+
+    #[test]
+    fn cash_in_lieu_is_realized_proceeds() {
+        use TransactionKind as K;
+        // 101 shares at 1.00, a 1-for-20 reverse split pays 0.05 share in cash.
+        let txs = vec![
+            tx(K::Buy, A, 101.0, Some(1.0), Some(-101.0)),
+            tx(K::Split, A, -96.0, None, None),
+            tx(K::CashInLieu, A, 0.0, None, Some(0.75)),
+        ];
+        let l = ledger(&txs, "USD");
+        let h = &l.holdings[0];
+        // The fraction's cost stays in the basis of the 5 shares.
+        assert_eq!((h.quantity, h.cost), (5.0, 101.0));
+        assert!((h.realized - 0.75).abs() < 1e-12 && h.realized_known);
+        assert!((l.realized() - 0.75).abs() < 1e-12);
+        assert_eq!((l.dividends, l.other), (0.0, 0));
+        // On a position the history doesn't hold, the realized result is unknown.
+        let l = ledger(&[tx(K::CashInLieu, A, 0.0, None, Some(0.75))], "USD");
+        assert!(!l.holdings[0].realized_known && l.holdings[0].issues[0].contains("cash in lieu"));
+        assert_eq!(l.realized(), 0.0);
     }
 
     #[test]

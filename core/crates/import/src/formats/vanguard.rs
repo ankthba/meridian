@@ -41,7 +41,7 @@ fn kind(t: &str) -> Option<Kind> {
         "fee" | "withholding" => Kind::Is(K::Fee),
         "stock split" => Kind::Is(K::Split),
         "corp action (spinoff)" => Kind::Is(K::TransferIn),
-        "corp action (cash in lieu)" => Kind::Is(K::Other),
+        "corp action (cash in lieu)" => Kind::Is(K::CashInLieu),
         "funds received" | "contribution" | "rollover (incoming)" => Kind::Is(K::Deposit),
         "withdrawal" | "distribution" => Kind::Is(K::Withdrawal),
         "transfer (incoming)" | "transfer (outgoing)" | "transfer" | "conversion (incoming)" | "conversion (outgoing)" => Kind::Transfer,

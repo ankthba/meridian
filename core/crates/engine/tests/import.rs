@@ -143,6 +143,11 @@ fn fidelity_single_account_and_all_accounts_files_import_once() {
     // The reverse split applied once: 100 → 5.
     assert_eq!(get("ABCD US Equity").1, 5.0);
     assert_eq!(get("VTI US Equity").1, 15.0);
+    // The cash in lieu counts once, as realized proceeds (not Other, not a
+    // dividend).
+    assert!(near(field(&s, "Realized P&L"), 0.75));
+    assert!(near(field(&s, "Dividends"), 0.0));
+    assert!(!notices(&s).iter().any(|n| n.contains("kind Other")), "{:?}", notices(&s));
     engine.shutdown();
 }
 
