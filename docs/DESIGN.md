@@ -57,6 +57,17 @@ There is no accent hue. Emphasis is `text` against `text2`/`muted`; the selected
 - **Inputs inside screens:** underlined text fields (1 pt `line` underline, `text` on focus); no filled boxes.
 - **Sources:** each pane shows its sources as `muted` 11 pt text (e.g. `iex · rt`), never as colored badges.
 
+## Accessibility
+
+VoiceOver reaches every screen without any change to how it looks.
+
+- **Speak what is drawn.** Accessibility text comes from the strings the views draw (`TerminalFormatter`). `SpokenText` only turns symbols into words (`+1.74%` → "up 1.74 percent", `3.39T` → "3.39 trillion", `% Chg` → "percent change"); it never formats numbers itself.
+- **Custom-drawn views are real elements.** The grid is a table of rows, cells and column headers. A row reads as one sentence: numbers carry their column name, words and dates read alone. VO-Space on a row does what a click does. The price chart is an image whose label summarizes the visible bars (first and last close, change, high, low). Swift Charts get axis names and a summary, heat maps read one line per row.
+- **Nothing on the hot path.** Grid elements are made the first time an assistive app asks, hold only row and column indices, and read values when asked. Drawing and live ticks do no accessibility work. Notifications go out only for table shape and selection changes, only after VoiceOver has looked at that grid, never per tick.
+- **Structure.** Each pane is a container named "Pane 1, Today"; pane labels and section titles are headings; section tabs are buttons with a selected state; text that acts on a tap gets the button trait and an action; decoration (`›`, menu chevrons) is hidden; the feed dot's color is also said in words; inputs take their visible label.
+- **Announce only what focus can't follow:** the highlighted suggestion while focus stays in the command field, and the chart's new window after keyboard zoom or pan. Only when VoiceOver is running.
+- **Reduce Motion** turns off the tick flash, the only animation. Values and colors still update.
+
 ## Words
 
 - Sentence case everywhere except pane labels and the wordmark.
