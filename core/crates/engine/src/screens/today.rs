@@ -186,6 +186,7 @@ pub(crate) async fn today(engine: Arc<Engine>, _req: ScreenRequest) -> Screen {
     let now = engine.now();
     let today = new_york_date(now);
     let holdings = engine.holdings(today);
+    let closed = engine.closed_today(today);
     let watchlist = engine.stores().app.watchlists().unwrap_or_default().into_iter().next();
     let (table_title, table_keys): (String, Vec<SecurityKey>) = if holdings.is_empty() {
         match &watchlist {
@@ -206,6 +207,7 @@ pub(crate) async fn today(engine: Arc<Engine>, _req: ScreenRequest) -> Screen {
     let strip_keys: Vec<SecurityKey> = STRIP.iter().filter_map(|(k, _)| k.parse().ok()).collect();
     let mut quote_keys = table_keys.clone();
     quote_keys.extend(strip_keys.iter().cloned());
+    quote_keys.extend(closed.iter().map(|h| h.key.clone()));
 
     let parts = &engine.today;
     let (rt, wait_all) = (engine.handle(), engine.deterministic);
@@ -274,11 +276,19 @@ pub(crate) async fn today(engine: Arc<Engine>, _req: ScreenRequest) -> Screen {
                 h.day_change(l.last(), l.row.as_ref().and_then(|r| finite(r.prev_close)))
             })
             .collect();
-        let all_changes = changes.iter().all(Option::is_some);
+        // Positions sold out today still moved today: shares held overnight
+        // count from the previous close to the sale price.
+        let prev_close = |k: &SecurityKey| quotes.get(k).and_then(|r| finite(r.prev_close));
+        let closed_changes: Vec<Option<f64>> = closed.iter().map(|h| h.day_change(Some(0.0), prev_close(&h.key))).collect();
+        let all_changes = changes.iter().chain(&closed_changes).all(Option::is_some);
         // Unknown (not zero) when no position has a known change.
-        let change: Option<f64> = changes.iter().any(Option::is_some).then(|| changes.iter().flatten().sum());
+        let open_change: f64 = changes.iter().flatten().sum();
+        let change: Option<f64> =
+            changes.iter().chain(&closed_changes).any(Option::is_some).then(|| open_change + closed_changes.iter().flatten().sum::<f64>());
+        // Base: what everything was worth at the previous close.
+        let closed_base: f64 = closed.iter().filter_map(|h| Some(-h.today_qty * prev_close(&h.key)?)).sum();
         let pct = change.and_then(|c| {
-            let base = total - c;
+            let base = total - open_change + closed_base;
             (base.abs() > 1e-9).then(|| c / base * 100.0)
         });
         let fields = vec![
@@ -294,8 +304,13 @@ pub(crate) async fn today(engine: Arc<Engine>, _req: ScreenRequest) -> Screen {
                 text: format!("Value and today's change leave out {}", no_quote_reason(&engine, &unpriced)),
             });
         } else if !all_changes {
-            let missing: Vec<&str> =
-                lines.iter().zip(&changes).filter(|(_, c)| c.is_none()).map(|(l, _)| l.key.symbol.as_str()).collect();
+            let missing: Vec<&str> = lines
+                .iter()
+                .zip(&changes)
+                .filter(|(_, c)| c.is_none())
+                .map(|(l, _)| l.key.symbol.as_str())
+                .chain(closed.iter().zip(&closed_changes).filter(|(_, c)| c.is_none()).map(|(h, _)| h.key.symbol.as_str()))
+                .collect();
             s.push(Block::Notice {
                 level: NoticeLevel::Warning,
                 text: format!("Today's change leaves out {}: no previous close", missing.join(", ")),

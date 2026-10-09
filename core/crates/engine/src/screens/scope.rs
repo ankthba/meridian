@@ -165,9 +165,30 @@ impl Engine {
     /// Open positions summed over every portfolio, in order of first trade.
     /// `today` is the market date whose trades count as today's.
     pub(crate) fn holdings(&self, today: NaiveDate) -> Vec<Holding> {
+        self.positions(today).0
+    }
+
+    /// Positions that today's trades closed (quantity 0 now): their sales
+    /// still count toward today's change.
+    pub(crate) fn closed_today(&self, today: NaiveDate) -> Vec<Holding> {
+        self.positions(today).1
+    }
+
+    /// Open positions, and positions closed by today's trades.
+    fn positions(&self, today: NaiveDate) -> (Vec<Holding>, Vec<Holding>) {
         let store = &self.stores().app;
         let today_s = today.format("%Y-%m-%d").to_string();
         let mut out: Vec<Holding> = Vec::new();
+        let mut closed: Vec<Holding> = Vec::new();
+        let add = |list: &mut Vec<Holding>, key: SecurityKey, qty: f64, cost: f64, tq: f64, tc: f64| match list.iter_mut().find(|x| x.key == key) {
+            Some(x) => {
+                x.qty += qty;
+                x.cost += cost;
+                x.today_qty += tq;
+                x.today_cash += tc;
+            }
+            None => list.push(Holding { key, qty, cost, today_qty: tq, today_cash: tc }),
+        };
         for p in store.portfolios().unwrap_or_default() {
             let txs = store.transactions(p.id).unwrap_or_default();
             // Shares bought or sold today, and what they cost, per security.
@@ -180,22 +201,24 @@ impl Engine {
             }
             // Positions from the shared ledger (splits, transfers, cash rows).
             let ledger = crate::portfolio::ledger(&txs, &p.base_currency);
-            for h in ledger.open() {
+            let open: Vec<&crate::portfolio::Holding> = ledger.open().collect();
+            for h in open.iter().copied() {
                 let Ok(key) = h.security.parse::<SecurityKey>() else { continue };
                 let (tq, tc) = todays.get(h.security.as_str()).copied().unwrap_or_default();
-                match out.iter_mut().find(|x| x.key == key) {
-                    Some(x) => {
-                        x.qty += h.quantity;
-                        x.cost += h.cost;
-                        x.today_qty += tq;
-                        x.today_cash += tc;
-                    }
-                    None => out.push(Holding { key, qty: h.quantity, cost: h.cost, today_qty: tq, today_cash: tc }),
+                add(&mut out, key, h.quantity, h.cost, tq, tc);
+            }
+            for (sec, (tq, tc)) in &todays {
+                if open.iter().any(|h| h.security == *sec) {
+                    continue;
                 }
+                let Ok(key) = sec.parse::<SecurityKey>() else { continue };
+                add(&mut closed, key, 0.0, 0.0, *tq, *tc);
             }
         }
         out.retain(|h| h.qty.abs() > 1e-9);
-        out
+        // A security still open in another portfolio is counted there.
+        closed.retain(|c| !out.iter().any(|h| h.key == c.key));
+        (out, closed)
     }
 
     /// Every watchlist's securities, in list then position order, without
@@ -300,6 +323,9 @@ mod tests {
         // Bought everything today: no previous close needed.
         let b = Holding { key: SecurityKey::equity("X"), qty: 5.0, cost: 0.0, today_qty: 5.0, today_cash: 540.0 };
         assert!((b.day_change(Some(110.0), None).unwrap() - 10.0).abs() < 1e-9);
+        // Sold everything today: only the previous close matters.
+        let c = Holding { key: SecurityKey::equity("X"), qty: 0.0, cost: 0.0, today_qty: -10.0, today_cash: -1_050.0 };
+        assert!((c.day_change(Some(0.0), Some(100.0)).unwrap() - 50.0).abs() < 1e-9);
         // Held overnight without a previous close: unknown.
         let o = Holding { key: SecurityKey::equity("X"), qty: 5.0, cost: 0.0, today_qty: 0.0, today_cash: 0.0 };
         assert_eq!(o.day_change(Some(110.0), None), None);
