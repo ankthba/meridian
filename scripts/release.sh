@@ -72,11 +72,19 @@ spctl -a -t exec -vv "$APP" 2>&1 | tee /dev/stderr | grep -q "source=Notarized D
 
 step "Packaging"
 ditto -c -k --keepParent "$APP" "$DIST/Meridian-$VERSION.zip"
-STAGE="$(mktemp -d)"
-ditto "$APP" "$STAGE/Meridian.app"
-ln -s /Applications "$STAGE/Applications"
-hdiutil create -volname "Meridian $VERSION" -srcfolder "$STAGE" -fs HFS+ -format UDZO -ov "$DIST/Meridian-$VERSION.dmg" >/dev/null
-rm -rf "$STAGE"
+# The disk image's window: background drawn in the app's palette, icons
+# placed by dmgbuild (writes the window layout without scripting Finder).
+VENV="$ROOT/app/build/.venv-dmg"
+if [ ! -x "$VENV/bin/dmgbuild" ]; then
+  python3 -m venv "$VENV"
+  "$VENV/bin/pip" install -q "dmgbuild==1.6.7" "ds_store==1.3.3" "mac_alias==2.2.3"
+fi
+BG="$(mktemp -d)"
+swift "$ROOT/scripts/make-dmg-background.swift" "$VERSION" "$BG" >/dev/null
+"$VENV/bin/dmgbuild" -s "$ROOT/scripts/dmg/settings.py" -D app="$APP" -D background="$BG/background.png" \
+  "Meridian $VERSION" "$DIST/Meridian-$VERSION.dmg" 2>&1 | grep -v "is deprecated" || true
+rm -rf "$BG"
+[ -f "$DIST/Meridian-$VERSION.dmg" ] || fail "dmgbuild did not produce the disk image"
 codesign --sign "$IDENTITY" --timestamp "$DIST/Meridian-$VERSION.dmg"
 
 step "Notarizing the disk image"
