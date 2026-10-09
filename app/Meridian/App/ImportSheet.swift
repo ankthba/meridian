@@ -19,7 +19,11 @@ final class ImportModel {
     var fileName = ""
     var csv: String?
     var preview: ImportPreviewFfi?
+    /// The columns shown in the pickers.
     var mapping: ImportMappingFfi?
+    /// The mapping the current preview was made with; nil when the format
+    /// was detected. Import uses exactly this, so it imports what was shown.
+    var previewMapping: ImportMappingFfi?
     var addToExisting: Bool
     var newName = ""
     var busy = false
@@ -51,7 +55,14 @@ final class ImportModel {
         fileName = name
         preview = nil
         mapping = nil
+        previewMapping = nil
         result = nil
+    }
+
+    /// The pickers differ from what the preview was made with.
+    var mappingChanged: Bool {
+        guard let preview else { return false }
+        return mapping != (previewMapping ?? preview.suggestedMapping)
     }
 
     func refresh() async {
@@ -59,8 +70,10 @@ final class ImportModel {
         busy = true
         defer { busy = false }
         do {
-            let p = try await core.previewImport(csv: csv, mapping: mapping)
+            let used = mapping
+            let p = try await core.previewImport(csv: csv, mapping: used)
             preview = p
+            previewMapping = used
             if mapping == nil { mapping = p.suggestedMapping }
             if newName.isEmpty { newName = p.recognized ? "\(p.formatName) import" : "Imported portfolio" }
             error = nil
@@ -70,14 +83,13 @@ final class ImportModel {
     }
 
     func commit() async {
-        guard let csv, let core = AppModel.shared.core, let preview else { return }
+        guard let csv, let core = AppModel.shared.core, preview != nil, !mappingChanged else { return }
         busy = true
         defer { busy = false }
         do {
-            let useMapping = preview.recognized && mapping == preview.suggestedMapping ? nil : mapping
             result = try await core.commitImport(
                 csv: csv,
-                mapping: useMapping,
+                mapping: previewMapping,
                 portfolioId: addToExisting ? portfolioId : nil,
                 newPortfolioName: addToExisting ? nil : newName.trimmingCharacters(in: .whitespaces)
             )
@@ -131,7 +143,7 @@ struct ImportSheet: View {
     }
 
     private var canImport: Bool {
-        guard let p = model.preview, p.totalRows > 0 else { return false }
+        guard let p = model.preview, p.totalRows > 0, !model.mappingChanged else { return false }
         return model.addToExisting || !model.newName.trimmingCharacters(in: .whitespaces).isEmpty
     }
 
@@ -167,7 +179,7 @@ struct ImportSheet: View {
         } header: {
             Text("What Meridian read")
         }
-        if !p.recognized || model.mapping != p.suggestedMapping {
+        if !p.recognized || model.previewMapping != nil || model.mappingChanged {
             mappingSection(p)
         }
         Section("First rows") {
@@ -213,7 +225,11 @@ struct ImportSheet: View {
         } header: {
             Text("Columns")
         } footer: {
-            Text("Without a date column the file is read as a list of current holdings.")
+            if model.mappingChanged {
+                Text("Update the preview to import with these columns.").foregroundStyle(.orange)
+            } else {
+                Text("Without a date column the file is read as a list of current holdings.")
+            }
         }
     }
 

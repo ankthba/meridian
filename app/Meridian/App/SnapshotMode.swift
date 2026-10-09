@@ -121,6 +121,12 @@ enum SnapshotMode {
         }
         model.load(data, name: url.lastPathComponent)
         await model.refresh()
+        // An unrecognized file goes through the column mapping, as a user
+        // would: take the suggested columns and preview again.
+        if let p = model.preview, !p.recognized {
+            model.mapping = p.suggestedMapping
+            await model.refresh()
+        }
         print("import: \(model.preview.map { "\($0.formatName), \($0.totalRows) rows, \($0.warningCount) warnings" } ?? model.error ?? "no preview")")
         await draw(model, "import-2-preview.png")
         await model.commit()
