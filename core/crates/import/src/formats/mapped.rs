@@ -4,12 +4,13 @@
 //! mapped action column by the keyword table in [`classify`] (shown to the
 //! user in the preview before anything is saved). Without an action column,
 //! a positive quantity is a buy and a negative one a sell. Without a date
-//! column, the file is a positions snapshot.
+//! column, the file is a positions snapshot. Numbers use a decimal point
+//! unless the mapping says `decimal_comma`.
 
 use super::positions::squash;
-use super::{Columns, norm, num, opt_text, positions, signed};
+use super::{Columns, norm, num_in, opt_text, positions, signed};
 use crate::csv::Record;
-use crate::value::{self, DateOrder};
+use crate::value::{self, DateOrder, Decimal};
 use crate::{ColumnMapping, Format, ImportError, ImportOptions, Output, Row, TransactionKind};
 
 /// Keyword classification of an action/type cell, checked in this order
@@ -74,12 +75,14 @@ fn synonyms(field: &str) -> &'static [&'static str] {
     }
 }
 
-pub(crate) fn suggest(header_line: u32, headers: &[String]) -> ColumnMapping {
+/// A starting mapping from the header names; `recs` (read with
+/// `delimiter`) is the file, used to propose `decimal_comma`.
+pub(crate) fn suggest(recs: &[Record], delimiter: char, header_line: u32, headers: &[String]) -> ColumnMapping {
     // Compared without spaces and punctuation, so `TransactionDate` finds
     // "transaction date".
     let names: Vec<String> = headers.iter().map(|h| squash(h)).collect();
     let find = |field: &str| synonyms(field).iter().find_map(|s| names.iter().position(|n| *n == squash(s)));
-    ColumnMapping {
+    let mut m = ColumnMapping {
         header_line,
         trade_date: find("trade_date"),
         settle_date: find("settle_date"),
@@ -95,7 +98,43 @@ pub(crate) fn suggest(header_line: u32, headers: &[String]) -> ColumnMapping {
         average_cost: find("average_cost"),
         default_currency: "USD".into(),
         day_first: false,
+        decimal_comma: false,
+    };
+    // A comma-delimited file can't hold an unquoted decimal comma; in a
+    // `;`- or tab-delimited one, `180,50` is one value.
+    m.decimal_comma = delimiter != ',' && decimal_comma_likely(recs, &m);
+    m
+}
+
+/// Whether the mapped number columns' cells mostly end in `,` and one or
+/// two digits (`180,50`, `1.805,00`) rather than `.` and one or two digits.
+/// When no number column was recognized (headers in another language),
+/// every cell that is not a date votes.
+fn decimal_comma_likely(recs: &[Record], m: &ColumnMapping) -> bool {
+    let mapped: Vec<usize> = [m.amount, m.price, m.fees, m.cost_basis, m.average_cost, m.quantity].into_iter().flatten().collect();
+    let start = recs.iter().position(|r| r.line == m.header_line).map_or(0, |i| i + 1);
+    let (mut comma, mut point) = (0_usize, 0_usize);
+    for rec in recs.iter().skip(start) {
+        let all: Vec<usize>;
+        let cols = if mapped.is_empty() {
+            all = (0..rec.fields.len()).collect();
+            &all
+        } else {
+            &mapped
+        };
+        for &c in cols {
+            let cell = rec.get(c);
+            if value::date(cell, DateOrder::DayFirst).is_ok() {
+                continue;
+            }
+            if value::looks_decimal_comma(cell) {
+                comma += 1;
+            } else if value::looks_decimal_point(cell) {
+                point += 1;
+            }
+        }
     }
+    comma > point
 }
 
 fn check(m: &ColumnMapping, width: usize) -> Result<(), ImportError> {
@@ -134,6 +173,7 @@ pub(crate) fn parse(recs: &[Record], header: usize, m: &ColumnMapping, opts: Imp
     let width = Columns::new(&recs[header]).width().max(recs[header].fields.len());
     check(m, width)?;
     let order = if m.day_first { DateOrder::DayFirst } else { DateOrder::MonthFirst };
+    let decimal = if m.decimal_comma { Decimal::Comma } else { Decimal::Point };
     let default_ccy = if m.default_currency.trim().is_empty() { "USD".to_owned() } else { m.default_currency.trim().to_ascii_uppercase() };
     for rec in &recs[header + 1..] {
         if rec.is_blank() {
@@ -146,19 +186,20 @@ pub(crate) fn parse(recs: &[Record], header: usize, m: &ColumnMapping, opts: Imp
                 cost_basis: m.cost_basis,
                 average_cost: m.average_cost,
                 description: m.description,
+                decimal,
                 ..Default::default()
             };
             positions::snapshot_row(rec, Format::Mapped, cols, opts, &default_ccy, out);
             continue;
         }
-        if let Err(e) = row(rec, m, order, &default_ccy, out) {
+        if let Err(e) = row(rec, m, order, decimal, &default_ccy, out) {
             out.warn(rec, e);
         }
     }
     Ok(())
 }
 
-fn row(rec: &Record, m: &ColumnMapping, order: DateOrder, default_ccy: &str, out: &mut Output) -> Result<(), String> {
+fn row(rec: &Record, m: &ColumnMapping, order: DateOrder, decimal: Decimal, default_ccy: &str, out: &mut Output) -> Result<(), String> {
     let date_cell = m.trade_date.map_or("", |i| rec.get(i));
     let trade_date = value::date(date_cell, order).map_err(|e| format!("Not imported: unreadable {}", e.describe()))?;
     let settle_date = match m.settle_date.map(|i| rec.get(i)).filter(|s| !s.is_empty()) {
@@ -166,11 +207,12 @@ fn row(rec: &Record, m: &ColumnMapping, order: DateOrder, default_ccy: &str, out
         None => None,
     };
     let bad = |e: value::BadValue| format!("Not imported: unreadable {}", e.describe());
-    let quantity = num(rec, m.quantity, "quantity").map_err(bad)?;
-    let price = num(rec, m.price, "price").map_err(bad)?;
-    let amount = num(rec, m.amount, "amount").map_err(bad)?;
-    let fees = num(rec, m.fees, "fees").map_err(bad)?;
-    let cost_basis = num(rec, m.cost_basis, "cost basis").map_err(bad)?;
+    let num = |i: Option<usize>, what: &'static str| num_in(rec, i, what, decimal).map_err(bad);
+    let quantity = num(m.quantity, "quantity")?;
+    let price = num(m.price, "price")?;
+    let amount = num(m.amount, "amount")?;
+    let fees = num(m.fees, "fees")?;
+    let cost_basis = num(m.cost_basis, "cost basis")?;
     let action = opt_text(rec, m.action).unwrap_or_default();
     let symbol = m.symbol.and_then(|i| value::symbol(rec.get(i)));
     let kind = if m.action.is_some() {
@@ -257,7 +299,7 @@ mod tests {
     #[test]
     fn suggestion_uses_header_names() {
         let h: Vec<String> = ["Date", "Type", "Ticker", "Shares", "Price", "Total", "Notes"].iter().map(|s| (*s).to_string()).collect();
-        let m = suggest(3, &h);
+        let m = suggest(&[], ',', 3, &h);
         assert_eq!(m.header_line, 3);
         assert_eq!((m.trade_date, m.action, m.symbol, m.quantity, m.price, m.amount), (Some(0), Some(1), Some(2), Some(3), Some(4), Some(5)));
         assert_eq!((m.fees, m.description, m.cost_basis), (None, None, None));

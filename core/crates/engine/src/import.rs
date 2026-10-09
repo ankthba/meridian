@@ -94,13 +94,13 @@ impl Engine {
             Ok(p) => Ok(ImportPreview {
                 header_line: p.header_line,
                 headers: p.headers.clone(),
-                suggested_mapping: mapping.cloned().unwrap_or_else(|| meridian_import::suggest_mapping(p.header_line, &p.headers)),
+                suggested_mapping: mapping.cloned().unwrap_or_else(|| meridian_import::suggest_mapping(csv, p.header_line, &p.headers)),
                 parsed: Some(p),
                 warnings: Vec::new(),
             }),
             Err(ImportError::Unrecognized { header_line, headers }) => Ok(ImportPreview {
                 parsed: None,
-                suggested_mapping: meridian_import::suggest_mapping(header_line, &headers),
+                suggested_mapping: meridian_import::suggest_mapping(csv, header_line, &headers),
                 warnings: vec![ImportWarning {
                     line: header_line,
                     message: "Format not recognized (supported: Robinhood, Fidelity, Charles Schwab, Vanguard, positions snapshots). Map the columns to import it.".into(),

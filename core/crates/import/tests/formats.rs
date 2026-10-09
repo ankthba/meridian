@@ -319,7 +319,7 @@ fn generic_mapping_path() {
         Err(ImportError::Unrecognized { header_line, headers }) => {
             assert_eq!(header_line, 1);
             assert_eq!(headers, ["Date", "Type", "Ticker", "Shares", "Price", "Total", "Notes"]);
-            let s = meridian_import::suggest_mapping(header_line, &headers);
+            let s = meridian_import::suggest_mapping(&text, header_line, &headers);
             assert_eq!((s.trade_date, s.action, s.symbol, s.quantity, s.price, s.amount), (Some(0), Some(1), Some(2), Some(3), Some(4), Some(5)));
         }
         other => panic!("expected Unrecognized, got {other:?}"),
@@ -351,6 +351,55 @@ fn generic_mapping_without_action_and_as_snapshot() {
     assert!(p.snapshot);
     assert!(close(find(&p, K::TransferIn, "AAPL")[0].cost_basis, 500.0));
     assert!(find(&p, K::TransferIn, "MSFT")[0].cost_basis.is_none());
+}
+
+#[test]
+fn decimal_comma_files_through_the_mapping() {
+    let text = "Datum;Typ;Symbol;Anzahl;Kurs;Betrag\n\
+                15.01.2026;Kauf;AAPL;10;180,50;-1.805,00\n\
+                20.02.2026;Dividende;AAPL;;;2,40\n\
+                01.03.2026;Verkauf;AAPL;4;200,25;801,00\n";
+    let headers = match parse(text, None, &opts()) {
+        Err(ImportError::Unrecognized { header_line: 1, headers }) => headers,
+        other => panic!("expected Unrecognized, got {other:?}"),
+    };
+    // A `;`-delimited file whose amounts end in `,` and two digits.
+    let suggested = meridian_import::suggest_mapping(text, 1, &headers);
+    assert!(suggested.decimal_comma);
+    let m = ColumnMapping {
+        header_line: 1,
+        trade_date: Some(0),
+        action: Some(1),
+        symbol: Some(2),
+        quantity: Some(3),
+        price: Some(4),
+        amount: Some(5),
+        day_first: true,
+        ..suggested.clone()
+    };
+    // German action words are not in the keyword table; map by keyword in
+    // English to read the numbers.
+    let english = text.replace("Kauf", "Buy").replace("Dividende", "Dividend").replace("Verkauf", "Sell");
+    let p = parse(&english, Some(&m), &opts()).unwrap();
+    assert!(p.warnings.is_empty(), "{:#?}", p.warnings);
+    let buy = find(&p, K::Buy, "AAPL")[0];
+    assert!(close(buy.price, 180.5) && close(buy.amount, -1805.0) && close(buy.quantity, 10.0));
+    assert!(close(find(&p, K::Dividend, "AAPL")[0].amount, 2.4));
+    assert!(close(find(&p, K::Sell, "AAPL")[0].amount, 801.0));
+    // Without decimal_comma the same cells are errors, never 18050 or 1.805.
+    let point = ColumnMapping { decimal_comma: false, ..m };
+    let p = parse(&english, Some(&point), &opts()).unwrap();
+    assert!(p.transactions.is_empty(), "{:#?}", p.transactions);
+    assert_eq!(warning_lines(&p), vec![2, 3, 4]);
+    assert!(p.warnings.iter().all(|w| w.message.contains("unreadable")));
+    // With recognized headers only the number columns vote.
+    let h: Vec<String> = ["Date", "Ticker", "Qty", "Amount", "Notes"].iter().map(|s| (*s).to_string()).collect();
+    assert!(meridian_import::suggest_mapping("Date;Ticker;Qty;Amount;Notes\n2026-01-02;AAPL;1;-180,50;a.bc 1.25\n", 1, &h).decimal_comma);
+    // Decimal-point amounts and comma-delimited files are not flagged.
+    assert!(!meridian_import::suggest_mapping("Date;Ticker;Qty;Amount;Notes\n2026-01-02;AAPL;1;-180.50;x 1,25\n", 1, &h).decimal_comma);
+    let g = fixture("generic_mapped.csv");
+    let gh = detect(&g).headers;
+    assert!(!meridian_import::suggest_mapping(&g, 1, &gh).decimal_comma);
 }
 
 #[test]
@@ -399,7 +448,7 @@ fn histories_with_unspaced_headers_are_not_read_as_positions() {
     };
     // The mapping suggestion finds the unspaced columns, and the file reads
     // as three trades.
-    let m = meridian_import::suggest_mapping(1, &headers);
+    let m = meridian_import::suggest_mapping(etrade, 1, &headers);
     assert_eq!((m.trade_date, m.action, m.symbol, m.quantity, m.amount, m.price, m.fees), (Some(0), Some(1), Some(3), Some(4), Some(5), Some(6), Some(7)));
     let p = parse(etrade, Some(&m), &opts()).unwrap();
     assert!(!p.snapshot);

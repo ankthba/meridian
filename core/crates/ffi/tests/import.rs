@@ -97,11 +97,21 @@ async fn unrecognized_files_go_through_a_mapping() {
         average_cost: None,
         default_currency: "USD".into(),
         day_first: false,
+        decimal_comma: false,
     };
     let m = core.preview_import(csv.clone(), Some(mapping.clone())).await.expect("mapped");
     assert_eq!((m.format.as_deref(), m.total_rows), (Some("mapped"), 1));
     let r = core.commit_import(csv, Some(mapping), None, Some("Mapped".into())).await.expect("commit");
     assert_eq!(r.imported, 1);
+    // A `;`-delimited file with decimal-comma amounts: the suggestion says so,
+    // and the mapping reads 180,50 as 180.5.
+    let eu = "When;What;Ticker;Qty;Price\n2026-01-02;Buy;MSFT;2;180,50\n".to_owned();
+    let p = core.preview_import(eu.clone(), None).await.expect("preview");
+    assert!(!p.recognized && p.suggested_mapping.decimal_comma);
+    let mapping = ImportMappingFfi { trade_date: Some(0), action: Some(1), quantity: Some(3), price: Some(4), ..p.suggested_mapping };
+    let m = core.preview_import(eu, Some(mapping)).await.expect("mapped");
+    assert!(m.suggested_mapping.decimal_comma);
+    assert_eq!(m.rows.first().and_then(|r| r.price), Some(180.5));
     core.shutdown().expect("shutdown");
 }
 

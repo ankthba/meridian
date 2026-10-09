@@ -11,9 +11,9 @@
 //! passes it in), carrying the stated cost basis. A position without a cost
 //! basis is still imported; PORT then shows its cost and P&L as unknown.
 
-use super::{Columns, is_cusip, is_option_symbol, norm, num, opt_text};
+use super::{Columns, is_cusip, is_option_symbol, norm, num_in, opt_text};
 use crate::csv::Record;
-use crate::value::{self, DateOrder};
+use crate::value::{self, DateOrder, Decimal};
 use crate::{Format, ImportOptions, Output, Row, TransactionKind};
 
 const SYMBOL: &[&str] = &["symbol", "ticker"];
@@ -88,6 +88,8 @@ pub(crate) struct SnapshotCols {
     pub(crate) description: Option<usize>,
     pub(crate) account: Option<usize>,
     pub(crate) asset_type: Option<usize>,
+    /// Decimal separator (a mapped file's `decimal_comma`).
+    pub(crate) decimal: Decimal,
 }
 
 impl SnapshotCols {
@@ -101,6 +103,7 @@ impl SnapshotCols {
             description: c.find(DESCRIPTION),
             account: c.find(ACCOUNT),
             asset_type: c.find(ASSET_TYPE),
+            decimal: Decimal::Point,
         }
     }
 }
@@ -172,7 +175,7 @@ fn snapshot_row_with_account(rec: &Record, family: Format, cols: SnapshotCols, o
         out.warn(rec, format!("Not imported: {symbol} is a CUSIP (bond or CD); fixed income is not supported"));
         return;
     }
-    let qty = match num(rec, cols.quantity, "quantity") {
+    let qty = match num_in(rec, cols.quantity, "quantity", cols.decimal) {
         Ok(Some(q)) => q,
         Ok(None) => {
             out.warn(rec, format!("Not imported: {symbol} has no quantity (cash or money-market balance)"));
@@ -189,7 +192,10 @@ fn snapshot_row_with_account(rec: &Record, family: Format, cols: SnapshotCols, o
     }
     // Schwab writes "Incomplete" when it lacks a lot's basis.
     let cost_cell = |i: Option<usize>| i.filter(|i| !rec.get(*i).eq_ignore_ascii_case("incomplete"));
-    let cost = match (num(rec, cost_cell(cols.cost_basis), "cost basis"), num(rec, cost_cell(cols.average_cost), "average cost")) {
+    let cost = match (
+        num_in(rec, cost_cell(cols.cost_basis), "cost basis", cols.decimal),
+        num_in(rec, cost_cell(cols.average_cost), "average cost", cols.decimal),
+    ) {
         (Ok(Some(total)), _) => Some(total.abs()),
         (Ok(None), Ok(Some(avg))) => Some(avg.abs() * qty),
         (Ok(None), Ok(None)) => None,

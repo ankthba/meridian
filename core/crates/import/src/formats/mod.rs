@@ -9,7 +9,7 @@ pub(crate) mod schwab;
 pub(crate) mod vanguard;
 
 use crate::csv::Record;
-use crate::value::{self, BadValue};
+use crate::value::{self, BadValue, Decimal};
 use crate::{Format, ImportOptions, Output};
 
 /// Lower-cased, whitespace-collapsed header name.
@@ -74,8 +74,13 @@ pub(crate) fn parse(f: Format, recs: &[Record], header: usize, opts: ImportOptio
 
 /// Reads optional numeric cell `i` (absent column = `None`).
 pub(crate) fn num(rec: &Record, i: Option<usize>, what: &'static str) -> Result<Option<f64>, BadValue> {
+    num_in(rec, i, what, Decimal::Point)
+}
+
+/// [`num`] with the file's decimal separator (mapped files).
+pub(crate) fn num_in(rec: &Record, i: Option<usize>, what: &'static str, decimal: Decimal) -> Result<Option<f64>, BadValue> {
     match i {
-        Some(i) => value::number(rec.get(i), what),
+        Some(i) => value::number_in(rec.get(i), what, decimal),
         None => Ok(None),
     }
 }

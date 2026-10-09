@@ -169,6 +169,12 @@ pub struct ColumnMapping {
     pub default_currency: String,
     /// Dates are `DD/MM/YYYY` rather than `MM/DD/YYYY`.
     pub day_first: bool,
+    /// Numbers use a decimal comma (`1.805,00`, `180,50`) rather than a
+    /// decimal point. False by default; `suggest_mapping` proposes true for a
+    /// `;`- or tab-delimited file whose amounts end in `,` and one or two
+    /// digits. Recognized formats never use a mapping, so they are not
+    /// affected.
+    pub decimal_comma: bool,
 }
 
 /// Inputs the caller supplies (the crate has no clock).
@@ -345,11 +351,16 @@ fn net_splits(txs: &mut Vec<ImportedTx>) {
     *txs = out;
 }
 
-/// A starting mapping for the column-mapping UI, chosen by header names.
-/// The user confirms or changes it; nothing is imported from a guess.
+/// A starting mapping for the column-mapping UI, chosen by header names
+/// (`header_line` and `headers` as [`detect`] or [`ImportError::Unrecognized`]
+/// report them). `text` is the file: a `;`- or tab-delimited file whose
+/// mapped number columns mostly end in `,` and one or two digits gets
+/// `decimal_comma: true`. The user confirms or changes the mapping; nothing
+/// is imported from a guess.
 #[must_use]
-pub fn suggest_mapping(header_line: u32, headers: &[String]) -> ColumnMapping {
-    formats::mapped::suggest(header_line, headers)
+pub fn suggest_mapping(text: &str, header_line: u32, headers: &[String]) -> ColumnMapping {
+    let delimiter = csv::sniff_delimiter(text);
+    formats::mapped::suggest(&csv::read(text, delimiter), delimiter, header_line, headers)
 }
 
 /// Accumulates parsed rows and warnings.
