@@ -78,7 +78,9 @@ pub(crate) async fn worksheet(engine: Arc<Engine>, req: ScreenRequest) -> Screen
     {
         let mut a = req.clone();
         a.args = vec![("list".into(), id.to_string())];
-        return Box::pin(worksheet(engine, a)).await;
+        let mut s = Box::pin(worksheet(engine, a.clone())).await;
+        s.args = a.args;
+        return s;
     }
 
     let keys: Vec<SecurityKey> = securities.iter().filter_map(|s| s.parse().ok()).collect();

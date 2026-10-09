@@ -306,3 +306,37 @@ fn mock_and_live_providers_never_mix() {
     let r = Engine::new(&EngineConfig::test(DataMode::Mock, CLOCK), vec![Arc::new(Fake(caps))], Arc::new(NullEvents));
     assert!(r.is_err());
 }
+
+/// Reloading a screen with the arguments it echoes (what the app keeps as
+/// the pane's state) must never repeat an add, delete or create.
+#[test]
+fn echoed_arguments_never_repeat_an_action() {
+    let rt = tokio::runtime::Builder::new_multi_thread().enable_all().build().expect("rt");
+    let engine = engine();
+    rt.block_on(engine.refresh_universe());
+    let reload = |s: &Screen| {
+        let args: Vec<(&str, &str)> = s.args.iter().map(|(k, v)| (k.as_str(), v.as_str())).collect();
+        rt.block_on(engine.screen(req(&s.function, s.security.as_deref(), &args)))
+    };
+
+    let port = rt.block_on(engine.screen(req("PORT", None, &[])));
+    let pid = port.menu.iter().find(|m| m.selected).and_then(|m| m.action.args.iter().find(|(k, _)| k == "portfolio")).map(|(_, v)| v.clone()).expect("portfolio id");
+    let count = || engine.stores().app.transactions(pid.parse().expect("id")).expect("transactions").len();
+    let added = rt.block_on(engine.screen(req(
+        "PORT",
+        None,
+        &[("portfolio", &pid), ("add", "1"), ("security", "AAPL US Equity"), ("qty", "10"), ("price", "180"), ("date", "10/01/2026")],
+    )));
+    assert_eq!(count(), 1);
+    assert_eq!(added.args, vec![("portfolio".to_owned(), pid.clone())], "only what to show is echoed");
+    let again = reload(&added);
+    reload(&again);
+    assert_eq!(count(), 1, "reloads don't add the transaction again");
+
+    let w = rt.block_on(engine.screen(req("W", None, &[("new", "Ideas")])));
+    assert!(w.args.iter().any(|(k, _)| k == "list"), "W echoes the list it created: {:?}", w.args);
+    let lists = || engine.stores().app.watchlists().expect("lists").len();
+    let before = lists();
+    reload(&w);
+    assert_eq!(lists(), before, "reloading doesn't create another list");
+}

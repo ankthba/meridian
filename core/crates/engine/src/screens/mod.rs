@@ -102,6 +102,19 @@ pub(crate) fn builder_for(function: &str) -> Option<Builder> {
     })
 }
 
+/// Arguments that perform an action (add, delete, create, toggle) or fill
+/// the form that does, rather than describe what to show. They are left out
+/// of the echoed arguments the app keeps as the pane's state, so a reload,
+/// MENU back, a later click or the saved workspace never repeats the action.
+fn is_one_shot(function: &str, key: &str) -> bool {
+    match function {
+        "PORT" => matches!(key, "add" | "delete_tx" | "security" | "qty" | "price" | "fees" | "date"),
+        "W" => matches!(key, "add" | "remove" | "new"),
+        "ALRT" => matches!(key, "create" | "delete" | "toggle" | "security" | "condition" | "value" | "repeat" | "note"),
+        _ => false,
+    }
+}
+
 impl Engine {
     /// Builds the screen for `req`. Never fails: errors and missing data
     /// become NOT AVAILABLE / error screens.
@@ -111,9 +124,13 @@ impl Engine {
         let Some(build) = builder_for(&function) else {
             return Screen::not_available(&function, &function, security, "this function is not implemented in Meridian");
         };
-        let args = req.args.clone();
+        let args: Vec<(String, String)> = req.args.iter().filter(|(k, _)| !is_one_shot(&function, k)).cloned().collect();
         let mut screen = build(self.clone(), req).await;
-        screen.args = args;
+        // A builder that redirected (e.g. W after creating a list) set the
+        // arguments that show its result; otherwise echo the request's.
+        if screen.args.is_empty() {
+            screen.args = args;
+        }
         let mode_badge_needed = screen.sources.is_empty() && self.mode() == crate::config::DataMode::Mock;
         if mode_badge_needed {
             screen.sources.push(crate::screen::SourceBadge {
