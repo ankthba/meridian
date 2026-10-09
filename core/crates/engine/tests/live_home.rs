@@ -5,6 +5,7 @@
 
 use std::collections::HashMap;
 use std::sync::Arc;
+use std::sync::atomic::{AtomicUsize, Ordering};
 use std::time::{Duration, Instant};
 
 use async_trait::async_trait;
@@ -87,6 +88,8 @@ struct Stand {
     delay: Duration,
     /// Keys of each calendar request, for assertions.
     seen: Mutex<Vec<Vec<SecurityKey>>>,
+    /// Economic calendar calls, for assertions.
+    macro_calls: AtomicUsize,
 }
 
 impl Stand {
@@ -136,6 +139,7 @@ impl Provider for Stand {
         Ok(DividendCalendar { events, provenance: prov(self.id) })
     }
     async fn economic_calendar(&self, _req: &CalendarRequest) -> ProviderResult<Vec<EconomicEvent>> {
+        self.macro_calls.fetch_add(1, Ordering::SeqCst);
         self.wait().await;
         Ok(self.releases.clone())
     }
@@ -309,6 +313,49 @@ fn calendar_reports_the_sources_own_error_and_asks_only_for_stocks() {
     // "All securities" asks without keys.
     let _ = screen(&e, "CALENDAR", &[("scope", "all")]);
     assert!(corp.seen.lock().last().unwrap().is_empty());
+}
+
+#[test]
+fn calendar_shows_the_other_kinds_while_a_slow_one_loads() {
+    // The wall clock (no fixed clock): screens show what they have after the
+    // first paint instead of waiting for every source.
+    let config = EngineConfig { fixed_clock: None, ..EngineConfig::test(DataMode::Live, CLOCK) };
+    let today = meridian_engine::screens::new_york_date(meridian_types::Clock::now(&meridian_types::SystemClock));
+    let corp = Stand {
+        id: "stand-corp",
+        caps: Some(caps(&[Capability::DividendCalendar])),
+        dividends: vec![ex_div("AAPL", today + chrono::Duration::days(1), 0.26)],
+        ..Stand::default()
+    };
+    let slow_macro = Arc::new(Stand {
+        id: "stand-macro",
+        caps: Some(caps(&[Capability::EconomicCalendar])),
+        releases: vec![release("Big Release", today + chrono::Duration::days(2), Importance::High)],
+        delay: Duration::from_millis(1_500),
+        ..Stand::default()
+    });
+    let e = Engine::new(&config, vec![Arc::new(corp), slow_macro.clone()], Arc::new(NullEvents)).expect("engine");
+
+    let s = screen(&e, "CALENDAR", &[]);
+    assert_eq!(texts(table(&s, "Next 10 days").expect("dividends while macro loads"), 3), ["AAPL"]);
+    assert!(has_notice(&s, NoticeLevel::Info, "Macro: loading…"), "{:?}", notices(&s));
+    assert!(has_notice(&s, NoticeLevel::Warning, "Earnings: NOT AVAILABLE"), "{:?}", notices(&s));
+    assert_eq!(s.refresh_ms, Some(1_000), "asks to be refreshed to fill in");
+    // The menus and the sources line work meanwhile.
+    assert!(s.blocks.iter().any(|b| matches!(b, Block::Inputs { inputs, .. } if inputs.len() == 4)));
+    assert!(s.blocks.iter().any(|b| matches!(b, Block::Fields { title: Some(t), fields, .. } if t == "Sources" && fields.len() == 1)));
+
+    // A refresh while it loads shares the fetch already running.
+    let again = screen(&e, "CALENDAR", &[]);
+    assert!(has_notice(&again, NoticeLevel::Info, "Macro: loading…"), "{:?}", notices(&again));
+    assert_eq!(slow_macro.macro_calls.load(Ordering::SeqCst), 1);
+
+    std::thread::sleep(Duration::from_millis(1_500));
+    let done = screen(&e, "CALENDAR", &[]);
+    assert_eq!(texts(table(&done, "Next 10 days").unwrap(), 3), ["AAPL", "US"]);
+    assert!(!has_notice(&done, NoticeLevel::Info, "loading"), "{:?}", notices(&done));
+    assert_eq!(done.refresh_ms, None, "nothing left to fill in");
+    assert_eq!(slow_macro.macro_calls.load(Ordering::SeqCst), 1);
 }
 
 // ---------------------------------------------------------------------------

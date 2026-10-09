@@ -3,7 +3,7 @@
 
 mod alerts;
 mod analysis;
-mod calendar;
+pub(crate) mod calendar;
 pub mod chart;
 mod common;
 mod company;
@@ -18,6 +18,7 @@ mod macro_eco;
 mod monitors;
 mod news;
 mod options;
+mod parts;
 mod scope;
 mod secf;
 pub(crate) mod today;

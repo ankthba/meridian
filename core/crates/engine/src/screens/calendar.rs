@@ -3,7 +3,9 @@
 //! "Coming up" section is built from the same rows.
 //!
 //! Each kind has its own source and degrades on its own: a missing source
-//! leaves only that kind NOT AVAILABLE.
+//! leaves only that kind NOT AVAILABLE. Each also loads on its own (see
+//! [`super::parts`]): a slow source shows "…: loading…" while the other
+//! kinds' rows are already up.
 
 use std::sync::Arc;
 
@@ -16,6 +18,7 @@ use meridian_types::{
 
 use super::ScreenRequest;
 use super::dividends::fmt_ratio;
+use super::parts::{FILL_IN_MS, Part};
 use super::scope::{RANGE_OPTIONS, Scope, Window, is_company_key, new_york_date, new_york_time};
 use crate::cache::ttl;
 use crate::core::Engine;
@@ -44,6 +47,43 @@ impl Kinds {
             }
             Some("macro" | "economic") => (Kinds { earnings: false, dividends: false, macro_releases: true }, Self::OPTIONS[3]),
             _ => (Kinds::ALL, Self::OPTIONS[0]),
+        }
+    }
+
+    fn has(self, kind: Kind) -> bool {
+        match kind {
+            Kind::Earnings => self.earnings,
+            Kind::Dividends => self.dividends,
+            Kind::Macro => self.macro_releases,
+        }
+    }
+}
+
+/// One kind of event: each has its own source, cache entry and section.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum Kind {
+    Earnings,
+    Dividends,
+    Macro,
+}
+
+impl Kind {
+    /// The kind's section, named as notes and the Sources block show it.
+    fn section(self, high_only: bool, status: SectionStatus) -> Section {
+        let (name, note) = match self {
+            Kind::Earnings => ("Earnings", "estimates are the source's consensus"),
+            Kind::Dividends => ("Dividends", "ex-dates of announced dividends and splits"),
+            Kind::Macro if high_only => ("Macro", "release calendar, high-importance releases"),
+            Kind::Macro => ("Macro", "release calendar, all releases"),
+        };
+        Section { name, status, note }
+    }
+
+    fn capability(self) -> Capability {
+        match self {
+            Kind::Earnings => Capability::EarningsCalendar,
+            Kind::Dividends => Capability::DividendCalendar,
+            Kind::Macro => Capability::EconomicCalendar,
         }
     }
 }
@@ -130,6 +170,9 @@ pub(crate) enum SectionStatus {
     Empty(String),
     /// The source is missing or failed: NOT AVAILABLE with the reason.
     Unavailable(String),
+    /// Still being fetched (CALENDAR only; TODAY waits for the whole
+    /// calendar).
+    Loading,
 }
 
 #[derive(Debug, Clone)]
@@ -151,8 +194,48 @@ pub(crate) struct CalendarData {
     pub stale_since: Option<UnixNanos>,
 }
 
+/// One kind's rows and how its source fared.
+#[derive(Debug, Clone)]
+struct KindData {
+    rows: Vec<CalendarRow>,
+    section: Section,
+    provenance: Option<Provenance>,
+    /// Fetch time of the stale cache entry served, if one was.
+    stale_since: Option<UnixNanos>,
+}
+
+impl KindData {
+    /// No rows, only a status (off, nothing to ask for, failed, loading).
+    fn status(kind: Kind, high_only: bool, status: SectionStatus) -> Self {
+        Self { rows: Vec::new(), section: kind.section(high_only, status), provenance: None, stale_since: None }
+    }
+}
+
 impl CalendarData {
-    /// NOT AVAILABLE and "nothing to show" notes, one per kind.
+    /// Every kind's rows in date order, with each kind's section in the
+    /// order given.
+    fn from_kinds<'a>(kinds: impl IntoIterator<Item = &'a KindData>) -> Self {
+        let mut data = CalendarData { rows: Vec::new(), sections: Vec::new(), provenance: Vec::new(), stale_since: None };
+        for k in kinds {
+            data.rows.extend(k.rows.iter().cloned());
+            data.sections.push(k.section.clone());
+            data.provenance.extend(k.provenance.iter().cloned());
+            if let Some(at) = k.stale_since {
+                data.stale_since = Some(data.stale_since.map_or(at, |s| s.min(at)));
+            }
+        }
+        data.rows.sort_by(|a, b| {
+            (a.date, a.slot, a.kind, &a.symbol, &a.name).cmp(&(b.date, b.slot, b.kind, &b.symbol, &b.name))
+        });
+        data
+    }
+
+    /// Some kind is still being fetched.
+    fn loading(&self) -> bool {
+        self.sections.iter().any(|s| s.status == SectionStatus::Loading)
+    }
+
+    /// NOT AVAILABLE, "nothing to show" and "loading" notes, one per kind.
     pub(crate) fn notices(&self) -> Vec<Block> {
         self.sections
             .iter()
@@ -161,6 +244,7 @@ impl CalendarData {
                     Some(Block::Notice { level: NoticeLevel::Warning, text: format!("{}: NOT AVAILABLE — {r}", s.name) })
                 }
                 SectionStatus::Empty(r) => Some(Block::Notice { level: NoticeLevel::Info, text: format!("{}: {r}", s.name) }),
+                SectionStatus::Loading => Some(Block::Notice { level: NoticeLevel::Info, text: format!("{}: loading…", s.name) }),
                 SectionStatus::Loaded { .. } | SectionStatus::Off => None,
             })
             .collect()
@@ -372,99 +456,106 @@ impl Engine {
         kinds: Kinds,
         high_only: bool,
     ) -> CalendarData {
-        let company_keys: Option<Vec<SecurityKey>> = keys.map(|k| k.iter().filter(|k| is_company_key(k)).cloned().collect());
-        let no_stocks = || {
-            if keys.is_some_and(<[SecurityKey]>::is_empty) {
-                SectionStatus::Empty("no securities in scope".into())
+        let kind = |k: Kind| async move {
+            if kinds.has(k) {
+                self.calendar_kind(k, window, keys, high_only).await
             } else {
-                SectionStatus::Empty("no stocks in scope".into())
+                KindData::status(k, high_only, SectionStatus::Off)
             }
         };
-        let ask = |on: bool| on && company_keys.as_ref().is_none_or(|k| !k.is_empty());
-        let req = EventCalendarRequest { from: window.from, to: window.to, keys: company_keys.clone().unwrap_or_default() };
-        let ck = format!("{}|{}|{}", window.from, window.to, keys_part(company_keys.as_deref()));
-
-        let earnings = async {
-            if !ask(kinds.earnings) {
-                return None;
-            }
-            let router = self.router();
-            let r = req.clone();
-            Some(self.cached("earnings_cal", &ck, ttl::CALENDAR, async move { router.earnings_calendar(r).await }).await)
-        };
-        let dividends = async {
-            if !ask(kinds.dividends) {
-                return None;
-            }
-            let router = self.router();
-            let r = req.clone();
-            Some(self.cached("dividend_cal", &ck, ttl::CALENDAR, async move { router.dividend_calendar(r).await }).await)
-        };
-        let releases = async {
-            if !kinds.macro_releases {
-                return None;
-            }
-            let router = self.router();
-            // A day either side: timed releases are stored in UTC.
-            let creq = CalendarRequest { from: window.from - chrono::Duration::days(1), to: window.to + chrono::Duration::days(1), countries: vec![] };
-            let mck = format!("{}|{}", creq.from, creq.to);
-            Some(self.cached("calendar", &mck, ttl::CALENDAR, async move { router.economic_calendar(creq).await }).await)
-        };
-        let (earnings, dividends, releases) = tokio::join!(earnings, dividends, releases);
-
-        let mut data = CalendarData { rows: Vec::new(), sections: Vec::new(), provenance: Vec::new(), stale_since: None };
-        let note_stale = |data: &mut CalendarData, f_stale: bool, at: UnixNanos| {
-            if f_stale {
-                data.stale_since = Some(data.stale_since.map_or(at, |s| s.min(at)));
-            }
-        };
-
-        let status = match earnings {
-            None if kinds.earnings => no_stocks(),
-            None => SectionStatus::Off,
-            Some(Err(e)) => failed(&e, self, Capability::EarningsCalendar),
-            Some(Ok(f)) => {
-                note_stale(&mut data, f.stale, f.fetched_at);
-                data.rows.extend(earnings_rows(self, &f.value));
-                data.provenance.push(f.value.provenance.clone());
-                SectionStatus::Loaded { source: source_name(f.value.provenance.provider.as_str()) }
-            }
-        };
-        data.sections.push(Section { name: "Earnings", status, note: "estimates are the source's consensus" });
-
-        let status = match dividends {
-            None if kinds.dividends => no_stocks(),
-            None => SectionStatus::Off,
-            Some(Err(e)) => failed(&e, self, Capability::DividendCalendar),
-            Some(Ok(f)) => {
-                note_stale(&mut data, f.stale, f.fetched_at);
-                data.rows.extend(dividend_rows(self, &f.value));
-                data.provenance.push(f.value.provenance.clone());
-                SectionStatus::Loaded { source: source_name(f.value.provenance.provider.as_str()) }
-            }
-        };
-        data.sections.push(Section { name: "Dividends", status, note: "ex-dates of announced dividends and splits" });
-
-        let status = match releases {
-            None => SectionStatus::Off,
-            Some(Err(e)) => failed(&e, self, Capability::EconomicCalendar),
-            Some(Ok(f)) => {
-                note_stale(&mut data, f.stale, f.fetched_at);
-                data.rows.extend(macro_rows(&f.value, window, high_only));
-                if let Some(e) = f.value.first() {
-                    data.provenance.push(e.provenance.clone());
-                }
-                SectionStatus::Loaded { source: source_name(&f.provider) }
-            }
-        };
-        let note = if high_only { "release calendar, high-importance releases" } else { "release calendar, all releases" };
-        data.sections.push(Section { name: "Macro", status, note });
-
-        data.rows.sort_by(|a, b| {
-            (a.date, a.slot, a.kind, &a.symbol, &a.name).cmp(&(b.date, b.slot, b.kind, &b.symbol, &b.name))
-        });
-        data
+        let (earnings, dividends, releases) = tokio::join!(kind(Kind::Earnings), kind(Kind::Dividends), kind(Kind::Macro));
+        CalendarData::from_kinds([&earnings, &dividends, &releases])
     }
+
+    /// One kind's rows in `window`, from its source (cached). `keys` as for
+    /// [`Engine::calendar_data`].
+    async fn calendar_kind(self: &Arc<Self>, kind: Kind, window: &Window, keys: Option<&[SecurityKey]>, high_only: bool) -> KindData {
+        let router = self.router();
+        let fetched = match kind {
+            Kind::Earnings | Kind::Dividends => {
+                let company_keys: Option<Vec<SecurityKey>> =
+                    keys.map(|k| k.iter().filter(|k| is_company_key(k)).cloned().collect());
+                if company_keys.as_ref().is_some_and(Vec::is_empty) {
+                    let why = if keys.is_some_and(<[SecurityKey]>::is_empty) { "no securities in scope" } else { "no stocks in scope" };
+                    return KindData::status(kind, high_only, SectionStatus::Empty(why.into()));
+                }
+                let ck = format!("{}|{}|{}", window.from, window.to, keys_part(company_keys.as_deref()));
+                let req = EventCalendarRequest { from: window.from, to: window.to, keys: company_keys.unwrap_or_default() };
+                if kind == Kind::Earnings {
+                    self.cached("earnings_cal", &ck, ttl::CALENDAR, async move { router.earnings_calendar(req).await }).await.map(|f| {
+                        let p = f.value.provenance.clone();
+                        (earnings_rows(self, &f.value), source_name(p.provider.as_str()), Some(p), f.stale.then_some(f.fetched_at))
+                    })
+                } else {
+                    self.cached("dividend_cal", &ck, ttl::CALENDAR, async move { router.dividend_calendar(req).await }).await.map(|f| {
+                        let p = f.value.provenance.clone();
+                        (dividend_rows(self, &f.value), source_name(p.provider.as_str()), Some(p), f.stale.then_some(f.fetched_at))
+                    })
+                }
+            }
+            Kind::Macro => {
+                // A day either side: timed releases are stored in UTC.
+                let creq = CalendarRequest { from: window.from - chrono::Duration::days(1), to: window.to + chrono::Duration::days(1), countries: vec![] };
+                let mck = format!("{}|{}", creq.from, creq.to);
+                self.cached("calendar", &mck, ttl::CALENDAR, async move { router.economic_calendar(creq).await }).await.map(|f| {
+                    let p = f.value.first().map(|e| e.provenance.clone());
+                    (macro_rows(&f.value, window, high_only), source_name(&f.provider), p, f.stale.then_some(f.fetched_at))
+                })
+            }
+        };
+        match fetched {
+            Ok((rows, source, provenance, stale_since)) => {
+                KindData { rows, section: kind.section(high_only, SectionStatus::Loaded { source }), provenance, stale_since }
+            }
+            Err(e) => KindData::status(kind, high_only, failed(&e, self, kind.capability())),
+        }
+    }
+}
+
+/// CALENDAR's kinds, each loading in the background on its own and kept on
+/// the engine between calls (see [`super::parts`]).
+#[derive(Default)]
+pub(crate) struct CalendarParts {
+    earnings: Part<KindData>,
+    dividends: Part<KindData>,
+    macro_releases: Part<KindData>,
+}
+
+impl CalendarParts {
+    fn part(&self, kind: Kind) -> &Part<KindData> {
+        match kind {
+            Kind::Earnings => &self.earnings,
+            Kind::Dividends => &self.dividends,
+            Kind::Macro => &self.macro_releases,
+        }
+    }
+}
+
+/// One kind for CALENDAR: off, loaded, or loading while it has never loaded
+/// for these inputs.
+async fn load_kind(
+    engine: &Arc<Engine>,
+    kind: Kind,
+    kinds: Kinds,
+    window: &Window,
+    keys: Option<&[SecurityKey]>,
+    high_only: bool,
+) -> Arc<KindData> {
+    if !kinds.has(kind) {
+        return Arc::new(KindData::status(kind, high_only, SectionStatus::Off));
+    }
+    // The inputs that decide what this kind shows.
+    let sig = match kind {
+        Kind::Earnings | Kind::Dividends => format!("{}|{}|{}", window.from, window.to, keys_part(keys)),
+        Kind::Macro => format!("{}|{}|{high_only}", window.from, window.to),
+    };
+    let (e, w, k) = (engine.clone(), window.clone(), keys.map(<[SecurityKey]>::to_vec));
+    let got = engine
+        .calendar
+        .part(kind)
+        .get(engine.handle(), engine.deterministic, &sig, move || async move { e.calendar_kind(kind, &w, k.as_deref(), high_only).await })
+        .await;
+    got.unwrap_or_else(|| Arc::new(KindData::status(kind, high_only, SectionStatus::Loading)))
 }
 
 pub(crate) async fn calendar(engine: Arc<Engine>, req: ScreenRequest) -> Screen {
@@ -474,9 +565,18 @@ pub(crate) async fn calendar(engine: Arc<Engine>, req: ScreenRequest) -> Screen 
     let (kinds, kind_label) = Kinds::parse(req.arg("kind"));
     let high_only = !req.arg("importance").is_some_and(|i| i.trim().eq_ignore_ascii_case("all"));
     let keys = engine.scope_keys(scope, today);
-    let data = engine.calendar_data(&window, (scope != Scope::All).then_some(keys.as_slice()), kinds, high_only).await;
+    let keys = (scope != Scope::All).then_some(keys.as_slice());
+    let (earnings, dividends, releases) = tokio::join!(
+        load_kind(&engine, Kind::Earnings, kinds, &window, keys, high_only),
+        load_kind(&engine, Kind::Dividends, kinds, &window, keys, high_only),
+        load_kind(&engine, Kind::Macro, kinds, &window, keys, high_only),
+    );
+    let data = CalendarData::from_kinds([&*earnings, &*dividends, &*releases]);
 
     let mut s = Screen::new("CALENDAR", TITLE, None);
+    if data.loading() {
+        s.refresh_ms = Some(FILL_IN_MS);
+    }
     for p in &data.provenance {
         s.source(p);
     }
@@ -508,7 +608,8 @@ pub(crate) async fn calendar(engine: Arc<Engine>, req: ScreenRequest) -> Screen 
     let title = format!("{} · {}", window.label, window.describe());
     if data.rows.is_empty() {
         let loaded = data.sections.iter().any(|x| matches!(x.status, SectionStatus::Loaded { .. }));
-        if loaded {
+        // Not "nothing scheduled" while another kind may still bring rows.
+        if loaded && !data.loading() {
             s.push(Block::Notice { level: NoticeLevel::Info, text: format!("Nothing scheduled — {title}") });
         }
     } else {
@@ -537,6 +638,52 @@ mod tests {
         assert_eq!(fmt_amount(0.2625), "0.2625");
         assert_eq!(fmt_amount(1.0), "1.00");
         assert_eq!(fmt_amount(0.00001), "0.00");
+    }
+
+    #[test]
+    fn kinds_merge_in_date_order_and_a_loading_kind_says_so() {
+        let d = |day| NaiveDate::from_ymd_opt(2026, 10, day).unwrap();
+        let row = |date, kind, symbol: &str| CalendarRow {
+            date,
+            slot: ALL_DAY,
+            kind,
+            key: None,
+            symbol: symbol.into(),
+            name: symbol.into(),
+            time: String::new(),
+            detail: String::new(),
+            action: Action::new("ECO", None),
+        };
+        let loaded = |kind: Kind, rows, stale_since| KindData {
+            rows,
+            section: kind.section(true, SectionStatus::Loaded { source: "Test source".into() }),
+            provenance: None,
+            stale_since,
+        };
+        let earnings = loaded(Kind::Earnings, vec![row(d(9), EventKind::Earnings, "B")], Some(20));
+        let dividends = loaded(Kind::Dividends, vec![row(d(8), EventKind::ExDividend, "A")], Some(10));
+        let releases = KindData::status(Kind::Macro, true, SectionStatus::Loading);
+        let data = CalendarData::from_kinds([&earnings, &dividends, &releases]);
+        assert_eq!(data.rows.iter().map(|r| r.symbol.as_str()).collect::<Vec<_>>(), ["A", "B"]);
+        assert_eq!(data.stale_since, Some(10), "the oldest stale entry");
+        assert!(data.loading());
+        let notes: Vec<String> = data
+            .notices()
+            .into_iter()
+            .filter_map(|b| match b {
+                Block::Notice { level: NoticeLevel::Info, text } => Some(text),
+                _ => None,
+            })
+            .collect();
+        assert_eq!(notes, ["Macro: loading…"]);
+        match data.source_fields() {
+            Some(Block::Fields { fields, .. }) => {
+                assert_eq!(fields.iter().map(|f| f.label.as_str()).collect::<Vec<_>>(), ["Earnings", "Dividends"]);
+            }
+            other => panic!("{other:?}"),
+        }
+        let off = KindData::status(Kind::Macro, true, SectionStatus::Off);
+        assert!(!CalendarData::from_kinds([&earnings, &off]).loading());
     }
 
     #[test]
