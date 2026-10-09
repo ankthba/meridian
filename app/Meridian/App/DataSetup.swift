@@ -163,6 +163,9 @@ final class SourcesModel {
 
     /// Tests every configured source not yet tested this session.
     func testUntested() async {
+        // Mock mode (tests, snapshots) never touches the network; mock and
+        // live don't mix in one process.
+        guard AppModel.shared.mode == .live else { return }
         await withTaskGroup(of: Void.self) { group in
             for s in DataSource.all where status(s) == .untested {
                 group.addTask { await self.test(s) }
