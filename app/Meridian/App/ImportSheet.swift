@@ -218,6 +218,10 @@ struct ImportSheet: View {
                 get: { model.mapping?.dayFirst ?? false },
                 set: { model.mapping?.dayFirst = $0 }
             ))
+            Toggle("Numbers use a decimal comma (1.234,56)", isOn: Binding(
+                get: { model.mapping?.decimalComma ?? false },
+                set: { model.mapping?.decimalComma = $0 }
+            ))
             HStack {
                 Spacer()
                 Button("Update Preview") { Task { await model.refresh() } }

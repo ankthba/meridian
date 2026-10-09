@@ -29,6 +29,16 @@ Ready for everyone: notarized, accessible, and fixes from a full review of 1.1.
 - Two calendar panes with different settings no longer restart each other's slow requests.
 - Tests and snapshots no longer reach the network from Settings.
 
+### Broker import
+- Overlapping Fidelity exports (one account and all accounts) no longer double-count.
+- Histories with headers like `TransactionDate` or `Date/Time` go to the column mapping instead of being read as a list of holdings.
+- Exports with "as of" dates keep same-day trades in order; a reverse split in two overlapping files is applied once.
+- Fidelity short sales and covers are skipped with a warning instead of becoming a long position.
+- A mapped file can use a decimal comma (1.234,56), suggested automatically for semicolon-separated files; ambiguous numbers are flagged instead of misread.
+- A transfer's stated cost basis wins over its market price.
+- Return of capital lowers cost basis instead of counting as a dividend; cash in lieu counts as proceeds.
+- Several reverse splits on one day are paired per security, or skipped with a warning when they can't be.
+
 ## 1.1.0 — 2026-10-07
 
 A new look of its own, and features built around your own portfolio.
