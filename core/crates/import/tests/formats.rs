@@ -162,6 +162,20 @@ fn fidelity_single_account_file_overlaps_the_all_accounts_file() {
 }
 
 #[test]
+fn fidelity_short_sales_are_warnings_not_a_long_position() {
+    let text = "Run Date,Action,Symbol,Description,Type,Quantity,Price ($),Commission ($),Fees ($),Accrued Interest ($),Amount ($),Settlement Date\n\
+                03/10/2026,YOU BOUGHT SHORT COVER TESLA INC (TSLA) (Short),TSLA,TESLA INC,Short,10,200,,,,-2000.00,03/11/2026\n\
+                03/02/2026,YOU SOLD SHORT SALE TESLA INC (TSLA) (Margin),TSLA,TESLA INC,Short,-10,250,,,,2500.00,03/03/2026\n\
+                03/02/2026,YOU BOUGHT APPLE INC (AAPL) (Cash),AAPL,APPLE INC,Cash,1,200,,,,-200.00,03/03/2026\n";
+    let p = parse(text, None, &opts()).unwrap();
+    assert_eq!(p.format, Format::Fidelity);
+    assert_eq!(p.counts(), vec![(K::Buy, 1)]);
+    assert!(find(&p, K::Buy, "TSLA").is_empty() && find(&p, K::Sell, "TSLA").is_empty());
+    assert_eq!(warning_lines(&p), vec![2, 3]);
+    assert!(p.warnings.iter().all(|w| w.message.contains("short sales are not supported")), "{:#?}", p.warnings);
+}
+
+#[test]
 fn fidelity_july_2026_layout() {
     let p = read("fidelity_history_2026q3.csv");
     assert_eq!(p.format, Format::Fidelity);

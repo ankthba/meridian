@@ -73,6 +73,7 @@ Action table (prefixes, case-insensitive, in this order):
 |---|---|
 | `… OPENING TRANSACTION …`, `… CLOSING TRANSACTION …`, `EXPIRED`, `ASSIGNED`, `EXERCISED` (unconfirmed) | warning: options |
 | `BUY CANCEL`, `SELL CANCEL`, `… CXL …` (unconfirmed) | warning: cancelled trades |
+| `YOU SOLD SHORT SALE`, `YOU BOUGHT SHORT COVER` (checked before the plain trades) | warning: short sales |
 | `YOU BOUGHT` (an `RSU` vest posted for $0 → transfer in at the row's price, unconfirmed) | buy |
 | `YOU SOLD` | sell |
 | `FOREIGN TAX PAID`, `ADJ FOREIGN TAX`, `NON-RESIDENT TAX`, `FED TAX W/H` (unconfirmed), `FEE CHARGED`, `ADVISOR FEE`, `ADJUST FEE` | fee |

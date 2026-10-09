@@ -58,6 +58,10 @@ fn kind(action: &str) -> Option<Kind> {
         Kind::Unsupported("options are not supported")
     } else if starts("buy cancel") || starts("sell cancel") || has(" cxl ") {
         Kind::Unsupported("cancelled trades are not supported; delete the original trade in PORT")
+    } else if starts("you sold short sale") || starts("you bought short cover") {
+        // Before the plain trades: "YOU SOLD SHORT SALE …" read as a sell
+        // and "YOU BOUGHT SHORT COVER …" as a buy left a phantom long.
+        Kind::Unsupported("short sales are not supported")
     } else if starts("you bought") {
         Kind::Is(K::Buy)
     } else if starts("you sold") {
@@ -282,6 +286,9 @@ mod tests {
         };
         assert_eq!(k("YOU BOUGHT APPLE INC (AAPL) (Cash)"), format!("{:?}", K::Buy));
         assert_eq!(k("YOU BOUGHT OPENING TRANSACTION CALL (XLE) ..."), "Unsupported");
+        assert_eq!(k("YOU SOLD SHORT SALE TESLA INC (TSLA) (Margin)"), "Unsupported");
+        assert_eq!(k("YOU BOUGHT SHORT COVER TESLA INC (TSLA) (Short)"), "Unsupported");
+        assert_eq!(k("YOU SOLD ISHARES SHORT TREASURY BOND ETF (SHV) (Cash)"), format!("{:?}", K::Sell));
         assert_eq!(k("NON-RESIDENT TAX DIVIDEND RECEIVED X"), format!("{:?}", K::Fee));
         assert_eq!(k("DIVIDEND RECEIVED X"), format!("{:?}", K::Dividend));
         assert_eq!(k("DISTRIBUTION SPINOFF FROM:(ABC ) XYZ"), format!("{:?}", K::TransferIn));
