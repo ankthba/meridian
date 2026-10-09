@@ -525,6 +525,7 @@ async fn missing_key_is_unauthorized_without_http() {
     for api_key in [None, Some(""), Some("  ")] {
         let p = provider(&server.base, api_key);
         let expected = ProviderError::Unauthorized("Finnhub API key not set — add it in Settings".into());
+        assert_eq!(p.setup_needed().as_deref(), Some("Finnhub API key not set — add it in Settings"));
         assert_eq!(p.news(&query(NewsScope::Company, &["AAPL"])).await.unwrap_err(), expected);
         assert_eq!(p.news(&query(NewsScope::Market, &[])).await.unwrap_err(), expected);
         assert_eq!(p.profile(&key).await.unwrap_err(), expected);

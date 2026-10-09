@@ -242,6 +242,7 @@ async fn missing_key_is_unauthorized_without_http() {
     let server = TestServer::start(|_| (200, "{}".into())).await;
     for key in [None, Some(""), Some("   ")] {
         let p = provider(&server.base, key);
+        assert_eq!(p.setup_needed().as_deref(), Some("FRED API key not set — add it in Settings"));
         let req = SeriesRequest { id: "GNPCA".into(), from: None, to: None };
         let err = p.economic_series(&req).await.unwrap_err();
         assert_eq!(err, ProviderError::Unauthorized("FRED API key not set — add it in Settings".into()));

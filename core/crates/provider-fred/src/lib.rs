@@ -265,6 +265,10 @@ impl Provider for FredProvider {
         &self.caps
     }
 
+    fn setup_needed(&self) -> Option<String> {
+        self.key().err().map(|_| MISSING_KEY.to_owned())
+    }
+
     async fn economic_series(&self, req: &SeriesRequest) -> ProviderResult<EconomicSeries> {
         self.key()?;
         self.fetch_series(req).await

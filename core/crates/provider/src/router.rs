@@ -198,6 +198,29 @@ impl ProviderRouter {
         }
     }
 
+    /// When every provider offering `cap` (for `key`) still needs setup,
+    /// the first one's setup message (e.g. "Alpaca API key not set — add it
+    /// in Settings"). `None` when one is ready, or when none offers `cap`.
+    #[must_use]
+    pub fn setup_needed(&self, cap: Capability, key: Option<&SecurityKey>) -> Option<String> {
+        let mut first = None;
+        for r in self.candidates(cap, key) {
+            match r.provider.setup_needed() {
+                None => return None,
+                Some(m) => {
+                    first.get_or_insert(m);
+                }
+            }
+        }
+        first
+    }
+
+    /// Every provider that still needs setup, with its message.
+    #[must_use]
+    pub fn needing_setup(&self) -> Vec<(ProviderId, String)> {
+        self.providers.iter().filter_map(|r| r.provider.setup_needed().map(|m| (r.provider.id(), m))).collect()
+    }
+
     /// Providers that offer `cap` for `key`, in routing order.
     #[must_use]
     pub fn providers_for(&self, cap: Capability, key: Option<&SecurityKey>) -> Vec<ProviderId> {
@@ -513,6 +536,7 @@ mod tests {
         caps: Capabilities,
         fail_with: Option<ProviderError>,
         calls: AtomicU32,
+        setup: Option<&'static str>,
     }
 
     impl Fake {
@@ -539,6 +563,7 @@ mod tests {
                 },
                 fail_with,
                 calls: AtomicU32::new(0),
+                setup: None,
             }
         }
     }
@@ -550,6 +575,9 @@ mod tests {
         }
         fn capabilities(&self) -> &Capabilities {
             &self.caps
+        }
+        fn setup_needed(&self) -> Option<String> {
+            self.setup.map(str::to_owned)
         }
         async fn profile(&self, _key: &SecurityKey) -> ProviderResult<CompanyProfile> {
             self.calls.fetch_add(1, Ordering::SeqCst);
@@ -577,6 +605,18 @@ mod tests {
         let err = r.profile(&SecurityKey::equity("AAPL")).await.unwrap_err();
         assert_eq!(err, ProviderError::Network("down".into()));
         assert_eq!(a.calls.load(Ordering::SeqCst), MAX_RETRIES + 1);
+    }
+
+    #[test]
+    fn setup_is_needed_only_when_no_candidate_is_ready() {
+        let aapl = SecurityKey::equity("AAPL");
+        let unset = |id| Fake { setup: Some("key not set"), ..Fake::new(id, None) };
+        let r = ProviderRouter::new(vec![Arc::new(unset("a")), Arc::new(unset("b"))]);
+        assert_eq!(r.setup_needed(Capability::Profile, Some(&aapl)).as_deref(), Some("key not set"));
+        assert_eq!(r.needing_setup().len(), 2);
+        let r = ProviderRouter::new(vec![Arc::new(unset("a")), Arc::new(Fake::new("b", None))]);
+        assert_eq!(r.setup_needed(Capability::Profile, Some(&aapl)), None, "one ready provider is enough");
+        assert_eq!(r.setup_needed(Capability::Profile, Some(&SecurityKey::currency("EURUSD"))), None, "nothing offers it");
     }
 
     #[tokio::test(start_paused = true)]

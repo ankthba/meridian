@@ -514,6 +514,10 @@ impl Provider for AlpacaProvider {
         &self.caps
     }
 
+    fn setup_needed(&self) -> Option<String> {
+        self.creds.is_none().then(|| MISSING_KEY.to_owned())
+    }
+
     /// `GET /v2/stocks/snapshots?symbols=…&feed=iex|sip`. Keys Alpaca doesn't
     /// serve, and symbols missing from the response, are left out so the
     /// router can try another provider.

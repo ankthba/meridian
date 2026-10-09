@@ -193,6 +193,7 @@ async fn missing_keys_are_unauthorized_without_http() {
         p
     };
     for p in [keyless(&server.base), half] {
+        assert_eq!(p.setup_needed().as_deref(), Some(MISSING_KEY));
         assert_eq!(p.quotes(&[SecurityKey::equity("AAPL")]).await.unwrap_err(), unauthorized);
         assert_eq!(p.bars(&bars_req(BarInterval::Day, None, None)).await.unwrap_err(), unauthorized);
         let chain = ChainRequest { underlying: SecurityKey::equity("AAPL"), expiry: None };

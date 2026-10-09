@@ -33,6 +33,14 @@ pub trait Provider: Send + Sync + 'static {
         true
     }
 
+    /// What the user still has to set up before this provider can serve
+    /// anything (a key, a contact), as the message its calls would fail
+    /// with; `None` when it is ready. Lets screens say once what to add
+    /// instead of one NOT AVAILABLE per section. Defaults to ready.
+    fn setup_needed(&self) -> Option<String> {
+        None
+    }
+
     /// Instruments matching `q.text`. An empty text lists the provider's
     /// universe (up to `q.limit`); the engine loads reference data this way.
     async fn search(&self, _q: &InstrumentQuery) -> ProviderResult<Vec<Instrument>> {

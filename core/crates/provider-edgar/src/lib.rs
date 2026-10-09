@@ -332,6 +332,13 @@ impl Provider for EdgarProvider {
         &self.caps
     }
 
+    fn setup_needed(&self) -> Option<String> {
+        match &self.client {
+            ClientState::Ready(_) => None,
+            ClientState::Unconfigured(msg) => Some((*msg).to_owned()),
+        }
+    }
+
     async fn search(&self, q: &InstrumentQuery) -> ProviderResult<Vec<Instrument>> {
         self.http()?;
         if q.sector.is_some_and(|s| s != MarketSector::Equity) {
@@ -706,6 +713,7 @@ mod tests {
         for contact in ["", "   ", "no email here"] {
             let (p, hits) = provider_with(contact).await;
             assert!(!p.is_configured());
+            assert_eq!(p.setup_needed().as_deref(), Some(MISSING_CONTACT));
             let expect = ProviderError::Unauthorized(MISSING_CONTACT.into());
             let key = SecurityKey::equity("EXMP");
             assert_eq!(p.instrument(&key).await.unwrap_err(), expect);

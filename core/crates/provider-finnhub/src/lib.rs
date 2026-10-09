@@ -285,6 +285,10 @@ impl Provider for FinnhubProvider {
         &self.caps
     }
 
+    fn setup_needed(&self) -> Option<String> {
+        self.key().err().map(|_| MISSING_KEY.to_owned())
+    }
+
     /// Company news (`/company-news`, one call per US symbol) and general
     /// market news (`/news?category=general`). Top stories and press
     /// releases are not offered on the free tier.
