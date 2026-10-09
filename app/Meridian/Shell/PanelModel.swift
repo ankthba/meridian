@@ -206,6 +206,11 @@ final class PanelModel: Identifiable {
         pages = [:]
         if action.function == "ASK" {
             pendingQuestion = action.args.first { $0.key == "q" }?.value
+            // The question is sent once; reloads, MENU back and the saved
+            // workspace keep ASK without re-asking (each ask is a paid call).
+            if pendingQuestion != nil {
+                current = ActionFfi(function: action.function, security: action.security, args: action.args.filter { $0.key != "q" })
+            }
             special = .ask
             screen = nil
             loading = false
@@ -222,6 +227,14 @@ final class PanelModel: Identifiable {
             do {
                 let s = try await core.screen(function: action.function, security: action.security, args: action.args)
                 guard let self, gen == self.generation, !Task.isCancelled else { return }
+                // Keep the arguments the core echoes: they leave out one-time
+                // actions (add, delete, create), so nothing that reruns the
+                // pane's action — reload, MENU back, a later click, the saved
+                // workspace — repeats them.
+                if var cur = self.current, cur.function == s.function {
+                    cur.args = s.args
+                    self.current = cur
+                }
                 self.screen = s
                 self.loading = false
                 self.updateFeed(for: s)
