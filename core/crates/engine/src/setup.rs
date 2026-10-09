@@ -9,7 +9,29 @@ use crate::core::Engine;
 /// Symbols listed in a note before "and N more".
 const LISTED: usize = 3;
 
+/// What each keyed source adds, for the first-run checklist.
+fn unlocks(provider: &str) -> &'static str {
+    match provider {
+        "alpaca" => "US stock prices, charts, news, dividends and options",
+        "finnhub" => "earnings dates, analyst ratings and company news",
+        "fred" => "economic releases and series",
+        "edgar" => "SEC filings and financial statements (your name and email, no key)",
+        _ => "more data",
+    }
+}
+
 impl Engine {
+    /// One line per source that still needs setup, e.g. "Alpaca — US stock
+    /// prices, charts, …", for screens that guide a first run. Empty when
+    /// everything is set up (and always in mock mode).
+    pub(crate) fn setup_checklist(&self) -> Vec<(String, String)> {
+        self.router()
+            .needing_setup()
+            .into_iter()
+            .map(|(id, msg)| (format!("{} — {}", crate::screens::source_name(id.as_str()), unlocks(id.as_str())), msg))
+            .collect()
+    }
+
     /// For `keys` whose every source for `cap` still needs setup: one line
     /// per distinct message, naming the affected symbols, e.g. "Prices for
     /// AAPL, MSFT and 9 more: Alpaca API key not set — add it in Settings".

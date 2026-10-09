@@ -90,6 +90,8 @@ struct Stand {
     seen: Mutex<Vec<Vec<SecurityKey>>>,
     /// Economic calendar calls, for assertions.
     macro_calls: AtomicUsize,
+    /// What the source still needs (a missing key), as `setup_needed`.
+    setup: Option<&'static str>,
 }
 
 impl Stand {
@@ -107,6 +109,9 @@ impl Provider for Stand {
     }
     fn capabilities(&self) -> &Capabilities {
         self.caps.as_ref().expect("caps")
+    }
+    fn setup_needed(&self) -> Option<String> {
+        self.setup.map(str::to_owned)
     }
     async fn quotes(&self, keys: &[SecurityKey]) -> ProviderResult<Vec<Quote>> {
         Ok(keys
@@ -313,6 +318,39 @@ fn calendar_reports_the_sources_own_error_and_asks_only_for_stocks() {
     // "All securities" asks without keys.
     let _ = screen(&e, "CALENDAR", &[("scope", "all")]);
     assert!(corp.seen.lock().last().unwrap().is_empty());
+}
+
+#[test]
+fn first_run_today_lists_what_to_set_up_once() {
+    const MISSING: &str = "Finnhub API key not set — add it in Settings";
+    let finnhub = Stand {
+        id: "finnhub",
+        caps: Some(caps(&[Capability::EarningsCalendar])),
+        earnings_error: Some(ProviderError::Unauthorized(MISSING.into())),
+        setup: Some(MISSING),
+        ..Stand::default()
+    };
+    let e = engine(vec![finnhub]);
+    let s = screen(&e, "TODAY", &[]);
+    let get_started = s
+        .blocks
+        .iter()
+        .find_map(|b| match b {
+            Block::Text { title: Some(t), body } if t == "Get started" => Some(body.clone()),
+            _ => None,
+        })
+        .expect("a Get started block");
+    assert!(get_started.contains("Finnhub — earnings dates"), "{get_started}");
+    assert!(s.menu.iter().any(|m| m.action.function == "SETTINGS"), "a menu item opens Settings");
+    assert!(
+        notices(&s).iter().all(|(_, n)| !n.contains(MISSING)),
+        "the checklist replaces the per-section line: {:?}",
+        notices(&s)
+    );
+    // Set up: no checklist.
+    let ready = engine(vec![Stand { id: "finnhub", caps: Some(caps(&[Capability::EarningsCalendar])), ..Stand::default() }]);
+    let s = screen(&ready, "TODAY", &[]);
+    assert!(!s.blocks.iter().any(|b| matches!(b, Block::Text { title: Some(t), .. } if t == "Get started")));
 }
 
 #[test]

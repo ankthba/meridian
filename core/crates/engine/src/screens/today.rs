@@ -9,7 +9,7 @@ use std::collections::{HashMap, HashSet};
 use std::sync::Arc;
 
 use chrono::NaiveDate;
-use meridian_provider::{NewsQuery, NewsScope, ProviderError, SeriesRequest};
+use meridian_provider::{Capability, NewsQuery, NewsScope, ProviderError, SeriesRequest};
 use meridian_stream::row::QuoteRow;
 use meridian_types::{NANOS_PER_DAY, NANOS_PER_SEC, NewsItem, Provenance, SecurityKey};
 
@@ -235,6 +235,13 @@ pub(crate) async fn today(engine: Arc<Engine>, _req: ScreenRequest) -> Screen {
 
     let mut s = Screen::new("TODAY", TITLE, None);
     s.refresh_ms = Some(60_000);
+    // First run: one checklist of what to connect instead of a NOT
+    // AVAILABLE line per section; the lines it covers are left out below.
+    let setup = engine.setup_checklist();
+    let needs_setup = |text: &str| setup.iter().any(|(_, msg)| text.contains(msg.as_str()));
+    if !setup.is_empty() {
+        s.menu_item("Set up data sources", Action::new("SETTINGS", None), false);
+    }
     if holdings.is_empty() {
         s.menu_item("Import portfolio", Action::new("IMPORT", None), false);
     }
@@ -248,6 +255,17 @@ pub(crate) async fn today(engine: Arc<Engine>, _req: ScreenRequest) -> Screen {
         {
             s.source(&p);
         }
+    }
+
+    if !setup.is_empty() {
+        let items: Vec<String> = setup.iter().map(|(line, _)| format!("· {line}")).collect();
+        s.push(Block::Text {
+            title: Some("Get started".into()),
+            body: format!(
+                "Meridian reads free data sources you connect once, in Settings → Data Sources (a free key each, a couple of minutes):\n{}\nCrypto, currencies and the Treasury yield work without any key.",
+                items.join("\n")
+            ),
+        });
     }
 
     // --- (a) Portfolio summary --------------------------------------------
@@ -359,7 +377,8 @@ pub(crate) async fn today(engine: Arc<Engine>, _req: ScreenRequest) -> Screen {
             text: format!("10-year Treasury yield: NOT AVAILABLE — {}", e.user_message()),
         }),
     }
-    if !strip_missing.is_empty() {
+    let strip_needs_setup = strip_missing.iter().all(|k| engine.router().setup_needed(Capability::Quotes, Some(k)).is_some());
+    if !strip_missing.is_empty() && (!strip_needs_setup || setup.is_empty()) {
         s.push(Block::Notice { level: NoticeLevel::Warning, text: format!("Markets: NOT AVAILABLE — {}", no_quote_reason(&engine, &strip_missing)) });
     }
     if !strip_rows.is_empty() {
@@ -430,7 +449,9 @@ pub(crate) async fn today(engine: Arc<Engine>, _req: ScreenRequest) -> Screen {
             s.source(p);
         }
         for n in calendar.notices() {
-            if let Block::Notice { level, text } = n {
+            if let Block::Notice { level, text } = n
+                && !needs_setup(&text)
+            {
                 s.push(Block::Notice { level, text: format!("Coming up — {text}") });
             }
         }
@@ -458,7 +479,9 @@ pub(crate) async fn today(engine: Arc<Engine>, _req: ScreenRequest) -> Screen {
             s.source(p);
         }
         if let Some(reason) = &inbox.unavailable {
-            s.push(Block::Notice { level: NoticeLevel::Warning, text: format!("New filings: NOT AVAILABLE — {reason}") });
+            if !needs_setup(reason) {
+                s.push(Block::Notice { level: NoticeLevel::Warning, text: format!("New filings: NOT AVAILABLE — {reason}") });
+            }
         } else {
             for n in &inbox.notes {
                 if let Block::Notice { level: NoticeLevel::Warning, text } = n {
@@ -494,7 +517,9 @@ pub(crate) async fn today(engine: Arc<Engine>, _req: ScreenRequest) -> Screen {
                 }
                 e => e.user_message(),
             };
-            s.push(Block::Notice { level: NoticeLevel::Warning, text: format!("{news_title}: NOT AVAILABLE — {reason}") });
+            if !needs_setup(&reason) {
+                s.push(Block::Notice { level: NoticeLevel::Warning, text: format!("{news_title}: NOT AVAILABLE — {reason}") });
+            }
         }
         Some(Some(Ok(items))) if items.is_empty() => {
             s.push(Block::Notice { level: NoticeLevel::Info, text: format!("{news_title}: no stories in the last 3 days") });

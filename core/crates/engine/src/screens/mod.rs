@@ -115,6 +115,8 @@ fn is_one_shot(function: &str, key: &str) -> bool {
     }
 }
 
+pub(crate) use calendar::source_name;
+
 impl Engine {
     /// Builds the screen for `req`. Never fails: errors and missing data
     /// become NOT AVAILABLE / error screens.
