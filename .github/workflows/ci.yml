@@ -20,6 +20,10 @@ jobs:
           workspaces: core
       - name: Brand-name lint
         run: scripts/check-names.sh
+      # The app ships app/Meridian/Resources/ThirdPartyNotices.txt; it must match
+      # Cargo.lock and every dependency's license must be permissive.
+      - name: Third-party notices
+        run: scripts/third-party-notices.sh --check
       - name: Clippy
         run: cargo clippy --manifest-path core/Cargo.toml --workspace --all-targets -- -D warnings
       - name: Tests
