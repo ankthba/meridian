@@ -3,6 +3,7 @@
 
 use std::sync::Arc;
 
+use meridian_provider::Capability;
 use meridian_types::{AssetClass, MarketSector, SecurityKey};
 
 use super::ScreenRequest;
@@ -93,6 +94,9 @@ pub(crate) async fn worksheet(engine: Arc<Engine>, req: ScreenRequest) -> Screen
         ],
     });
     badge_from_quotes(&engine, &mut s, &keys);
+    for text in engine.setup_notes("Prices", Capability::Quotes, &keys) {
+        s.push(Block::Notice { level: NoticeLevel::Warning, text });
+    }
     let mut columns = vec![Column::text("Security", 20), Column::text("Name", 24)];
     columns.extend(live_columns(2));
     let mut rows = Vec::new();

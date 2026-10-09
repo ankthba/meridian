@@ -16,6 +16,7 @@ pub mod import;
 pub mod portfolio;
 pub mod screen;
 pub mod screens;
+mod setup;
 mod universe;
 
 pub use crate::core::*;
