@@ -1,0 +1,53 @@
+name: Bug report
+description: Something in Meridian doesn't work as it should
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you did, what you expected, and what Meridian did instead. A screenshot helps.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Type "aapl 5y" in the command bar
+        2. …
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Today, Calendar or Filings
+        - Charts and prices
+        - Portfolio or broker import
+        - News or filings reader
+        - Options
+        - Ask (AI analyst)
+        - Settings or data sources
+        - Command bar
+        - Something else
+  - type: input
+    id: version
+    attributes:
+      label: Meridian version
+      description: Meridian → About Meridian (filled in when you use Help → Report an Issue)
+    validations:
+      required: true
+  - type: input
+    id: macos
+    attributes:
+      label: macOS version
+    validations:
+      required: true
+  - type: textarea
+    id: crash
+    attributes:
+      label: Crash report
+      description: If Meridian quit unexpectedly, Help → Show Crash Reports shows the report in Finder. Drag it here, or paste the first lines. Check it for anything you'd rather not share first.
+  - type: markdown
+    attributes:
+      value: Please don't paste API keys or broker files. For security problems, use the Security tab's private report instead.

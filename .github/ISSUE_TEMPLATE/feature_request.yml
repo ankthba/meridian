@@ -1,0 +1,16 @@
+name: Idea
+description: Suggest something Meridian should do
+labels: [idea]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What you're trying to do
+      description: The task or question, in your own words. What do you use today instead?
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: What would help
+      description: A command you'd type, a screen, a data source. Note that Meridian only uses free sources and doesn't redistribute data.
