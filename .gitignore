@@ -19,3 +19,4 @@ app/Packages/MeridianCore/MeridianCoreFFI.xcframework/
 app/Packages/MeridianCore/Sources/MeridianCore/*.swift
 app/build/
 app/Meridian.xcodeproj/
+dist/
