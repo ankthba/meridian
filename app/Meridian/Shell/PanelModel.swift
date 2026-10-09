@@ -191,6 +191,10 @@ final class PanelModel: Identifiable {
         case "SETTINGS":
             NotificationCenter.default.post(name: .openSettingsRequest, object: nil)
             return
+        case "ALRT":
+            // Alerts arrive as notifications: ask for permission when they're
+            // first set up rather than at launch.
+            if AppModel.shared.mode == .live { Notifier.requestPermissionIfNeeded() }
         default:
             break
         }

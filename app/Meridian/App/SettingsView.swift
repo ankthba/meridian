@@ -34,11 +34,13 @@ struct SettingsView: View {
 enum Preference {
     static let openSetupAtLaunch = "openSetupAtLaunch"
     static let restoreWorkspace = "restoreWorkspace"
+    static let checkForUpdates = "checkForUpdates"
 }
 
 struct GeneralPane: View {
     @AppStorage(Preference.openSetupAtLaunch) private var openSetupAtLaunch = true
     @AppStorage(Preference.restoreWorkspace) private var restoreWorkspace = true
+    @AppStorage(Preference.checkForUpdates) private var checkForUpdates = true
     @State private var resetDone = false
 
     var body: some View {
@@ -64,6 +66,20 @@ struct GeneralPane: View {
                 Text("Panels")
             } footer: {
                 Text("The default layout opens Today, a worksheet, a price graph and the filings inbox. Panes in link group A follow each other's security.")
+            }
+            Section {
+                Toggle("Check for updates automatically", isOn: $checkForUpdates)
+                    .onChange(of: checkForUpdates) { _, on in
+                        if on { UpdateChecker.shared.start() } else { UpdateChecker.shared.stop() }
+                    }
+                LabeledContent("Version \(UpdateChecker.currentVersion)") {
+                    Button("Check Now") { Task { await UpdateChecker.shared.check(userInitiated: true) } }
+                        .disabled(UpdateChecker.shared.checking)
+                }
+            } header: {
+                Text("Updates")
+            } footer: {
+                Text("Asks GitHub for the latest release at launch and once a day. Nothing about you or your data is sent.")
             }
             Section("Help") {
                 LabeledContent("Function directory") {

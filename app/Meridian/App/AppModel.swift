@@ -31,6 +31,8 @@ final class AppModel {
     var statusMessage: String = ""
     var lastAlert: String?
     var showKeyboardOverlay = false
+    /// Crash reports written since the previous launch (shown once in the top bar).
+    var crashReports: [URL] = []
     let workspace = Workspace()
     let links = LinkBus()
 
@@ -76,7 +78,12 @@ final class AppModel {
         } catch {
             startupError = "Core failed to start: \(error)"
         }
-        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { _, _ in }
+        // Notification permission is asked when alerts are first used
+        // (Notifier), not at launch.
+        if mode == .live, !SnapshotMode.enabled, !PerfHarness.enabled {
+            crashReports = CrashReports.sinceLastLaunch()
+            UpdateChecker.shared.start()
+        }
     }
 
     /// Credentials or provider settings changed in Settings: swap the data
@@ -107,7 +114,7 @@ final class AppModel {
             }
         case let .alertFired(_, security, message, _):
             lastAlert = message
-            postNotification(title: "Alert — \(security)", body: message)
+            Notifier.post(title: "Alert — \(security)", body: message)
         case let .universeLoaded(n):
             instrumentsLoaded = n
         case let .status(message):
@@ -118,14 +125,5 @@ final class AppModel {
             let target = ws.panels[(ws.focused + 1) % ws.panels.count]
             target.run(ActionFfi(function: function, security: security, args: args))
         }
-    }
-
-    private func postNotification(title: String, body: String) {
-        let content = UNMutableNotificationContent()
-        content.title = title
-        content.body = body
-        content.sound = .default
-        let req = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
-        UNUserNotificationCenter.current().add(req)
     }
 }

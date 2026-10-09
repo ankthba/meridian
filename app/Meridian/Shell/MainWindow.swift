@@ -110,6 +110,29 @@ struct TopBar: View {
                 Text("Alert · \(a)").font(Theme.ui(12)).foregroundStyle(Theme.warn.swiftUI).lineLimit(1)
             }
             Spacer()
+            if !app.crashReports.isEmpty {
+                Button {
+                    CrashReports.reveal(app.crashReports)
+                    Links.open(Links.newIssue())
+                    app.crashReports = []
+                } label: {
+                    Text("Meridian quit unexpectedly last time · Report")
+                        .font(Theme.ui(12))
+                        .foregroundStyle(Theme.warn.swiftUI)
+                }
+                .buttonStyle(.plain)
+                .help("Opens a bug report on GitHub and shows the crash report in Finder, so you can attach it")
+            }
+            if let update = UpdateChecker.shared.available {
+                Button { Links.open(update.url) } label: {
+                    Text("Meridian \(update.version) available")
+                        .font(Theme.ui(12))
+                        .foregroundStyle(Theme.text.swiftUI)
+                        .underline()
+                }
+                .buttonStyle(.plain)
+                .help("Open the release page")
+            }
             if app.mode == .mock {
                 Text("Mock data · tests only")
                     .font(Theme.ui(12, weight: .semibold))

@@ -13,12 +13,33 @@ struct MeridianApp: App {
         }
         .defaultSize(width: 1680, height: 1000)
         .commands {
-            CommandGroup(replacing: .newItem) {}
+            CommandGroup(after: .appInfo) {
+                Button("Check for Updates…") { Task { await UpdateChecker.shared.check(userInitiated: true) } }
+            }
+            CommandGroup(replacing: .newItem) {
+                Button("Import Portfolio…") { NotificationCenter.default.post(name: .openImport, object: nil) }
+                    .keyboardShortcut("i", modifiers: [.command, .shift])
+            }
             CommandMenu("Terminal") {
+                Button("Today") { run("TODAY") }
+                Button("Calendar") { run("CALENDAR") }
+                Button("Filings") { run("FILINGS") }
+                Button("Portfolio") { run("PORT") }
+                Divider()
                 Button("Launchpad") { NotificationCenter.default.post(name: .openLaunchpad, object: nil) }
                     .keyboardShortcut("l", modifiers: [.command, .shift])
                 Button("Keyboard Reference") { AppModel.shared.showKeyboardOverlay.toggle() }
                     .keyboardShortcut("/", modifiers: .command)
+            }
+            CommandGroup(replacing: .help) {
+                Button("Meridian Guide") { Links.open(Links.guide) }
+                Button("Commands and Functions") { run("HELP") }
+                Divider()
+                Button("Release Notes") { Links.open(Links.releases) }
+                Button("Privacy") { Links.open(Links.privacy) }
+                Divider()
+                Button("Report an Issue…") { Links.open(Links.newIssue()) }
+                Button("Show Crash Reports") { CrashReports.reveal(CrashReports.since(.distantPast)) }
             }
         }
 
@@ -32,6 +53,12 @@ struct MeridianApp: App {
             SettingsView()
         }
     }
+}
+
+/// Runs a function in the focused pane (menu commands).
+@MainActor
+private func run(_ function: String) {
+    AppModel.shared.workspace.focusedPanel.run(ActionFfi(function: function, security: nil, args: []))
 }
 
 final class AppDelegate: NSObject, NSApplicationDelegate {
