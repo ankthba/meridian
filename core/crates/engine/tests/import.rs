@@ -127,6 +127,26 @@ fn robinhood_import_feeds_port_and_skips_duplicates() {
 }
 
 #[test]
+fn fidelity_single_account_and_all_accounts_files_import_once() {
+    let rt = tokio::runtime::Builder::new_multi_thread().enable_all().build().expect("rt");
+    let engine = engine();
+    let all = engine.commit_import(&fixture("fidelity_all_accounts_2026q1.csv"), None, &ImportTarget::New("Fidelity".into())).expect("all accounts");
+    assert_eq!((all.imported, all.duplicates), (9, 0));
+    // The same account downloaded on its own: only the older deposit is new.
+    let single = engine.commit_import(&fixture("fidelity_history_z00000001_2026q1.csv"), None, &ImportTarget::Existing(all.portfolio_id)).expect("single account");
+    assert_eq!((single.imported, single.duplicates), (1, 8));
+    let s = port(&engine, &rt, all.portfolio_id);
+    let pos = positions(&s);
+    let get = |k: &str| pos.iter().find(|p| p.0 == k).cloned().unwrap_or_else(|| panic!("{k} in {pos:?}"));
+    // Three SCHD buys (two in one account, one in another), not five.
+    assert_eq!(get("SCHD US Equity").1, 30.0);
+    // The reverse split applied once: 100 → 5.
+    assert_eq!(get("ABCD US Equity").1, 5.0);
+    assert_eq!(get("VTI US Equity").1, 15.0);
+    engine.shutdown();
+}
+
+#[test]
 fn schwab_import_flags_transfers_without_cost() {
     let rt = tokio::runtime::Builder::new_multi_thread().enable_all().build().expect("rt");
     let engine = engine();

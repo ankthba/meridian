@@ -123,7 +123,8 @@ fn fidelity_all_accounts_2026_layout() {
     let schd = find(&p, K::Buy, "SCHD");
     assert_eq!(schd.len(), 3);
     assert!(schd.iter().all(|t| close(t.quantity, 10.0) && close(t.price, 27.5)));
-    // Two identical rows in one account and one in another: all distinct.
+    // Two identical rows in one account and one in another: all distinct
+    // (the account is not hashed; the occurrence number tells them apart).
     let fps: std::collections::HashSet<&str> = schd.iter().map(|t| t.fingerprint.as_str()).collect();
     assert_eq!(fps.len(), 3);
     assert_eq!(schd.iter().filter(|t| t.account.as_deref() == Some("Z00000001")).count(), 2);
@@ -135,6 +136,29 @@ fn fidelity_all_accounts_2026_layout() {
     let acat = find(&p, K::TransferIn, "VTI")[0];
     assert!(close(acat.quantity, 15.0) && acat.price.is_none() && acat.cost_basis.is_none());
     assert_eq!((count(&p, K::Deposit), count(&p, K::Withdrawal), count(&p, K::Other)), (1, 1, 1));
+}
+
+#[test]
+fn fidelity_single_account_file_overlaps_the_all_accounts_file() {
+    // One account's history downloaded on its own has no account column;
+    // the all-accounts download names the account. The same rows must
+    // fingerprint the same, or importing both doubles them.
+    let single = read("fidelity_history_z00000001_2026q1.csv");
+    let all = read("fidelity_all_accounts_2026q1.csv");
+    assert_eq!(single.format, Format::Fidelity);
+    assert!(single.warnings.is_empty(), "{:#?}", single.warnings);
+    assert_eq!(single.transactions.len(), 9);
+    assert!(single.transactions.iter().all(|t| t.account.is_none()));
+    // The account stays on the rows for display.
+    assert!(all.transactions.iter().all(|t| t.account.is_some()));
+    let in_all: std::collections::HashSet<&str> = all.transactions.iter().map(|t| t.fingerprint.as_str()).collect();
+    let (shared, new): (Vec<&ImportedTx>, Vec<&ImportedTx>) = single.transactions.iter().partition(|t| in_all.contains(t.fingerprint.as_str()));
+    // Everything but the December deposit, which is older than the
+    // all-accounts file: both SCHD buys, the netted reverse split, the
+    // journal pair, the ACAT, the ABCD buy and the cash in lieu.
+    assert_eq!(shared.len(), 8, "{new:#?}");
+    assert_eq!(new.len(), 1);
+    assert_eq!((new[0].kind, new[0].trade_date), (K::Deposit, d(2025, 12, 15)));
 }
 
 #[test]

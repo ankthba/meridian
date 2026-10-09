@@ -95,7 +95,8 @@ pub struct ImportedTx {
     pub description: String,
     /// The broker's action or code text (`Buy`, `CDIV`, `YOU BOUGHT …`).
     pub action: String,
-    /// Account name or number when the export has one.
+    /// Account name or number when the export has one. Shown to the user;
+    /// not part of the fingerprint (see `fingerprint.rs`).
     pub account: Option<String>,
     /// Stable identifier for de-duplication on re-import.
     pub fingerprint: String,
@@ -388,7 +389,6 @@ impl Output {
         let date = if row.snapshot { String::new() } else { row.trade_date.format("%Y-%m-%d").to_string() };
         let fingerprint = self.fp.next(&Parts {
             family: family.id(),
-            account: row.account.as_deref().unwrap_or(""),
             date: &date,
             action: &row.action,
             symbol: row.symbol.as_deref().unwrap_or(""),

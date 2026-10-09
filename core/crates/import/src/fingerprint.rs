@@ -5,11 +5,19 @@
 //! <http://www.isthe.com/chongo/tech/comp/fnv/index.html>) rather than
 //! `std`'s hasher, whose algorithm is unspecified. The input is the
 //! format family plus the row's own values (date, broker action text,
-//! symbol, quantity, price, amount, account), not Meridian's
-//! classification, so improving a code table later does not re-import old
-//! rows. Identical rows in one file (two equal buys on one day) are told
-//! apart by their occurrence number, which is stable because broker
-//! exports cover whole days.
+//! symbol, quantity, price, amount), not Meridian's classification, so
+//! improving a code table later does not re-import old rows. Identical rows
+//! in one file (two equal buys on one day) are told apart by their
+//! occurrence number, which is stable because broker exports cover whole
+//! days.
+//!
+//! The account is not an input: the same trade appears with no account in
+//! a single-account download and with an account name or number in an
+//! all-accounts one (and Fidelity moved from names to numbers in 2025), so
+//! including it made overlapping downloads import twice. The cost is that
+//! two single-account files with an identical trade on the same day
+//! de-duplicate against each other; the import result counts it among the
+//! duplicates.
 
 use std::collections::HashMap;
 
@@ -41,7 +49,6 @@ fn num(v: Option<f64>) -> String {
 #[derive(Debug, Clone, Default)]
 pub struct Parts<'a> {
     pub family: &'a str,
-    pub account: &'a str,
     pub date: &'a str,
     pub action: &'a str,
     pub symbol: &'a str,
@@ -68,7 +75,9 @@ impl Fingerprinter {
         let action = p.action.split_whitespace().collect::<Vec<_>>().join(" ").to_lowercase();
         let canonical = [
             p.family,
-            p.account.trim(),
+            // Formerly the account. Kept as an empty field so rows that never
+            // had an account keep the fingerprints they had in 1.1.
+            "",
             p.date,
             action.as_str(),
             p.symbol,
