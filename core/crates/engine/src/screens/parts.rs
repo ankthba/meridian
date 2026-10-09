@@ -18,13 +18,17 @@ use tokio::sync::watch;
 pub(crate) const FIRST_PAINT: Duration = Duration::from_millis(250);
 /// Refresh interval while any section is still loading.
 pub(crate) const FILL_IN_MS: u32 = 1_000;
+/// Input sets a part tracks at once (e.g. two CALENDAR panes with different
+/// choices), so panes don't keep replacing each other's slow fetch.
+const MAX_INPUTS: usize = 4;
 
 /// One slower screen section, loading in the background. Panes showing the
 /// screen share one fetch per set of inputs, and while a refresh fetches
 /// again the last result keeps showing, so sections don't blink out when a
 /// cache expires.
 pub(crate) struct Part<T> {
-    inner: Mutex<Option<PartState<T>>>,
+    /// Most recently used last.
+    inner: Mutex<Vec<PartState<T>>>,
 }
 
 struct PartState<T> {
@@ -38,7 +42,7 @@ struct PartState<T> {
 
 impl<T> Default for Part<T> {
     fn default() -> Self {
-        Self { inner: Mutex::new(None) }
+        Self { inner: Mutex::new(Vec::new()) }
     }
 }
 
@@ -52,23 +56,30 @@ impl<T: Send + Sync + 'static> Part<T> {
     {
         let mut rx = {
             let mut g = self.inner.lock();
+            let found = g.iter().position(|p| p.sig == sig).map(|i| g.remove(i));
             // Still running, or finished with a result nobody has seen yet.
-            let reuse = g.as_ref().filter(|p| {
+            let reuse = found.as_ref().is_some_and(|p| {
                 let done = p.rx.borrow().is_some();
-                p.sig == sig && ((!done && p.rx.has_changed().is_ok()) || (done && !p.delivered))
+                (!done && p.rx.has_changed().is_ok()) || (done && !p.delivered)
             });
-            if let Some(p) = reuse {
-                p.rx.clone()
-            } else {
-                let last = g.as_ref().filter(|p| p.sig == sig).and_then(|p| p.rx.borrow().clone().or_else(|| p.last.clone()));
-                let (tx, rx) = watch::channel(None);
-                let fut = fetch();
-                rt.spawn(async move {
-                    let _ = tx.send(Some(Arc::new(fut.await)));
-                });
-                *g = Some(PartState { sig: sig.to_owned(), rx: rx.clone(), delivered: false, last });
-                rx
+            let state = match found {
+                Some(p) if reuse => p,
+                found => {
+                    let last = found.and_then(|p| p.rx.borrow().clone().or(p.last));
+                    let (tx, rx) = watch::channel(None);
+                    let fut = fetch();
+                    rt.spawn(async move {
+                        let _ = tx.send(Some(Arc::new(fut.await)));
+                    });
+                    PartState { sig: sig.to_owned(), rx, delivered: false, last }
+                }
+            };
+            let rx = state.rx.clone();
+            g.push(state);
+            if g.len() > MAX_INPUTS {
+                g.remove(0);
             }
+            rx
         };
         let got: Option<Arc<T>> = if wait_all {
             rx.wait_for(Option::is_some).await.ok().and_then(|v| v.clone())
@@ -79,7 +90,7 @@ impl<T: Send + Sync + 'static> Part<T> {
             }
         };
         let mut g = self.inner.lock();
-        let state = g.as_mut().filter(|p| p.sig == sig);
+        let state = g.iter_mut().find(|p| p.sig == sig);
         match got {
             Some(v) => {
                 if let Some(p) = state {
@@ -105,6 +116,19 @@ mod tests {
             tokio::time::sleep(Duration::from_millis(ms)).await;
             v
         }
+    }
+
+    #[tokio::test(start_paused = true)]
+    async fn two_input_sets_keep_their_own_fetch() {
+        let (part, n, rt) = (Part::<u32>::default(), Arc::new(AtomicUsize::new(0)), tokio::runtime::Handle::current());
+        for _ in 0..3 {
+            assert_eq!(part.get(&rt, false, "a", || slow(&n, 2_000, 1)).await, None);
+            assert_eq!(part.get(&rt, false, "b", || slow(&n, 2_000, 2)).await, None);
+        }
+        assert_eq!(n.load(Ordering::SeqCst), 2, "alternating panes don't restart each other's fetch");
+        tokio::time::sleep(Duration::from_millis(2_000)).await;
+        assert_eq!(part.get(&rt, false, "a", || slow(&n, 9, 9)).await.as_deref(), Some(&1));
+        assert_eq!(part.get(&rt, false, "b", || slow(&n, 9, 9)).await.as_deref(), Some(&2));
     }
 
     #[tokio::test(start_paused = true)]
