@@ -184,6 +184,7 @@ struct KeyboardPane: View {
 
 struct AboutPane: View {
     @State private var attributions: [String] = []
+    @State private var showingAcknowledgements = false
 
     private var version: String {
         let v = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "?"
@@ -213,15 +214,72 @@ struct AboutPane: View {
                 Text("Data credits")
             }
             Section {
+                LabeledContent("Open-source software") {
+                    Button("Acknowledgements") { showingAcknowledgements = true }
+                }
+            } footer: {
+                Text("Copyright and license notices for the Rust crates and C and C++ libraries built into Meridian.")
+            }
+            Section {
                 Text("For personal use. Meridian doesn't redistribute market data and isn't affiliated with any market-data or terminal vendor.")
                     .foregroundStyle(.secondary)
             }
         }
         .formStyle(.grouped)
+        .sheet(isPresented: $showingAcknowledgements) { AcknowledgementsSheet() }
         .onAppear {
             let all = (try? AppModel.shared.core?.dataSources()) ?? []
             var seen = Set<String>()
             attributions = all.compactMap(\.attribution).filter { seen.insert($0).inserted }
         }
     }
+}
+
+/// The bundled third-party notices (Resources/ThirdPartyNotices.txt, written
+/// by scripts/third-party-notices.sh), read-only and selectable.
+struct AcknowledgementsSheet: View {
+    @Environment(\.dismiss) private var dismiss
+
+    private static let notices: String? = Bundle.main.url(forResource: "ThirdPartyNotices", withExtension: "txt")
+        .flatMap { try? String(contentsOf: $0, encoding: .utf8) }
+
+    var body: some View {
+        VStack(spacing: 0) {
+            if let notices = Self.notices {
+                NoticesTextView(text: notices)
+            } else {
+                Text("NOT AVAILABLE — ThirdPartyNotices.txt is missing from the app bundle")
+                    .foregroundStyle(.secondary)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            }
+            Divider()
+            HStack {
+                Spacer()
+                Button("Done") { dismiss() }.keyboardShortcut(.defaultAction)
+            }
+            .padding(12)
+        }
+        .frame(width: 760, height: 560)
+        .onExitCommand { dismiss() }
+    }
+}
+
+/// A scrollable, selectable, non-editable text view. AppKit's text system
+/// handles the ~230 KB notices file far faster than a SwiftUI Text.
+private struct NoticesTextView: NSViewRepresentable {
+    let text: String
+
+    func makeNSView(context: Context) -> NSScrollView {
+        let scroll = NSTextView.scrollableTextView()
+        guard let view = scroll.documentView as? NSTextView else { return scroll }
+        view.isEditable = false
+        view.isSelectable = true
+        view.isRichText = false
+        view.font = .monospacedSystemFont(ofSize: NSFont.smallSystemFontSize, weight: .regular)
+        view.textContainerInset = NSSize(width: 12, height: 12)
+        view.string = text
+        return scroll
+    }
+
+    func updateNSView(_ scroll: NSScrollView, context: Context) {}
 }
