@@ -11,7 +11,12 @@ import Security
 nonisolated enum Keychain {
     static func service(_ provider: String) -> String { "meridian.provider.\(provider)" }
 
+    /// `MERIDIAN_SECRETS=none` (tests and first-run checks): behave as if no
+    /// key were stored, and never touch the keychain.
+    static let disabled = ProcessInfo.processInfo.environment["MERIDIAN_SECRETS"] == "none"
+
     static func read(provider: String, field: String) -> String? {
+        if disabled { return nil }
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrService as String: service(provider),
@@ -26,6 +31,7 @@ nonisolated enum Keychain {
 
     @discardableResult
     static func write(provider: String, field: String, value: String) -> Bool {
+        if disabled { return false }
         let base: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrService as String: service(provider),
@@ -44,6 +50,7 @@ nonisolated enum Keychain {
 
     @discardableResult
     static func delete(provider: String, field: String) -> Bool {
+        if disabled { return true }
         let q: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrService as String: service(provider),
