@@ -2,7 +2,7 @@
 
 Native macOS financial terminal for personal use. SwiftUI + AppKit UI, Rust core via UniFFI, DuckDB / SQLite / Parquet storage, Anthropic API for the ASK analyst. Read `ARCHITECTURE.md` before changing module boundaries, data contracts, threading, or the FFI.
 
-**Current phase:** 1.1.0 (2026-10-07): original "Instrument" redesign (user decision, 2026-10-07: the 1.0 look read as a copy of another terminal) plus Today home, broker CSV import, Calendar, Filings inbox, Compare and plain-language commands. 1.0.0 released 2026-10-07; phases 1–9 implemented. The user asked for the whole build without per-phase check-ins, so defaults were taken where decisions were open: free data tier only, `W` and Launchpad Monitor both, MENU = ⌘[ / End / Delete on an empty line, PANEL = ⌃Tab, layouts from documented conventions (no references exist). **The app runs on real data only** (user decision, 2026-10-05); see Hard rules. Remaining work is in Known gaps.
+**Current phase:** 1.2.0 (2026-10-09), the public release: notarized Developer ID build and themed DMG, update check, menus, crash-report flow, first-run checklist, VoiceOver, third-party notices, and the fixes from a full review of 1.1. 1.1.0 (2026-10-07) brought the original "Instrument" design (user decision: the 1.0 look read as a copy of another terminal) plus Today, broker CSV import, Calendar, Filings, Compare and plain-language commands. Phases 1–9 implemented. The user asked for the whole build without per-phase check-ins, so defaults were taken where decisions were open: free data tier only, `W` and Launchpad Monitor both, MENU = ⌘[ / End / Delete on an empty line, PANEL = ⌃Tab, layouts from documented conventions (no references exist). **The app runs on real data only** (user decision, 2026-10-05); see Hard rules. Remaining work is in Known gaps.
 
 Key docs: `docs/DATA_PROVIDERS.md` (provider comparison and budget stacks), `docs/research/*` (cited research), `docs/FUNCTIONS.md` (mnemonic registry and status), `reference/README.md` (reference inventory).
 
@@ -63,7 +63,8 @@ Key docs: `docs/DATA_PROVIDERS.md` (provider comparison and budget stacks), `doc
 **Swift (`app/`)**
 - Swift 6 language mode, strict concurrency. The generated UniFFI bindings live in their own SwiftPM target with `nonisolated` default isolation.
 - Keychain I/O lives in Swift (`Bridge/Keychain.swift`, data protection keychain). Rust pulls keys via the `SecretSource` foreign trait.
-- Sign with a stable Apple Development identity, never ad-hoc. Ad-hoc signing re-prompts for keychain access on every build. No App Sandbox; Hardened Runtime on.
+- Every configuration signs with the **Developer ID Application** identity (team H7T2D2GL7U), never ad-hoc and never mixed: the login keychain trusts keys by the designated requirement, so a build signed differently from the one that saved a key makes macOS ask for the login password (the user hit this on 2026-10-09). Release adds a secure timestamp and no get-task-allow (notarization). No App Sandbox; Hardened Runtime on. `build-app.sh` unregisters build products from LaunchServices so only the installed copy opens.
+- Test runs that launch the app in live mode must not read the user's keychain: use `MERIDIAN_SECRETS=none` (behaves as if no keys exist) unless the run is meant to use their keys.
 - Views contain layout only. Formatting goes through `Design/TerminalNumberFormatter` using display hints from Rust.
 - Only `Bridge/` imports the generated UniFFI module.
 - Streaming grids use `Render/TerminalGridView`, not `List`/`Table`/`NSTableView`.
@@ -109,11 +110,17 @@ scripts/check-names.sh
 # non-permissive license. build-app.sh regenerates it; commit it after dependency
 # changes, CI runs --check
 scripts/third-party-notices.sh [--check]
+
+# Release: build, notarize, staple; themed DMG + zip + SHA256SUMS in dist/;
+# --publish creates the GitHub release from docs/release-notes/<version>.md.
+# Needs the notarytool keychain profile "meridian-notary" (the user creates it).
+scripts/release.sh [--publish]
+swift scripts/make-dmg-background.swift <version> <out-dir>   # DMG window art
 ```
 
 ## Environment (verified 2026-10-05)
 
-macOS 27.0.1 · Xcode 27.0 (Swift 6.4) · rustc 1.93.0 (CI pins the same) · Apple M5 Pro · xcodegen (Homebrew). `uniffi-bindgen-swift` is built from the workspace by `scripts/build-core.sh`. Signing: Apple Development, team H7T2D2GL7U. Keychain items live in the login keychain (the data-protection keychain needs a provisioning profile), service `meridian.provider.<name>`.
+macOS 27.0.1 · Xcode 27.0 (Swift 6.4) · rustc 1.93.0 (CI pins the same) · Apple M5 Pro · xcodegen (Homebrew). `uniffi-bindgen-swift` is built from the workspace by `scripts/build-core.sh`. Signing: Developer ID Application, team H7T2D2GL7U (all configurations). Keychain items live in the login keychain (the data-protection keychain needs a provisioning profile), service `meridian.provider.<name>`.
 
 ## Known gaps
 
@@ -123,7 +130,7 @@ macOS 27.0.1 · Xcode 27.0 (Swift 6.4) · rustc 1.93.0 (CI pins the same) · App
 - FA per-share values before a stock split are as reported (a notice says so). CORP/MUNI/MTGE bond pricing is not obtainable on the free tier.
 - Launchpad components are tiled in one window; no floating windows or multi-monitor persistence.
 - Crash reporting is the Rust panic hook (writes reports to the data directory); no MetricKit.
-- The release app is signed with an Apple Development certificate but not notarized (needs a paid Developer ID).
+- VoiceOver support is covered by unit tests of the accessibility tree; nobody has listened to it with VoiceOver yet.
 - The 2,000-symbol streaming budget is measured with the synthetic load generator; real data at that scale needs a consolidated (SIP) plan. 1.1 re-runs (`bench/results/app-2026-10-07-v1.1-run*.json`) were taken with another app using most of a core: 8–14% total, with the grid's share over the feed-only baseline unchanged from 1.0 (2–6 points). Re-measure on an idle machine.
 - **FRED's release calendar is sometimes slow:** `releases/dates` answered in 0.27 s at one point and 13–16 s twenty minutes later (2026-10-07). TODAY shows "Coming up: loading…" and fills in; CALENDAR shows earnings and dividends at once with "Macro: loading…" and fills macro releases in (each kind loads on its own, the same `Part` mechanism as TODAY). CALENDAR's progressive load is covered by a stand-in-provider test, not yet run against a slow FRED. Each part follows one set of inputs, so two panes showing CALENDAR with different settings start a fresh fetch on each refresh while a source is slow.
 - **Run live in 1.1 (2026-10-07):** TODAY's progressive load, the Finnhub earnings calendar and the Alpaca dividend calendar (~0.1 s each), FRED releases, the 10-year yield, company news. Not run live: the import sheet on a real broker export, and the filings inbox with an SEC contact set (the live checks used an in-memory store without one).

@@ -1,5 +1,34 @@
 # Changelog
 
+## 1.2.0 — 2026-10-09
+
+Ready for everyone: notarized, accessible, and fixes from a full review of 1.1.
+
+### Install and updates
+- Signed with a Developer ID and notarized by Apple: no more Open Anyway. Downloads as a DMG with a window in Meridian's own look, or a zip.
+- Checks GitHub for a new release at launch and daily, and says so in the top bar (Meridian → Check for Updates…; Settings → General turns it off).
+- One signing identity for every build, so the keychain doesn't ask for your password again after an update (click Always Allow once per key if it asks after moving from 1.1).
+
+### First run
+- Today starts with a **Get started** list of the sources to connect and what each adds, with a button that opens Settings, instead of one NOT AVAILABLE line per section. The watchlist says which key its missing prices need.
+- Notification permission is asked when you first set up alerts, not at launch.
+
+### App
+- Menus: File → Import Portfolio…, a Terminal menu for Today, Calendar, Filings and Portfolio, and a Help menu with the guide, release notes, privacy, Report an Issue… (version filled in) and crash reports. After a crash, the top bar offers to report it.
+- VoiceOver: panes, tables (row by row with column names), charts, screen blocks and the command bar are labeled; tick flashes respect Reduce Motion.
+- Settings → About → Acknowledgements lists the open-source software inside the app and its licenses.
+- Calendar shows earnings and dividends while a slow macro calendar loads.
+
+### Fixes
+- Portfolio repeated an added transaction on later clicks, reloads, imports and relaunches (and could delete it in the same step); watchlist and alert actions had the same problem. Actions now run once.
+- Return in the command bar ran a look-alike ticker for a function with arguments (`GP 5Y` charted GreenPower Motor). It now does what you typed.
+- Imports with mapped columns couldn't be saved; changing the mapping after the preview imported something you hadn't seen.
+- Today's change left out positions sold out today.
+- ASK sent the same question again on every launch and reload.
+- `ltc`, `atom`, `link`, `sol` and `bch` open the listed stocks when they exist (the coins are `ltcusd` etc.).
+- Two calendar panes with different settings no longer restart each other's slow requests.
+- Tests and snapshots no longer reach the network from Settings.
+
 ## 1.1.0 — 2026-10-07
 
 A new look of its own, and features built around your own portfolio.

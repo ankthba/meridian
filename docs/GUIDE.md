@@ -4,7 +4,11 @@ Meridian is a market terminal for macOS that you drive by typing. This guide cov
 
 ## Install
 
-**Download:** get `Meridian-1.1.0.zip` from the [latest release](https://github.com/ankthba/meridian/releases/latest), unzip it, and move `Meridian.app` to Applications. The app is signed but not notarized, so macOS blocks the first launch. Open it once, then go to **System Settings → Privacy & Security**, find the message about Meridian and click **Open Anyway**. You only have to do this once. (Alternatively, in Terminal: `xattr -dr com.apple.quarantine /Applications/Meridian.app`.)
+**Download:** get `Meridian-1.2.0.dmg` from the [latest release](https://github.com/ankthba/meridian/releases/latest), open it, and drag Meridian onto Applications. It's signed with a Developer ID and notarized by Apple, so it opens like any other app. (A zip of the same app is there too.)
+
+**Updates:** Meridian asks GitHub for the latest release at launch and once a day, and shows "Meridian 1.x available" in the top bar when there is one. Meridian → Check for Updates… checks now; Settings → General turns automatic checks off. To update, replace the app; keys, portfolio and settings stay.
+
+**Uninstall:** quit Meridian and delete it. Its data is in `~/Library/Application Support/Meridian`; its keys are the Keychain Access items named `Meridian …`.
 
 **Build from source:** see [Building](../README.md#building) in the README.
 
@@ -12,7 +16,7 @@ Meridian needs macOS 15 or later on Apple silicon.
 
 ## Connect data sources
 
-Meridian shows real data only. A screen whose source isn't connected says `NOT AVAILABLE` and names what to add; it never fills in. On first launch Settings opens on **Data Sources**. Each source has a page with what it unlocks, a link to get a key, and **Save and Test**, which stores the key in your macOS Keychain, connects it immediately (no restart), and makes one real request so you can see it works.
+Meridian shows real data only. A screen whose source isn't connected says `NOT AVAILABLE` and names what to add; it never fills in. On first launch Settings opens on **Data Sources**, and Today shows a **Get started** list of the sources still to connect and what each adds. Each source has a page with what it unlocks, a link to get a key, and **Save and Test**, which stores the key in your macOS Keychain, connects it immediately (no restart), and makes one real request so you can see it works.
 
 | Source | What you need | How to get it | Unlocks |
 |---|---|---|---|
@@ -164,6 +168,16 @@ Mac F-keys send media keys unless you hold fn or turn on **Use F1, F2, etc. keys
 
 Options data on Alpaca's free plan is its "indicative" feed: derived quotes, with trades delayed 15 minutes. Implied volatility and Greeks are computed by Meridian from the bid/ask midpoint, with the 3-month Treasury yield as the rate.
 
+## Menus
+
+- **File → Import Portfolio…** (⇧⌘I): the broker import.
+- **Terminal:** Today, Calendar, Filings and Portfolio in the focused pane; Launchpad (⇧⌘L); the keyboard reference (⌘/).
+- **Help:** this guide, the function directory, release notes, privacy, **Report an Issue…** (a GitHub bug report with your Meridian and macOS versions filled in) and **Show Crash Reports**.
+
+## Accessibility
+
+VoiceOver reads every pane: each is a group named for its screen ("Pane 1, Today"), tables are real tables (rows read with their column names, VO-Space opens a row like a click), charts have a summary of the range, change, high and low, and the command bar announces the highlighted suggestion. With Reduce Motion on, prices stop flashing when they change.
+
 ## ASK
 
 ASK answers questions about markets and securities from the terminal's own data. It calls tools (quotes, bars, financials, filings, news, economic series, a read-only SQL query over the local database) and lists its sources. Every number in an answer is checked against the data it retrieved; numbers it can't trace are highlighted. Sources whose terms don't allow AI use are never sent to the model. ASK needs an Anthropic API key.
@@ -184,4 +198,5 @@ ASK answers questions about markets and securities from the terminal's own data.
 | Settings says **Can't connect** | The message under **Connection** is the provider's own error, e.g. a rejected key. Paste the key again and press Save and Test. |
 | Stock prices differ from your broker | The free Alpaca feed is IEX only. Spreads can look wide outside market hours. |
 | F-keys change volume or brightness | Hold fn, change the Keyboard setting above, or use ⌥1–⌥0. |
-| "Meridian can't be opened" on first launch | System Settings → Privacy & Security → **Open Anyway** (once). |
+| macOS asks for your login password so Meridian can use a key | Click **Always Allow**, not Allow, once per key. It happens when a key was saved by a differently signed copy of Meridian (e.g. a build you made yourself). |
+| Meridian quit unexpectedly | The top bar offers to report it on the next launch; Help → Show Crash Reports shows the reports in Finder. |

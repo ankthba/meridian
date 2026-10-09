@@ -344,6 +344,10 @@ Swift display link (per window, ≤ 120 Hz) ── subscription.poll(since_seq) 
 
 Function screens are built in Rust (`engine/src/screens/*`) as a generic `Screen`: a title, numbered menu (`Action`s), source badges, a status (`Ok` / `NotAvailable{reason}` / `Error`), and blocks — `Fields`, `Table` (columns may bind to a live hot-row field), `Text`, `Inputs` (editable underlined cells or menus; changing one re-requests the screen with that argument), `Notice`, `Chart` (spec; Swift fetches `chart_data`), `Xy` (small embedded charts; bar charts may carry category labels shown instead of numeric x ticks), `Heat`, and `Diff`. Swift renders every function with one renderer (`Render/ScreenView.swift`, `TerminalGridView`), so screens get consistent look and keyboard behavior and all logic stays testable in Rust. Swift-native views exist only where interaction demands it: the price chart, ASK, and Launchpad.
 
+Screens that change data (PORT add/delete, W add/remove/new, ALRT create/delete/toggle) take the change as arguments. The arguments a screen echoes back leave those out (`is_one_shot` in `screens/mod.rs`), and the app adopts the echoed arguments as the pane's action, so a reload, MENU back, a later click or the saved workspace never repeats a change.
+
+When a source needs setup (a key, the EDGAR contact), `Provider::setup_needed` says so up front; the router answers whether every source for a capability needs setup (`setup_needed`) and lists them (`needing_setup`). TODAY turns that into one "Get started" checklist and leaves out the per-section lines it covers; W notes which symbols lack prices for which missing key.
+
 Screens with slow sources load progressively through one shared mechanism (`screens/parts.rs`): TODAY's slower sections (10-year yield, calendar, filings, news) and CALENDAR's three kinds (earnings, dividends, macro releases) are each a `Part`, a background fetch on the engine runtime shared by every pane asking with the same inputs. The screen waits up to 250 ms, shows "…: loading…" for what's missing and sets `refresh_ms` to 1 s until everything has filled in; on later refreshes the last result for the same inputs stays up while the new fetch runs. With a fixed clock (tests, snapshots) screens wait for every part, so output is deterministic.
 
 ## 8. Threading model
@@ -407,8 +411,8 @@ Key routing is an `NSEvent` local monitor in `Shell` that translates physical ke
 - API keys live in the macOS **login keychain** as generic-password items (service `meridian.provider.<id>`, account = field). The data-protection keychain was the first plan, but its access group requires a provisioning profile; the login keychain does not, and with stable signing its ACL survives rebuilds. Keys are never stored in SQLite, config files, logs, environment variables, or the repo.
 - **Swift owns Keychain I/O** (`Bridge/Keychain.swift`, `SecItem*`). Rust asks for a key through the `SecretSource` foreign trait when the composition root builds providers (`ffi/src/providers.rs`).
 - In Rust memory, keys are held as `secrecy::SecretString` (zeroized on drop, redacted `Debug`).
-- **Signing:** the app is signed with a stable Apple Development identity from Phase 1. Ad-hoc signing changes the designated requirement on every build, which would re-prompt for keychain access on every rebuild (TN3127).
-- **No App Sandbox** for this personal build (it is only required for the Mac App Store). On macOS 27 a sandbox container would block CLI inspection of the DuckDB/Parquet files. Hardened Runtime stays on.
+- **Signing:** every build is signed with the same Developer ID Application identity (Apple Development until 1.1). Keychain items trust an app by its designated requirement; a build signed with a different identity, or ad-hoc, makes macOS ask for the login password to read each key (TN3127). Releases are notarized and stapled (`scripts/release.sh`).
+- **No App Sandbox** (it is only required for the Mac App Store). On macOS 27 a sandbox container would block CLI inspection of the DuckDB/Parquet files. Hardened Runtime stays on.
 - `scripts/` and CI contain no keys. Live-provider integration tests are opt-in and run inside the app's test host, which has the keychain entitlement.
 
 ---
