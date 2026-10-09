@@ -6,6 +6,7 @@
 //! a positive quantity is a buy and a negative one a sell. Without a date
 //! column, the file is a positions snapshot.
 
+use super::positions::squash;
 use super::{Columns, norm, num, opt_text, positions, signed};
 use crate::csv::Record;
 use crate::value::{self, DateOrder};
@@ -57,7 +58,7 @@ pub(crate) fn classify(action: &str, quantity: Option<f64>, amount: Option<f64>)
 
 fn synonyms(field: &str) -> &'static [&'static str] {
     match field {
-        "trade_date" => &["trade date", "date", "activity date", "run date", "transaction date"],
+        "trade_date" => &["trade date", "date", "activity date", "run date", "transaction date", "date/time"],
         "settle_date" => &["settle date", "settlement date"],
         "symbol" => &["symbol", "ticker", "instrument"],
         "action" => &["action", "transaction type", "type", "trans code", "activity"],
@@ -74,8 +75,10 @@ fn synonyms(field: &str) -> &'static [&'static str] {
 }
 
 pub(crate) fn suggest(header_line: u32, headers: &[String]) -> ColumnMapping {
-    let names: Vec<String> = headers.iter().map(|h| norm(h)).collect();
-    let find = |field: &str| synonyms(field).iter().find_map(|s| names.iter().position(|n| n == s));
+    // Compared without spaces and punctuation, so `TransactionDate` finds
+    // "transaction date".
+    let names: Vec<String> = headers.iter().map(|h| squash(h)).collect();
+    let find = |field: &str| synonyms(field).iter().find_map(|s| names.iter().position(|n| *n == squash(s)));
     ColumnMapping {
         header_line,
         trade_date: find("trade_date"),

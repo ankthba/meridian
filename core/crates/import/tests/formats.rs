@@ -371,6 +371,41 @@ fn detection_and_empty_files() {
 }
 
 #[test]
+fn histories_with_unspaced_headers_are_not_read_as_positions() {
+    // E*TRADE-style headers have no space in the date and type columns.
+    // Read as holdings, Bought 10 / Sold 10 / Bought 5 would be 15 shares.
+    let etrade = "TransactionDate,TransactionType,SecurityType,Symbol,Quantity,Amount,Price,Commission,Description\n\
+                  10/01/26,Bought,EQ,AAPL,10,-1800.00,180.00,0.00,APPLE INC\n\
+                  10/02/26,Sold,EQ,AAPL,-10,1900.00,190.00,0.00,APPLE INC\n\
+                  10/03/26,Bought,EQ,AAPL,5,-950.00,190.00,0.00,APPLE INC\n";
+    assert_eq!(detect(etrade).format, None);
+    let headers = match parse(etrade, None, &opts()) {
+        Err(ImportError::Unrecognized { header_line: 1, headers }) => headers,
+        other => panic!("expected Unrecognized, got {other:?}"),
+    };
+    // The mapping suggestion finds the unspaced columns, and the file reads
+    // as three trades.
+    let m = meridian_import::suggest_mapping(1, &headers);
+    assert_eq!((m.trade_date, m.action, m.symbol, m.quantity, m.amount, m.price, m.fees), (Some(0), Some(1), Some(3), Some(4), Some(5), Some(6), Some(7)));
+    let p = parse(etrade, Some(&m), &opts()).unwrap();
+    assert!(!p.snapshot);
+    assert_eq!(p.counts(), vec![(K::Buy, 2), (K::Sell, 1)]);
+    let net: f64 = p.transactions.iter().filter_map(|t| t.quantity).sum();
+    assert!((net - 5.0).abs() < 1e-9);
+    // IBKR-style: one `Date/Time` column.
+    let ibkr = "Symbol,Date/Time,Quantity,T. Price,Proceeds,Comm/Fee\nAAPL,\"2026-10-01, 09:31:00\",10,180,-1800,-1\nAAPL,\"2026-10-02, 10:00:00\",-10,190,1900,-1\n";
+    assert_eq!(detect(ibkr).format, None);
+    for header in ["Symbol,Quantity,TradeTime", "Symbol,Quantity,Activity Type", "Symbol,Quantity,Buy/Sell", "Symbol,Quantity,Txn Type"] {
+        assert_eq!(detect(&format!("{header}\nAAPL,1,x\n")).format, None, "{header}");
+    }
+    // Positions headers with `Type`, `Last Updated` or `Fractional` columns
+    // are still snapshots.
+    for header in ["Symbol,Quantity,Type", "Symbol,Quantity,Last Updated", "Symbol,Fractional Shares,Quantity"] {
+        assert_eq!(detect(&format!("{header}\nAAPL,1,x\n")).format, Some(Format::Positions), "{header}");
+    }
+}
+
+#[test]
 fn same_day_rows_keep_their_real_order() {
     // Robinhood lists newest first: a one-day file's sell (bought earlier
     // that day) comes first and must end up after the buy.
