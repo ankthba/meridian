@@ -1051,12 +1051,23 @@ impl Rows {
     /// Puts what GO would run first, keeps the best `limit`, marks the best
     /// and orders the rest for display.
     fn finish(mut self, interpreted: &ParsedCommand, input: &str, limit: usize) -> Vec<Suggestion> {
-        self.promote(interpreted, input);
+        let promoted = self.promote(interpreted, input);
+        // When the input is a definite command (a function with arguments,
+        // a security and a function) and no row stands for it, no row is
+        // best: Return then does what GO does with the text, instead of
+        // running a look-alike row ("GP 5Y" is the chart over five years on
+        // the loaded security, not the ticker GP).
+        let definite = matches!(
+            interpreted,
+            ParsedCommand::Function { .. } | ParsedCommand::Security { function: Some(_), .. } | ParsedCommand::Run(_)
+        );
         let mut rows = self.0;
         // Stable: equal scores keep the order they were found in.
         rows.sort_by(|a, b| b.score.total_cmp(&a.score));
         rows.truncate(limit);
-        if let Some(first) = rows.first_mut() {
+        if (promoted || !definite)
+            && let Some(first) = rows.first_mut()
+        {
             first.best = true;
         }
         rows.sort_by_key(|s| s.group.rank());
@@ -1064,8 +1075,9 @@ impl Rows {
     }
 
     /// Lifts the row for the interpreted command above every other row,
-    /// adding one when a resolved action has no row yet.
-    fn promote(&mut self, interpreted: &ParsedCommand, input: &str) {
+    /// adding one when a resolved action has no row yet. Returns whether
+    /// a row now stands for what GO would run.
+    fn promote(&mut self, interpreted: &ParsedCommand, input: &str) -> bool {
         let rows = &mut self.0;
         let target = match interpreted {
             ParsedCommand::Run(a) => Some(
@@ -1076,13 +1088,18 @@ impl Rows {
                         rows.len() - 1
                     }),
             ),
-            ParsedCommand::Function { function, .. } => rows.iter().position(|s| {
-                s.kind == SuggestionKind::Function
+            ParsedCommand::Function { function, args } => rows.iter().position(|s| {
+                (s.kind == SuggestionKind::Function
                     && s.display == *function
                     && matches!(
                         s.group,
                         SuggestionGroup::Commands | SuggestionGroup::Functions
-                    )
+                    ))
+                    // A command row that runs the bare function ("ask").
+                    || (args.is_empty()
+                        && s.action.as_ref().is_some_and(|a| {
+                            a.function == *function && a.args.is_empty() && a.security.is_none()
+                        }))
             }),
             ParsedCommand::Security {
                 security,
@@ -1105,6 +1122,7 @@ impl Rows {
                 .fold(f32::NEG_INFINITY, f32::max);
             rows[i].score = top + 1.0;
         }
+        target.is_some()
     }
 }
 
@@ -2105,6 +2123,21 @@ mod tests {
     }
 
     #[test]
+    fn a_mnemonic_with_arguments_is_never_a_look_alike_ticker() {
+        let mut index = plain_fixture();
+        index.add_or_update(eq("GP", "GreenPower Motor Company", 0.1));
+        index.add_or_update(eq("CF", "CF Industries", 0.1));
+        for input in ["GP 5Y", "gp 5y", "CF 10-K"] {
+            let s = run(&index, input);
+            assert!(
+                s.iter().all(|r| !r.best || r.kind == SuggestionKind::Function),
+                "{input}: {:?}",
+                s.iter().filter(|r| r.best).map(|r| (&r.title, &r.action)).collect::<Vec<_>>()
+            );
+        }
+    }
+
+    #[test]
     fn a_ticker_of_the_same_name_is_best_but_the_command_stays() {
         let index = plain_fixture();
         let s = run(&index, "earn");
@@ -2264,8 +2297,11 @@ mod tests {
             s.windows(2)
                 .all(|w| w[0].group.rank() != w[1].group.rank() || w[0].score >= w[1].score)
         );
-        if !s.is_empty() {
-            let b = best(s);
+        // At most one best row (none when nothing stands for a definite
+        // command), and it scores highest.
+        let bests: Vec<&Suggestion> = s.iter().filter(|x| x.best).collect();
+        assert!(bests.len() <= 1, "{:?}", titles(s));
+        if let Some(b) = bests.first() {
             assert!(s.iter().all(|x| x.score <= b.score));
         }
     }
