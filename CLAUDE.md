@@ -104,6 +104,11 @@ scripts/perf-app.sh
 
 # Name check
 scripts/check-names.sh
+
+# Third-party notices (app/Meridian/Resources/ThirdPartyNotices.txt); fails on a
+# non-permissive license. build-app.sh regenerates it; commit it after dependency
+# changes, CI runs --check
+scripts/third-party-notices.sh [--check]
 ```
 
 ## Environment (verified 2026-10-05)
