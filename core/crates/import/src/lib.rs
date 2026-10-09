@@ -79,6 +79,10 @@ pub struct ImportedTx {
     /// 1-based line the row starts on.
     pub line: u32,
     pub trade_date: NaiveDate,
+    /// The date the row is listed under in the file: Fidelity's Run Date
+    /// and the first date of Schwab's `MM/DD/YYYY as of MM/DD/YYYY`, where
+    /// `trade_date` is the "as of" event date; the trade date elsewhere.
+    pub listed_date: NaiveDate,
     pub settle_date: Option<NaiveDate>,
     /// Ticker as the broker wrote it, upper-cased.
     pub symbol: Option<String>,
@@ -95,7 +99,8 @@ pub struct ImportedTx {
     pub description: String,
     /// The broker's action or code text (`Buy`, `CDIV`, `YOU BOUGHT …`).
     pub action: String,
-    /// Account name or number when the export has one.
+    /// Account name or number when the export has one. Shown to the user;
+    /// not part of the fingerprint (see `fingerprint.rs`).
     pub account: Option<String>,
     /// Stable identifier for de-duplication on re-import.
     pub fingerprint: String,
@@ -164,6 +169,12 @@ pub struct ColumnMapping {
     pub default_currency: String,
     /// Dates are `DD/MM/YYYY` rather than `MM/DD/YYYY`.
     pub day_first: bool,
+    /// Numbers use a decimal comma (`1.805,00`, `180,50`) rather than a
+    /// decimal point. False by default; `suggest_mapping` proposes true for a
+    /// `;`- or tab-delimited file whose amounts end in `,` and one or two
+    /// digits. Recognized formats never use a mapping, so they are not
+    /// affected.
+    pub decimal_comma: bool,
 }
 
 /// Inputs the caller supplies (the crate has no clock).
@@ -283,29 +294,49 @@ pub fn parse(text: &str, mapping: Option<&ColumnMapping>, opts: &ImportOptions) 
 /// the file was re-sorted oldest first); that keeps same-day rows in the
 /// order they happened. Other files keep their own same-day order.
 fn chronological(txs: &mut [ImportedTx], format: Format) {
-    let newest_first = matches!(format, Format::Robinhood | Format::Fidelity | Format::Schwab);
-    if newest_first
-        && let (Some(f), Some(l)) = (txs.first(), txs.last())
-        && f.trade_date >= l.trade_date
-    {
+    if matches!(format, Format::Robinhood | Format::Fidelity | Format::Schwab) && listed_newest_first(txs) {
         txs.reverse();
     }
     txs.sort_by_key(|t| t.trade_date);
 }
 
+/// Whether the rows run newest first. Judged by the date each row is listed
+/// under, not its trade date: an "as of" trade date can be weeks older than
+/// its neighbours (a Schwab row `10/08 as of 09/30` at the top of a file),
+/// which made a short newest-first file look oldest first. Adjacent rows
+/// vote; a tie (a file of one day) counts as newest first, the brokers'
+/// own order.
+fn listed_newest_first(txs: &[ImportedTx]) -> bool {
+    let (mut down, mut up) = (0_usize, 0_usize);
+    for w in txs.windows(2) {
+        match w[0].listed_date.cmp(&w[1].listed_date) {
+            std::cmp::Ordering::Greater => down += 1,
+            std::cmp::Ordering::Less => up += 1,
+            std::cmp::Ordering::Equal => {}
+        }
+    }
+    down >= up
+}
+
 /// Merges split rows for the same account, symbol and date into one net
 /// change, so a reverse split's "remove old shares" and "add new shares"
-/// legs never pass through an empty position.
+/// legs never pass through an empty position. A merged row's fingerprint
+/// is derived from all its legs' fingerprints in sorted order, so two
+/// overlapping files that list the legs in a different order still agree
+/// (otherwise the netted split would import twice: 100 → 5 → 0).
 fn net_splits(txs: &mut Vec<ImportedTx>) {
     let mut out: Vec<ImportedTx> = Vec::with_capacity(txs.len());
+    // Leg fingerprints of each merged row, by its index in `out`.
+    let mut legs: std::collections::BTreeMap<usize, Vec<String>> = std::collections::BTreeMap::new();
     for t in txs.drain(..) {
         if t.kind == TransactionKind::Split
-            && let Some(prev) = out
-                .iter_mut()
+            && let Some(i) = (0..out.len())
                 .rev()
-                .take_while(|p| p.trade_date == t.trade_date)
-                .find(|p| p.kind == TransactionKind::Split && p.symbol == t.symbol && p.account == t.account)
+                .take_while(|&i| out[i].trade_date == t.trade_date)
+                .find(|&i| out[i].kind == TransactionKind::Split && out[i].symbol == t.symbol && out[i].account == t.account)
         {
+            let prev = &mut out[i];
+            legs.entry(i).or_insert_with(|| vec![prev.fingerprint.clone()]).push(t.fingerprint);
             prev.quantity = Some(prev.quantity.unwrap_or(0.0) + t.quantity.unwrap_or(0.0));
             if !t.description.is_empty() && t.description != prev.description {
                 prev.description = format!("{} / {}", prev.description, t.description);
@@ -314,14 +345,22 @@ fn net_splits(txs: &mut Vec<ImportedTx>) {
         }
         out.push(t);
     }
+    for (i, fps) in legs {
+        out[i].fingerprint = fingerprint::combine(&fps);
+    }
     *txs = out;
 }
 
-/// A starting mapping for the column-mapping UI, chosen by header names.
-/// The user confirms or changes it; nothing is imported from a guess.
+/// A starting mapping for the column-mapping UI, chosen by header names
+/// (`header_line` and `headers` as [`detect`] or [`ImportError::Unrecognized`]
+/// report them). `text` is the file: a `;`- or tab-delimited file whose
+/// mapped number columns mostly end in `,` and one or two digits gets
+/// `decimal_comma: true`. The user confirms or changes the mapping; nothing
+/// is imported from a guess.
 #[must_use]
-pub fn suggest_mapping(header_line: u32, headers: &[String]) -> ColumnMapping {
-    formats::mapped::suggest(header_line, headers)
+pub fn suggest_mapping(text: &str, header_line: u32, headers: &[String]) -> ColumnMapping {
+    let delimiter = csv::sniff_delimiter(text);
+    formats::mapped::suggest(&csv::read(text, delimiter), delimiter, header_line, headers)
 }
 
 /// Accumulates parsed rows and warnings.
@@ -337,6 +376,8 @@ pub(crate) struct Output {
 pub(crate) struct Row {
     pub(crate) kind: TransactionKind,
     pub(crate) trade_date: NaiveDate,
+    /// See [`ImportedTx::listed_date`]; `new` sets it to the trade date.
+    pub(crate) listed_date: NaiveDate,
     pub(crate) settle_date: Option<NaiveDate>,
     pub(crate) symbol: Option<String>,
     pub(crate) quantity: Option<f64>,
@@ -358,6 +399,7 @@ impl Row {
         Self {
             kind,
             trade_date,
+            listed_date: trade_date,
             settle_date: None,
             symbol: None,
             quantity: None,
@@ -388,7 +430,6 @@ impl Output {
         let date = if row.snapshot { String::new() } else { row.trade_date.format("%Y-%m-%d").to_string() };
         let fingerprint = self.fp.next(&Parts {
             family: family.id(),
-            account: row.account.as_deref().unwrap_or(""),
             date: &date,
             action: &row.action,
             symbol: row.symbol.as_deref().unwrap_or(""),
@@ -400,6 +441,7 @@ impl Output {
         self.txs.push(ImportedTx {
             line: rec.line,
             trade_date: row.trade_date,
+            listed_date: row.listed_date,
             settle_date: row.settle_date,
             symbol: row.symbol,
             kind: row.kind,

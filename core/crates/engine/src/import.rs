@@ -52,12 +52,15 @@ pub fn security_for(symbol: &str) -> Option<String> {
 }
 
 /// Store row for an imported transaction. A transfer in carries its cost
-/// basis as the per-share price.
+/// basis as the per-share price: a stated total cost basis wins, because a
+/// mapped file's price column on a transfer is usually the market value on
+/// the transfer day; the row's price is used only without one (an RSU or
+/// stock-plan vest, whose price is the value at vest).
 #[must_use]
 pub fn to_store(t: &ImportedTx, format: Format) -> Transaction {
     let quantity = t.quantity.unwrap_or(0.0);
     let price = match t.kind {
-        TransactionKind::TransferIn => t.price.or_else(|| t.cost_basis.filter(|_| quantity.abs() > 0.0).map(|c| c / quantity.abs())),
+        TransactionKind::TransferIn => t.cost_basis.filter(|_| quantity.abs() > 0.0).map(|c| c / quantity.abs()).or(t.price),
         _ => t.price,
     };
     let note = match (t.description.is_empty(), t.action.is_empty()) {
@@ -94,13 +97,13 @@ impl Engine {
             Ok(p) => Ok(ImportPreview {
                 header_line: p.header_line,
                 headers: p.headers.clone(),
-                suggested_mapping: mapping.cloned().unwrap_or_else(|| meridian_import::suggest_mapping(p.header_line, &p.headers)),
+                suggested_mapping: mapping.cloned().unwrap_or_else(|| meridian_import::suggest_mapping(csv, p.header_line, &p.headers)),
                 parsed: Some(p),
                 warnings: Vec::new(),
             }),
             Err(ImportError::Unrecognized { header_line, headers }) => Ok(ImportPreview {
                 parsed: None,
-                suggested_mapping: meridian_import::suggest_mapping(header_line, &headers),
+                suggested_mapping: meridian_import::suggest_mapping(csv, header_line, &headers),
                 warnings: vec![ImportWarning {
                     line: header_line,
                     message: "Format not recognized (supported: Robinhood, Fidelity, Charles Schwab, Vanguard, positions snapshots). Map the columns to import it.".into(),
@@ -189,5 +192,22 @@ mod tests {
         assert_eq!(security_for("BRK B").as_deref(), Some("BRK/B US Equity"));
         assert_eq!(security_for(""), None);
         assert_eq!(security_for("A$B"), None);
+    }
+
+    #[test]
+    fn stated_cost_basis_wins_over_a_transfers_price() {
+        // A mapped transfer in with a market-value price column and a cost
+        // basis column: 10 shares worth 50 that cost 300 in total.
+        let csv = "Date,Type,Symbol,Qty,Price,Cost Basis\n2026-03-02,Transfer in,AAPL,10,50.00,300.00\n2026-03-02,Transfer in,MSFT,2,400.00,\n";
+        let m = ColumnMapping { header_line: 1, trade_date: Some(0), action: Some(1), symbol: Some(2), quantity: Some(3), price: Some(4), cost_basis: Some(5), ..Default::default() };
+        let opts = ImportOptions { as_of: chrono::NaiveDate::from_ymd_opt(2026, 10, 7).expect("date") };
+        let p = meridian_import::parse(csv, Some(&m), &opts).expect("parse");
+        let rows: Vec<Transaction> = p.transactions.iter().map(|t| to_store(t, p.format)).collect();
+        assert_eq!(rows.len(), 2);
+        assert_eq!((rows[0].kind, rows[0].quantity, rows[0].price), (TransactionKind::TransferIn, 10.0, Some(30.0)));
+        // Without a cost basis the row's price is all there is.
+        assert_eq!((rows[1].quantity, rows[1].price), (2.0, Some(400.0)));
+        let l = crate::portfolio::ledger(&rows, "USD");
+        assert!((l.holdings[0].cost - 300.0).abs() < 1e-9);
     }
 }

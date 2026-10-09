@@ -127,6 +127,31 @@ fn robinhood_import_feeds_port_and_skips_duplicates() {
 }
 
 #[test]
+fn fidelity_single_account_and_all_accounts_files_import_once() {
+    let rt = tokio::runtime::Builder::new_multi_thread().enable_all().build().expect("rt");
+    let engine = engine();
+    let all = engine.commit_import(&fixture("fidelity_all_accounts_2026q1.csv"), None, &ImportTarget::New("Fidelity".into())).expect("all accounts");
+    assert_eq!((all.imported, all.duplicates), (9, 0));
+    // The same account downloaded on its own: only the older deposit is new.
+    let single = engine.commit_import(&fixture("fidelity_history_z00000001_2026q1.csv"), None, &ImportTarget::Existing(all.portfolio_id)).expect("single account");
+    assert_eq!((single.imported, single.duplicates), (1, 8));
+    let s = port(&engine, &rt, all.portfolio_id);
+    let pos = positions(&s);
+    let get = |k: &str| pos.iter().find(|p| p.0 == k).cloned().unwrap_or_else(|| panic!("{k} in {pos:?}"));
+    // Three SCHD buys (two in one account, one in another), not five.
+    assert_eq!(get("SCHD US Equity").1, 30.0);
+    // The reverse split applied once: 100 → 5.
+    assert_eq!(get("ABCD US Equity").1, 5.0);
+    assert_eq!(get("VTI US Equity").1, 15.0);
+    // The cash in lieu counts once, as realized proceeds (not Other, not a
+    // dividend).
+    assert!(near(field(&s, "Realized P&L"), 0.75));
+    assert!(near(field(&s, "Dividends"), 0.0));
+    assert!(!notices(&s).iter().any(|n| n.contains("kind Other")), "{:?}", notices(&s));
+    engine.shutdown();
+}
+
+#[test]
 fn schwab_import_flags_transfers_without_cost() {
     let rt = tokio::runtime::Builder::new_multi_thread().enable_all().build().expect("rt");
     let engine = engine();
@@ -148,6 +173,25 @@ fn schwab_import_flags_transfers_without_cost() {
     let abcd = 150.0;
     let bnd = 721.8;
     assert!(near(field(&s, "Cost basis"), avgo + abcd + bnd));
+    engine.shutdown();
+}
+
+#[test]
+fn a_reverse_split_listed_in_another_leg_order_is_not_applied_twice() {
+    let rt = tokio::runtime::Builder::new_multi_thread().enable_all().build().expect("rt");
+    let engine = engine();
+    let csv = fixture("schwab_2024.csv");
+    let first = engine.commit_import(&csv, None, &ImportTarget::New("Schwab".into())).expect("commit");
+    // The same export with the reverse split's legs in the other order.
+    let mut lines: Vec<&str> = csv.lines().collect();
+    lines.swap(4, 5);
+    let swapped = lines.join("\n") + "\n";
+    let again = engine.commit_import(&swapped, None, &ImportTarget::Existing(first.portfolio_id)).expect("again");
+    assert_eq!((again.imported, again.duplicates), (0, first.imported));
+    let s = port(&engine, &rt, first.portfolio_id);
+    let pos = positions(&s);
+    // 100 → 5, not 100 → 5 → 0.
+    assert_eq!(pos.iter().find(|p| p.0 == "ABCD US Equity").map(|p| p.1), Some(5.0), "{pos:?}");
     engine.shutdown();
 }
 

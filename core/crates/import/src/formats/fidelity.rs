@@ -58,6 +58,10 @@ fn kind(action: &str) -> Option<Kind> {
         Kind::Unsupported("options are not supported")
     } else if starts("buy cancel") || starts("sell cancel") || has(" cxl ") {
         Kind::Unsupported("cancelled trades are not supported; delete the original trade in PORT")
+    } else if starts("you sold short sale") || starts("you bought short cover") {
+        // Before the plain trades: "YOU SOLD SHORT SALE …" read as a sell
+        // and "YOU BOUGHT SHORT COVER …" as a buy left a phantom long.
+        Kind::Unsupported("short sales are not supported")
     } else if starts("you bought") {
         Kind::Is(K::Buy)
     } else if starts("you sold") {
@@ -71,7 +75,9 @@ fn kind(action: &str) -> Option<Kind> {
         || starts("adjust fee")
     {
         Kind::Is(K::Fee)
-    } else if starts("dividend received") || starts("dividend adjustment") || starts("short-term cap gain") || starts("long-term cap gain") || starts("return of capital") {
+    } else if starts("return of capital") {
+        Kind::Is(K::ReturnOfCapital)
+    } else if starts("dividend received") || starts("dividend adjustment") || starts("short-term cap gain") || starts("long-term cap gain") {
         Kind::Is(K::Dividend)
     } else if starts("reinvestment") {
         Kind::Is(K::ReinvestedDividend)
@@ -82,7 +88,7 @@ fn kind(action: &str) -> Option<Kind> {
     } else if starts("distribution") || starts("reverse split") {
         Kind::Is(K::Split)
     } else if starts("in lieu of") {
-        Kind::Is(K::Other)
+        Kind::Is(K::CashInLieu)
     } else if starts("merger") || starts("name changed") {
         Kind::Unsupported("mergers and name changes are not supported; adjust the holding by hand")
     } else if starts("redemption payout") {
@@ -206,6 +212,7 @@ fn row(rec: &Record, c: &Columns, date_i: usize, out: &mut Output) -> Result<boo
         Kind::Unsupported(why) => return Err(format!("Not imported: {action} — {why}")),
     };
     let mut r = Row::new(kind, as_of(&action).unwrap_or(run_date));
+    r.listed_date = run_date;
     r.settle_date = c.find(&["settlement date"]).and_then(|i| value::date(rec.get(i), DateOrder::MonthFirst).ok());
     r.symbol = symbol;
     r.currency = opt_text(rec, c.find(&["currency"])).map_or_else(|| "USD".to_owned(), |s| s.to_ascii_uppercase());
@@ -281,8 +288,13 @@ mod tests {
         };
         assert_eq!(k("YOU BOUGHT APPLE INC (AAPL) (Cash)"), format!("{:?}", K::Buy));
         assert_eq!(k("YOU BOUGHT OPENING TRANSACTION CALL (XLE) ..."), "Unsupported");
+        assert_eq!(k("YOU SOLD SHORT SALE TESLA INC (TSLA) (Margin)"), "Unsupported");
+        assert_eq!(k("YOU BOUGHT SHORT COVER TESLA INC (TSLA) (Short)"), "Unsupported");
+        assert_eq!(k("YOU SOLD ISHARES SHORT TREASURY BOND ETF (SHV) (Cash)"), format!("{:?}", K::Sell));
         assert_eq!(k("NON-RESIDENT TAX DIVIDEND RECEIVED X"), format!("{:?}", K::Fee));
         assert_eq!(k("DIVIDEND RECEIVED X"), format!("{:?}", K::Dividend));
+        assert_eq!(k("RETURN OF CAPITAL ABCD HOLDINGS (ABCD) (Cash)"), format!("{:?}", K::ReturnOfCapital));
+        assert_eq!(k("IN LIEU OF FRX SHARE LEU PAYOUT ABCD HOLDINGS (ABCD) (Cash)"), format!("{:?}", K::CashInLieu));
         assert_eq!(k("DISTRIBUTION SPINOFF FROM:(ABC ) XYZ"), format!("{:?}", K::TransferIn));
         assert_eq!(k("DISTRIBUTION NVIDIA CORP (NVDA) (Cash)"), format!("{:?}", K::Split));
         assert_eq!(k("TRANSFER OF ASSETS ACAT RECEIVE"), "Transfer");

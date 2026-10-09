@@ -28,11 +28,31 @@ fn is_missing(s: &str) -> bool {
     matches!(s, "" | "-" | "--" | "---" | "n/a" | "N/A" | "NA" | "na" | "None" | "none")
 }
 
+/// The decimal separator of a file's numbers.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+pub enum Decimal {
+    /// `1,234.56` (US brokers).
+    #[default]
+    Point,
+    /// `1.234,56` (many European exports, usually `;`-delimited).
+    Comma,
+}
+
 /// Parses a number written like `1,234.56`, `$1,234.56`, `-$1,234.56`,
 /// `$-1,234.56`, `($1,234.56)`, `1,234.56-`, `+0.5` or `1.5e3`. Returns
 /// `Ok(None)` for an empty cell or a missing-value placeholder (`--`,
-/// `n/a`).
+/// `n/a`). A comma must group three digits (`180,50` is an error, not
+/// 18050); see [`number_in`] for decimal-comma files.
 pub fn number(raw: &str, what: &'static str) -> Result<Option<f64>, BadValue> {
+    number_in(raw, what, Decimal::Point)
+}
+
+/// [`number`] with the given decimal separator. With [`Decimal::Comma`],
+/// `1.805,00` is 1805 and `180,50` is 180.5; the other separator groups
+/// thousands and must be followed by exactly three digits, so a number
+/// written for the other convention is an error rather than a silent
+/// misreading (except a lone `1.805`, which both conventions allow).
+pub fn number_in(raw: &str, what: &'static str, decimal: Decimal) -> Result<Option<f64>, BadValue> {
     let s = raw.trim();
     if is_missing(s) {
         return Ok(None);
@@ -47,11 +67,18 @@ pub fn number(raw: &str, what: &'static str) -> Result<Option<f64>, BadValue> {
         negative = !negative;
         t = rest.trim();
     }
+    let (group, point) = match decimal {
+        Decimal::Point => (',', '.'),
+        Decimal::Comma => ('.', ','),
+    };
+    // Normalized to `,` for grouping and `.` for the decimal point.
     let mut cleaned = String::with_capacity(t.len());
     let mut sign_seen = false;
     for c in t.chars() {
         match c {
-            '$' | ',' | ' ' | '\u{a0}' => {}
+            '$' | ' ' | '\u{a0}' | '\u{202f}' => {}
+            c if c == group => cleaned.push(','),
+            c if c == point => cleaned.push('.'),
             '-' | '\u{2212}' if cleaned.is_empty() && !sign_seen => {
                 negative = !negative;
                 sign_seen = true;
@@ -60,14 +87,50 @@ pub fn number(raw: &str, what: &'static str) -> Result<Option<f64>, BadValue> {
             _ => cleaned.push(c),
         }
     }
-    if cleaned.is_empty() || !cleaned.chars().all(|c| c.is_ascii_digit() || matches!(c, '.' | 'e' | 'E' | '-' | '+')) {
+    if cleaned.is_empty() || !cleaned.chars().all(|c| c.is_ascii_digit() || matches!(c, '.' | ',' | 'e' | 'E' | '-' | '+')) || !grouped(&cleaned) {
         return Err(BadValue::new(what, raw));
     }
+    let cleaned: String = cleaned.chars().filter(|c| *c != ',').collect();
     let v: f64 = cleaned.parse().map_err(|_| BadValue::new(what, raw))?;
     if !v.is_finite() {
         return Err(BadValue::new(what, raw));
     }
     Ok(Some(if negative { -v } else { v }))
+}
+
+/// Whether the grouping separators (normalized to `,`) of `s` sit only in
+/// the integer part and split it into groups of three after a first group
+/// of one to three digits.
+fn grouped(s: &str) -> bool {
+    let end = s.find(['.', 'e', 'E']).unwrap_or(s.len());
+    let (int, rest) = s.split_at(end);
+    if rest.contains(',') {
+        return false;
+    }
+    if !int.contains(',') {
+        return true;
+    }
+    let mut groups = int.split(',');
+    let first_ok = groups.next().is_some_and(|g| (1..=3).contains(&g.len()));
+    first_ok && groups.all(|g| g.len() == 3)
+}
+
+/// Whether a cell looks like a decimal-comma amount: digits, a comma and
+/// one or two digits at the end (`180,50`, `-1.805,5`, `(12,00)`).
+#[must_use]
+pub fn looks_decimal_comma(raw: &str) -> bool {
+    let s = raw.trim().trim_end_matches(')').trim_end();
+    let Some((head, tail)) = s.rsplit_once(',') else { return false };
+    (1..=2).contains(&tail.len()) && tail.bytes().all(|b| b.is_ascii_digit()) && head.bytes().last().is_some_and(|b| b.is_ascii_digit())
+}
+
+/// Whether a cell looks like a decimal-point amount with one or two
+/// decimals (`180.50`, `-3.5`).
+#[must_use]
+pub fn looks_decimal_point(raw: &str) -> bool {
+    let s = raw.trim().trim_end_matches(')').trim_end();
+    let Some((head, tail)) = s.rsplit_once('.') else { return false };
+    (1..=2).contains(&tail.len()) && tail.bytes().all(|b| b.is_ascii_digit()) && head.bytes().last().is_some_and(|b| b.is_ascii_digit())
 }
 
 /// Date layouts accepted in a cell.
@@ -150,6 +213,37 @@ mod tests {
         assert_eq!(n("1.5e3"), Some(1500.0));
         assert_eq!(n("\u{2212}3"), Some(-3.0));
         assert_eq!(n("0.000123"), Some(0.000123));
+    }
+
+    #[test]
+    fn thousands_separators_group_three_digits() {
+        // A decimal comma read as a thousands separator used to give 18050.
+        for s in ["180,50", "1.805,00", "1,2345.6", ",5", "1.234,5"] {
+            assert!(number(s, "amount").is_err(), "{s:?}");
+        }
+        assert_eq!(n("1,000,000"), Some(1e6));
+        assert_eq!(n("12,345"), Some(12345.0));
+        assert_eq!(n("-$12,345.5"), Some(-12345.5));
+    }
+
+    #[test]
+    fn decimal_comma_numbers() {
+        let c = |s: &str| number_in(s, "amount", Decimal::Comma).unwrap();
+        assert_eq!(c("180,50"), Some(180.5));
+        assert_eq!(c("1.805,00"), Some(1805.0));
+        assert_eq!(c("-1.805,5"), Some(-1805.5));
+        assert_eq!(c("(12,00)"), Some(-12.0));
+        assert_eq!(c("1 805,00"), Some(1805.0));
+        assert_eq!(c("1.805"), Some(1805.0));
+        assert_eq!(c("7"), Some(7.0));
+        assert_eq!(c("--"), None);
+        // A decimal point in a decimal-comma file is an error, not 15 or 1.5.
+        for s in ["1.5", "1,805.00", "1,2,3"] {
+            assert!(number_in(s, "amount", Decimal::Comma).is_err(), "{s:?}");
+        }
+        assert!(looks_decimal_comma("180,50") && looks_decimal_comma("-1.805,5") && looks_decimal_comma("(12,0)"));
+        assert!(!looks_decimal_comma("1,805") && !looks_decimal_comma("180.50") && !looks_decimal_comma(","));
+        assert!(looks_decimal_point("180.50") && !looks_decimal_point("1.805") && !looks_decimal_point("180,50"));
     }
 
     #[test]

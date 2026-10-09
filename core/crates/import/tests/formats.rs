@@ -123,7 +123,8 @@ fn fidelity_all_accounts_2026_layout() {
     let schd = find(&p, K::Buy, "SCHD");
     assert_eq!(schd.len(), 3);
     assert!(schd.iter().all(|t| close(t.quantity, 10.0) && close(t.price, 27.5)));
-    // Two identical rows in one account and one in another: all distinct.
+    // Two identical rows in one account and one in another: all distinct
+    // (the account is not hashed; the occurrence number tells them apart).
     let fps: std::collections::HashSet<&str> = schd.iter().map(|t| t.fingerprint.as_str()).collect();
     assert_eq!(fps.len(), 3);
     assert_eq!(schd.iter().filter(|t| t.account.as_deref() == Some("Z00000001")).count(), 2);
@@ -134,7 +135,44 @@ fn fidelity_all_accounts_2026_layout() {
     // ACAT shares arrive without a cost basis.
     let acat = find(&p, K::TransferIn, "VTI")[0];
     assert!(close(acat.quantity, 15.0) && acat.price.is_none() && acat.cost_basis.is_none());
-    assert_eq!((count(&p, K::Deposit), count(&p, K::Withdrawal), count(&p, K::Other)), (1, 1, 1));
+    assert_eq!((count(&p, K::Deposit), count(&p, K::Withdrawal), count(&p, K::CashInLieu), count(&p, K::Other)), (1, 1, 1, 0));
+}
+
+#[test]
+fn fidelity_single_account_file_overlaps_the_all_accounts_file() {
+    // One account's history downloaded on its own has no account column;
+    // the all-accounts download names the account. The same rows must
+    // fingerprint the same, or importing both doubles them.
+    let single = read("fidelity_history_z00000001_2026q1.csv");
+    let all = read("fidelity_all_accounts_2026q1.csv");
+    assert_eq!(single.format, Format::Fidelity);
+    assert!(single.warnings.is_empty(), "{:#?}", single.warnings);
+    assert_eq!(single.transactions.len(), 9);
+    assert!(single.transactions.iter().all(|t| t.account.is_none()));
+    // The account stays on the rows for display.
+    assert!(all.transactions.iter().all(|t| t.account.is_some()));
+    let in_all: std::collections::HashSet<&str> = all.transactions.iter().map(|t| t.fingerprint.as_str()).collect();
+    let (shared, new): (Vec<&ImportedTx>, Vec<&ImportedTx>) = single.transactions.iter().partition(|t| in_all.contains(t.fingerprint.as_str()));
+    // Everything but the December deposit, which is older than the
+    // all-accounts file: both SCHD buys, the netted reverse split, the
+    // journal pair, the ACAT, the ABCD buy and the cash in lieu.
+    assert_eq!(shared.len(), 8, "{new:#?}");
+    assert_eq!(new.len(), 1);
+    assert_eq!((new[0].kind, new[0].trade_date), (K::Deposit, d(2025, 12, 15)));
+}
+
+#[test]
+fn fidelity_short_sales_are_warnings_not_a_long_position() {
+    let text = "Run Date,Action,Symbol,Description,Type,Quantity,Price ($),Commission ($),Fees ($),Accrued Interest ($),Amount ($),Settlement Date\n\
+                03/10/2026,YOU BOUGHT SHORT COVER TESLA INC (TSLA) (Short),TSLA,TESLA INC,Short,10,200,,,,-2000.00,03/11/2026\n\
+                03/02/2026,YOU SOLD SHORT SALE TESLA INC (TSLA) (Margin),TSLA,TESLA INC,Short,-10,250,,,,2500.00,03/03/2026\n\
+                03/02/2026,YOU BOUGHT APPLE INC (AAPL) (Cash),AAPL,APPLE INC,Cash,1,200,,,,-200.00,03/03/2026\n";
+    let p = parse(text, None, &opts()).unwrap();
+    assert_eq!(p.format, Format::Fidelity);
+    assert_eq!(p.counts(), vec![(K::Buy, 1)]);
+    assert!(find(&p, K::Buy, "TSLA").is_empty() && find(&p, K::Sell, "TSLA").is_empty());
+    assert_eq!(warning_lines(&p), vec![2, 3]);
+    assert!(p.warnings.iter().all(|w| w.message.contains("short sales are not supported")), "{:#?}", p.warnings);
 }
 
 #[test]
@@ -213,7 +251,7 @@ fn vanguard_download() {
     let rs = find(&p, K::Split, "ABCD");
     assert_eq!(rs.len(), 1);
     assert!(close(rs[0].quantity, -95.0));
-    assert_eq!(p.counts(), vec![(K::Buy, 2), (K::Sell, 1), (K::Dividend, 2), (K::ReinvestedDividend, 1), (K::Split, 1), (K::Deposit, 1), (K::Withdrawal, 1), (K::Other, 1)]);
+    assert_eq!(p.counts(), vec![(K::Buy, 2), (K::Sell, 1), (K::Dividend, 2), (K::ReinvestedDividend, 1), (K::Split, 1), (K::CashInLieu, 1), (K::Deposit, 1), (K::Withdrawal, 1)]);
     assert!(p.transactions.iter().all(|t| t.account.as_deref() == Some("12345678")));
 }
 
@@ -281,7 +319,7 @@ fn generic_mapping_path() {
         Err(ImportError::Unrecognized { header_line, headers }) => {
             assert_eq!(header_line, 1);
             assert_eq!(headers, ["Date", "Type", "Ticker", "Shares", "Price", "Total", "Notes"]);
-            let s = meridian_import::suggest_mapping(header_line, &headers);
+            let s = meridian_import::suggest_mapping(&text, header_line, &headers);
             assert_eq!((s.trade_date, s.action, s.symbol, s.quantity, s.price, s.amount), (Some(0), Some(1), Some(2), Some(3), Some(4), Some(5)));
         }
         other => panic!("expected Unrecognized, got {other:?}"),
@@ -316,6 +354,71 @@ fn generic_mapping_without_action_and_as_snapshot() {
 }
 
 #[test]
+fn decimal_comma_files_through_the_mapping() {
+    let text = "Datum;Typ;Symbol;Anzahl;Kurs;Betrag\n\
+                15.01.2026;Kauf;AAPL;10;180,50;-1.805,00\n\
+                20.02.2026;Dividende;AAPL;;;2,40\n\
+                01.03.2026;Verkauf;AAPL;4;200,25;801,00\n";
+    let headers = match parse(text, None, &opts()) {
+        Err(ImportError::Unrecognized { header_line: 1, headers }) => headers,
+        other => panic!("expected Unrecognized, got {other:?}"),
+    };
+    // A `;`-delimited file whose amounts end in `,` and two digits.
+    let suggested = meridian_import::suggest_mapping(text, 1, &headers);
+    assert!(suggested.decimal_comma);
+    let m = ColumnMapping {
+        header_line: 1,
+        trade_date: Some(0),
+        action: Some(1),
+        symbol: Some(2),
+        quantity: Some(3),
+        price: Some(4),
+        amount: Some(5),
+        day_first: true,
+        ..suggested.clone()
+    };
+    // German action words are not in the keyword table; map by keyword in
+    // English to read the numbers.
+    let english = text.replace("Kauf", "Buy").replace("Dividende", "Dividend").replace("Verkauf", "Sell");
+    let p = parse(&english, Some(&m), &opts()).unwrap();
+    assert!(p.warnings.is_empty(), "{:#?}", p.warnings);
+    let buy = find(&p, K::Buy, "AAPL")[0];
+    assert!(close(buy.price, 180.5) && close(buy.amount, -1805.0) && close(buy.quantity, 10.0));
+    assert!(close(find(&p, K::Dividend, "AAPL")[0].amount, 2.4));
+    assert!(close(find(&p, K::Sell, "AAPL")[0].amount, 801.0));
+    // Without decimal_comma the same cells are errors, never 18050 or 1.805.
+    let point = ColumnMapping { decimal_comma: false, ..m };
+    let p = parse(&english, Some(&point), &opts()).unwrap();
+    assert!(p.transactions.is_empty(), "{:#?}", p.transactions);
+    assert_eq!(warning_lines(&p), vec![2, 3, 4]);
+    assert!(p.warnings.iter().all(|w| w.message.contains("unreadable")));
+    // With recognized headers only the number columns vote.
+    let h: Vec<String> = ["Date", "Ticker", "Qty", "Amount", "Notes"].iter().map(|s| (*s).to_string()).collect();
+    assert!(meridian_import::suggest_mapping("Date;Ticker;Qty;Amount;Notes\n2026-01-02;AAPL;1;-180,50;a.bc 1.25\n", 1, &h).decimal_comma);
+    // Decimal-point amounts and comma-delimited files are not flagged.
+    assert!(!meridian_import::suggest_mapping("Date;Ticker;Qty;Amount;Notes\n2026-01-02;AAPL;1;-180.50;x 1,25\n", 1, &h).decimal_comma);
+    let g = fixture("generic_mapped.csv");
+    let gh = detect(&g).headers;
+    assert!(!meridian_import::suggest_mapping(&g, 1, &gh).decimal_comma);
+}
+
+#[test]
+fn return_of_capital_and_cash_in_lieu_have_their_own_kinds() {
+    // Not dividends (return of capital lowers cost) and not Other (cash in
+    // lieu is proceeds).
+    let schwab = "\"Date\",\"Action\",\"Symbol\",\"Description\",\"Quantity\",\"Price\",\"Fees & Comm\",\"Amount\"\n\
+                  \"06/20/2024\",\"Cash In Lieu\",\"ABCD\",\"ABCD HOLDINGS\",\"\",\"\",\"\",\"$0.75\"\n\
+                  \"03/28/2024\",\"Return Of Capital\",\"ABCD\",\"ABCD HOLDINGS\",\"\",\"\",\"\",\"$5.00\"\n";
+    let p = parse(schwab, None, &opts()).unwrap();
+    assert_eq!(p.counts(), vec![(K::ReturnOfCapital, 1), (K::CashInLieu, 1)]);
+    assert!(close(find(&p, K::ReturnOfCapital, "ABCD")[0].amount, 5.0));
+    assert!(find(&p, K::CashInLieu, "ABCD")[0].quantity.is_none());
+    let fidelity = read("fidelity_all_accounts_2026q1.csv");
+    assert!(close(find(&fidelity, K::CashInLieu, "ABCD")[0].amount, 0.75));
+    assert_eq!(count(&read("vanguard_ofx.csv"), K::CashInLieu), 1);
+}
+
+#[test]
 fn bad_mappings_are_errors() {
     let text = fixture("generic_mapped.csv");
     let past = ColumnMapping { amount: Some(40), ..generic_mapping() };
@@ -347,6 +450,41 @@ fn detection_and_empty_files() {
 }
 
 #[test]
+fn histories_with_unspaced_headers_are_not_read_as_positions() {
+    // E*TRADE-style headers have no space in the date and type columns.
+    // Read as holdings, Bought 10 / Sold 10 / Bought 5 would be 15 shares.
+    let etrade = "TransactionDate,TransactionType,SecurityType,Symbol,Quantity,Amount,Price,Commission,Description\n\
+                  10/01/26,Bought,EQ,AAPL,10,-1800.00,180.00,0.00,APPLE INC\n\
+                  10/02/26,Sold,EQ,AAPL,-10,1900.00,190.00,0.00,APPLE INC\n\
+                  10/03/26,Bought,EQ,AAPL,5,-950.00,190.00,0.00,APPLE INC\n";
+    assert_eq!(detect(etrade).format, None);
+    let headers = match parse(etrade, None, &opts()) {
+        Err(ImportError::Unrecognized { header_line: 1, headers }) => headers,
+        other => panic!("expected Unrecognized, got {other:?}"),
+    };
+    // The mapping suggestion finds the unspaced columns, and the file reads
+    // as three trades.
+    let m = meridian_import::suggest_mapping(etrade, 1, &headers);
+    assert_eq!((m.trade_date, m.action, m.symbol, m.quantity, m.amount, m.price, m.fees), (Some(0), Some(1), Some(3), Some(4), Some(5), Some(6), Some(7)));
+    let p = parse(etrade, Some(&m), &opts()).unwrap();
+    assert!(!p.snapshot);
+    assert_eq!(p.counts(), vec![(K::Buy, 2), (K::Sell, 1)]);
+    let net: f64 = p.transactions.iter().filter_map(|t| t.quantity).sum();
+    assert!((net - 5.0).abs() < 1e-9);
+    // IBKR-style: one `Date/Time` column.
+    let ibkr = "Symbol,Date/Time,Quantity,T. Price,Proceeds,Comm/Fee\nAAPL,\"2026-10-01, 09:31:00\",10,180,-1800,-1\nAAPL,\"2026-10-02, 10:00:00\",-10,190,1900,-1\n";
+    assert_eq!(detect(ibkr).format, None);
+    for header in ["Symbol,Quantity,TradeTime", "Symbol,Quantity,Activity Type", "Symbol,Quantity,Buy/Sell", "Symbol,Quantity,Txn Type"] {
+        assert_eq!(detect(&format!("{header}\nAAPL,1,x\n")).format, None, "{header}");
+    }
+    // Positions headers with `Type`, `Last Updated` or `Fractional` columns
+    // are still snapshots.
+    for header in ["Symbol,Quantity,Type", "Symbol,Quantity,Last Updated", "Symbol,Fractional Shares,Quantity"] {
+        assert_eq!(detect(&format!("{header}\nAAPL,1,x\n")).format, Some(Format::Positions), "{header}");
+    }
+}
+
+#[test]
 fn same_day_rows_keep_their_real_order() {
     // Robinhood lists newest first: a one-day file's sell (bought earlier
     // that day) comes first and must end up after the buy.
@@ -360,6 +498,118 @@ fn same_day_rows_keep_their_real_order() {
     let m = ColumnMapping { header_line: 1, trade_date: Some(0), symbol: Some(1), quantity: Some(2), price: Some(3), ..Default::default() };
     let p = parse("Date,Ticker,Qty,Px\n2026-03-02,AAPL,1,10\n2026-03-02,AAPL,-1,11\n", Some(&m), &opts()).unwrap();
     assert_eq!(p.transactions.iter().map(|t| t.kind).collect::<Vec<_>>(), [K::Buy, K::Sell]);
+}
+
+#[test]
+fn as_of_rows_do_not_flip_the_file_order() {
+    // A short newest-first Schwab export whose top row is dated "as of" an
+    // older day. Judged by trade dates it looked oldest first, so it was not
+    // reversed and the 10/07 sell sorted before the 10/07 buy.
+    let schwab = "\"Date\",\"Action\",\"Symbol\",\"Description\",\"Quantity\",\"Price\",\"Fees & Comm\",\"Amount\"\n\
+                  \"10/08/2026 as of 09/30/2026\",\"Credit Interest\",\"\",\"SCHWAB1 INT 09/01-09/30\",\"\",\"\",\"\",\"$0.40\"\n\
+                  \"10/07/2026\",\"Sell\",\"AAPL\",\"APPLE INC\",\"10\",\"$200.00\",\"\",\"$2000.00\"\n\
+                  \"10/07/2026\",\"Buy\",\"AAPL\",\"APPLE INC\",\"10\",\"$190.00\",\"\",\"-$1900.00\"\n";
+    let p = parse(schwab, None, &opts()).unwrap();
+    assert_eq!(p.transactions.iter().map(|t| t.kind).collect::<Vec<_>>(), [K::Interest, K::Buy, K::Sell]);
+    assert_eq!((p.transactions[0].trade_date, p.transactions[0].listed_date), (d(2026, 9, 30), d(2026, 10, 8)));
+    // The same with Fidelity's "as of" inside the Action.
+    let fidelity = "Run Date,Action,Symbol,Description,Type,Quantity,Price ($),Commission ($),Fees ($),Accrued Interest ($),Amount ($),Settlement Date\n\
+                    10/08/2026,DIVIDEND RECEIVED as of 09/30/2026 APPLE INC (AAPL) (Cash),AAPL,APPLE INC,Cash,0,,,,,2.60,\n\
+                    10/07/2026,YOU SOLD APPLE INC (AAPL) (Cash),AAPL,APPLE INC,Cash,-10,200,,,,2000.00,10/08/2026\n\
+                    10/07/2026,YOU BOUGHT APPLE INC (AAPL) (Cash),AAPL,APPLE INC,Cash,10,190,,,,-1900.00,10/08/2026\n";
+    let p = parse(fidelity, None, &opts()).unwrap();
+    assert_eq!(p.transactions.iter().map(|t| t.kind).collect::<Vec<_>>(), [K::Dividend, K::Buy, K::Sell]);
+    // A file someone re-sorted oldest first is still read in its order.
+    let resorted = "\"Date\",\"Action\",\"Symbol\",\"Description\",\"Quantity\",\"Price\",\"Fees & Comm\",\"Amount\"\n\
+                    \"10/06/2026\",\"Buy\",\"AAPL\",\"APPLE INC\",\"10\",\"$190.00\",\"\",\"-$1900.00\"\n\
+                    \"10/07/2026\",\"Buy\",\"MSFT\",\"MICROSOFT CORP\",\"1\",\"$400.00\",\"\",\"-$400.00\"\n\
+                    \"10/07/2026\",\"Sell\",\"MSFT\",\"MICROSOFT CORP\",\"1\",\"$410.00\",\"\",\"$410.00\"\n";
+    let p = parse(resorted, None, &opts()).unwrap();
+    assert_eq!(p.transactions.iter().map(|t| t.kind).collect::<Vec<_>>(), [K::Buy, K::Buy, K::Sell]);
+}
+
+/// `schwab_2024.csv` with its two reverse-split rows (lines 5 and 6) swapped.
+fn schwab_2024_legs_swapped() -> String {
+    let text = fixture("schwab_2024.csv");
+    let mut lines: Vec<&str> = text.lines().collect();
+    assert!(lines[4].contains("\"Reverse Split\",\"ABCD\"") && lines[5].contains("\"Reverse Split\",\"000000AA3\""));
+    lines.swap(4, 5);
+    lines.join("\n") + "\n"
+}
+
+#[test]
+fn netted_reverse_split_fingerprint_ignores_leg_order() {
+    let a = read("schwab_2024.csv");
+    let b = parse(&schwab_2024_legs_swapped(), None, &opts()).unwrap();
+    let (ra, rb) = (find(&a, K::Split, "ABCD"), find(&b, K::Split, "ABCD"));
+    assert_eq!((ra.len(), rb.len()), (1, 1));
+    assert!(close(ra[0].quantity, -95.0) && close(rb[0].quantity, -95.0));
+    assert_eq!(ra[0].fingerprint, rb[0].fingerprint);
+    // Every other row agrees too, so re-importing either file adds nothing.
+    let fa: std::collections::HashSet<&str> = a.transactions.iter().map(|t| t.fingerprint.as_str()).collect();
+    assert!(b.transactions.iter().all(|t| fa.contains(t.fingerprint.as_str())));
+    // A split that is not netted keeps its own fingerprint shape.
+    assert!(find(&a, K::Split, "AVGO")[0].fingerprint.ends_with("-0"));
+}
+
+const SCHWAB_HEADER: &str = "\"Date\",\"Action\",\"Symbol\",\"Description\",\"Quantity\",\"Price\",\"Fees & Comm\",\"Amount\"\n";
+
+#[test]
+fn two_reverse_splits_on_one_day_pair_by_security() {
+    // Fidelity: each new leg names the old CUSIP (`R/S FROM 000000AA3`).
+    let fidelity = "Run Date,Action,Symbol,Description,Type,Quantity,Price ($),Commission ($),Fees ($),Accrued Interest ($),Amount ($),Settlement Date\n\
+        03/16/2026,REVERSE SPLIT R/S TO 000000BB9#REOR M0000000002 EFGH CORP 1 FOR 10 R/S (000000BA1) (Cash),000000BA1,EFGH CORP,Shares,-50,,,,,,\n\
+        03/16/2026,REVERSE SPLIT R/S TO 000000AB1#REOR M0000000000 ABCD HOLDINGS 1 FOR 20 R/S (000000AA3) (Cash),000000AA3,ABCD HOLDINGS,Shares,-100,,,,,,\n\
+        03/16/2026,REVERSE SPLIT R/S FROM 000000BA1#REOR M0000000003 EFGH CORP (EFGH) (Cash),EFGH,EFGH CORP,Shares,5,,,,,,\n\
+        03/16/2026,REVERSE SPLIT R/S FROM 000000AA3#REOR M0000000001 ABCD HOLDINGS (ABCD) (Cash),ABCD,ABCD HOLDINGS,Shares,5,,,,,,\n\
+        01/12/2026,YOU BOUGHT EFGH CORP (EFGH) (Cash),EFGH,EFGH CORP,Cash,50,2.00,,,,-100.00,01/13/2026\n\
+        01/12/2026,YOU BOUGHT ABCD HOLDINGS (ABCD) (Cash),ABCD,ABCD HOLDINGS,Cash,100,1.50,,,,-150.00,01/13/2026\n";
+    let p = parse(fidelity, None, &opts()).unwrap();
+    assert!(p.warnings.is_empty(), "{:#?}", p.warnings);
+    assert_eq!(count(&p, K::Split), 2);
+    assert!(close(find(&p, K::Split, "ABCD")[0].quantity, -95.0));
+    assert!(close(find(&p, K::Split, "EFGH")[0].quantity, -45.0));
+    // Schwab: the old leg's description starts with the security's name.
+    let schwab = format!(
+        "{SCHWAB_HEADER}\"06/12/2024\",\"Reverse Split\",\"ABCD\",\"ABCD HOLDINGS\",\"5\",\"\",\"\",\"\"\n\
+         \"06/12/2024\",\"Reverse Split\",\"000000BA1\",\"EFGH CORP XXXREVERSE SPLIT EFF: 06/10/24\",\"-50\",\"\",\"\",\"\"\n\
+         \"06/12/2024\",\"Reverse Split\",\"000000AA3\",\"ABCD HOLDINGS XXXREVERSE SPLIT EFF: 06/10/24\",\"-100\",\"\",\"\",\"\"\n\
+         \"06/12/2024\",\"Reverse Split\",\"EFGH\",\"EFGH CORP\",\"5\",\"\",\"\",\"\"\n"
+    );
+    let p = parse(&schwab, None, &opts()).unwrap();
+    assert!(p.warnings.is_empty(), "{:#?}", p.warnings);
+    assert!(close(find(&p, K::Split, "ABCD")[0].quantity, -95.0));
+    assert!(close(find(&p, K::Split, "EFGH")[0].quantity, -45.0));
+}
+
+#[test]
+fn unpairable_reverse_splits_on_one_day_are_not_half_applied() {
+    // The old legs don't say which security they belong to. Importing only
+    // the +5 legs would leave 100 + 5 shares; nothing of the group is
+    // imported instead.
+    let schwab = format!(
+        "{SCHWAB_HEADER}\"06/12/2024\",\"Reverse Split\",\"ABCD\",\"ABCD HOLDINGS\",\"5\",\"\",\"\",\"\"\n\
+         \"06/12/2024\",\"Reverse Split\",\"000000AA3\",\"XXXREVERSE SPLIT EFF: 06/10/24\",\"-100\",\"\",\"\",\"\"\n\
+         \"06/12/2024\",\"Reverse Split\",\"EFGH\",\"EFGH CORP\",\"5\",\"\",\"\",\"\"\n\
+         \"06/12/2024\",\"Reverse Split\",\"000000BA1\",\"XXXREVERSE SPLIT EFF: 06/10/24\",\"-50\",\"\",\"\",\"\"\n\
+         \"05/01/2024\",\"Buy\",\"ABCD\",\"ABCD HOLDINGS\",\"100\",\"$1.50\",\"\",\"-$150.00\"\n"
+    );
+    let p = parse(&schwab, None, &opts()).unwrap();
+    assert_eq!(p.counts(), vec![(K::Buy, 1)]);
+    assert_eq!(warning_lines(&p), vec![2, 3, 4, 5]);
+    assert!(p.warnings.iter().all(|w| w.message.contains("2 reverse splits on 2024-06-12 in one account could not be paired")), "{:#?}", p.warnings);
+    // A leg matching two securities by name is ambiguous too.
+    let ambiguous = format!(
+        "{SCHWAB_HEADER}\"06/12/2024\",\"Reverse Split\",\"ABC\",\"ABC CORP\",\"5\",\"\",\"\",\"\"\n\
+         \"06/12/2024\",\"Reverse Split\",\"ABCB\",\"ABC CORP CL B\",\"5\",\"\",\"\",\"\"\n\
+         \"06/12/2024\",\"Reverse Split\",\"000000AA3\",\"ABC CORP CL B XXXREVERSE SPLIT\",\"-100\",\"\",\"\",\"\"\n\
+         \"06/12/2024\",\"Reverse Split\",\"000000BA1\",\"ABC CORP XXXREVERSE SPLIT\",\"-100\",\"\",\"\",\"\"\n"
+    );
+    let p = parse(&ambiguous, None, &opts()).unwrap();
+    assert!(p.transactions.is_empty(), "{:#?}", p.transactions);
+    assert_eq!(p.warnings.len(), 4);
+    // One reverse split on a day still pairs as before (fixtures).
+    assert!(close(find(&read("schwab_2024.csv"), K::Split, "ABCD")[0].quantity, -95.0));
 }
 
 #[test]

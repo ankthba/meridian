@@ -13,9 +13,11 @@ use serde::{Deserialize, Serialize};
 /// | `Sell` | − | + | realizes P&L against average cost |
 /// | `Dividend` | | + | income (negative = withholding reversed) |
 /// | `ReinvestedDividend` | + | − | shares bought with a dividend; adds to cost basis (the dividend itself is its own `Dividend` row) |
+/// | `ReturnOfCapital` | | + | not income: lowers the security's cost basis; any excess over the basis is a realized gain |
 /// | `Interest` | | ± | income |
 /// | `Fee` | | − | expense (fees, taxes withheld) |
 /// | `Split` | ± | | changes shares, not cost |
+/// | `CashInLieu` | | + | cash for a fractional share after a split or merger: realized proceeds |
 /// | `TransferIn` | + | | adds shares at the stated cost basis, if any |
 /// | `TransferOut` | − | | removes shares at average cost, no P&L |
 /// | `Deposit` / `Withdrawal` | | ± | external cash flow, not P&L |
@@ -26,9 +28,11 @@ pub enum TransactionKind {
     Sell,
     Dividend,
     ReinvestedDividend,
+    ReturnOfCapital,
     Interest,
     Fee,
     Split,
+    CashInLieu,
     TransferIn,
     TransferOut,
     Deposit,
@@ -37,14 +41,16 @@ pub enum TransactionKind {
 }
 
 impl TransactionKind {
-    pub const ALL: [TransactionKind; 12] = [
+    pub const ALL: [TransactionKind; 14] = [
         TransactionKind::Buy,
         TransactionKind::Sell,
         TransactionKind::Dividend,
         TransactionKind::ReinvestedDividend,
+        TransactionKind::ReturnOfCapital,
         TransactionKind::Interest,
         TransactionKind::Fee,
         TransactionKind::Split,
+        TransactionKind::CashInLieu,
         TransactionKind::TransferIn,
         TransactionKind::TransferOut,
         TransactionKind::Deposit,
@@ -60,9 +66,11 @@ impl TransactionKind {
             TransactionKind::Sell => "sell",
             TransactionKind::Dividend => "dividend",
             TransactionKind::ReinvestedDividend => "reinvest",
+            TransactionKind::ReturnOfCapital => "return_of_capital",
             TransactionKind::Interest => "interest",
             TransactionKind::Fee => "fee",
             TransactionKind::Split => "split",
+            TransactionKind::CashInLieu => "cash_in_lieu",
             TransactionKind::TransferIn => "transfer_in",
             TransactionKind::TransferOut => "transfer_out",
             TransactionKind::Deposit => "deposit",
@@ -84,9 +92,11 @@ impl TransactionKind {
             TransactionKind::Sell => "Sell",
             TransactionKind::Dividend => "Dividend",
             TransactionKind::ReinvestedDividend => "Reinvested dividend",
+            TransactionKind::ReturnOfCapital => "Return of capital",
             TransactionKind::Interest => "Interest",
             TransactionKind::Fee => "Fee",
             TransactionKind::Split => "Split",
+            TransactionKind::CashInLieu => "Cash in lieu",
             TransactionKind::TransferIn => "Transfer in",
             TransactionKind::TransferOut => "Transfer out",
             TransactionKind::Deposit => "Deposit",

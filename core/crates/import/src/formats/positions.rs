@@ -11,9 +11,9 @@
 //! passes it in), carrying the stated cost basis. A position without a cost
 //! basis is still imported; PORT then shows its cost and P&L as unknown.
 
-use super::{Columns, is_cusip, is_option_symbol, norm, num, opt_text};
+use super::{Columns, is_cusip, is_option_symbol, norm, num_in, opt_text};
 use crate::csv::Record;
-use crate::value::{self, DateOrder};
+use crate::value::{self, DateOrder, Decimal};
 use crate::{Format, ImportOptions, Output, Row, TransactionKind};
 
 const SYMBOL: &[&str] = &["symbol", "ticker"];
@@ -23,8 +23,6 @@ const AVERAGE_COST: &[&str] = &["average cost basis", "cost basis per share", "c
 const DESCRIPTION: &[&str] = &["description", "security description", "investment name", "name"];
 const ACCOUNT: &[&str] = &["account number", "account name/number", "account #", "account"];
 const ASSET_TYPE: &[&str] = &["security type", "asset type"];
-/// Date columns of transaction histories.
-const DATES: &[&str] = &["date", "trade date", "run date", "activity date", "settlement date", "settle date", "transaction date"];
 
 /// Summary rows in the symbol column (Schwab, E*TRADE, Fidelity).
 const SUMMARY: &[&str] = &[
@@ -41,18 +39,43 @@ const SUMMARY: &[&str] = &[
 /// Footer lines that are not data (Fidelity, E*TRADE).
 const FOOTERS: &[&str] = &["the data and information in this spreadsheet", "brokerage services are provided", "date downloaded", "date exported", "generated at"];
 
-/// Type columns of transaction histories.
-const ACTIONS: &[&str] = &["action", "transaction type", "trans code", "activity", "transaction"];
+/// Words that, before `time`, make a column a transaction timestamp
+/// (`Trade Time`, `ExecTime`).
+const TIMED: &[&str] = &["trade", "exec", "transaction", "activity", "settle", "order", "fill", "post", "process", "run"];
+
+/// Lower-cased with everything but letters and digits removed, so
+/// `TransactionDate`, `Transaction Date` and `Date/Time` compare alike.
+pub(crate) fn squash(s: &str) -> String {
+    s.chars().filter(char::is_ascii_alphanumeric).map(|c| c.to_ascii_lowercase()).collect()
+}
+
+/// Whether a header name belongs to a transaction history: a date column
+/// (`Trade Date`, `TransactionDate`, `Date/Time`), a transaction time, or a
+/// transaction type column (`Action`, `TransactionType`, `Activity`,
+/// `Trans Code`). `Type` alone is not one: Fidelity's positions file uses it
+/// for the account type. Merrill's positions file has a close-of-business
+/// date (`COB Date`) and stays a snapshot.
+fn is_history_column(name: &str) -> bool {
+    let n = squash(name);
+    if n.is_empty() || n == "cobdate" {
+        return false;
+    }
+    let date = n.contains("date") && !n.contains("update");
+    let time = n == "time" || n == "when" || (n.ends_with("time") && TIMED.iter().any(|w| n.starts_with(w)));
+    let kind = n.contains("transaction")
+        || n.contains("activity")
+        || n.contains("txn")
+        || n.starts_with("action")
+        || (n.ends_with("action") && !n.ends_with("fraction"))
+        || matches!(n.as_str(), "transcode" | "transtype" | "trancode" | "trantype" | "buysell");
+    date || time || kind
+}
 
 /// A symbol and a quantity column, and nothing that looks like a
-/// transaction date or type, so an unknown history goes to the mapping UI
-/// instead of being read as holdings.
+/// transaction date, time or type, so an unknown history goes to the
+/// mapping UI instead of being read as holdings.
 pub(crate) fn matches(c: &Columns) -> bool {
-    c.find(SYMBOL).is_some()
-        && c.find(QUANTITY).is_some()
-        && c.find(DATES).is_none()
-        && c.find(ACTIONS).is_none()
-        && !c.any(|n| (n.ends_with(" date") && n != "cob date") || n == "when" || n == "time")
+    c.find(SYMBOL).is_some() && c.find(QUANTITY).is_some() && !c.any(is_history_column)
 }
 
 /// Which columns hold a snapshot's values.
@@ -65,6 +88,8 @@ pub(crate) struct SnapshotCols {
     pub(crate) description: Option<usize>,
     pub(crate) account: Option<usize>,
     pub(crate) asset_type: Option<usize>,
+    /// Decimal separator (a mapped file's `decimal_comma`).
+    pub(crate) decimal: Decimal,
 }
 
 impl SnapshotCols {
@@ -78,6 +103,7 @@ impl SnapshotCols {
             description: c.find(DESCRIPTION),
             account: c.find(ACCOUNT),
             asset_type: c.find(ASSET_TYPE),
+            decimal: Decimal::Point,
         }
     }
 }
@@ -149,7 +175,7 @@ fn snapshot_row_with_account(rec: &Record, family: Format, cols: SnapshotCols, o
         out.warn(rec, format!("Not imported: {symbol} is a CUSIP (bond or CD); fixed income is not supported"));
         return;
     }
-    let qty = match num(rec, cols.quantity, "quantity") {
+    let qty = match num_in(rec, cols.quantity, "quantity", cols.decimal) {
         Ok(Some(q)) => q,
         Ok(None) => {
             out.warn(rec, format!("Not imported: {symbol} has no quantity (cash or money-market balance)"));
@@ -166,7 +192,10 @@ fn snapshot_row_with_account(rec: &Record, family: Format, cols: SnapshotCols, o
     }
     // Schwab writes "Incomplete" when it lacks a lot's basis.
     let cost_cell = |i: Option<usize>| i.filter(|i| !rec.get(*i).eq_ignore_ascii_case("incomplete"));
-    let cost = match (num(rec, cost_cell(cols.cost_basis), "cost basis"), num(rec, cost_cell(cols.average_cost), "average cost")) {
+    let cost = match (
+        num_in(rec, cost_cell(cols.cost_basis), "cost basis", cols.decimal),
+        num_in(rec, cost_cell(cols.average_cost), "average cost", cols.decimal),
+    ) {
         (Ok(Some(total)), _) => Some(total.abs()),
         (Ok(None), Ok(Some(avg))) => Some(avg.abs() * qty),
         (Ok(None), Ok(None)) => None,

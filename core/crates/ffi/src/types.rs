@@ -754,9 +754,13 @@ pub enum ImportKindFfi {
     Sell,
     Dividend,
     ReinvestedDividend,
+    /// Lowers the security's cost basis (not income).
+    ReturnOfCapital,
     Interest,
     Fee,
     Split,
+    /// Cash for a fractional share: realized proceeds.
+    CashInLieu,
     TransferIn,
     TransferOut,
     Deposit,
@@ -772,9 +776,11 @@ impl From<meridian_types::TransactionKind> for ImportKindFfi {
             K::Sell => Self::Sell,
             K::Dividend => Self::Dividend,
             K::ReinvestedDividend => Self::ReinvestedDividend,
+            K::ReturnOfCapital => Self::ReturnOfCapital,
             K::Interest => Self::Interest,
             K::Fee => Self::Fee,
             K::Split => Self::Split,
+            K::CashInLieu => Self::CashInLieu,
             K::TransferIn => Self::TransferIn,
             K::TransferOut => Self::TransferOut,
             K::Deposit => Self::Deposit,
@@ -811,6 +817,11 @@ pub struct ImportMappingFfi {
     pub default_currency: String,
     /// Dates are DD/MM/YYYY rather than MM/DD/YYYY.
     pub day_first: bool,
+    /// Numbers use a decimal comma (`1.805,00`, `180,50`) rather than a
+    /// decimal point. False unless the user (or the suggestion, for a `;`- or
+    /// tab-delimited file with decimal-comma amounts) sets it; recognized
+    /// formats ignore the mapping.
+    pub decimal_comma: bool,
 }
 
 impl From<ImportMappingFfi> for meridian_import::ColumnMapping {
@@ -832,6 +843,7 @@ impl From<ImportMappingFfi> for meridian_import::ColumnMapping {
             average_cost: c(m.average_cost),
             default_currency: m.default_currency,
             day_first: m.day_first,
+            decimal_comma: m.decimal_comma,
         }
     }
 }
@@ -855,6 +867,7 @@ impl From<&meridian_import::ColumnMapping> for ImportMappingFfi {
             average_cost: c(m.average_cost),
             default_currency: m.default_currency.clone(),
             day_first: m.day_first,
+            decimal_comma: m.decimal_comma,
         }
     }
 }
