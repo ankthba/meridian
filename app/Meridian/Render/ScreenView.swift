@@ -36,6 +36,7 @@ struct ScreenView: View {
                     .foregroundStyle(Theme.down.swiftUI)
                     .padding(.horizontal, 12)
                     .padding(.vertical, 6)
+                    .accessibilityLabel("Error: \(message)")
                 Spacer()
             }
         }
@@ -53,6 +54,8 @@ struct ScreenView: View {
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 6)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Not available: \(reason)")
     }
 
     @ViewBuilder
@@ -109,6 +112,7 @@ struct BlockView: View {
                 .foregroundStyle((level == .error ? Theme.down : level == .warning ? Theme.warn : Theme.muted).swiftUI)
                 .padding(.horizontal, 12)
                 .fixedSize(horizontal: false, vertical: true)
+                .accessibilityLabel(level == .error ? "Error: \(text)" : text)
         case let .chart(spec):
             ChartBlockView(spec: spec, feed: feed)
                 .frame(minHeight: spec.heightRows == 0 ? 200 : CGFloat(spec.heightRows) * Theme.rowHeight,
@@ -132,6 +136,7 @@ struct SectionTitle: View {
             .padding(.horizontal, 12)
             .padding(.top, 8)
             .padding(.bottom, 2)
+            .accessibilityAddTraits(.isHeader)
     }
 }
 
@@ -172,6 +177,10 @@ struct FieldsView: View {
         .padding(.vertical, 4)
         .overlay(alignment: .bottom) { Rectangle().fill(Theme.hairline.swiftUI).frame(height: 1) }
         .frame(maxWidth: .infinity)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel([SpokenText.header(f.label), SpokenText.value(valueText(f), format: f.format, formatted: f.text == nil)]
+            .filter { !$0.isEmpty }.joined(separator: ", "))
+        .accessibilityAddTraits(.isStaticText)
     }
 
     private func valueText(_ f: FieldFfi) -> String {
@@ -202,6 +211,7 @@ struct InputsView: View {
                         Text(input.label)
                             .font(Theme.ui(12.5))
                             .foregroundStyle(Theme.muted.swiftUI)
+                            .accessibilityHidden(true) // the control carries it
                         switch input.kind {
                         case .choice:
                             Menu {
@@ -214,6 +224,7 @@ struct InputsView: View {
                                         .font(Theme.ui(12.5))
                                         .foregroundStyle(Theme.text.swiftUI)
                                     Image(systemName: "chevron.down").font(.system(size: 8, weight: .semibold)).foregroundStyle(Theme.muted.swiftUI)
+                                        .accessibilityHidden(true) // decoration; VoiceOver says "menu button"
                                 }
                                 .padding(.bottom, 2)
                                 .overlay(alignment: .bottom) { Rectangle().fill(Theme.line.swiftUI).frame(height: 1) }
@@ -221,8 +232,10 @@ struct InputsView: View {
                             .menuStyle(.button)
                             .buttonStyle(.plain)
                             .fixedSize()
+                            .accessibilityLabel(SpokenText.header(input.label))
+                            .accessibilityValue(panel.pendingInputs[input.id] ?? input.value)
                         default:
-                            InputCell(initial: input.value, width: inputWidth(input)) { v in
+                            InputCell(label: input.label, initial: input.value, width: inputWidth(input)) { v in
                                 panel.pendingInputs[input.id] = v
                             } onCommit: { v in
                                 panel.pendingInputs[input.id] = v
@@ -248,6 +261,7 @@ struct InputsView: View {
 }
 
 struct InputCell: View {
+    let label: String
     let initial: String
     let width: CGFloat
     let onChange: (String) -> Void
@@ -266,6 +280,8 @@ struct InputCell: View {
             .onChange(of: initial) { _, v in text = v }
             .onChange(of: text) { _, v in onChange(v) }
             .onSubmit { onCommit(text) }
+            .accessibilityLabel(SpokenText.header(label))
+            .accessibilityHint("Return applies it")
     }
 }
 
@@ -329,15 +345,15 @@ struct XyChartView: View {
                     ForEach(Array(zip(s.x, s.y).enumerated()), id: \.offset) { _, p in
                         if p.1.isFinite {
                             if s.bars {
-                                BarMark(x: .value("x", barKey(p.0)), y: .value("y", p.1), width: barWidth)
+                                BarMark(x: .value(xName, barKey(p.0)), y: .value(yName, p.1), width: barWidth)
                                     .foregroundStyle(color(si, s).swiftUI)
-                                    .position(by: .value("series", s.name))
+                                    .position(by: .value("Series", s.name))
                             } else if isTime {
-                                LineMark(x: .value("x", Date(timeIntervalSince1970: p.0 / 1e9)), y: .value("y", p.1), series: .value("s", s.name))
+                                LineMark(x: .value(xName, Date(timeIntervalSince1970: p.0 / 1e9)), y: .value(yName, p.1), series: .value("Series", s.name))
                                     .foregroundStyle(color(si, s).swiftUI)
                                     .lineStyle(StrokeStyle(lineWidth: 1.4))
                             } else {
-                                LineMark(x: .value("x", p.0), y: .value("y", p.1), series: .value("s", s.name))
+                                LineMark(x: .value(xName, p.0), y: .value(yName, p.1), series: .value("Series", s.name))
                                     .foregroundStyle(color(si, s).swiftUI)
                                     .lineStyle(StrokeStyle(lineWidth: 1.4))
                             }
@@ -356,11 +372,48 @@ struct XyChartView: View {
             .modifier(YDomain(chart: chart))
             .frame(height: CGFloat(max(chart.heightRows, 6)) * Theme.rowHeight)
             .padding(.horizontal, 12)
+            .accessibilityElement(children: .contain)
+            .accessibilityLabel(XyChartView.summary(chart))
             if chart.series.contains(where: \.bars), chart.xLabel.contains("|") {
                 Text(chart.xLabel).font(Theme.ui(10.5)).foregroundStyle(Theme.muted.swiftUI).padding(.horizontal, 12)
             }
         }
     }
+
+    /// Axis names VoiceOver reads with each point ("Date", "IV %").
+    private var xName: String { chart.xLabel.isEmpty || chart.xLabel.contains("|") ? "Category" : chart.xLabel }
+    private var yName: String { chart.yLabel.isEmpty ? "Value" : chart.yLabel }
+
+    /// The chart in words: its kind, then each series from first to last
+    /// point with its range, or each bar with its value.
+    static func summary(_ chart: XyChartFfi) -> String {
+        let f = { (v: Double) in TerminalFormatter.fixed(v, 2) }
+        let isTime = chart.xLabel == "Date"
+        let series: [String] = chart.series.compactMap { s in
+            let points = zip(s.x, s.y).filter { $0.1.isFinite }
+            guard let first = points.first, let last = points.last else { return nil }
+            if s.bars {
+                let bars = points.prefix(12).map { p -> String in
+                    let i = Int(p.0)
+                    let key = chart.xCategories.flatMap { $0.indices.contains(i) ? $0[i] : nil } ?? f(p.0)
+                    return "\(key) \(f(p.1))"
+                }
+                return "\(s.name): " + bars.joined(separator: ", ")
+            }
+            let ys = points.map(\.1)
+            let x = { (v: Double) in isTime ? xDate.string(from: TerminalFormatter.date(fromNanos: v)) : f(v) }
+            return "\(s.name) from \(f(first.1)) at \(x(first.0)) to \(f(last.1)) at \(x(last.0)), low \(f(ys.min() ?? first.1)), high \(f(ys.max() ?? first.1))"
+        }
+        // The section heading above already reads the title.
+        let kind = chart.series.allSatisfy(\.bars) ? "Bar chart" : "Line chart"
+        return ([kind] + (series.isEmpty ? ["no data"] : series)).joined(separator: ". ")
+    }
+
+    private static let xDate: DateFormatter = {
+        let f = DateFormatter()
+        f.dateStyle = .medium
+        return f
+    }()
 
     /// Few categories would otherwise stretch each bar across the pane.
     private var barWidth: MarkDimension {
@@ -472,7 +525,26 @@ struct HeatMapView: View {
             }
             .frame(width: labelW + CGFloat(cols) * cell + 8, height: 20 + CGFloat(rows) * 18)
             .padding(.horizontal, 12)
+            .accessibilityElement(children: .contain)
+            .accessibilityLabel("Heat map") // the heading above names it
+            .accessibilityChildren {
+                ForEach(0..<rows, id: \.self) { i in
+                    Text(rowDescription(i))
+                }
+            }
         }
+    }
+
+    /// "AAPL: SPY 0.85, QQQ 0.91", values as drawn.
+    private func rowDescription(_ i: Int) -> String {
+        let cols = map.colLabels.count
+        let cells = map.colLabels.enumerated().map { j, label -> String in
+            let k = i * cols + j
+            let v = map.values.indices.contains(k) ? map.values[k] : .nan
+            let text = v.isFinite ? SpokenText.value(TerminalFormatter.string(v, map.format), format: map.format) : "no data"
+            return "\(label) \(text)"
+        }
+        return "\(map.rowLabels[i]): " + cells.joined(separator: ", ")
     }
 
     private var range: (Double, Double) {
@@ -515,6 +587,8 @@ struct DiffView: View {
                 .padding(.horizontal, 8)
                 .padding(.vertical, 1.5)
                 .background((l.kind == .added ? Theme.upTint : l.kind == .removed ? Theme.downTint : Theme.bg).swiftUI)
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel(l.kind == .added ? "Added: \(l.text)" : l.kind == .removed ? "Removed: \(l.text)" : l.text)
             }
         }
     }

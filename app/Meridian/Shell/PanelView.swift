@@ -8,6 +8,9 @@ struct PanelView: View {
     @Bindable var panel: PanelModel
     let focused: Bool
     let focusToken: Int
+    /// Position for VoiceOver ("Pane 2"); the main window's panes default
+    /// to their index.
+    var number: Int?
     var onFocus: () -> Void = {}
 
     var body: some View {
@@ -18,12 +21,24 @@ struct PanelView: View {
         .background(Theme.bg.swiftUI)
         .contentShape(Rectangle())
         .simultaneousGesture(TapGesture().onEnded { onFocus() })
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel(accessibilityName)
+        .accessibilityAddTraits(focused ? .isSelected : [])
+        .accessibilityAction(named: "Run commands here") { onFocus() }
     }
 
-    private var label: String {
-        if panel.special == .ask { return "ASK" }
-        guard let f = panel.screen?.function ?? panel.current?.function else { return "EMPTY" }
-        return FunctionLabel.short(f).uppercased()
+    private var functionName: String {
+        if panel.special == .ask { return "Ask" }
+        guard let f = panel.screen?.function ?? panel.current?.function else { return "Empty" }
+        return FunctionLabel.short(f)
+    }
+
+    private var label: String { functionName.uppercased() }
+
+    /// "Pane 1, Today", "Pane 3, Chart, AAPL".
+    private var accessibilityName: String {
+        let n = number ?? (panel.index < 4 ? panel.index + 1 : nil)
+        return ([n.map { "Pane \($0)" }, functionName, ticker].compactMap { $0 }).joined(separator: ", ")
     }
 
     private var ticker: String? {
@@ -37,6 +52,8 @@ struct PanelView: View {
                 .font(Theme.label())
                 .tracking(1.4)
                 .foregroundStyle((focused ? Theme.text : Theme.muted).swiftUI)
+                .accessibilityLabel(functionName)
+                .accessibilityAddTraits(.isHeader)
             if let ticker {
                 Text(ticker)
                     .font(Theme.ui(12, weight: .semibold))
@@ -55,14 +72,19 @@ struct PanelView: View {
                                 }
                                 .contentShape(Rectangle())
                                 .onTapGesture { panel.runRowAction(m.action) }
+                                .accessibilityAddTraits(m.selected ? [.isButton, .isSelected] : .isButton)
+                                .accessibilityAction { panel.runRowAction(m.action) }
                         }
                     }
+                    .accessibilityElement(children: .contain)
+                    .accessibilityLabel("Sections")
                 }
                 .scrollIndicators(.never)
             }
             Spacer(minLength: 6)
             if panel.loading {
                 ProgressView().controlSize(.mini)
+                    .accessibilityLabel("Loading")
             }
             if let s = panel.screen {
                 Text(sourceText(s))
@@ -70,11 +92,13 @@ struct PanelView: View {
                     .foregroundStyle(Theme.muted.swiftUI)
                     .lineLimit(1)
                     .help(s.sources.compactMap(\.attribution).joined(separator: "\n"))
+                    .accessibilityLabel(s.sources.isEmpty ? "" : "Sources: " + SpokenText.list(sourceText(s)))
             }
             linkMenu
             Text("⌘\(panel.index + 1)")
                 .font(Theme.swiftFont(11))
                 .foregroundStyle(Theme.muted.swiftUI)
+                .accessibilityLabel("Shortcut Command \(panel.index + 1)")
         }
         .padding(.horizontal, 12)
         .frame(height: 34)
@@ -105,6 +129,8 @@ struct PanelView: View {
         .buttonStyle(.plain)
         .fixedSize()
         .help("Panes in the same link group follow each other's security")
+        .accessibilityLabel("Link group")
+        .accessibilityValue(panel.linkGroup.map { "Group \($0)" } ?? "Not linked")
     }
 
     @ViewBuilder

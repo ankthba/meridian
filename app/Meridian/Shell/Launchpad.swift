@@ -185,7 +185,7 @@ struct LaunchpadView: View {
                                 ForEach(0..<cols, id: \.self) { c in
                                     let i = r * cols + c
                                     if i < page.components.count {
-                                        PanelView(panel: page.components[i], focused: model.focused == i, focusToken: model.focusToken) {
+                                        PanelView(panel: page.components[i], focused: model.focused == i, focusToken: model.focusToken, number: i + 1) {
                                             if model.focused != i { model.focused = i } else { model.requestFocus() }
                                         }
                                         .frame(width: w, height: h)
@@ -210,6 +210,8 @@ struct LaunchpadView: View {
     private var toolbar: some View {
         HStack(spacing: 12) {
             Text("LAUNCHPAD").font(Theme.label()).tracking(1.4).foregroundStyle(Theme.muted.swiftUI).padding(.leading, 74)
+                .accessibilityLabel("Launchpad")
+                .accessibilityAddTraits(.isHeader)
             ForEach(Array(model.pages.enumerated()), id: \.element.id) { i, p in
                 Text(p.name)
                     .font(Theme.ui(12.5))
@@ -217,8 +219,12 @@ struct LaunchpadView: View {
                     .padding(.vertical, 3)
                     .overlay(alignment: .bottom) { if model.selected == i { Rectangle().fill(Theme.text.swiftUI).frame(height: 1.5) } }
                     .onTapGesture { model.selected = i; model.focused = 0 }
+                    .accessibilityAddTraits(model.selected == i ? [.isButton, .isSelected] : .isButton)
+                    .accessibilityAction { model.selected = i; model.focused = 0 }
             }
             Text("New page").font(Theme.ui(12)).foregroundStyle(Theme.muted.swiftUI).onTapGesture { model.addPage() }
+                .accessibilityAddTraits(.isButton)
+                .accessibilityAction { model.addPage() }
             Spacer()
             Menu {
                 ForEach(["W", "GP", "GIP", "TOP", "CN", "WEI", "CRYP", "FXC", "ECO", "OMON"], id: \.self) { f in
@@ -229,6 +235,8 @@ struct LaunchpadView: View {
             }
             .menuStyle(.button).buttonStyle(.plain).fixedSize()
             Text("Remove pane").font(Theme.ui(12)).foregroundStyle(Theme.muted.swiftUI).onTapGesture { model.removeFocused() }
+                .accessibilityAddTraits(.isButton)
+                .accessibilityAction { model.removeFocused() }
             Stepper("Cols \(model.page?.columns ?? 1)", value: Binding(
                 get: { model.page?.columns ?? 1 },
                 set: { if model.pages.indices.contains(model.selected) { model.pages[model.selected].columns = min(max($0, 1), 4); model.save() } }

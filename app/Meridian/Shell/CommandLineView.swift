@@ -49,6 +49,8 @@ struct CommandFieldView: NSViewRepresentable {
             string: "Type a ticker or a command: aapl · aapl 5y · aapl filings · earnings this week",
             attributes: [.foregroundColor: Theme.muted, .font: Theme.uiFont(15)]
         )
+        f.setAccessibilityLabel("Command")
+        f.setAccessibilityHelp("Type a ticker or a command. Up and down arrows choose a suggestion, Return runs it, Tab completes it.")
         return f
     }
 
@@ -80,8 +82,10 @@ struct CommandBar: View {
     var body: some View {
         HStack(spacing: 10) {
             Text("›").font(Theme.ui(17)).foregroundStyle(Theme.muted.swiftUI)
+                .accessibilityHidden(true)
             CommandFieldView(panel: panel, focusToken: focusToken)
                 .frame(height: 22)
+                .accessibilityLabel("Command")
             Text("runs in pane \(panel.index + 1)")
                 .font(Theme.ui(11))
                 .foregroundStyle(Theme.muted.swiftUI)
@@ -90,6 +94,8 @@ struct CommandBar: View {
         .frame(height: 44)
         .background(Theme.header.swiftUI)
         .overlay(alignment: .bottom) { Rectangle().fill(Theme.line.swiftUI).frame(height: 1) }
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Command bar")
     }
 }
 
@@ -118,13 +124,14 @@ struct CompletionPopover: View {
                     .padding(.horizontal, 14)
                     .padding(.top, 9)
                     .padding(.bottom, 3)
+                    .accessibilityHidden(true) // each row names its group
                 ForEach(items, id: \.0) { i, s in
                     HStack(alignment: .firstTextBaseline, spacing: 12) {
                         Text(s.titleText)
                             .font(Theme.ui(13, weight: .semibold))
                             .foregroundStyle(Theme.text.swiftUI)
                             .frame(minWidth: 64, alignment: .leading)
-                        Text(s.subtitle.isEmpty ? s.detail : s.subtitle)
+                        Text(s.subtitleText)
                             .font(Theme.ui(13))
                             .foregroundStyle(Theme.text2.swiftUI)
                             .lineLimit(1)
@@ -137,12 +144,11 @@ struct CompletionPopover: View {
                     .frame(height: 30)
                     .background((panel.highlighted == i ? Theme.hover : Theme.raised).swiftUI)
                     .contentShape(Rectangle())
-                    .onTapGesture {
-                        panel.highlighted = i
-                        _ = panel.acceptSuggestion()
-                        panel.updateSuggestions()
-                        AppModel.shared.workspace.requestFocus()
-                    }
+                    .onTapGesture { choose(i) }
+                    .accessibilityElement(children: .ignore)
+                    .accessibilityLabel(s.spokenDescription)
+                    .accessibilityAddTraits(panel.highlighted == i ? [.isButton, .isSelected] : .isButton)
+                    .accessibilityAction { choose(i) }
                 }
             }
         }
@@ -152,6 +158,18 @@ struct CompletionPopover: View {
         .clipShape(RoundedRectangle(cornerRadius: 8))
         .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color(white: 0.2), lineWidth: 1))
         .shadow(color: .black.opacity(0.55), radius: 25, y: 18)
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Suggestions")
+        .onAppear {
+            Announcer.announce("\(panel.suggestions.count) suggestions, up and down arrows to choose", priority: .medium)
+        }
+    }
+
+    private func choose(_ i: Int) {
+        panel.highlighted = i
+        _ = panel.acceptSuggestion()
+        panel.updateSuggestions()
+        AppModel.shared.workspace.requestFocus()
     }
 }
 
@@ -169,6 +187,15 @@ extension SuggestionFfi {
     var hintText: String {
         if !hint.isEmpty { return hint }
         return kind == .security ? display.split(separator: " ").dropFirst().joined(separator: " ") : display
+    }
+
+    /// The middle column as drawn: subtitle, or the detail when there is none.
+    var subtitleText: String { subtitle.isEmpty ? detail : subtitle }
+
+    /// What VoiceOver reads for the row, from the strings the popover draws:
+    /// "Security, AAPL, Apple Inc., US Equity".
+    var spokenDescription: String {
+        [groupTitle, titleText, subtitleText, hintText].filter { !$0.isEmpty }.joined(separator: ", ")
     }
 }
 
