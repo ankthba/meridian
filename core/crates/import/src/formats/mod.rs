@@ -129,9 +129,13 @@ pub(crate) fn check_shares(r: &crate::Row, what: &str) -> Result<(), String> {
 
 /// Reverse splits arrive as two rows on one date (new shares +, old shares
 /// −) and a leg's symbol is often a CUSIP. Rows from `start` on that
-/// `is_reverse` selects are grouped by account and date; when a group has
+/// `is_reverse` selects are grouped by account and date. When a group has
 /// exactly one ticker, every row takes it so the rows net into one change
-/// (see `net_splits`). Rows still without a ticker become warnings.
+/// (see `net_splits`). With several tickers (two reverse splits on one day)
+/// each CUSIP leg is paired with its security (see [`pair_by_security`]);
+/// if that is ambiguous, every leg of the group becomes a warning, since
+/// applying only the new-share legs would leave old + new shares. Rows still
+/// without a ticker become warnings.
 pub(crate) fn pair_reverse_splits(out: &mut Output, start: usize, is_reverse: impl Fn(&crate::ImportedTx) -> bool) {
     use std::collections::BTreeMap;
     let idx: Vec<usize> = (start..out.txs.len()).filter(|&i| is_reverse(&out.txs[i])).collect();
@@ -139,29 +143,120 @@ pub(crate) fn pair_reverse_splits(out: &mut Output, start: usize, is_reverse: im
     for &i in &idx {
         groups.entry((out.txs[i].account.clone(), out.txs[i].trade_date)).or_default().push(i);
     }
+    // Legs not to import, with the reason.
+    let mut refused: BTreeMap<usize, String> = BTreeMap::new();
     for rows in groups.values() {
         let mut tickers: Vec<String> = rows.iter().filter_map(|&i| out.txs[i].symbol.clone()).filter(|s| is_ticker(s)).collect();
         tickers.sort();
         tickers.dedup();
-        if let [ticker] = tickers.as_slice() {
-            for &i in rows {
-                out.txs[i].symbol = Some(ticker.clone());
+        match tickers.as_slice() {
+            [] => {}
+            [ticker] => {
+                for &i in rows {
+                    out.txs[i].symbol = Some(ticker.clone());
+                }
             }
+            _ => match pair_by_security(&out.txs, rows, &tickers) {
+                Some(pairs) => {
+                    for (i, ticker) in pairs {
+                        out.txs[i].symbol = Some(ticker);
+                    }
+                }
+                None => {
+                    for &i in rows {
+                        let t = &out.txs[i];
+                        refused.insert(
+                            i,
+                            format!(
+                                "Not imported: reverse split leg {} — {} reverse splits on {} in one account could not be paired by security; adjust the holdings by hand",
+                                t.symbol.as_deref().unwrap_or("(no symbol)"),
+                                tickers.len(),
+                                t.trade_date.format("%Y-%m-%d"),
+                            ),
+                        );
+                    }
+                }
+            },
         }
     }
     for &i in idx.iter().rev() {
-        if !out.txs[i].symbol.as_deref().is_some_and(is_ticker) {
-            let t = out.txs.remove(i);
-            out.warnings.push(crate::ImportWarning {
-                line: t.line,
-                message: format!(
+        let message = refused.remove(&i).or_else(|| {
+            (!out.txs[i].symbol.as_deref().is_some_and(is_ticker)).then(|| {
+                format!(
                     "Not imported: reverse split leg {} has no ticker to pair with; adjust the holding by hand",
-                    t.symbol.as_deref().unwrap_or("(no symbol)")
-                ),
-                text: t.description,
-            });
+                    out.txs[i].symbol.as_deref().unwrap_or("(no symbol)")
+                )
+            })
+        });
+        if let Some(message) = message {
+            let t = out.txs.remove(i);
+            out.warnings.push(crate::ImportWarning { line: t.line, message, text: t.description });
         }
     }
+}
+
+/// Pairs each non-ticker leg (old CUSIP) of a group of same-day reverse
+/// splits with one of `tickers`: first by a ticker leg whose action or
+/// description mentions the CUSIP (Fidelity's new leg reads `R/S FROM
+/// 000000AA3#…`), else by security name (one leg's description starts with
+/// the other's: Schwab's old leg is `ABCD HOLDINGS XXXREVERSE SPLIT …`).
+/// Returns the new symbol for each such leg, or `None` when a leg matches
+/// no ticker or several, or when a ticker ends up without both an old (−)
+/// and a new (+) leg.
+fn pair_by_security(txs: &[crate::ImportedTx], rows: &[usize], tickers: &[String]) -> Option<Vec<(usize, String)>> {
+    fn legs<'a>(txs: &'a [crate::ImportedTx], rows: &'a [usize], t: &'a str) -> impl Iterator<Item = &'a crate::ImportedTx> {
+        rows.iter().map(|&j| &txs[j]).filter(move |r| r.symbol.as_deref() == Some(t))
+    }
+    let unique = |found: Vec<&String>| -> Option<String> {
+        match found.as_slice() {
+            [one] => Some((*one).clone()),
+            _ => None,
+        }
+    };
+    let mut pairs: Vec<(usize, String)> = Vec::new();
+    for &i in rows {
+        let leg = &txs[i];
+        if leg.symbol.as_deref().is_some_and(is_ticker) {
+            continue;
+        }
+        let cusip = leg.symbol.as_deref().filter(|s| !s.is_empty());
+        let by_cusip: Vec<&String> = match cusip {
+            Some(c) => tickers.iter().filter(|t| legs(txs, rows, t).any(|r| r.action.contains(c) || r.description.contains(c))).collect(),
+            None => Vec::new(),
+        };
+        let name = norm(&leg.description);
+        let by_name = || -> Vec<&String> {
+            tickers
+                .iter()
+                .filter(|t| {
+                    legs(txs, rows, t).any(|r| {
+                        let other = norm(&r.description);
+                        !name.is_empty() && !other.is_empty() && (name.starts_with(&other) || other.starts_with(&name))
+                    })
+                })
+                .collect()
+        };
+        let ticker = if by_cusip.is_empty() { unique(by_name())? } else { unique(by_cusip)? };
+        pairs.push((i, ticker));
+    }
+    // Every security needs both legs, or applying the group half-way would
+    // leave old + new shares (or only the removal).
+    for t in tickers {
+        let signs = rows.iter().filter_map(|&j| {
+            let r = &txs[j];
+            let symbol = pairs.iter().find(|(i, _)| *i == j).map_or(r.symbol.as_deref(), |(_, s)| Some(s.as_str()));
+            (symbol == Some(t.as_str())).then_some(r.quantity.unwrap_or(0.0))
+        });
+        let (mut down, mut up) = (false, false);
+        for q in signs {
+            down |= q < 0.0;
+            up |= q > 0.0;
+        }
+        if !(down && up) {
+            return None;
+        }
+    }
+    Some(pairs)
 }
 
 /// Magnitude helper: brokers differ on whether a sell's quantity is

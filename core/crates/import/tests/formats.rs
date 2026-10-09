@@ -552,6 +552,66 @@ fn netted_reverse_split_fingerprint_ignores_leg_order() {
     assert!(find(&a, K::Split, "AVGO")[0].fingerprint.ends_with("-0"));
 }
 
+const SCHWAB_HEADER: &str = "\"Date\",\"Action\",\"Symbol\",\"Description\",\"Quantity\",\"Price\",\"Fees & Comm\",\"Amount\"\n";
+
+#[test]
+fn two_reverse_splits_on_one_day_pair_by_security() {
+    // Fidelity: each new leg names the old CUSIP (`R/S FROM 000000AA3`).
+    let fidelity = "Run Date,Action,Symbol,Description,Type,Quantity,Price ($),Commission ($),Fees ($),Accrued Interest ($),Amount ($),Settlement Date\n\
+        03/16/2026,REVERSE SPLIT R/S TO 000000BB9#REOR M0000000002 EFGH CORP 1 FOR 10 R/S (000000BA1) (Cash),000000BA1,EFGH CORP,Shares,-50,,,,,,\n\
+        03/16/2026,REVERSE SPLIT R/S TO 000000AB1#REOR M0000000000 ABCD HOLDINGS 1 FOR 20 R/S (000000AA3) (Cash),000000AA3,ABCD HOLDINGS,Shares,-100,,,,,,\n\
+        03/16/2026,REVERSE SPLIT R/S FROM 000000BA1#REOR M0000000003 EFGH CORP (EFGH) (Cash),EFGH,EFGH CORP,Shares,5,,,,,,\n\
+        03/16/2026,REVERSE SPLIT R/S FROM 000000AA3#REOR M0000000001 ABCD HOLDINGS (ABCD) (Cash),ABCD,ABCD HOLDINGS,Shares,5,,,,,,\n\
+        01/12/2026,YOU BOUGHT EFGH CORP (EFGH) (Cash),EFGH,EFGH CORP,Cash,50,2.00,,,,-100.00,01/13/2026\n\
+        01/12/2026,YOU BOUGHT ABCD HOLDINGS (ABCD) (Cash),ABCD,ABCD HOLDINGS,Cash,100,1.50,,,,-150.00,01/13/2026\n";
+    let p = parse(fidelity, None, &opts()).unwrap();
+    assert!(p.warnings.is_empty(), "{:#?}", p.warnings);
+    assert_eq!(count(&p, K::Split), 2);
+    assert!(close(find(&p, K::Split, "ABCD")[0].quantity, -95.0));
+    assert!(close(find(&p, K::Split, "EFGH")[0].quantity, -45.0));
+    // Schwab: the old leg's description starts with the security's name.
+    let schwab = format!(
+        "{SCHWAB_HEADER}\"06/12/2024\",\"Reverse Split\",\"ABCD\",\"ABCD HOLDINGS\",\"5\",\"\",\"\",\"\"\n\
+         \"06/12/2024\",\"Reverse Split\",\"000000BA1\",\"EFGH CORP XXXREVERSE SPLIT EFF: 06/10/24\",\"-50\",\"\",\"\",\"\"\n\
+         \"06/12/2024\",\"Reverse Split\",\"000000AA3\",\"ABCD HOLDINGS XXXREVERSE SPLIT EFF: 06/10/24\",\"-100\",\"\",\"\",\"\"\n\
+         \"06/12/2024\",\"Reverse Split\",\"EFGH\",\"EFGH CORP\",\"5\",\"\",\"\",\"\"\n"
+    );
+    let p = parse(&schwab, None, &opts()).unwrap();
+    assert!(p.warnings.is_empty(), "{:#?}", p.warnings);
+    assert!(close(find(&p, K::Split, "ABCD")[0].quantity, -95.0));
+    assert!(close(find(&p, K::Split, "EFGH")[0].quantity, -45.0));
+}
+
+#[test]
+fn unpairable_reverse_splits_on_one_day_are_not_half_applied() {
+    // The old legs don't say which security they belong to. Importing only
+    // the +5 legs would leave 100 + 5 shares; nothing of the group is
+    // imported instead.
+    let schwab = format!(
+        "{SCHWAB_HEADER}\"06/12/2024\",\"Reverse Split\",\"ABCD\",\"ABCD HOLDINGS\",\"5\",\"\",\"\",\"\"\n\
+         \"06/12/2024\",\"Reverse Split\",\"000000AA3\",\"XXXREVERSE SPLIT EFF: 06/10/24\",\"-100\",\"\",\"\",\"\"\n\
+         \"06/12/2024\",\"Reverse Split\",\"EFGH\",\"EFGH CORP\",\"5\",\"\",\"\",\"\"\n\
+         \"06/12/2024\",\"Reverse Split\",\"000000BA1\",\"XXXREVERSE SPLIT EFF: 06/10/24\",\"-50\",\"\",\"\",\"\"\n\
+         \"05/01/2024\",\"Buy\",\"ABCD\",\"ABCD HOLDINGS\",\"100\",\"$1.50\",\"\",\"-$150.00\"\n"
+    );
+    let p = parse(&schwab, None, &opts()).unwrap();
+    assert_eq!(p.counts(), vec![(K::Buy, 1)]);
+    assert_eq!(warning_lines(&p), vec![2, 3, 4, 5]);
+    assert!(p.warnings.iter().all(|w| w.message.contains("2 reverse splits on 2024-06-12 in one account could not be paired")), "{:#?}", p.warnings);
+    // A leg matching two securities by name is ambiguous too.
+    let ambiguous = format!(
+        "{SCHWAB_HEADER}\"06/12/2024\",\"Reverse Split\",\"ABC\",\"ABC CORP\",\"5\",\"\",\"\",\"\"\n\
+         \"06/12/2024\",\"Reverse Split\",\"ABCB\",\"ABC CORP CL B\",\"5\",\"\",\"\",\"\"\n\
+         \"06/12/2024\",\"Reverse Split\",\"000000AA3\",\"ABC CORP CL B XXXREVERSE SPLIT\",\"-100\",\"\",\"\",\"\"\n\
+         \"06/12/2024\",\"Reverse Split\",\"000000BA1\",\"ABC CORP XXXREVERSE SPLIT\",\"-100\",\"\",\"\",\"\"\n"
+    );
+    let p = parse(&ambiguous, None, &opts()).unwrap();
+    assert!(p.transactions.is_empty(), "{:#?}", p.transactions);
+    assert_eq!(p.warnings.len(), 4);
+    // One reverse split on a day still pairs as before (fixtures).
+    assert!(close(find(&read("schwab_2024.csv"), K::Split, "ABCD")[0].quantity, -95.0));
+}
+
 #[test]
 fn crlf_and_quoted_newlines_count_lines() {
     let text = fixture("robinhood_activity.csv").replace('\n', "\r\n");
