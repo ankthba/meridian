@@ -42,10 +42,14 @@ mkdir -p "$DIST"
 
 step "Checking the signature"
 codesign --verify --deep --strict "$APP"
-codesign -dvv "$APP" 2>&1 | grep -q "Authority=Developer ID Application" || fail "not signed with a Developer ID Application certificate"
-codesign -dvv "$APP" 2>&1 | grep -q "^Timestamp=" || fail "signature has no secure timestamp"
-codesign -dvv "$APP" 2>&1 | grep -q "(runtime)" || fail "hardened runtime is off"
-if codesign -d --entitlements - --xml "$APP" 2>/dev/null | grep -q "get-task-allow"; then
+# Capture, then match: under pipefail, `grep -q` closing the pipe early
+# makes the producer die of SIGPIPE and the check fail.
+SIG=$(codesign -dvv "$APP" 2>&1)
+ENT=$(codesign -d --entitlements - --xml "$APP" 2>/dev/null || true)
+grep -q "Authority=Developer ID Application" <<<"$SIG" || fail "not signed with a Developer ID Application certificate"
+grep -q "^Timestamp=" <<<"$SIG" || fail "signature has no secure timestamp"
+grep -q "(runtime)" <<<"$SIG" || fail "hardened runtime is off"
+if grep -q "get-task-allow" <<<"$ENT"; then
   fail "the app has the get-task-allow entitlement (a debug build?)"
 fi
 
@@ -68,7 +72,9 @@ notarize "$DIST/notarize.zip"
 rm "$DIST/notarize.zip"
 xcrun stapler staple "$APP"
 xcrun stapler validate "$APP"
-spctl -a -t exec -vv "$APP" 2>&1 | tee /dev/stderr | grep -q "source=Notarized Developer ID" || fail "Gatekeeper does not accept the app"
+GK=$(spctl -a -t exec -vv "$APP" 2>&1 || true)
+echo "$GK"
+grep -q "source=Notarized Developer ID" <<<"$GK" || fail "Gatekeeper does not accept the app"
 
 step "Packaging"
 ditto -c -k --keepParent "$APP" "$DIST/Meridian-$VERSION.zip"
@@ -91,8 +97,9 @@ step "Notarizing the disk image"
 notarize "$DIST/Meridian-$VERSION.dmg"
 xcrun stapler staple "$DIST/Meridian-$VERSION.dmg"
 xcrun stapler validate "$DIST/Meridian-$VERSION.dmg"
-spctl -a -t open --context context:primary-signature -vv "$DIST/Meridian-$VERSION.dmg" 2>&1 | tee /dev/stderr \
-  | grep -q "source=Notarized Developer ID" || fail "Gatekeeper does not accept the disk image"
+GK=$(spctl -a -t open --context context:primary-signature -vv "$DIST/Meridian-$VERSION.dmg" 2>&1 || true)
+echo "$GK"
+grep -q "source=Notarized Developer ID" <<<"$GK" || fail "Gatekeeper does not accept the disk image"
 
 (cd "$DIST" && shasum -a 256 "Meridian-$VERSION.dmg" "Meridian-$VERSION.zip" > SHA256SUMS.txt)
 step "Done: $DIST"
